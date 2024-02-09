@@ -10,7 +10,7 @@ winsorize(x, cut)
 \item{x}{A numeric vector to be winsorized.}
 
 \item{cut}{The proportion of data to be winsorized from both ends of the distribution.
-For example, a `cut` of 0.05 will winsorize the lowest and highest 5% of the data.}
+For example, a `cut` of 0.05 will winsorize the lowest and highest 5\% of the data.}
 }
 \value{
 A numeric vector with the extreme values replaced by the corresponding

@@ -18,7 +18,7 @@ If NULL (the default), summary statistics are computed across all observations.}
 \item{detail}{Logical flag indicating whether to compute detailed summary statistics
 including additional quantiles. Defaults to FALSE, which computes basic
 statistics (n, mean, sd, min, median, max). When TRUE, additional quantiles
-(1%, 5%, 10%, 25%, 75%, 90%, 95%, 99%) are also computed.}
+(1\%, 5\%, 10\%, 25\%, 75\%, 90\%, 95\%, 99\%) are also computed.}
 }
 \value{
 A tibble with summary statistics for each selected variable. If `by` is specified,

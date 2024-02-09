@@ -6,7 +6,7 @@
 #'
 #' @param x A numeric vector to be winsorized.
 #' @param cut The proportion of data to be winsorized from both ends of the distribution.
-#'   For example, a `cut` of 0.05 will winsorize the lowest and highest 5% of the data.
+#'   For example, a `cut` of 0.05 will winsorize the lowest and highest 5\% of the data.
 #' @return A numeric vector with the extreme values replaced by the corresponding
 #'   quantile values.
 #'
@@ -35,7 +35,7 @@ winsorize <- function(x, cut) {
 #'
 #' @param x A numeric vector to be trimmed.
 #' @param cut The proportion of data to be trimmed from both ends of the distribution.
-#'   For example, a `cut` of 0.05 will remove the lowest and highest 5% of the data.
+#'   For example, a `cut` of 0.05 will remove the lowest and highest 5\% of the data.
 #' @return A numeric vector with the extreme values removed.
 #' @examples
 #' set.seed(123)
@@ -67,7 +67,7 @@ trim <- function(x, cut) {
 #' @param detail Logical flag indicating whether to compute detailed summary statistics
 #'               including additional quantiles. Defaults to FALSE, which computes basic
 #'               statistics (n, mean, sd, min, median, max). When TRUE, additional quantiles
-#'               (1%, 5%, 10%, 25%, 75%, 90%, 95%, 99%) are also computed.
+#'               (1\%, 5\%, 10\%, 25\%, 75\%, 90\%, 95\%, 99\%) are also computed.
 #'
 #' @details
 #' The function first checks that all specified variables are of type numeric, integer,
