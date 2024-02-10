@@ -29,8 +29,6 @@
 #' assign_portfolio(data, "market_cap", percentiles = c(0.2, 0.4, 0.6, 0.8), exchanges = c("NYSE"))
 #'
 #' @export
-#' @importFrom dplyr filter mutate pull
-#' @importFrom stats quantile
 #'
 #' @note This function will stop and throw an error if both `n_portfolios` and
 #'       `percentiles` are provided or if neither is provided. Ensure to use
@@ -48,8 +46,7 @@ assign_portfolio <- function(data,
   }
 
   if (!is.null(exchanges)) {
-    data_breakpoints <- data |>
-      filter(exchange %in% exchanges)
+    data_breakpoints <- data[data$exchange %in% exchanges, ]
   } else {
     data_breakpoints <- data
   }
@@ -60,22 +57,16 @@ assign_portfolio <- function(data,
     probs <- c(0, percentiles, 1)
   }
 
-  breakpoints <- data_breakpoints |>
-    pull({{ sorting_variable }}) |>
-    quantile(
-      probs = probs,
-      na.rm = TRUE,
-      names = FALSE
-    )
+  sorting_values <- data_breakpoints[[sorting_variable]]
+  breakpoints <- quantile(
+    sorting_values, probs = probs, na.rm = TRUE, names = FALSE
+  )
 
-  assigned_portfolios <- data |>
-    mutate(portfolio = findInterval(
-      pick(everything()) |>
-        pull({{ sorting_variable }}),
-      breakpoints,
-      all.inside = TRUE
-    )) |>
-    pull(portfolio)
+  sorting_values_all <- data[[sorting_variable]]
+  portfolio_indices <- findInterval(
+    sorting_values_all, breakpoints, all.inside = TRUE
+  )
 
-  assigned_portfolios
+  return(portfolio_indices)
 }
+
