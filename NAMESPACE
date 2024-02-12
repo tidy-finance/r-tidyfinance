@@ -2,9 +2,12 @@
 
 export(assign_portfolio)
 export(create_summary_statistics)
+export(estimate_model)
+export(list_tidy_finance_chapters)
+export(open_tidy_finance_website)
 export(trim)
 export(winsorize)
 import(dplyr)
 import(tidyr)
+import(utils)
 importFrom(purrr,partial)
-importFrom(stats,quantile)
