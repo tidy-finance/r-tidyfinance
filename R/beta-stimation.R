@@ -1,22 +1,89 @@
-# estimate_capm <- function(data, min_obs = 1) {
-#   if (nrow(data) < min_obs) {
-#     beta <- as.numeric(NA)
-#   } else {
-#     fit <- lm(ret_excess ~ mkt_excess, data = data)
-#     beta <- as.numeric(coefficients(fit)[2])
-#   }
-#   return(beta)
-# }
-#
-# roll_capm_estimation <- function(data, months, min_obs) {
+#' Estimate Model Coefficients
+#'
+#' This function estimates the coefficients of a linear model specified by one or more independent variables.
+#' It checks for the presence of the specified independent variables in the dataset and whether the dataset has
+#' a sufficient number of observations. It returns the model's coefficients as either a numeric value (for a single
+#' independent variable) or a data frame (for multiple independent variables).
+#'
+#' @param data A data frame containing the dependent variable and one or more independent variables.
+#' @param ... Named arguments where each name is an independent variable in `data` and each value should be
+#'        a formula specifying the variable (e.g., x = ~ x). This allows for flexible specification of the model.
+#' @param min_obs The minimum number of observations required to estimate the model. Defaults to 1.
+#'
+#' @return If a single independent variable is specified, a numeric value representing the coefficient of that
+#'         variable. If multiple independent variables are specified, a data frame with a row for each coefficient
+#'         and column names corresponding to the independent variables.
+#'
+#' @examples
+#' data <- data.frame(
+#'   ret_excess = rnorm(100),
+#'   mkt_excess = rnorm(100),
+#'   smb = rnorm(100),
+#'   hml = rnorm(100)
+#' )
+#' # Estimate model with a single independent variable
+#' single_var_model <- estimate_model(data, mkt_excess = ~ mkt_excess)
+#'
+#' # Estimate model with multiple independent variables
+#' multi_var_model <- estimate_model(data, mkt_excess = ~ mkt_excess, smb = ~ smb, hml = ~ hml)
+#'
+#' @export
+#'
+#' @seealso \code{\link[stats]{lm}} for details on the underlying linear model fitting used.
+estimate_model <- function(data, ..., min_obs = 1) {
+  independent_vars_syms <- ensyms(...)
+  independent_vars <- sapply(independent_vars_syms, as.character)
+
+  if (nrow(data) < min_obs) {
+    beta <- setNames(as.numeric(rep(NA, length(independent_vars))), independent_vars)
+    if (length(beta) == 1) {
+      return(as.numeric(NA))
+    } else {
+      return(data.frame(t(beta)))
+    }
+  } else {
+    if (!all(independent_vars %in% names(data))) {
+      missing_vars <- independent_vars[!independent_vars %in% names(data)]
+      stop("The following independent variables are missing in the data: ",
+           paste(missing_vars, collapse=", "), ".")
+    }
+
+    formula <- reformulate(termlabels = independent_vars, response = "ret_excess")
+
+    fit <- lm(formula, data = data)
+    beta <- coefficients(fit)[names(coefficients(fit)) %in% independent_vars]
+
+    if (length(beta) == 1) {
+      return(as.numeric(beta))
+    } else {
+      return(data.frame(t(beta)))
+    }
+  }
+}
+
+
+# roll_model_estimation <- function(data, months, min_obs, ...) {
 #   data <- data |>
 #     arrange(month)
 #
-#   betas <- slide_period_vec(
+#   independent_vars <- rlang::ensyms(...)
+#
+#   if (!all(independent_vars %in% names(data))) {
+#     missing_vars <- independent_vars[!independent_vars %in% names(data)]
+#     stop("The following independent variables are missing in the data: ",
+#          paste(missing_vars, collapse=", "), ".")
+#   }
+#
+#   estimate_wrapper <- function(df) {
+#     independent_vars_str <- sapply(independent_vars, rlang::as_string)
+#     do.call(estimate_model, args = c(list(data = df, min_obs = min_obs), independent_vars_str))
+#   }
+#
+#   betas <- slider::slide_period_dfr(
 #     .x = data,
 #     .i = data$month,
 #     .period = "month",
-#     .f = ~ estimate_capm(., min_obs),
+#     .f = ~ estimate_wrapper(.x),
 #     .before = months - 1,
 #     .complete = FALSE
 #   )
@@ -26,3 +93,4 @@
 #     beta = betas
 #   ))
 # }
+

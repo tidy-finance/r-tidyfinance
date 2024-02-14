@@ -16,8 +16,6 @@
 #' winsorized_data <- winsorize(data, 0.05)
 #'
 #' @export
-#'
-#' @importFrom stats quantile
 winsorize <- function(x, cut) {
   lb <- quantile(x, cut, na.rm = TRUE)
   up <- quantile(x, 1 - cut, na.rm = TRUE)
