@@ -13,8 +13,8 @@
 #' open_tidy_finance_website()
 #' open_tidy_finance_website("beta-estimation")
 #'
-#' @import utils
 #' @export
+#'
 #' @return Invisible NULL. The function is called for its side effect of opening a web page.
 open_tidy_finance_website <- function(chapter = NULL) {
   base_url <- "https://www.tidy-finance.org/r/"
@@ -24,6 +24,7 @@ open_tidy_finance_website <- function(chapter = NULL) {
     final_url <- base_url
   }
   browseURL(final_url)
+  invisible(NULL)
 }
 
 #' List Chapters of Tidy Finance
@@ -36,6 +37,7 @@ open_tidy_finance_website <- function(chapter = NULL) {
 #' list_tidy_finance_chapters()
 #'
 #' @export
+#'
 #' @return A character vector where each element is the name of a chapter
 #' available in the Tidy Finance resource. These names correspond to specific
 #' chapter in Tidy Finance with R.
