@@ -15,10 +15,12 @@
 #' data <- rnorm(100)
 #' winsorized_data <- winsorize(data, 0.05)
 #'
+#' @importFrom stats quantile
+#'
 #' @export
 winsorize <- function(x, cut) {
-  lb <- quantile(x, cut, na.rm = TRUE)
-  up <- quantile(x, 1 - cut, na.rm = TRUE)
+  lb <- stats::quantile(x, cut, na.rm = TRUE)
+  up <- stats::quantile(x, 1 - cut, na.rm = TRUE)
   x <- replace(x, x > up, up)
   x <- replace(x, x < lb, lb)
   x

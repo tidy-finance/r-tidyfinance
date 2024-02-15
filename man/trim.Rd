@@ -25,4 +25,5 @@ distribution.
 set.seed(123)
 data <- rnorm(100)
 trimmed_data <- trim(x = data, cut = 0.05)
+
 }

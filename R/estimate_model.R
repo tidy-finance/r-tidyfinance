@@ -22,12 +22,14 @@
 #'   hml = rnorm(100)
 #' )
 #' # Estimate model with a single independent variable
-#' single_var_model <- estimate_model(data, mkt_excess = ~ mkt_excess)
+#' single_var_model <- estimate_model(data, mkt_excess)
 #'
 #' # Estimate model with multiple independent variables
-#' multi_var_model <- estimate_model(data, mkt_excess = ~ mkt_excess, smb = ~ smb, hml = ~ hml)
+#' multi_var_model <- estimate_model(data, mkt_excess, smb, hml)
 #'
 #' @export
+#'
+#' @importFrom stats setNames lm reformulate coefficients
 #'
 #' @seealso \code{\link[stats]{lm}} for details on the underlying linear model fitting used.
 estimate_model <- function(data, ..., min_obs = 1) {
@@ -35,7 +37,7 @@ estimate_model <- function(data, ..., min_obs = 1) {
   independent_vars <- sapply(independent_vars_syms, as.character)
 
   if (nrow(data) < min_obs) {
-    beta <- setNames(as.numeric(rep(NA, length(independent_vars))), independent_vars)
+    beta <- stats::setNames(as.numeric(rep(NA, length(independent_vars))), independent_vars)
     if (length(beta) == 1) {
       return(as.numeric(NA))
     } else {
@@ -48,10 +50,10 @@ estimate_model <- function(data, ..., min_obs = 1) {
            paste(missing_vars, collapse=", "), ".")
     }
 
-    formula <- reformulate(termlabels = independent_vars, response = "ret_excess")
+    formula <- stats::reformulate(termlabels = independent_vars, response = "ret_excess")
 
-    fit <- lm(formula, data = data)
-    beta <- coefficients(fit)[names(coefficients(fit)) %in% independent_vars]
+    fit <- stats::lm(formula, data = data)
+    beta <- stats::coefficients(fit)[names(stats::coefficients(fit)) %in% independent_vars]
 
     if (length(beta) == 1) {
       return(as.numeric(beta))

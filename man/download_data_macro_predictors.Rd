@@ -8,8 +8,7 @@ download_data_macro_predictors(
   type,
   start_date,
   end_date,
-  url =
-    "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP/export?format=xlsx"
+  url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP"
 )
 }
 \arguments{

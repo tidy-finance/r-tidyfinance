@@ -13,6 +13,8 @@
 #' open_tidy_finance_website()
 #' open_tidy_finance_website("beta-estimation")
 #'
+#' @importFrom utils browseURL
+#'
 #' @export
 #'
 #' @return Invisible NULL. The function is called for its side effect of opening a web page.
@@ -23,6 +25,6 @@ open_tidy_finance_website <- function(chapter = NULL) {
   } else {
     final_url <- base_url
   }
-  browseURL(final_url)
+  utils::browseURL(final_url)
   invisible(NULL)
 }

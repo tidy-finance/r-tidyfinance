@@ -121,7 +121,9 @@ list_supported_types <- function() {
 #'
 #' @examples
 #' check_supported_type("factors_ff3_daily")
+#' \dontrun{
 #' check_supported_type("unsupported_type") # This will cause an error.
+#' }
 #'
 #' @export
 check_supported_type <- function(type) {
@@ -148,6 +150,8 @@ check_supported_type <- function(type) {
 #' @examples
 #' download_data("factors_ff3_monthly", "2000-01-01", "2020-12-31")
 #' download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
+#'
+#' @export
 download_data <- function(type, start_date, end_date) {
 
   check_supported_type(type)
@@ -212,14 +216,14 @@ download_data_factors <- function(type, start_date, end_date) {
 #' download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")
 #'
 #' @import dplyr
-#' @importFrom lubridate ymd
+#' @importFrom lubridate ymd floor_date
 #'
 #' @export
 download_data_factors_ff <- function(type, start_date, end_date) {
 
   check_supported_type(type)
 
-  if (!requireNamespace("frenchdata", quietly = TRUE)) {
+  if (!suppressPackageStartupMessages(requireNamespace("frenchdata", quietly = TRUE))) {
     stop(paste0("The package 'frenchdata' is required for type = ", type,
                 ", but not installed. Please install it using install.packages('frenchdata')."))
   }
@@ -232,7 +236,7 @@ download_data_factors_ff <- function(type, start_date, end_date) {
 
   if (grepl("monthly", type)) {
     processed_data <- raw_data |>
-      mutate(date = floor_date(lubridate::ymd(paste0(date, "01")), "month"))
+      mutate(date = lubridate::floor_date(lubridate::ymd(paste0(date, "01")), "month"))
   } else {
     processed_data <- raw_data |>
       mutate(date = lubridate::ymd(date))
@@ -245,7 +249,7 @@ download_data_factors_ff <- function(type, start_date, end_date) {
     rename_with(tolower) |>
     rename(mkt_excess = `mkt-rf`) |>
     filter(date >= start_date & date <= end_date)  |>
-    select(date, risk_free, mkt_excess, everything())
+    select(date, risk_free = rf, mkt_excess, everything())
 
   processed_data
 }
@@ -269,6 +273,7 @@ download_data_factors_ff <- function(type, start_date, end_date) {
 #'
 #' @import dplyr
 #' @importFrom lubridate ymd
+#' @importFrom utils read.csv
 #'
 #' @export
 download_data_factors_q <- function(type, start_date, end_date, url = "http://global-q.org/uploads/1/2/2/6/122679606/") {
@@ -277,7 +282,7 @@ download_data_factors_q <- function(type, start_date, end_date, url = "http://gl
 
   factors_q_types <- list_supported_types_q()
   dataset <- factors_q_types$dataset_name[factors_q_types$type == type]
-  raw_data <- suppressMessages(read.csv(paste0(url, dataset)) |> as_tibble())
+  raw_data <- suppressMessages(utils::read.csv(paste0(url, dataset)) |> as_tibble())
 
   if (grepl("monthly", type)) {
     processed_data <- raw_data |>
@@ -319,17 +324,28 @@ download_data_factors_q <- function(type, start_date, end_date, url = "http://gl
 #' download_data_macro_predictors("macro_predictors_monthly", "2000-01-01", "2020-12-31")
 #'
 #' @import dplyr
-#' @importFrom readxl read_xlsx
+#' @importFrom tidyr drop_na
 #' @importFrom lubridate ym
+#' @importFrom utils download.file
 #'
 #' @export
-download_data_macro_predictors <- function(type, start_date, end_date, url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP/export?format=xlsx") {
+download_data_macro_predictors <- function(type, start_date, end_date, url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP") {
 
   check_supported_type(type)
 
+  if (!suppressPackageStartupMessages(requireNamespace("readxl", quietly = TRUE))) {
+    stop(paste0("The package 'readxl' is required for type = ", type,
+                ", but not installed. Please install it using install.packages('readxl')."))
+  }
+
   temporary_file <- tempfile()
 
-  download.file(url = url, destfile = temporary_file, mode = "wb", quiet = TRUE)
+  utils::download.file(
+    url = paste0(url, "/export?format=xlsx"),
+    destfile = temporary_file,
+    mode = "wb",
+    quiet = TRUE
+  )
 
   if (grepl("monthly", type)) {
     raw_data <- suppressMessages(readxl::read_xlsx(temporary_file, sheet = "Monthly"))
@@ -337,7 +353,7 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
       mutate(date = lubridate::ym(yyyymm))
   }
   if (grepl("quarterly", type)) {
-    raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Quarterly"))
+    raw_data <- suppressMessages(readxl::read_xlsx(temporary_file, sheet = "Quarterly"))
     processed_data <- raw_data |>
       mutate(
         year = substr(yyyyq, 1, 4),
@@ -347,7 +363,7 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
       )
   }
   if (grepl("annual", type)) {
-    raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Annual"))
+    raw_data <- suppressMessages(readxl::read_xlsx(temporary_file, sheet = "Annual"))
     processed_data <- raw_data |>
       mutate(date = as.Date(paste0(yyyy, "-01-01")))
   }
@@ -369,9 +385,19 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
            tms, dfy, infl
     ) |>
     filter(date >= start_date & date <= end_date) |>
-    na.omit()
+    tidyr::drop_na()
 
   file.remove(temporary_file)
 
   processed_data
 }
+
+# Set global variables ------------------------------------------------
+utils::globalVariables(
+  c(
+    "date", "rp_div", "dp", "dy", "ep", "de", "svar", "bm", "b/m", "ntis", "tbl", "lty", "ltr",
+    "tms", "dfy", "infl", "AAA", "BAA", "D12", "DATE", "E12", "Index", "IndexDiv", "Rfree",
+    "mkt-rf", "mkt_excess", "rf", "year", "month", "f", "mkt", "yyyymm", "yyyyq", "quarter",
+    "yyyy", "logret"
+  )
+)

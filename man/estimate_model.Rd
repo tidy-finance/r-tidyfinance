@@ -33,10 +33,10 @@ data <- data.frame(
   hml = rnorm(100)
 )
 # Estimate model with a single independent variable
-single_var_model <- estimate_model(data, mkt_excess = ~ mkt_excess)
+single_var_model <- estimate_model(data, mkt_excess)
 
 # Estimate model with multiple independent variables
-multi_var_model <- estimate_model(data, mkt_excess = ~ mkt_excess, smb = ~ smb, hml = ~ hml)
+multi_var_model <- estimate_model(data, mkt_excess, smb, hml)
 
 }
 \seealso{

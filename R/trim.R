@@ -13,8 +13,10 @@
 #' set.seed(123)
 #' data <- rnorm(100)
 #' trimmed_data <- trim(x = data, cut = 0.05)
-#' @export
 #'
+#' @importFrom stats quantile
+#'
+#' @export
 trim <- function(x, cut) {
   lb <- quantile(x, cut, na.rm = TRUE)
   up <- quantile(x, 1 - cut, na.rm = TRUE)

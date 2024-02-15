@@ -1,28 +1,29 @@
 Package: tidyfinance
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Helper functions for those who work with Tidy Finance
 Version: 0.1.0
 Authors@R: c(
     person("Christoph", "Scheuch", , "christoph.scheuch@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0004-0423-6819"))
     )
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: This repository contains an R package that collects helper functions for developers and researchers familiar with [Tidy Financen with R](https://www.tidy-finance.org/r/). 
+    The functions provide shortcuts to selected issues that are discussed in detail in the book. 
 License: MIT + file LICENSE
 URL: https://www.tidy-finance.org/r, https://github.com/tidy-finance/r-tidyfinance
 BugReports: https://github.com/tidy-finance/r-tidyfinance/issues
+Depends: 
+    R (>= 4.1)
 Imports:
     dplyr,
     tidyr, 
     purrr,
-    lubridate
+    lubridate,
+    tibble
 Sugggests:
     frenchdata,
     readxl,
-    googledrive
+    testthat (>= 3.0.0)
 Encoding: UTF-8
 LazyData: true
-Suggests: 
-    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 RoxygenNote: 7.2.3
