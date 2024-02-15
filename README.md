@@ -20,3 +20,7 @@ pak::pak("tidy-finance/r-tidyfinance")
 ## Usage
 
 ...
+
+## Open Issues
+
+[]d iscuss whether we really need month and date difference?
