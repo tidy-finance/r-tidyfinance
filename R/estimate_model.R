@@ -60,37 +60,3 @@ estimate_model <- function(data, ..., min_obs = 1) {
     }
   }
 }
-
-
-# roll_model_estimation <- function(data, months, min_obs, ...) {
-#   data <- data |>
-#     arrange(month)
-#
-#   independent_vars <- rlang::ensyms(...)
-#
-#   if (!all(independent_vars %in% names(data))) {
-#     missing_vars <- independent_vars[!independent_vars %in% names(data)]
-#     stop("The following independent variables are missing in the data: ",
-#          paste(missing_vars, collapse=", "), ".")
-#   }
-#
-#   estimate_wrapper <- function(df) {
-#     independent_vars_str <- sapply(independent_vars, rlang::as_string)
-#     do.call(estimate_model, args = c(list(data = df, min_obs = min_obs), independent_vars_str))
-#   }
-#
-#   betas <- slider::slide_period_dfr(
-#     .x = data,
-#     .i = data$month,
-#     .period = "month",
-#     .f = ~ estimate_wrapper(.x),
-#     .before = months - 1,
-#     .complete = FALSE
-#   )
-#
-#   return(tibble(
-#     month = unique(data$month),
-#     beta = betas
-#   ))
-# }
-

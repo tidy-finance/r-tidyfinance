@@ -225,7 +225,7 @@ clean_enhanced_trace <- function(cusips,
     union_all(trace_agency_buys_filtered)
 
 
-  # Additional Filters ------------------------------------------------------
+  # Additional Filters
   trace_add_filters <- trace_clean |>
     mutate(days_to_sttl_ct2 = stlmnt_dt - trd_exctn_dt) |>
     filter(
@@ -236,8 +236,6 @@ clean_enhanced_trace <- function(cusips,
       is.na(asof_cd) | asof_cd == ""
     )
 
-
-  # Output ------------------------------------------------------------------
   # Only keep necessary columns
   trace_final <- trace_add_filters |>
     arrange(cusip_id, trd_exctn_dt, trd_exctn_tm) |>
