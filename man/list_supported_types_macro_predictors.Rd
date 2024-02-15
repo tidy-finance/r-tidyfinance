@@ -17,7 +17,3 @@ provided by Welch-Goyal, including their frequencies (monthly, quarterly, annual
 All dataset types reference the same source file "PredictorData2022.xlsx" for the year 2022.
 Additionally, it annotates each dataset with the domain "Welch-Goyal".
 }
-\examples{
-list_supported_types_macro_predictors()
-
-}

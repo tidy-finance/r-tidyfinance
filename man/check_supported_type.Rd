@@ -19,10 +19,3 @@ a list of all supported dataset types from different domains.
 If the specified type is not supported, it stops execution and returns an error message
 listing all supported types.
 }
-\examples{
-check_supported_type("factors_ff3_daily")
-\dontrun{
-check_supported_type("unsupported_type") # This will cause an error.
-}
-
-}

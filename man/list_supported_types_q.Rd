@@ -16,7 +16,3 @@ including their names and frequencies (daily, weekly, weekly week-to-week, month
 Each dataset type is associated with the Global Q model, specifically the q5 factors model for the year 2022.
 Additionally, it annotates each dataset with the domain "Global Q".
 }
-\examples{
-list_supported_types_q()
-
-}

@@ -9,12 +9,8 @@
 #' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
 #' (a descriptive name of the dataset), and `domain` (the domain to which the dataset belongs, always "Fama-French").
 #'
-#' @examples
-#' list_supported_types_ff()
-#'
 #' @importFrom tibble tribble
 #'
-#' @export
 list_supported_types_ff <- function() {
   tribble(
     ~type, ~dataset_name,
@@ -37,12 +33,8 @@ list_supported_types_ff <- function() {
 #' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
 #' (the file name of the dataset), and `domain` (the domain to which the dataset belongs, always "Global Q").
 #'
-#' @examples
-#' list_supported_types_q()
-#'
 #' @importFrom tibble tribble
 #'
-#' @export
 list_supported_types_q <- function() {
   tribble(
     ~type, ~dataset_name,
@@ -67,12 +59,8 @@ list_supported_types_q <- function() {
 #' (the file name of the dataset, which is the same for all types), and `domain`
 #' (the domain to which the dataset belongs, always "Welch-Goyal").
 #'
-#' @examples
-#' list_supported_types_macro_predictors()
-#'
 #' @importFrom tibble tribble
 #'
-#' @export
 list_supported_types_macro_predictors <- function() {
   tribble(
     ~type, ~dataset_name,
@@ -119,13 +107,6 @@ list_supported_types <- function() {
 #' @return Does not return a value; instead, it either passes silently if the type is supported
 #' or stops execution with an error message if the type is unsupported.
 #'
-#' @examples
-#' check_supported_type("factors_ff3_daily")
-#' \dontrun{
-#' check_supported_type("unsupported_type") # This will cause an error.
-#' }
-#'
-#' @export
 check_supported_type <- function(type) {
   supported_types <- list_supported_types()
   if (!any(type %in% supported_types$type)) {
@@ -223,10 +204,7 @@ download_data_factors_ff <- function(type, start_date, end_date) {
 
   check_supported_type(type)
 
-  if (!suppressPackageStartupMessages(requireNamespace("frenchdata", quietly = TRUE))) {
-    stop(paste0("The package 'frenchdata' is required for type = ", type,
-                ", but not installed. Please install it using install.packages('frenchdata')."))
-  }
+  check_if_package_installed("frenchdata", type)
 
   factors_ff_types <- list_supported_types_ff()
   dataset <- factors_ff_types$dataset_name[factors_ff_types$type == type]
@@ -333,10 +311,7 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
 
   check_supported_type(type)
 
-  if (!suppressPackageStartupMessages(requireNamespace("readxl", quietly = TRUE))) {
-    stop(paste0("The package 'readxl' is required for type = ", type,
-                ", but not installed. Please install it using install.packages('readxl')."))
-  }
+  check_if_package_installed("readxl", type)
 
   temporary_file <- tempfile()
 
