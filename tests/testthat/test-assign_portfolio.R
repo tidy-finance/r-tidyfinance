@@ -1,4 +1,3 @@
-# Test assign_portfolio() function ------------------------------------
 data <- data.frame(
   id = 1:100,
   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),

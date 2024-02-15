@@ -1,4 +1,3 @@
-# Tests for estimate_model() ------------------------------------------
 # Sample dataset
 data <- data.frame(
   ret_excess = rnorm(100),
@@ -44,32 +43,3 @@ test_that("Exactly minimum required observations", {
 test_that("No independent variables specified", {
   expect_error(estimate_model(data, min_obs = 1))
 })
-
-# Tests for roll_model_estimation() -----------------------------------
-# test_that("Function returns error for missing independent variables", {
-#   data <- tibble(month = 1:5, ret_excess = rnorm(5), mkt_excess = rnorm(5))
-#   expect_error(roll_model_estimation(data, months = 3, min_obs = 1, smb, hml), "missing in the data")
-# })
-#
-# test_that("Function handles correct input without error", {
-#   data <- tibble(month = as.Date(1:5), ret_excess = rnorm(5), mkt_excess = rnorm(5))
-#   expect_silent(roll_model_estimation(data, months = 3, min_obs = 1, mkt_excess))
-# })
-#
-# test_that("Function returns a tibble with correct structure", {
-#   data <- tibble(month = 1:5, ret_excess = rnorm(5), mkt_excess = rnorm(5))
-#   result <- roll_model_estimation(data, months = 3, min_obs = 1, mkt_excess)
-#   expect_true(is.tibble(result))
-#   expect_true(all(c("month", "beta") %in% names(result)))
-# })
-#
-# test_that("Function correctly calculates with specified months and min_obs", {
-#   # Create a dataset with known beta values
-#   data <- tibble(month = 1:12, ret_excess = 1:12, mkt_excess = rep(1, 12))
-#   # Assuming a simplistic model where ret_excess = mkt_excess, beta should be 1
-#   result <- roll_model_estimation(data, months = 6, min_obs = 1, mkt_excess)
-#   # Check if the beta calculation is as expected
-#   expect_true(all(result$beta == 1, na.rm = TRUE))
-# })
-
-
