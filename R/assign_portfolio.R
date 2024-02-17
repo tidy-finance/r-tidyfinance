@@ -1,5 +1,8 @@
 #' Assign Portfolios Based on Sorting Variable
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' This function assigns data points to portfolios based on a specified sorting
 #' variable. It can optionally filter the data by exchanges before assignment.
 #' The function requires either the number of portfolios to be created or

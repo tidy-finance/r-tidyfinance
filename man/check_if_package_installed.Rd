@@ -12,10 +12,10 @@ check_if_package_installed(package, type)
 \item{type}{The type for which the package needs to be available.}
 }
 \value{
-Invisible `TRUE` if the package is installed, otherwise stops
-        execution with an error message advising the installation of the package.
-        Since the function is designed to stop if the package is not found,
-        it does not explicitly return a value upon successful completion.
+Invisible \code{TRUE} if the package is installed, otherwise stops
+execution with an error message advising the installation of the package.
+Since the function is designed to stop if the package is not found,
+it does not explicitly return a value upon successful completion.
 }
 \description{
 Checks if a specified package is installed and available for use. If the package

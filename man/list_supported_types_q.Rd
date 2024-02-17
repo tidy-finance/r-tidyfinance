@@ -7,8 +7,8 @@
 list_supported_types_q()
 }
 \value{
-A tibble with columns: `type` (the type of dataset), `dataset_name`
-(the file name of the dataset), and `domain` (the domain to which the dataset belongs, always "Global Q").
+A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
+(the file name of the dataset), and \code{domain} (the domain to which the dataset belongs, always "Global Q").
 }
 \description{
 This function returns a tibble with the supported Global Q dataset types,

@@ -1,5 +1,8 @@
 #' Estimate Model Coefficients
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' This function estimates the coefficients of a linear model specified by one or more independent variables.
 #' It checks for the presence of the specified independent variables in the dataset and whether the dataset has
 #' a sufficient number of observations. It returns the model's coefficients as either a numeric value (for a single

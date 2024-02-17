@@ -11,7 +11,7 @@ disconnection_connection(con)
 establishes a connection to a database.}
 }
 \value{
-A logical value: `TRUE` if disconnection was successful, `FALSE` otherwise.
+A logical value: \code{TRUE} if disconnection was successful, \code{FALSE} otherwise.
 }
 \description{
 This function safely disconnects an established database connection using the DBI package.

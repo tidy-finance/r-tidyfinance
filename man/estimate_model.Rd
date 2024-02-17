@@ -9,17 +9,19 @@ estimate_model(data, ..., min_obs = 1)
 \arguments{
 \item{data}{A data frame containing the dependent variable and one or more independent variables.}
 
-\item{...}{Named arguments where each name is an independent variable in `data` and each value should be
+\item{...}{Named arguments where each name is an independent variable in \code{data} and each value should be
 a formula specifying the variable (e.g., x = ~ x). This allows for flexible specification of the model.}
 
 \item{min_obs}{The minimum number of observations required to estimate the model. Defaults to 1.}
 }
 \value{
 If a single independent variable is specified, a numeric value representing the coefficient of that
-        variable. If multiple independent variables are specified, a data frame with a row for each coefficient
-        and column names corresponding to the independent variables.
+variable. If multiple independent variables are specified, a data frame with a row for each coefficient
+and column names corresponding to the independent variables.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 This function estimates the coefficients of a linear model specified by one or more independent variables.
 It checks for the presence of the specified independent variables in the dataset and whether the dataset has
 a sufficient number of observations. It returns the model's coefficients as either a numeric value (for a single

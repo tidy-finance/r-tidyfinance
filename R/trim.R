@@ -7,7 +7,7 @@
 #'
 #' @param x A numeric vector to be trimmed.
 #' @param cut The proportion of data to be trimmed from both ends of the distribution.
-#'   For example, a `cut` of 0.05 will remove the lowest and highest 5\% of the data.
+#'   For example, a `cut` of 0.05 will remove the lowest and highest 5% of the data.
 #' @return A numeric vector with the extreme values removed.
 #' @examples
 #' set.seed(123)

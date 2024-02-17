@@ -7,8 +7,8 @@
 list_supported_types_ff()
 }
 \value{
-A tibble with columns: `type` (the type of dataset), `dataset_name`
-(a descriptive name of the dataset), and `domain` (the domain to which the dataset belongs, always "Fama-French").
+A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
+(a descriptive name of the dataset), and \code{domain} (the domain to which the dataset belongs, always "Fama-French").
 }
 \description{
 This function returns a tibble with the supported Fama-French dataset types,

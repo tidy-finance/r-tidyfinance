@@ -7,20 +7,20 @@
 get_wrds_connection()
 }
 \value{
-An object of class `DBIConnection` representing the connection to the WRDS database.
-        This object can be used with other DBI-compliant functions to interact with the database.
+An object of class \code{DBIConnection} representing the connection to the WRDS database.
+This object can be used with other DBI-compliant functions to interact with the database.
 }
 \description{
 This function establishes a connection to the Wharton Research Data Services (WRDS)
-database using the `RPostgres` package. It requires that the `RPostgres` package
+database using the \code{RPostgres} package. It requires that the \code{RPostgres} package
 is installed and that valid WRDS credentials are set as environment variables.
 }
 \details{
-The function checks if the `RPostgres` package is installed before attempting
-         to establish a connection. It uses the host, dbname, port, and sslmode as
-         fixed parameters for the connection. Users must set their WRDS username and
-         password as environment variables `WRDS_USER` and `WRDS_PASSWORD`, respectively,
-         before using this function.
+The function checks if the \code{RPostgres} package is installed before attempting
+to establish a connection. It uses the host, dbname, port, and sslmode as
+fixed parameters for the connection. Users must set their WRDS username and
+password as environment variables \code{WRDS_USER} and \code{WRDS_PASSWORD}, respectively,
+before using this function.
 }
 \examples{
 \dontrun{
@@ -36,5 +36,5 @@ The function checks if the `RPostgres` package is installed before attempting
 }
 \seealso{
 \code{\link[RPostgres]{Postgres}}, \code{\link[DBI]{dbDisconnect}} for more
-         information on managing database connections.
+information on managing database connections.
 }

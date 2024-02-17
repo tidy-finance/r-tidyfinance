@@ -7,8 +7,8 @@
 list_supported_types_macro_predictors()
 }
 \value{
-A tibble with columns: `type` (the type of dataset), `dataset_name`
-(the file name of the dataset, which is the same for all types), and `domain`
+A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
+(the file name of the dataset, which is the same for all types), and \code{domain}
 (the domain to which the dataset belongs, always "Welch-Goyal").
 }
 \description{

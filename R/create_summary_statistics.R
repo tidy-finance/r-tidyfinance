@@ -13,7 +13,7 @@
 #' @param detail Logical flag indicating whether to compute detailed summary statistics
 #'               including additional quantiles. Defaults to FALSE, which computes basic
 #'               statistics (n, mean, sd, min, median, max). When TRUE, additional quantiles
-#'               (1\%, 5\%, 10\%, 25\%, 75\%, 90\%, 95\%, 99\%) are also computed.
+#'               (1%, 5%, 10%, 25%, 75%, 90%, 95%, 99%) are also computed.
 #'
 #' @details
 #' The function first checks that all specified variables are of type numeric, integer,

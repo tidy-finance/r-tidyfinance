@@ -19,7 +19,7 @@ download_data_wrds_crsp(type, start_date, end_date, ..., batch_size = 500)
 }
 \value{
 A data frame containing CRSP stock returns, adjusted for delistings, along with calculated market capitalization
-  and excess returns over the risk-free rate. The structure of the returned data frame depends on the selected data type.
+and excess returns over the risk-free rate. The structure of the returned data frame depends on the selected data type.
 }
 \description{
 This function downloads and processes stock return data from the CRSP database for a specified period.

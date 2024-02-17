@@ -21,14 +21,14 @@ statistics (n, mean, sd, min, median, max). When TRUE, additional quantiles
 (1\%, 5\%, 10\%, 25\%, 75\%, 90\%, 95\%, 99\%) are also computed.}
 }
 \value{
-A tibble with summary statistics for each selected variable. If `by` is specified,
-        the output includes the grouping variable as well. Each row represents a variable
-        (and a group if `by` is used), and columns include the computed statistics.
+A tibble with summary statistics for each selected variable. If \code{by} is specified,
+the output includes the grouping variable as well. Each row represents a variable
+(and a group if \code{by} is used), and columns include the computed statistics.
 }
 \description{
 Computes a set of summary statistics for numeric and integer variables in a data frame.
 This function allows users to select specific variables for summarization and can
-calculate statistics for the whole dataset or within groups specified by the `by` argument.
+calculate statistics for the whole dataset or within groups specified by the \code{by} argument.
 Additional detail levels for quantiles can be included.
 }
 \details{
@@ -37,9 +37,9 @@ or logical. If any variables do not meet this criterion, the function stops and 
 an error message indicating the non-conforming variables.
 
 The basic set of summary statistics includes the count of non-NA values (n), mean, standard
-deviation (sd), minimum (min), median (q50), and maximum (max). If `detail` is TRUE, the function
+deviation (sd), minimum (min), median (q50), and maximum (max). If \code{detail} is TRUE, the function
 also computes the 1st, 5th, 10th, 25th, 75th, 90th, 95th, and 99th percentiles.
 
-Summary statistics are computed for each variable specified in `...`. If a `by` variable
-is provided, statistics are computed within each level of the `by` variable.
+Summary statistics are computed for each variable specified in \code{...}. If a \code{by} variable
+is provided, statistics are computed within each level of the \code{by} variable.
 }

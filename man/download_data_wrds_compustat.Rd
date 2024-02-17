@@ -17,7 +17,7 @@ download_data_wrds_compustat(type, start_date, end_date, ...)
 }
 \value{
 A data frame with financial data for the specified period, including variables
-  for book equity (be), operating profitability (op), investment (inv), and others.
+for book equity (be), operating profitability (op), investment (inv), and others.
 }
 \description{
 This function downloads financial data from the WRDS Compustat database for a given

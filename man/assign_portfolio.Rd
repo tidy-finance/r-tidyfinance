@@ -15,33 +15,35 @@ assign_portfolio(
 \arguments{
 \item{data}{A data frame containing the dataset for portfolio assignment.}
 
-\item{sorting_variable}{A string specifying the column name in `data` to be used
+\item{sorting_variable}{A string specifying the column name in \code{data} to be used
 for sorting and determining portfolio assignments.}
 
 \item{n_portfolios}{An optional integer specifying the number of equally sized
-portfolios to create. This parameter is mutually exclusive with `percentiles`.}
+portfolios to create. This parameter is mutually exclusive with \code{percentiles}.}
 
 \item{percentiles}{An optional numeric vector specifying the percentiles
 for determining the breakpoints of the portfolios. This parameter is
-mutually exclusive with `n_portfolios`.}
+mutually exclusive with \code{n_portfolios}.}
 
 \item{exchanges}{An optional character vector specifying exchange names to filter
-the data before computing breakpoints and assigning portfolios. If `NULL`,
+the data before computing breakpoints and assigning portfolios. If \code{NULL},
 no filtering is applied.}
 }
 \value{
-A vector of portfolio assignments for each row in the input `data`.
+A vector of portfolio assignments for each row in the input \code{data}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 This function assigns data points to portfolios based on a specified sorting
 variable. It can optionally filter the data by exchanges before assignment.
 The function requires either the number of portfolios to be created or
 specific percentiles for the breakpoints, but not both.
 }
 \note{
-This function will stop and throw an error if both `n_portfolios` and
-      `percentiles` are provided or if neither is provided. Ensure to use
-      only one of these parameters for specifying portfolio breakpoints.
+This function will stop and throw an error if both \code{n_portfolios} and
+\code{percentiles} are provided or if neither is provided. Ensure to use
+only one of these parameters for specifying portfolio breakpoints.
 }
 \examples{
 data <- data.frame(

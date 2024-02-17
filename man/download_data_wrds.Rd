@@ -19,7 +19,7 @@ is requested.}
 }
 \value{
 A data frame containing the requested data, with the structure and contents depending on
-  the specified `type`.
+the specified \code{type}.
 }
 \description{
 This function acts as a wrapper to download data from various WRDS datasets including CRSP,
