@@ -447,7 +447,7 @@ download_data_wrds <- function(type, start_date, end_date) {
 #'   and excess returns over the risk-free rate. The structure of the returned data frame depends on the selected data type.
 #'
 #' @examples
-#' crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-01-01", "2020-12-31")
+#' crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-12-01", "2020-12-31")
 #' \dontrun{
 #' crsp_daily <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
 #' }

@@ -1,15 +1,15 @@
 Package: tidyfinance
 Type: Package
-Title: Helper functions for developers and researchers familiar with Tidy Finance
+Title: Helper Functions for Developers and Researchers Familiar with Tidy Finance
 Version: 0.1.0
 Authors@R: c(
     person("Christoph", "Scheuch", , "christoph.scheuch@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0004-0423-6819"))
     )
-Description: This repository contains an R package that collects helper functions for developers and researchers familiar with [Tidy Financen with R](https://www.tidy-finance.org/r/). 
+Description: This repository contains an R package that collects helper functions for developers and researchers familiar with  Tidy Financen with R (<https://www.tidy-finance.org/r/>). 
     The functions provide shortcuts to selected issues that the book disccuses in detail. 
 License: MIT + file LICENSE
-URL: https://www.tidy-finance.org/r, https://github.com/tidy-finance/r-tidyfinance
+URL: https://www.tidy-finance.org/r/, https://github.com/tidy-finance/r-tidyfinance
 BugReports: https://github.com/tidy-finance/r-tidyfinance/issues
 Depends: 
     R (>= 4.1)
