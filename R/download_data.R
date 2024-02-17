@@ -445,7 +445,9 @@ download_data_wrds <- function(type, start_date, end_date) {
 #' crsp_daily_data <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
 #'
 #' @import dplyr
+#' @import dbplyr
 #' @import lubridate
+#'
 #' @export
 download_data_wrds_crsp <- function(type, start_date, end_date, ..., batch_size = 500) {
 
@@ -455,9 +457,9 @@ download_data_wrds_crsp <- function(type, start_date, end_date, ..., batch_size 
 
   if (grepl("crsp_monthly", type)) {
 
-    msf_db <- tbl(con, in_schema("crsp", "msf"))
-    msenames_db <- tbl(con, in_schema("crsp", "msenames"))
-    msedelist_db <- tbl(con, in_schema("crsp", "msedelist"))
+    msf_db <- tbl(con, dbplyr::in_schema("crsp", "msf"))
+    msenames_db <- tbl(con, dbplyr::in_schema("crsp", "msenames"))
+    msedelist_db <- tbl(con, dbplyr::in_schema("crsp", "msedelist"))
 
     crsp_monthly <- msf_db |>
       filter(date >= start_date & date <= end_date) |>
@@ -556,10 +558,10 @@ download_data_wrds_crsp <- function(type, start_date, end_date, ..., batch_size 
   }
 
   if (grepl("crsp_daily", type)) {
-    dsf_db <- tbl(con, in_schema("crsp", "dsf")) |>
+    dsf_db <- tbl(con, dbplyr::in_schema("crsp", "dsf")) |>
       filter(date >= start_date & date <= end_date)
-    msenames_db <- tbl(con, in_schema("crsp", "msenames"))
-    msedelist_db <- tbl(con, in_schema("crsp", "msedelist"))
+    msenames_db <- tbl(con, dbplyr::in_schema("crsp", "msenames"))
+    msedelist_db <- tbl(con, dbplyr::in_schema("crsp", "msedelist"))
 
     permnos <- dsf_db |>
       distinct(permno) |>
@@ -602,7 +604,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, ..., batch_size 
           select(-c(dlret, dlstdt)) |>
           left_join(msedelist_sub |>
                       select(permno, dlstdt), join_by(permno)) |>
-          mutate(dlstdt = replace_na(dlstdt, end_date)) |>
+          mutate(dlstdt = replace_na(dlstdt, as.Date(end_date))) |>
           filter(date <= dlstdt) |>
           select(-dlstdt)
 
@@ -642,6 +644,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, ..., batch_size 
 #' compustat_data <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
 #'
 #' @import dplyr
+#' @import dbplyr
 #' @importFrom lubridate year
 #'
 #' @export
@@ -652,7 +655,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
   check_if_package_installed("dbplyr")
 
   if (grepl("compustat_annual", type)) {
-    funda_db <- tbl(con, in_schema("comp", "funda"))
+    funda_db <- tbl(con, dbplyr::in_schema("comp", "funda"))
 
     compustat <- funda_db |>
       filter(
@@ -723,6 +726,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
 #' ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)
 #'
 #' @import dplyr
+#' @import dbplyr
 #' @importFrom lubridate today
 #'
 #' @export
@@ -734,12 +738,12 @@ download_data_wrds_ccm_links <- function(
 
   check_if_package_installed("dbplyr")
 
-  ccmxpf_linktable_db <- tbl(con, in_schema("crsp", "ccmxpf_linktable"))
+  ccmxpf_linktable_db <- tbl(con, dbplyr::in_schema("crsp", "ccmxpf_linktable"))
 
   ccm_links <- ccmxpf_linktable_db |>
-    filter(linktype %in% linktype &
-             linkprim %in% linkprim &
-             usedflag == usedflag) |>
+    filter(linktype %in% local(linktype) &
+             linkprim %in% local(linkprim) &
+             usedflag == local(usedflag)) |>
     select(permno = lpermno, gvkey, linkdt, linkenddt) |>
     collect() |>
     mutate(linkenddt = replace_na(linkenddt, lubridate::today()))
@@ -757,5 +761,17 @@ utils::globalVariables(
     "tms", "dfy", "infl", "AAA", "BAA", "D12", "DATE", "E12", "Index", "IndexDiv", "Rfree",
     "mkt-rf", "mkt_excess", "rf", "year", "month", "f", "mkt", "yyyymm", "yyyyq", "quarter",
     "yyyy", "logret"
+  )
+)
+
+utils::globalVariables(
+  c(
+    "altprc", "at", "at_lag", "be", "capx", "ceq", "cogs", "consol",
+    "datadate", "datafmt", "dlret",
+    "dlstcd", "dlstdt", "exchcd", "gvkey", "indfmt", "inv", "itcb", "linkdt", "linkenddt",
+    "lpermno", "lt", "mktcap", "namedt", "nameendt", "oancf", "permno", "pstk", "pstkl", "pstkrv", "ret",
+    "ret_adj", "ret_excess", "risk_free", "sale", "shrcd", "shrout", "siccd", "txdb", "txditc", "xint",
+    "xsga",
+    "ret_excess"
   )
 )
