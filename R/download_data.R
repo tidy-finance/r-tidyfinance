@@ -455,7 +455,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, ..., batch_size 
 
   con <- get_wrds_connection()
 
-  check_if_package_installed("dbplyr")
+  check_if_package_installed("dbplyr", type)
 
   if (grepl("crsp_monthly", type)) {
 
@@ -654,7 +654,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
 
   con <- get_wrds_connection()
 
-  check_if_package_installed("dbplyr")
+  check_if_package_installed("dbplyr", type)
 
   if (grepl("compustat_annual", type)) {
     funda_db <- tbl(con, dbplyr::in_schema("comp", "funda"))
@@ -738,7 +738,7 @@ download_data_wrds_ccm_links <- function(
 
   con <- get_wrds_connection()
 
-  check_if_package_installed("dbplyr")
+  check_if_package_installed("dbplyr", "wrds_ccm_links")
 
   ccmxpf_linktable_db <- tbl(con, dbplyr::in_schema("crsp", "ccmxpf_linktable"))
 

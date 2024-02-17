@@ -12,10 +12,12 @@
 #'         Since the function is designed to stop if the package is not found,
 #'         it does not explicitly return a value upon successful completion.
 #'
+#' @importFrom rlang check_installed
+#'
 check_if_package_installed <- function(package, type) {
-  if (!suppressPackageStartupMessages(requireNamespace(package, quietly = TRUE))) {
-    stop(paste0("The package '", package, "' is required for type = ", type,
-                ", but not installed. Please install it using install.packages(',", package, "')."))
-  }
+  rlang::check_installed(
+    package,
+    reason = paste0("to download type '", type, "'")
+  )
 }
 

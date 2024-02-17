@@ -15,6 +15,7 @@ Depends:
     R (>= 4.1)
 Imports:
     dplyr,
+    rlang,
     tidyr, 
     purrr,
     lubridate,
