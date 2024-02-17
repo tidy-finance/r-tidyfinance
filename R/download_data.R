@@ -270,7 +270,9 @@ download_data_factors_ff <- function(type, start_date, end_date) {
 #' @importFrom utils read.csv
 #'
 #' @export
-download_data_factors_q <- function(type, start_date, end_date, url = "http://global-q.org/uploads/1/2/2/6/122679606/") {
+download_data_factors_q <- function(
+    type, start_date, end_date, url = "http://global-q.org/uploads/1/2/2/6/122679606/"
+  ) {
 
   check_supported_type(type)
 
@@ -641,7 +643,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, ..., batch_size 
 #'
 #' @examples
 #'
-#' compustat_data <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
+#' compustat <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
 #'
 #' @import dplyr
 #' @import dbplyr
