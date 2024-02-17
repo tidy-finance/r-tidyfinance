@@ -19,13 +19,13 @@ Imports:
     tidyr, 
     purrr,
     lubridate,
-    tibble,
-    dbplyr,
-    DBI
-Sugggests:
+    tibble
+Suggests:
     frenchdata,
     readxl,
     RPostgres,
+    dbplyr,
+    DBI,
     testthat (>= 3.0.0)
 Encoding: UTF-8
 LazyData: true

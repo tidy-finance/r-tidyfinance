@@ -35,5 +35,5 @@ test_that("Summary statistics by group are computed correctly", {
 # Proper handling of missing (`NA`) values
 test_that("Missing values do not skew summary statistics", {
   result <- create_summary_statistics(test_data, A)
-  expect_equal(result$n[1], 4) # One missing value in A
+  expect_equal(result$n[1], 4)
 })

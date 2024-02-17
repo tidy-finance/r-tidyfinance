@@ -30,7 +30,7 @@ The function checks if the `RPostgres` package is installed before attempting
   con <- get_wrds_connections()
   # Use `con` with DBI-compliant functions to interact with the WRDS database
   # Remember to disconnect after use:
-  # DBI::dbDisconnect(con)
+  # disconnect_connection(con)
 }
 
 }

@@ -222,10 +222,12 @@ download_data_factors_ff <- function(type, start_date, end_date) {
 
   check_if_package_installed("frenchdata", type)
 
+  download_french_data <- getNamespace("frenchdata")$download_french_data
+
   factors_ff_types <- list_supported_types_ff()
   dataset <- factors_ff_types$dataset_name[factors_ff_types$type == type]
 
-  raw_data <- suppressMessages(frenchdata::download_french_data(dataset))
+  raw_data <- download_french_data(dataset)
   raw_data <- raw_data$subsets$data[[1]]
 
   if (grepl("monthly", type)) {
@@ -331,6 +333,8 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
 
   check_if_package_installed("readxl", type)
 
+  read_xlsx <- getNamespace("readxl")$read_xlsx
+
   temporary_file <- tempfile()
 
   utils::download.file(
@@ -341,12 +345,12 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
   )
 
   if (grepl("monthly", type)) {
-    raw_data <- suppressMessages(readxl::read_xlsx(temporary_file, sheet = "Monthly"))
+    raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Monthly"))
     processed_data <- raw_data |>
       mutate(date = lubridate::ym(yyyymm))
   }
   if (grepl("quarterly", type)) {
-    raw_data <- suppressMessages(readxl::read_xlsx(temporary_file, sheet = "Quarterly"))
+    raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Quarterly"))
     processed_data <- raw_data |>
       mutate(
         year = substr(yyyyq, 1, 4),
@@ -356,7 +360,7 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
       )
   }
   if (grepl("annual", type)) {
-    raw_data <- suppressMessages(readxl::read_xlsx(temporary_file, sheet = "Annual"))
+    raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Annual"))
     processed_data <- raw_data |>
       mutate(date = as.Date(paste0(yyyy, "-01-01")))
   }
@@ -443,11 +447,12 @@ download_data_wrds <- function(type, start_date, end_date) {
 #'   and excess returns over the risk-free rate. The structure of the returned data frame depends on the selected data type.
 #'
 #' @examples
-#' crsp_monthly_data <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-01-01", "2020-12-31")
-#' crsp_daily_data <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
+#' crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-01-01", "2020-12-31")
+#' \dontrun{
+#' crsp_daily <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
+#' }
 #'
 #' @import dplyr
-#' @import dbplyr
 #' @import lubridate
 #'
 #' @export
@@ -457,11 +462,13 @@ download_data_wrds_crsp <- function(type, start_date, end_date, ..., batch_size 
 
   check_if_package_installed("dbplyr", type)
 
+  in_schema <- getNamespace("dbplyr")$in_schema
+
   if (grepl("crsp_monthly", type)) {
 
-    msf_db <- tbl(con, dbplyr::in_schema("crsp", "msf"))
-    msenames_db <- tbl(con, dbplyr::in_schema("crsp", "msenames"))
-    msedelist_db <- tbl(con, dbplyr::in_schema("crsp", "msedelist"))
+    msf_db <- tbl(con, in_schema("crsp", "msf"))
+    msenames_db <- tbl(con, in_schema("crsp", "msenames"))
+    msedelist_db <- tbl(con, in_schema("crsp", "msedelist"))
 
     crsp_monthly <- msf_db |>
       filter(date >= start_date & date <= end_date) |>
@@ -560,10 +567,10 @@ download_data_wrds_crsp <- function(type, start_date, end_date, ..., batch_size 
   }
 
   if (grepl("crsp_daily", type)) {
-    dsf_db <- tbl(con, dbplyr::in_schema("crsp", "dsf")) |>
+    dsf_db <- tbl(con, in_schema("crsp", "dsf")) |>
       filter(date >= start_date & date <= end_date)
-    msenames_db <- tbl(con, dbplyr::in_schema("crsp", "msenames"))
-    msedelist_db <- tbl(con, dbplyr::in_schema("crsp", "msedelist"))
+    msenames_db <- tbl(con, in_schema("crsp", "msenames"))
+    msedelist_db <- tbl(con, in_schema("crsp", "msedelist"))
 
     permnos <- dsf_db |>
       distinct(permno) |>
@@ -646,7 +653,6 @@ download_data_wrds_crsp <- function(type, start_date, end_date, ..., batch_size 
 #' compustat <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
 #'
 #' @import dplyr
-#' @import dbplyr
 #' @importFrom lubridate year
 #'
 #' @export
@@ -656,8 +662,10 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
 
   check_if_package_installed("dbplyr", type)
 
+  in_schema <- getNamespace("dbplyr")$in_schema
+
   if (grepl("compustat_annual", type)) {
-    funda_db <- tbl(con, dbplyr::in_schema("comp", "funda"))
+    funda_db <- tbl(con, in_schema("comp", "funda"))
 
     compustat <- funda_db |>
       filter(
@@ -728,7 +736,6 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
 #' ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)
 #'
 #' @import dplyr
-#' @import dbplyr
 #' @importFrom lubridate today
 #'
 #' @export
@@ -740,7 +747,9 @@ download_data_wrds_ccm_links <- function(
 
   check_if_package_installed("dbplyr", "wrds_ccm_links")
 
-  ccmxpf_linktable_db <- tbl(con, dbplyr::in_schema("crsp", "ccmxpf_linktable"))
+  in_schema <- getNamespace("dbplyr")$in_schema
+
+  ccmxpf_linktable_db <- tbl(con, in_schema("crsp", "ccmxpf_linktable"))
 
   ccm_links <- ccmxpf_linktable_db |>
     filter(linktype %in% local(linktype) &

@@ -21,7 +21,7 @@
 #'   con <- get_wrds_connections()
 #'   # Use `con` with DBI-compliant functions to interact with the WRDS database
 #'   # Remember to disconnect after use:
-#'   # DBI::dbDisconnect(con)
+#'   # disconnect_connection(con)
 #' }
 #'
 #' @export
@@ -30,10 +30,13 @@
 #'          information on managing database connections.
 get_wrds_connection <- function() {
 
-  check_if_package_installed("RPostgres", "wrds_connection")
+  check_if_package_installed("RPostgres", "wrds_*")
 
-  DBI::dbConnect(
-    RPostgres::Postgres(),
+  dbConnect <- getNamespace("DBI")$dbConnect
+  Postgres <- getNamespace("RPostgres")$Postgres
+
+  dbConnect(
+    Postgres(),
     host = "wrds-pgdata.wharton.upenn.edu",
     dbname = "wrds",
     port = 9737,
@@ -51,16 +54,12 @@ get_wrds_connection <- function() {
 #'   establishes a connection to a database.
 #' @return A logical value: `TRUE` if disconnection was successful, `FALSE` otherwise.
 #'
-#' @examples
-#' \dontrun{
-#'   con <- DBI::dbConnect(RSQLite::SQLite(), dbname = ":memory:")
-#'   # Perform database operations
-#'   disconnection_connection(con)
-#' }
-#'
-#' @importFrom DBI dbDisconnect
-#'
 #' @export
 disconnection_connection <- function(con) {
-  DBI::dbDisconnect(con)
+
+  check_if_package_installed("DBI", "wrds_*")
+
+  dbDisconnect <- getNamespace("DBI")$dbDisconnect
+
+  dbDisconnect(con)
 }

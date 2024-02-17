@@ -16,11 +16,3 @@ A logical value: `TRUE` if disconnection was successful, `FALSE` otherwise.
 \description{
 This function safely disconnects an established database connection using the DBI package.
 }
-\examples{
-\dontrun{
-  con <- DBI::dbConnect(RSQLite::SQLite(), dbname = ":memory:")
-  # Perform database operations
-  disconnection_connection(con)
-}
-
-}
