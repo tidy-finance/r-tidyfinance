@@ -1,6 +1,6 @@
 # tidyfinance
 
-This repository contains an R package that collects helper functions for developers and researchers familiar with [Tidy Financen with R](https://www.tidy-finance.org/r/). The functions provide shortcuts to selected issues that the book disccses in detail. 
+This repository contains an R package that collects helper functions for developers and researchers familiar with [Tidy Financen with R](https://www.tidy-finance.org/r/). The functions provide shortcuts to selected issues that the book disccuses in detail. 
 
 ## Installation
 
