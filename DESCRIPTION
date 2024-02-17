@@ -18,7 +18,9 @@ Imports:
     tidyr, 
     purrr,
     lubridate,
-    tibble
+    tibble,
+    dbplyr,
+    DBI
 Sugggests:
     frenchdata,
     readxl,

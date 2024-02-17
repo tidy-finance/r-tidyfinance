@@ -42,3 +42,7 @@ get_wrds_connection <- function() {
     password = Sys.getenv("WRDS_PASSWORD")
   )
 }
+
+disconnection_connection <- function(con) {
+  DBI::dbDisconnect(con)
+}
