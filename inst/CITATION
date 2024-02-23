@@ -1,0 +1,14 @@
+bibentry(bibtype = "Book",
+         textVersion = 'Scheuch, Voigt, and Weiss (2023). Tidy Finance with R (1st ed.). Chapman and Hall/CRC. https://doi.org/10.1201/b23237.'
+         title = "Tidy Finance with R",
+         author = c(person(given = "Christoph",
+                           family = "Scheuch"),
+                    person(given = "Stefan",
+                           family = "Voigt"),
+                    person(given = "Patrick",
+                           family = "Weiss")),
+         year = "2023",
+         publisher = "Chapman and Hall/CRC",
+         edition = "1st",
+         url = "https://tidy-finance.org/r",
+         doi = "https://doi.org/10.1201/b23237")
