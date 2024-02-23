@@ -2,12 +2,14 @@
 #' List Supported Fama-French Dataset Types
 #'
 #' This function returns a tibble with the supported Fama-French dataset types,
-#' including their names and frequencies (daily, weekly, monthly). Each dataset type
-#' is associated with a specific Fama-French model (e.g., 3 factors, 5 factors).
-#' Additionally, it annotates each dataset with the domain "Fama-French".
+#' including their names and frequencies (daily, weekly, monthly). Each dataset
+#' type is associated with a specific Fama-French model (e.g., 3 factors, 5
+#' factors). Additionally, it annotates each dataset with the domain
+#' "Fama-French".
 #'
 #' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
-#' (a descriptive name of the dataset), and `domain` (the domain to which the dataset belongs, always "Fama-French").
+#'   (a descriptive name of the dataset), and `domain` (the domain to which the
+#'   dataset belongs, always "Fama-French").
 #'
 #' @importFrom tibble tribble
 #'
@@ -26,12 +28,14 @@ list_supported_types_ff <- function() {
 #' List Supported Global Q Dataset Types
 #'
 #' This function returns a tibble with the supported Global Q dataset types,
-#' including their names and frequencies (daily, weekly, weekly week-to-week, monthly, quarterly, annual).
-#' Each dataset type is associated with the Global Q model, specifically the q5 factors model for the year 2022.
-#' Additionally, it annotates each dataset with the domain "Global Q".
+#' including their names and frequencies (daily, weekly, weekly week-to-week,
+#' monthly, quarterly, annual). Each dataset type is associated with the Global
+#' Q model, specifically the q5 factors model for the year 2022. Additionally,
+#' it annotates each dataset with the domain "Global Q".
 #'
 #' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
-#' (the file name of the dataset), and `domain` (the domain to which the dataset belongs, always "Global Q").
+#'   (the file name of the dataset), and `domain` (the domain to which the
+#'   dataset belongs, always "Global Q").
 #'
 #' @importFrom tibble tribble
 #'
@@ -50,14 +54,15 @@ list_supported_types_q <- function() {
 
 #' List Supported Macro Predictor Dataset Types
 #'
-#' This function returns a tibble with the supported macro predictor dataset types
-#' provided by Welch-Goyal, including their frequencies (monthly, quarterly, annual).
-#' All dataset types reference the same source file "PredictorData2022.xlsx" for the year 2022.
-#' Additionally, it annotates each dataset with the domain "Welch-Goyal".
+#' This function returns a tibble with the supported macro predictor dataset
+#' types provided by Welch-Goyal, including their frequencies (monthly,
+#' quarterly, annual). All dataset types reference the same source file
+#' "PredictorData2022.xlsx" for the year 2022. Additionally, it annotates each
+#' dataset with the domain "Welch-Goyal".
 #'
 #' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
-#' (the file name of the dataset, which is the same for all types), and `domain`
-#' (the domain to which the dataset belongs, always "Welch-Goyal").
+#'   (the file name of the dataset, which is the same for all types), and
+#'   `domain` (the domain to which the dataset belongs, always "Welch-Goyal").
 #'
 #' @importFrom tibble tribble
 #'
@@ -84,14 +89,15 @@ list_supported_types_wrds <- function() {
 
 #' List All Supported Dataset Types
 #'
-#' This function aggregates and returns a comprehensive tibble of all supported dataset types
-#' from different domains. It includes various datasets
-#' across different frequencies (daily, weekly, monthly, quarterly, annual) and models
+#' This function aggregates and returns a comprehensive tibble of all supported
+#' dataset types from different domains. It includes various datasets across
+#' different frequencies (daily, weekly, monthly, quarterly, annual) and models
 #' (e.g., q5 factors, Fama/French 3 and 5 factors, macro predictors).
 #'
-#' @return A tibble aggregating all supported dataset types with columns: `type` (the type of dataset),
-#' `dataset_name` (a descriptive name or file name of the dataset), and `domain` (the domain to which the
-#' dataset belongs, e.g., "Global Q", "Fama-French", "Welch-Goyal").
+#' @return A tibble aggregating all supported dataset types with columns: `type`
+#'   (the type of dataset), `dataset_name` (a descriptive name or file name of
+#'   the dataset), and `domain` (the domain to which the dataset belongs, e.g.,
+#'   "Global Q", "Fama-French", "Welch-Goyal").
 #'
 #' @examples
 #' list_supported_types()
@@ -110,14 +116,16 @@ list_supported_types <- function() {
 
 #' Check if a Dataset Type is Supported
 #'
-#' This function checks if a given dataset type is supported by verifying against
-#' a list of all supported dataset types from different domains.
-#' If the specified type is not supported, it stops execution and returns an error message
-#' listing all supported types.
+#' This function checks if a given dataset type is supported by verifying
+#' against a list of all supported dataset types from different domains. If the
+#' specified type is not supported, it stops execution and returns an error
+#' message listing all supported types.
 #'
 #' @param type The dataset type to check for support.
-#' @return Does not return a value; instead, it either passes silently if the type is supported
-#' or stops execution with an error message if the type is unsupported.
+#'
+#' @return Does not return a value; instead, it either passes silently if the
+#'   type is supported or stops execution with an error message if the type is
+#'   unsupported.
 #'
 check_supported_type <- function(type) {
   supported_types <- list_supported_types()
@@ -130,15 +138,19 @@ check_supported_type <- function(type) {
 # Main function -----------------------------------------------------------
 #' Download and Process Data Based on Type
 #'
-#' Downloads and processes data based on the specified type (e.g., Fama-French factors, Global Q factors,
-#' or macro predictors), and date range. This function checks if the specified type is supported and
-#' then delegates to the appropriate function for downloading and processing the data.
+#' Downloads and processes data based on the specified type (e.g., Fama-French
+#' factors, Global Q factors, or macro predictors), and date range. This
+#' function checks if the specified type is supported and then delegates to the
+#' appropriate function for downloading and processing the data.
 #'
-#' @param type The type of dataset to download, indicating either factor data or macroeconomic predictors.
-#' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
+#' @param type The type of dataset to download, indicating either factor data or
+#'   macroeconomic predictors.
+#' @param start_date The start date for filtering the data, in "YYYY-MM-DD"
+#'   format.
 #' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
-#' @return A tibble with processed data, including dates and the relevant financial metrics,
-#' filtered by the specified date range.
+#'
+#' @return A tibble with processed data, including dates and the relevant
+#'   financial metrics, filtered by the specified date range.
 #'
 #' @examples
 #' download_data("factors_ff3_monthly", "2000-01-01", "2020-12-31")
@@ -167,16 +179,21 @@ download_data <- function(type, start_date, end_date) {
 # Factors -----------------------------------------------------------------
 #' Download and Process Factor Data
 #'
-#' Downloads and processes factor data based on the specified type (Fama-French or Global Q),
-#' and date range. This function delegates to specific functions based on the type of factors requested:
-#' Fama-French or Global Q. It checks if the specified type is supported before proceeding with
-#' the download and processing.
+#' Downloads and processes factor data based on the specified type (Fama-French
+#' or Global Q), and date range. This function delegates to specific functions
+#' based on the type of factors requested: Fama-French or Global Q. It checks if
+#' the specified type is supported before proceeding with the download and
+#' processing.
 #'
-#' @param type The type of dataset to download, indicating the factor model and frequency.
-#' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
+#' @param type The type of dataset to download, indicating the factor model and
+#'   frequency.
+#' @param start_date The start date for filtering the data, in "YYYY-MM-DD"
+#'   format.
 #' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
-#' @return A tibble with processed factor data, including dates, risk-free rates, market excess returns,
-#' and other factors, filtered by the specified date range.
+#'
+#' @return A tibble with processed factor data, including dates, risk-free
+#'   rates, market excess returns, and other factors, filtered by the specified
+#'   date range.
 #'
 #' @examples
 #' download_data_factors("factors_ff3_monthly", "2000-01-01", "2020-12-31")
@@ -199,15 +216,22 @@ download_data_factors <- function(type, start_date, end_date) {
 
 #' Download and Process Fama-French Factor Data
 #'
-#' Downloads and processes Fama-French factor data based on the specified type (e.g., "factors_ff3_monthly"),
-#' and date range. The function first checks if the specified type is supported and requires the 'frenchdata'
-#' package to download the data. It processes the raw data into a structured format, including date conversion,
-#' scaling factor values, and filtering by the specified date range.
+#' Downloads and processes Fama-French factor data based on the specified type
+#' (e.g., "factors_ff3_monthly"), and date range. The function first checks if
+#' the specified type is supported and requires the 'frenchdata' package to
+#' download the data. It processes the raw data into a structured format,
+#' including date conversion, scaling factor values, and filtering by the
+#' specified date range.
 #'
-#' @param type The type of dataset to download, corresponding to the specific Fama-French model and frequency.
-#' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
+#' @param type The type of dataset to download, corresponding to the specific
+#'   Fama-French model and frequency.
+#' @param start_date The start date for filtering the data, in "YYYY-MM-DD"
+#'   format.
 #' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
-#' @return A tibble with processed factor data, including the date, risk-free rate, market excess return, and other factors, filtered by the specified date range.
+#'
+#' @return A tibble with processed factor data, including the date, risk-free
+#'   rate, market excess return, and other factors, filtered by the specified
+#'   date range.
 #'
 #' @examples
 #' download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")
@@ -252,17 +276,24 @@ download_data_factors_ff <- function(type, start_date, end_date) {
 
 #' Download and Process Global Q Factor Data
 #'
-#' Downloads and processes Global Q factor data based on the specified type (daily, monthly, etc.),
-#' date range, and source URL. The function first checks if the specified type is supported,
-#' identifies the dataset name from the supported types, then downloads and processes the data from
-#' the provided URL. The processing includes date conversion, renaming variables to a standardized
+#' Downloads and processes Global Q factor data based on the specified type
+#' (daily, monthly, etc.), date range, and source URL. The function first checks
+#' if the specified type is supported, identifies the dataset name from the
+#' supported types, then downloads and processes the data from the provided URL.
+#' The processing includes date conversion, renaming variables to a standardized
 #' format, scaling factor values, and filtering by the specified date range.
 #'
-#' @param type The type of dataset to download (e.g., "factors_q5_daily", "factors_q5_monthly").
-#' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
+#' @param type The type of dataset to download (e.g., "factors_q5_daily",
+#'   "factors_q5_monthly").
+#' @param start_date The start date for filtering the data, in "YYYY-MM-DD"
+#'   format.
 #' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
-#' @param url The base URL from which to download the dataset files, with a specific path for Global Q datasets.
-#' @return A tibble with processed factor data, including the date, risk-free rate, market excess return, and other factors, filtered by the specified date range.
+#' @param url The base URL from which to download the dataset files, with a
+#'   specific path for Global Q datasets.
+#'
+#' @return A tibble with processed factor data, including the date, risk-free
+#'   rate, market excess return, and other factors, filtered by the specified
+#'   date range.
 #'
 #' @examples
 #' download_data_factors_q("factors_q5_daily", "2020-01-01", "2020-12-31")
@@ -305,18 +336,23 @@ download_data_factors_q <- function(
 # Macro predictors --------------------------------------------------------
 #' Download and Process Macro Predictor Data
 #'
-#' Downloads and processes macroeconomic predictor data based on the specified type (monthly, quarterly,
-#' or annual), date range, and source URL. The function first checks if the specified type is supported,
-#' then downloads the data from the provided URL (defaulting to a Google Sheets export link). It processes
-#' the raw data into a structured format, calculating additional financial metrics and filtering by the
-#' specified date range.
+#' Downloads and processes macroeconomic predictor data based on the specified
+#' type (monthly, quarterly, or annual), date range, and source URL. The
+#' function first checks if the specified type is supported, then downloads the
+#' data from the provided URL (defaulting to a Google Sheets export link). It
+#' processes the raw data into a structured format, calculating additional
+#' financial metrics and filtering by the specified date range.
 #'
-#' @param type The type of dataset to download ("macro_predictors_monthly", "macro_predictors_quarterly",
-#' "macro_predictors_annual").
-#' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
+#' @param type The type of dataset to download ("macro_predictors_monthly",
+#'   "macro_predictors_quarterly", "macro_predictors_annual").
+#' @param start_date The start date for filtering the data, in "YYYY-MM-DD"
+#'   format.
 #' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
-#' @param url The URL from which to download the dataset, with a default Google Sheets export link.
-#' @return A tibble with processed data, filtered by the specified date range and including financial metrics.
+#' @param url The URL from which to download the dataset, with a default Google
+#'   Sheets export link.
+#'
+#' @return A tibble with processed data, filtered by the specified date range
+#'   and including financial metrics.
 #'
 #' @examples
 #' download_data_macro_predictors("macro_predictors_monthly", "2000-01-01", "2020-12-31")
@@ -392,19 +428,22 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
 # WRDS data -----------------------------------------------------------
 #' Download Data from WRDS
 #'
-#' This function acts as a wrapper to download data from various WRDS datasets including CRSP,
-#' Compustat, and CCM links based on the specified type. It is designed to handle different data
-#' types by redirecting to the appropriate specific data download function.
+#' This function acts as a wrapper to download data from various WRDS datasets
+#' including CRSP, Compustat, and CCM links based on the specified type. It is
+#' designed to handle different data types by redirecting to the appropriate
+#' specific data download function.
 #'
-#' @param type A string specifying the type of data to download. It should match one of the predefined
-#'   patterns to indicate the dataset: "wrds_crsp" for CRSP data, "wrds_compustat" for Compustat data,
-#'   or "wrds_ccm_links" for CCM links data.
-#' @param start_date A date in 'YYYY-MM-DD' format indicating the start of the period for which data
-#'   is requested.
-#' @param end_date A date in 'YYYY-MM-DD' format indicating the end of the period for which data
-#'   is requested.
-#' @return A data frame containing the requested data, with the structure and contents depending on
-#'   the specified `type`.
+#' @param type A string specifying the type of data to download. It should match
+#'   one of the predefined patterns to indicate the dataset: "wrds_crsp" for
+#'   CRSP data, "wrds_compustat" for Compustat data, or "wrds_ccm_links" for CCM
+#'   links data.
+#' @param start_date A date in 'YYYY-MM-DD' format indicating the start of the
+#'   period for which data is requested.
+#' @param end_date A date in 'YYYY-MM-DD' format indicating the end of the
+#'   period for which data is requested.
+#'
+#' @return A data frame containing the requested data, with the structure and
+#'   contents depending on the specified `type`.
 #'
 #' @examples
 #' \dontrun{
@@ -434,17 +473,25 @@ download_data_wrds <- function(type, start_date, end_date) {
 
 #' Download Data from WRDS CRSP
 #'
-#' This function downloads and processes stock return data from the CRSP database for a specified period.
-#' Users can choose between monthly and daily data types. The function also adjusts returns for delisting
-#' and calculates market capitalization and excess returns over the risk-free rate.
+#' This function downloads and processes stock return data from the CRSP
+#' database for a specified period. Users can choose between monthly and daily
+#' data types. The function also adjusts returns for delisting and calculates
+#' market capitalization and excess returns over the risk-free rate.
 #'
-#' @param type A string specifying the type of CRSP data to download: "crsp_monthly" or "crsp_daily".
-#' @param start_date A Date object or string specifying the start date of the period for which data is requested.
-#' @param end_date A Date object or string specifying the end date of the period.
-#' @param batch_size An optional integer specifying the batch size for processing daily data, with a default of 500.
+#' @param type A string specifying the type of CRSP data to download:
+#'   "crsp_monthly" or "crsp_daily".
+#' @param start_date A Date object or string specifying the start date of the
+#'   period for which data is requested.
+#' @param end_date A Date object or string specifying the end date of the
+#'   period.
+#' @param batch_size An optional integer specifying the batch size for
+#'   processing daily data, with a default of 500.
 #' @param ... Additional arguments to be passed to underlying functions.
-#' @return A data frame containing CRSP stock returns, adjusted for delistings, along with calculated market capitalization
-#'   and excess returns over the risk-free rate. The structure of the returned data frame depends on the selected data type.
+#'
+#' @return A data frame containing CRSP stock returns, adjusted for delistings,
+#'   along with calculated market capitalization and excess returns over the
+#'   risk-free rate. The structure of the returned data frame depends on the
+#'   selected data type.
 #'
 #' @examples
 #' crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-12-01", "2020-12-31")
@@ -636,17 +683,22 @@ download_data_wrds_crsp <- function(type, start_date, end_date, ..., batch_size 
 
 #' Download Data from WRDS Compustat
 #'
-#' This function downloads financial data from the WRDS Compustat database for a given
-#' type of financial data, start date, and end date. It filters the data according to
-#' industry format, data format, and consolidation level, and calculates book equity (be),
-#' operating profitability (op), and investment (inv) for each company.
+#' This function downloads financial data from the WRDS Compustat database for a
+#' given type of financial data, start date, and end date. It filters the data
+#' according to industry format, data format, and consolidation level, and
+#' calculates book equity (be), operating profitability (op), and investment
+#' (inv) for each company.
 #'
 #' @param type The type of financial data to download.
-#' @param start_date The start date for the data retrieval in "YYYY-MM-DD" format.
+#' @param start_date The start date for the data retrieval in "YYYY-MM-DD"
+#'   format.
 #' @param end_date The end date for the data retrieval in "YYYY-MM-DD" format.
-#' @param ... Additional Compustat variables that should be added from the raw data.
-#' @return A data frame with financial data for the specified period, including variables
-#'   for book equity (be), operating profitability (op), investment (inv), and others.
+#' @param ... Additional Compustat variables that should be added from the raw
+#'   data.
+#'
+#' @return A data frame with financial data for the specified period, including
+#'   variables for book equity (be), operating profitability (op), investment
+#'   (inv), and others.
 #'
 #' @examples
 #'
@@ -718,19 +770,23 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
 
 #' Download CCM Links from WRDS
 #'
-#' This function downloads data from the WRDS CRSP/Compustat Merged (CCM) links database.
-#' It allows users to specify the type of links (`linktype`), the primacy of the link (`linkprim`),
-#' and whether to use flagged links (`usedflag`).
+#' This function downloads data from the WRDS CRSP/Compustat Merged (CCM) links
+#' database. It allows users to specify the type of links (`linktype`), the
+#' primacy of the link (`linkprim`), and whether to use flagged links
+#' (`usedflag`).
 #'
-#' @param linktype A character vector indicating the type of link to download. The default
-#'   is `c("LU", "LC")`, where "LU" stands for "Link Up" and "LC" for "Link CRSP".
-#' @param linkprim A character vector indicating the primacy of the link. Default is
-#'   `c("P", "C")`, where "P" indicates primary and "C" indicates conditional links.
-#' @param usedflag An integer indicating whether to use flagged links. The default is `1`,
-#'   indicating that only flagged links should be used.
-#' @return A data frame with the columns `permno`, `gvkey`, `linkdt`, and `linkenddt`,
-#'   where `linkenddt` is the end date of the link, and missing end dates are replaced
-#'   with today's date.
+#' @param linktype A character vector indicating the type of link to download.
+#'   The default is `c("LU", "LC")`, where "LU" stands for "Link Up" and "LC"
+#'   for "Link CRSP".
+#' @param linkprim A character vector indicating the primacy of the link.
+#'   Default is `c("P", "C")`, where "P" indicates primary and "C" indicates
+#'   conditional links.
+#' @param usedflag An integer indicating whether to use flagged links. The
+#'   default is `1`, indicating that only flagged links should be used.
+#'
+#' @return A data frame with the columns `permno`, `gvkey`, `linkdt`, and
+#'   `linkenddt`, where `linkenddt` is the end date of the link, and missing end
+#'   dates are replaced with today's date.
 #'
 #' @examples
 #' ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)

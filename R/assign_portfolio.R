@@ -9,16 +9,18 @@
 #' specific percentiles for the breakpoints, but not both.
 #'
 #' @param data A data frame containing the dataset for portfolio assignment.
-#' @param sorting_variable A string specifying the column name in `data` to be used
-#'        for sorting and determining portfolio assignments.
-#' @param n_portfolios An optional integer specifying the number of equally sized
-#'        portfolios to create. This parameter is mutually exclusive with `percentiles`.
-#' @param percentiles An optional numeric vector specifying the percentiles
-#'        for determining the breakpoints of the portfolios. This parameter is
-#'        mutually exclusive with `n_portfolios`.
-#' @param exchanges An optional character vector specifying exchange names to filter
-#'        the data before computing breakpoints and assigning portfolios. If `NULL`,
-#'        no filtering is applied.
+#' @param sorting_variable A string specifying the column name in `data` to be
+#'   used for sorting and determining portfolio assignments.
+#' @param n_portfolios An optional integer specifying the number of equally
+#'   sized portfolios to create. This parameter is mutually exclusive with
+#'   `percentiles`.
+#' @param percentiles An optional numeric vector specifying the percentiles for
+#'   determining the breakpoints of the portfolios. This parameter is mutually
+#'   exclusive with `n_portfolios`.
+#' @param exchanges An optional character vector specifying exchange names to
+#'   filter the data before computing breakpoints and assigning portfolios.
+#'   Exchanges must be stored in a column named `exchange` in `data`. If `NULL`,
+#'   no filtering is applied.
 #'
 #' @return A vector of portfolio assignments for each row in the input `data`.
 #'
@@ -34,8 +36,8 @@
 #' @export
 #'
 #' @note This function will stop and throw an error if both `n_portfolios` and
-#'       `percentiles` are provided or if neither is provided. Ensure to use
-#'       only one of these parameters for specifying portfolio breakpoints.
+#'   `percentiles` are provided or if neither is provided. Ensure that you only
+#'   use one of these parameters for specifying portfolio breakpoints.
 assign_portfolio <- function(data,
                              sorting_variable,
                              n_portfolios = NULL,
@@ -72,4 +74,3 @@ assign_portfolio <- function(data,
 
   return(portfolio_indices)
 }
-

@@ -1,13 +1,14 @@
 #' Open Tidy Finance Website or Specific Chapter in Browser
 #'
-#' Opens the main Tidy Finance website or a specific chapter within the site
-#' in the user's default web browser. If a chapter is specified, the function
+#' Opens the main Tidy Finance website or a specific chapter within the site in
+#' the user's default web browser. If a chapter is specified, the function
 #' constructs the URL to access the chapter directly.
 #'
 #' @param chapter Optional. A character string specifying the chapter to open.
-#' If NULL (the default), the function opens the main page of the Tidy Finance
-#' website. If a chapter name is provided (e.g., "beta-estimation"), the
-#' function opens the corresponding chapter page (e.g., "beta-estimation.html").
+#'   If NULL (the default), the function opens the main page of the Tidy Finance
+#'   website. If a chapter name is provided (e.g., "beta-estimation"), the
+#'   function opens the corresponding chapter page (e.g.,
+#'   "beta-estimation.html").
 #'
 #' @examples
 #' open_tidy_finance_website()
