@@ -87,8 +87,8 @@ create_summary_statistics <- function(data, ..., by = NULL, detail = FALSE) {
       tidyr::pivot_longer(cols = everything(), names_to = "variable") |>
       stats::na.omit() |>
       group_by(.data$variable) |>
-      summarize_all(funs) |>
-      ungroup()
+      summarize(across(everything(), funs),
+                .groups = "drop")
   } else {
     # Summarize by group column if "by" column is specified
     data |>
@@ -96,7 +96,7 @@ create_summary_statistics <- function(data, ..., by = NULL, detail = FALSE) {
       tidyr::pivot_longer(cols = -{{ by }}, names_to = "variable") |>
       stats::na.omit() |>
       group_by(.data$variable, {{ by }}) |>
-      summarize_all(funs) |>
-      ungroup()
+      summarize(across(everything(), funs),
+                .groups = "drop")
   }
 }
