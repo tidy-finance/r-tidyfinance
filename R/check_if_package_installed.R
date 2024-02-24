@@ -7,7 +7,7 @@
 #' @param package The name of the package to check.
 #' @param type The type for which the package needs to be available.
 #'
-#' @return Invisible `TRUE` if the package is installed, otherwise stops
+#' @return Invisible `TRUE` if the package is installed; otherwise, it stops
 #'   execution with an error message advising the installation of the package.
 #'   Since the function is designed to stop if the package is not found, it does
 #'   not explicitly return a value upon successful completion.

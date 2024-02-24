@@ -12,11 +12,10 @@
 #' @param by An optional unquoted variable name to group the data before
 #'   summarizing. If NULL (the default), summary statistics are computed across
 #'   all observations.
-#' @param detail Logical flag indicating whether to compute detailed summary
+#' @param detail A logical flag indicating whether to compute detailed summary
 #'   statistics including additional quantiles. Defaults to FALSE, which
 #'   computes basic statistics (n, mean, sd, min, median, max). When TRUE,
-#'   additional quantiles (1%, 5%, 10%, 25%, 75%, 90%, 95%, 99%) are also
-#'   computed.
+#'   additional quantiles (1%, 5%, 10%, 25%, 75%, 90%, 95%, 99%) are computed.
 #'
 #' @details The function first checks that all specified variables are of type
 #' numeric, integer, or logical. If any variables do not meet this criterion,

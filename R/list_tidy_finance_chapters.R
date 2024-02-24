@@ -11,7 +11,7 @@
 #'
 #' @return A character vector where each element is the name of a chapter
 #'   available in the Tidy Finance resource. These names correspond to specific
-#'   chapter in Tidy Finance with R.
+#'   chapters in Tidy Finance with R.
 list_tidy_finance_chapters <- function() {
   c(
     "setting-up-your-environment",

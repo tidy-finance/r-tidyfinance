@@ -12,7 +12,7 @@
 #' @param data A data frame containing the dependent variable and one or more
 #'   independent variables.
 #' @param ... Named arguments where each name is an independent variable in
-#'   `data` and each value should be a formula specifying the variable (e.g., x
+#'   `data`, and each value should be a formula specifying the variable (e.g., x
 #'   = ~ x). This allows for flexible specification of the model.
 #' @param min_obs The minimum number of observations required to estimate the
 #'   model. Defaults to 1.

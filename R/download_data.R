@@ -103,7 +103,7 @@ list_supported_types_wrds <- function() {
 #' This function aggregates and returns a comprehensive tibble of all supported
 #' dataset types from different domains. It includes various datasets across
 #' different frequencies (daily, weekly, monthly, quarterly, annual) and models
-#' (e.g., q5 factors, Fama/French 3 and 5 factors, macro predictors).
+#' (e.g., q5 factors, Fama-French 3 and 5 factors, macro predictors).
 #'
 #' @return A tibble aggregating all supported dataset types with columns: `type`
 #'   (the type of dataset), `dataset_name` (a descriptive name or file name of

@@ -4,10 +4,10 @@
 #' the user's default web browser. If a chapter is specified, the function
 #' constructs the URL to access the chapter directly.
 #'
-#' @param chapter Optional. A character string specifying the chapter to open.
-#'   If NULL (the default), the function opens the main page of the Tidy Finance
-#'   website. If a chapter name is provided (e.g., "beta-estimation"), the
-#'   function opens the corresponding chapter page (e.g.,
+#' @param chapter An optional character string specifying the chapter to open.
+#'   If NULL (the default), the function opens the main page of Tidy Finance with R.
+#'   If a chapter name is provided (e.g., "beta-estimation"), the
+#'   function opens the corresponding chapter's page (e.g.,
 #'   "beta-estimation.html").
 #'
 #' @examples
@@ -18,7 +18,8 @@
 #'
 #' @export
 #'
-#' @return Invisible NULL. The function is called for its side effect of opening a web page.
+#' @return Invisible NULL. The function is called for its side effect of opening
+#'   a web page.
 open_tidy_finance_website <- function(chapter = NULL) {
   base_url <- "https://www.tidy-finance.org/r/"
   if (!is.null(chapter)) {
