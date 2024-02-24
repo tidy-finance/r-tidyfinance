@@ -76,6 +76,17 @@ list_supported_types_macro_predictors <- function() {
     mutate(domain = "Welch-Goyal")
 }
 
+#' List Supported WRDS Dataset Types
+#'
+#' This function returns a tibble with the supported dataset types provided via
+#' WRDS. Additionally, it annotates each dataset with the domain "WRDS".
+#'
+#' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
+#'   (the file name of the dataset), and `domain` (the domain to which the
+#'   dataset belongs, always "WRDS").
+#'
+#' @importFrom tibble tribble
+#'
 list_supported_types_wrds <- function() {
   tribble(
     ~type, ~dataset_name,
