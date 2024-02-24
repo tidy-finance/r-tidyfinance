@@ -51,6 +51,9 @@ assign_portfolio <- function(data,
   }
 
   if (!is.null(exchanges)) {
+    if (!("exchange" %in% colnames(data))) {
+      stop("Please provide the column exchange when filtering.")
+    }
     data_breakpoints <- data[data$exchange %in% exchanges, ]
   } else {
     data_breakpoints <- data
