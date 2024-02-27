@@ -55,14 +55,14 @@ list_supported_types_q <- function() {
 #' List Supported Macro Predictor Dataset Types
 #'
 #' This function returns a tibble with the supported macro predictor dataset
-#' types provided by Welch-Goyal, including their frequencies (monthly,
+#' types provided by Goyal-Welch, including their frequencies (monthly,
 #' quarterly, annual). All dataset types reference the same source file
 #' "PredictorData2022.xlsx" for the year 2022. Additionally, it annotates each
-#' dataset with the domain "Welch-Goyal".
+#' dataset with the domain "Goyal-Welch".
 #'
 #' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (the file name of the dataset, which is the same for all types), and
-#'   `domain` (the domain to which the dataset belongs, always "Welch-Goyal").
+#'   `domain` (the domain to which the dataset belongs, always "Goyal-Welch").
 #'
 #' @importFrom tibble tribble
 #'
@@ -73,7 +73,7 @@ list_supported_types_macro_predictors <- function() {
     "macro_predictors_quarterly", "PredictorData2022.xlsx",
     "macro_predictors_annual", "PredictorData2022.xlsx",
   ) |>
-    mutate(domain = "Welch-Goyal")
+    mutate(domain = "Goyal-Welch")
 }
 
 #' List Supported WRDS Dataset Types
@@ -108,7 +108,7 @@ list_supported_types_wrds <- function() {
 #' @return A tibble aggregating all supported dataset types with columns: `type`
 #'   (the type of dataset), `dataset_name` (a descriptive name or file name of
 #'   the dataset), and `domain` (the domain to which the dataset belongs, e.g.,
-#'   "Global Q", "Fama-French", "Welch-Goyal").
+#'   "Global Q", "Fama-French", "Goyal-Welch").
 #'
 #' @examples
 #' list_supported_types()

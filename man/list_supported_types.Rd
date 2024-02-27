@@ -10,7 +10,7 @@ list_supported_types()
 A tibble aggregating all supported dataset types with columns: \code{type}
 (the type of dataset), \code{dataset_name} (a descriptive name or file name of
 the dataset), and \code{domain} (the domain to which the dataset belongs, e.g.,
-"Global Q", "Fama-French", "Welch-Goyal").
+"Global Q", "Fama-French", "Goyal-Welch").
 }
 \description{
 This function aggregates and returns a comprehensive tibble of all supported
