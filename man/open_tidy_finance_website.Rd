@@ -11,7 +11,8 @@ open_tidy_finance_website(chapter = NULL)
 If NULL (the default), the function opens the main page of Tidy Finance with R.
 If a chapter name is provided (e.g., "beta-estimation"), the
 function opens the corresponding chapter's page (e.g.,
-"beta-estimation.html").}
+"beta-estimation.html"). If the chapter name does not exist, then the
+function opens the main page.}
 }
 \value{
 Invisible NULL. The function is called for its side effect of opening

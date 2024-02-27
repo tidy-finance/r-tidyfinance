@@ -8,7 +8,8 @@
 #'   If NULL (the default), the function opens the main page of Tidy Finance with R.
 #'   If a chapter name is provided (e.g., "beta-estimation"), the
 #'   function opens the corresponding chapter's page (e.g.,
-#'   "beta-estimation.html").
+#'   "beta-estimation.html"). If the chapter name does not exist, then the
+#'   function opens the main page.
 #'
 #' @examples
 #' open_tidy_finance_website()
@@ -23,7 +24,12 @@
 open_tidy_finance_website <- function(chapter = NULL) {
   base_url <- "https://www.tidy-finance.org/r/"
   if (!is.null(chapter)) {
-    final_url <- paste0(base_url, chapter, ".html")
+    tidy_finance_chapters <- list_tidy_finance_chapters()
+    if (chapter %in% tidy_finance_chapters) {
+      final_url <- paste0(base_url, chapter, ".html")
+    } else {
+      final_url <- base_url
+    }
   } else {
     final_url <- base_url
   }
