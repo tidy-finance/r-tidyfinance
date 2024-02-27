@@ -4,15 +4,14 @@
 \alias{estimate_model}
 \title{Estimate Model Coefficients}
 \usage{
-estimate_model(data, ..., min_obs = 1)
+estimate_model(data, model, min_obs = 1)
 }
 \arguments{
 \item{data}{A data frame containing the dependent variable and one or more
 independent variables.}
 
-\item{...}{Named arguments where each name is an independent variable in
-\code{data}, and each value should be a formula specifying the variable (e.g., x
-= ~ x). This allows for flexible specification of the model.}
+\item{model}{A character that describes the model to estimate (e.g.
+"ret_excess ~ mkt_excess + hmb + sml").}
 
 \item{min_obs}{The minimum number of observations required to estimate the
 model. Defaults to 1.}
@@ -41,10 +40,10 @@ data <- data.frame(
   hml = rnorm(100)
 )
 # Estimate model with a single independent variable
-single_var_model <- estimate_model(data, mkt_excess)
+single_var_model <- estimate_model(data, "ret_excess ~ mkt_excess")
 
 # Estimate model with multiple independent variables
-multi_var_model <- estimate_model(data, mkt_excess, smb, hml)
+multi_var_model <- estimate_model(data, "ret_excess ~ mkt_excess + hmb + sml")
 
 }
 \seealso{

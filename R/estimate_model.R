@@ -11,9 +11,8 @@
 #'
 #' @param data A data frame containing the dependent variable and one or more
 #'   independent variables.
-#' @param ... Named arguments where each name is an independent variable in
-#'   `data`, and each value should be a formula specifying the variable (e.g., x
-#'   = ~ x). This allows for flexible specification of the model.
+#' @param model A character that describes the model to estimate (e.g.
+#'   "ret_excess ~ mkt_excess + hmb + sml").
 #' @param min_obs The minimum number of observations required to estimate the
 #'   model. Defaults to 1.
 #'
@@ -30,19 +29,21 @@
 #'   hml = rnorm(100)
 #' )
 #' # Estimate model with a single independent variable
-#' single_var_model <- estimate_model(data, mkt_excess)
+#' single_var_model <- estimate_model(data, "ret_excess ~ mkt_excess")
 #'
 #' # Estimate model with multiple independent variables
-#' multi_var_model <- estimate_model(data, mkt_excess, smb, hml)
+#' multi_var_model <- estimate_model(data, "ret_excess ~ mkt_excess + hmb + sml")
 #'
 #' @export
 #'
 #' @importFrom stats setNames lm reformulate coefficients
 #'
 #' @seealso \code{\link[stats]{lm}} for details on the underlying linear model fitting used.
-estimate_model <- function(data, ..., min_obs = 1) {
-  independent_vars_syms <- ensyms(...)
-  independent_vars <- sapply(independent_vars_syms, as.character)
+estimate_model <- function(data, model, min_obs = 1) {
+  model_parts <- strsplit(model, "~")[[1]]
+  response_var <- trimws(model_parts[1])
+  independent_vars <- strsplit(trimws(model_parts[2]), "[ +]")[[1]]
+  independent_vars <- independent_vars[independent_vars != ""]
 
   if (nrow(data) < min_obs) {
     beta <- stats::setNames(as.numeric(rep(NA, length(independent_vars))), independent_vars)
@@ -58,9 +59,7 @@ estimate_model <- function(data, ..., min_obs = 1) {
            paste(missing_vars, collapse=", "), ".")
     }
 
-    formula <- stats::reformulate(termlabels = independent_vars, response = "ret_excess")
-
-    fit <- stats::lm(formula, data = data)
+    fit <- stats::lm(as.formula(model), data = data)
     beta <- stats::coefficients(fit)[names(stats::coefficients(fit)) %in% independent_vars]
 
     if (length(beta) == 1) {
