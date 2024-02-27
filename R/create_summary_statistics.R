@@ -62,7 +62,7 @@ create_summary_statistics <- function(
       n = function(x) {sum(!is.na(x))},
       mean = mean, sd = stats::sd,
       min = min,
-      q50 = partial(stats::quantile, probs = 0.50),
+      q50 = partial(quantile_na_handler, probs = 0.50),
       max = max
     )
   } else {
@@ -70,15 +70,15 @@ create_summary_statistics <- function(
       n = function(x) {sum(!is.na(x))},
       mean = mean, sd = stats::sd,
       min = min,
-      q01 = partial(stats::quantile, probs = 0.01),
-      q05 = partial(stats::quantile, probs = 0.05),
-      q10 = partial(stats::quantile, probs = 0.10),
-      q25 = partial(stats::quantile, probs = 0.25),
-      q50 = partial(stats::quantile, probs = 0.50),
-      q75 = partial(stats::quantile, probs = 0.75),
-      q90 = partial(stats::quantile, probs = 0.90),
-      q95 = partial(stats::quantile, probs = 0.95),
-      q99 = partial(stats::quantile, probs = 0.99),
+      q01 = partial(quantile_na_handler, probs = 0.01),
+      q05 = partial(quantile_na_handler, probs = 0.05),
+      q10 = partial(quantile_na_handler, probs = 0.10),
+      q25 = partial(quantile_na_handler, probs = 0.25),
+      q50 = partial(quantile_na_handler, probs = 0.50),
+      q75 = partial(quantile_na_handler, probs = 0.75),
+      q90 = partial(quantile_na_handler, probs = 0.90),
+      q95 = partial(quantile_na_handler, probs = 0.95),
+      q99 = partial(quantile_na_handler, probs = 0.99),
       max = max
     )
   }
@@ -95,7 +95,7 @@ create_summary_statistics <- function(
 
     data_long |>
       group_by(.data$variable) |>
-      summarize(across(everything(), funs),
+      summarize(across(everything(), funs, .names =  "{.fn}"),
                 .groups = "drop")
   } else {
     # Summarize by group column if "by" column is specified
@@ -109,7 +109,15 @@ create_summary_statistics <- function(
 
     data_long |>
       group_by(.data$variable, {{ by }}) |>
-      summarize(across(everything(), funs),
+      summarize(across(everything(), funs, .names =  "{.fn}"),
                 .groups = "drop")
+  }
+}
+
+quantile_na_handler <- function(x, probs) {
+  if (any(is.na(x))) {
+    return(rep(as.double(NA)))
+  } else {
+    return(as.double(stats::quantile(x, probs = probs)))
   }
 }

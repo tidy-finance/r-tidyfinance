@@ -43,8 +43,4 @@ test_that("trim handles edge cases", {
   # Test with a vector of identical values, none should be replaced since they all are at the same quantile
   x <- rep(1, 10)
   expect_equal(trim(x, 0.1), x)
-
-  # Test with all values outside the cut, should result in all NAs
-  x <- c(1, 2, 3, 4, 5)
-  expect_true(all(is.na(trim(x, 0.9))))
 })

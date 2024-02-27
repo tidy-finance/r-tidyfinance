@@ -22,7 +22,7 @@
 #' @export
 winsorize <- function(x, cut) {
   if (cut < 0 || cut > 0.5) {
-    stop("The parameter 'cut' must be inside [0,0.5].")
+    stop("The parameter 'cut' must be inside [0, 0.5].")
   }
 
   lb <- stats::quantile(x, cut, na.rm = TRUE)
