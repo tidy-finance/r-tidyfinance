@@ -16,6 +16,8 @@
 #'   statistics including additional quantiles. Defaults to FALSE, which
 #'   computes basic statistics (n, mean, sd, min, median, max). When TRUE,
 #'   additional quantiles (1%, 5%, 10%, 25%, 75%, 90%, 95%, 99%) are computed.
+#' @param drop_na A logical flag indicating whether to drop missing values for
+#'   each variabl (default is FALSE).
 #'
 #' @details The function first checks that all specified variables are of type
 #' numeric, integer, or logical. If any variables do not meet this criterion,
@@ -41,7 +43,9 @@
 #' @importFrom purrr partial
 #'
 #' @export
-create_summary_statistics <- function(data, ..., by = NULL, detail = FALSE) {
+create_summary_statistics <- function(
+    data, ..., by = NULL, detail = FALSE, drop_na = FALSE
+  ) {
   # Check that all variables to summarize are numeric or integer
   col_types <- data |>
     select(...) |>
@@ -81,19 +85,29 @@ create_summary_statistics <- function(data, ..., by = NULL, detail = FALSE) {
 
   if (missing(by)) {
     # Summarize across all observations if no "by" column is specified
-    data |>
+    data_long <- data |>
       select(...) |>
-      tidyr::pivot_longer(cols = everything(), names_to = "variable") |>
-      stats::na.omit() |>
+      tidyr::pivot_longer(cols = everything(), names_to = "variable")
+
+    if (drop_na == TRUE) {
+      data_long <- tidyr::drop_na(data_long)
+    }
+
+    data_long |>
       group_by(.data$variable) |>
       summarize(across(everything(), funs),
                 .groups = "drop")
   } else {
     # Summarize by group column if "by" column is specified
-    data |>
+    data_long <- data |>
       select({{ by }}, ...) |>
-      tidyr::pivot_longer(cols = -{{ by }}, names_to = "variable") |>
-      stats::na.omit() |>
+      tidyr::pivot_longer(cols = -{{ by }}, names_to = "variable")
+
+    if (drop_na == TRUE) {
+      data_long <- tidyr::drop_na(data_long)
+    }
+
+    data_long |>
       group_by(.data$variable, {{ by }}) |>
       summarize(across(everything(), funs),
                 .groups = "drop")
