@@ -17,7 +17,7 @@ Authors@R: c(
            family = "Weiss", 
            email = "patrickw@ru.is", 
            role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-9282-5872")),       
+           comment = c(ORCID = "0000-0002-9282-5872"))      
     )
 Description: Helper functions for empirical research in financial economics.
     This package covers many topics presented in Tidy Finance with R,
