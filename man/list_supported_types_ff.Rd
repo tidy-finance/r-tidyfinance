@@ -8,11 +8,13 @@ list_supported_types_ff()
 }
 \value{
 A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
-(a descriptive name of the dataset), and \code{domain} (the domain to which the dataset belongs, always "Fama-French").
+(a descriptive name of the dataset), and \code{domain} (the domain to which the
+dataset belongs, always "Fama-French").
 }
 \description{
 This function returns a tibble with the supported Fama-French dataset types,
-including their names and frequencies (daily, weekly, monthly). Each dataset type
-is associated with a specific Fama-French model (e.g., 3 factors, 5 factors).
-Additionally, it annotates each dataset with the domain "Fama-French".
+including their names and frequencies (daily, weekly, monthly). Each dataset
+type is associated with a specific Fama-French model (e.g., 3 factors, 5
+factors). Additionally, it annotates each dataset with the domain
+"Fama-French".
 }

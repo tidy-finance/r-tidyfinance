@@ -11,24 +11,27 @@ download_data_wrds_ccm_links(
 )
 }
 \arguments{
-\item{linktype}{A character vector indicating the type of link to download. The default
-is \code{c("LU", "LC")}, where "LU" stands for "Link Up" and "LC" for "Link CRSP".}
+\item{linktype}{A character vector indicating the type of link to download.
+The default is \code{c("LU", "LC")}, where "LU" stands for "Link Up" and "LC"
+for "Link CRSP".}
 
-\item{linkprim}{A character vector indicating the primacy of the link. Default is
-\code{c("P", "C")}, where "P" indicates primary and "C" indicates conditional links.}
+\item{linkprim}{A character vector indicating the primacy of the link.
+Default is \code{c("P", "C")}, where "P" indicates primary and "C" indicates
+conditional links.}
 
-\item{usedflag}{An integer indicating whether to use flagged links. The default is \code{1},
-indicating that only flagged links should be used.}
+\item{usedflag}{An integer indicating whether to use flagged links. The
+default is \code{1}, indicating that only flagged links should be used.}
 }
 \value{
-A data frame with the columns \code{permno}, \code{gvkey}, \code{linkdt}, and \code{linkenddt},
-where \code{linkenddt} is the end date of the link, and missing end dates are replaced
-with today's date.
+A data frame with the columns \code{permno}, \code{gvkey}, \code{linkdt}, and
+\code{linkenddt}, where \code{linkenddt} is the end date of the link, and missing end
+dates are replaced with today's date.
 }
 \description{
-This function downloads data from the WRDS CRSP/Compustat Merged (CCM) links database.
-It allows users to specify the type of links (\code{linktype}), the primacy of the link (\code{linkprim}),
-and whether to use flagged links (\code{usedflag}).
+This function downloads data from the WRDS CRSP/Compustat Merged (CCM) links
+database. It allows users to specify the type of links (\code{linktype}), the
+primacy of the link (\code{linkprim}), and whether to use flagged links
+(\code{usedflag}).
 }
 \examples{
 ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)

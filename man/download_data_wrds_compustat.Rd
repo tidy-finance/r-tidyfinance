@@ -9,21 +9,25 @@ download_data_wrds_compustat(type, start_date, end_date, ...)
 \arguments{
 \item{type}{The type of financial data to download.}
 
-\item{start_date}{The start date for the data retrieval in "YYYY-MM-DD" format.}
+\item{start_date}{The start date for the data retrieval in "YYYY-MM-DD"
+format.}
 
 \item{end_date}{The end date for the data retrieval in "YYYY-MM-DD" format.}
 
-\item{...}{Additional Compustat variables that should be added from the raw data.}
+\item{...}{Additional Compustat variables that should be added from the raw
+data.}
 }
 \value{
-A data frame with financial data for the specified period, including variables
-for book equity (be), operating profitability (op), investment (inv), and others.
+A data frame with financial data for the specified period, including
+variables for book equity (be), operating profitability (op), investment
+(inv), and others.
 }
 \description{
-This function downloads financial data from the WRDS Compustat database for a given
-type of financial data, start date, and end date. It filters the data according to
-industry format, data format, and consolidation level, and calculates book equity (be),
-operating profitability (op), and investment (inv) for each company.
+This function downloads financial data from the WRDS Compustat database for a
+given type of financial data, start date, and end date. It filters the data
+according to industry format, data format, and consolidation level, and
+calculates book equity (be), operating profitability (op), and investment
+(inv) for each company.
 }
 \examples{
 

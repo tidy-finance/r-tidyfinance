@@ -12,24 +12,28 @@ download_data_macro_predictors(
 )
 }
 \arguments{
-\item{type}{The type of dataset to download ("macro_predictors_monthly", "macro_predictors_quarterly",
-"macro_predictors_annual").}
+\item{type}{The type of dataset to download ("macro_predictors_monthly",
+"macro_predictors_quarterly", "macro_predictors_annual").}
 
-\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD" format.}
+\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD"
+format.}
 
 \item{end_date}{The end date for filtering the data, in "YYYY-MM-DD" format.}
 
-\item{url}{The URL from which to download the dataset, with a default Google Sheets export link.}
+\item{url}{The URL from which to download the dataset, with a default Google
+Sheets export link.}
 }
 \value{
-A tibble with processed data, filtered by the specified date range and including financial metrics.
+A tibble with processed data, filtered by the specified date range
+and including financial metrics.
 }
 \description{
-Downloads and processes macroeconomic predictor data based on the specified type (monthly, quarterly,
-or annual), date range, and source URL. The function first checks if the specified type is supported,
-then downloads the data from the provided URL (defaulting to a Google Sheets export link). It processes
-the raw data into a structured format, calculating additional financial metrics and filtering by the
-specified date range.
+Downloads and processes macroeconomic predictor data based on the specified
+type (monthly, quarterly, or annual), date range, and source URL. The
+function first checks if the specified type is supported, then downloads the
+data from the provided URL (defaulting to a Google Sheets export link). It
+processes the raw data into a structured format, calculating additional
+financial metrics and filtering by the specified date range.
 }
 \examples{
 download_data_macro_predictors("macro_predictors_monthly", "2000-01-01", "2020-12-31")

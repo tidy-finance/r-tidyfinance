@@ -12,22 +12,28 @@ download_data_factors_q(
 )
 }
 \arguments{
-\item{type}{The type of dataset to download (e.g., "factors_q5_daily", "factors_q5_monthly").}
+\item{type}{The type of dataset to download (e.g., "factors_q5_daily",
+"factors_q5_monthly").}
 
-\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD" format.}
+\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD"
+format.}
 
 \item{end_date}{The end date for filtering the data, in "YYYY-MM-DD" format.}
 
-\item{url}{The base URL from which to download the dataset files, with a specific path for Global Q datasets.}
+\item{url}{The base URL from which to download the dataset files, with a
+specific path for Global Q datasets.}
 }
 \value{
-A tibble with processed factor data, including the date, risk-free rate, market excess return, and other factors, filtered by the specified date range.
+A tibble with processed factor data, including the date, risk-free
+rate, market excess return, and other factors, filtered by the specified
+date range.
 }
 \description{
-Downloads and processes Global Q factor data based on the specified type (daily, monthly, etc.),
-date range, and source URL. The function first checks if the specified type is supported,
-identifies the dataset name from the supported types, then downloads and processes the data from
-the provided URL. The processing includes date conversion, renaming variables to a standardized
+Downloads and processes Global Q factor data based on the specified type
+(daily, monthly, etc.), date range, and source URL. The function first checks
+if the specified type is supported, identifies the dataset name from the
+supported types, then downloads and processes the data from the provided URL.
+The processing includes date conversion, renaming variables to a standardized
 format, scaling factor values, and filtering by the specified date range.
 }
 \examples{

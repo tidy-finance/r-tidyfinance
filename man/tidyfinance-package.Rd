@@ -4,14 +4,14 @@
 \name{tidyfinance-package}
 \alias{tidyfinance}
 \alias{tidyfinance-package}
-\title{tidyfinance: Helper functions for developers and researchers familiar with Tidy Finance}
+\title{tidyfinance: Tidy Finance Helper Functions}
 \description{
-This repository contains an R package that collects helper functions for developers and researchers familiar with [Tidy Financen with R](https://www.tidy-finance.org/r/). The functions provide shortcuts to selected issues that the book disccuses in detail.
+Helper functions for empirical research in financial economics. This package covers many topics presented in Tidy Finance with R, visit the book's website (\url{https://www.tidy-finance.org/r/}). The functions provide shortcuts to issues that the book discusses in detail.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://www.tidy-finance.org/r}
+  \item \url{https://www.tidy-finance.org/r/}
   \item \url{https://github.com/tidy-finance/r-tidyfinance}
   \item Report bugs at \url{https://github.com/tidy-finance/r-tidyfinance/issues}
 }

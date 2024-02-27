@@ -7,12 +7,14 @@
 disconnection_connection(con)
 }
 \arguments{
-\item{con}{A database connection object created by DBI::dbConnect or any similar function that
-establishes a connection to a database.}
+\item{con}{A database connection object created by DBI::dbConnect or any
+similar function that establishes a connection to a database.}
 }
 \value{
-A logical value: \code{TRUE} if disconnection was successful, \code{FALSE} otherwise.
+A logical value: \code{TRUE} if disconnection was successful, \code{FALSE}
+otherwise.
 }
 \description{
-This function safely disconnects an established database connection using the DBI package.
+This function safely disconnects an established database connection using the
+DBI package.
 }

@@ -9,17 +9,18 @@ trim(x, cut)
 \arguments{
 \item{x}{A numeric vector to be trimmed.}
 
-\item{cut}{The proportion of data to be trimmed from both ends of the distribution.
-For example, a \code{cut} of 0.05 will remove the lowest and highest 5\% of the data.}
+\item{cut}{The proportion of data to be trimmed from both ends of the
+distribution. For example, a \code{cut} of 0.05 will remove the lowest and
+highest 5\% of the data. Must be inside \link{0,0.5}.}
 }
 \value{
 A numeric vector with the extreme values removed.
 }
 \description{
-Removes the values in a numeric vector that are beyond the specified quantiles,
-effectively trimming the distribution based on the \code{cut} parameter. This process
-reduces the length of the vector, excluding extreme values from both tails of the
-distribution.
+Removes the values in a numeric vector that are beyond the specified
+quantiles, effectively trimming the distribution based on the \code{cut}
+parameter. This process reduces the length of the vector, excluding extreme
+values from both tails of the distribution.
 }
 \examples{
 set.seed(123)

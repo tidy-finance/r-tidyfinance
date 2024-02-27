@@ -7,20 +7,23 @@
 download_data(type, start_date, end_date)
 }
 \arguments{
-\item{type}{The type of dataset to download, indicating either factor data or macroeconomic predictors.}
+\item{type}{The type of dataset to download, indicating either factor data or
+macroeconomic predictors.}
 
-\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD" format.}
+\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD"
+format.}
 
 \item{end_date}{The end date for filtering the data, in "YYYY-MM-DD" format.}
 }
 \value{
-A tibble with processed data, including dates and the relevant financial metrics,
-filtered by the specified date range.
+A tibble with processed data, including dates and the relevant
+financial metrics, filtered by the specified date range.
 }
 \description{
-Downloads and processes data based on the specified type (e.g., Fama-French factors, Global Q factors,
-or macro predictors), and date range. This function checks if the specified type is supported and
-then delegates to the appropriate function for downloading and processing the data.
+Downloads and processes data based on the specified type (e.g., Fama-French
+factors, Global Q factors, or macro predictors), and date range. This
+function checks if the specified type is supported and then delegates to the
+appropriate function for downloading and processing the data.
 }
 \examples{
 download_data("factors_ff3_monthly", "2000-01-01", "2020-12-31")

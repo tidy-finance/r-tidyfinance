@@ -8,12 +8,13 @@ list_supported_types_macro_predictors()
 }
 \value{
 A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
-(the file name of the dataset, which is the same for all types), and \code{domain}
-(the domain to which the dataset belongs, always "Welch-Goyal").
+(the file name of the dataset, which is the same for all types), and
+\code{domain} (the domain to which the dataset belongs, always "Welch-Goyal").
 }
 \description{
-This function returns a tibble with the supported macro predictor dataset types
-provided by Welch-Goyal, including their frequencies (monthly, quarterly, annual).
-All dataset types reference the same source file "PredictorData2022.xlsx" for the year 2022.
-Additionally, it annotates each dataset with the domain "Welch-Goyal".
+This function returns a tibble with the supported macro predictor dataset
+types provided by Welch-Goyal, including their frequencies (monthly,
+quarterly, annual). All dataset types reference the same source file
+"PredictorData2022.xlsx" for the year 2022. Additionally, it annotates each
+dataset with the domain "Welch-Goyal".
 }

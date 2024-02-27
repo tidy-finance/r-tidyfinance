@@ -9,17 +9,18 @@ winsorize(x, cut)
 \arguments{
 \item{x}{A numeric vector to be winsorized.}
 
-\item{cut}{The proportion of data to be winsorized from both ends of the distribution.
-For example, a \code{cut} of 0.05 will winsorize the lowest and highest 5\% of the data.}
+\item{cut}{The proportion of data to be winsorized from both ends of the
+distribution. For example, a \code{cut} of 0.05 will winsorize the lowest and
+highest 5\% of the data. Must be inside \link{0,0.5}.}
 }
 \value{
-A numeric vector with the extreme values replaced by the corresponding
-quantile values.
+A numeric vector with the extreme values replaced by the
+corresponding quantile values.
 }
 \description{
-Replaces the values in a numeric vector that are beyond the specified quantiles
-with the boundary values of those quantiles. This is done for both tails of the
-distribution based on the \code{cut} parameter.
+Replaces the values in a numeric vector that are beyond the specified
+quantiles with the boundary values of those quantiles. This is done for both
+tails of the distribution based on the \code{cut} parameter.
 }
 \examples{
 set.seed(123)

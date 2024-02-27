@@ -7,24 +7,26 @@
 download_data_wrds(type, start_date, end_date)
 }
 \arguments{
-\item{type}{A string specifying the type of data to download. It should match one of the predefined
-patterns to indicate the dataset: "wrds_crsp" for CRSP data, "wrds_compustat" for Compustat data,
-or "wrds_ccm_links" for CCM links data.}
+\item{type}{A string specifying the type of data to download. It should match
+one of the predefined patterns to indicate the dataset: "wrds_crsp" for
+CRSP data, "wrds_compustat" for Compustat data, or "wrds_ccm_links" for CCM
+links data.}
 
-\item{start_date}{A date in 'YYYY-MM-DD' format indicating the start of the period for which data
-is requested.}
+\item{start_date}{A date in 'YYYY-MM-DD' format indicating the start of the
+period for which data is requested.}
 
-\item{end_date}{A date in 'YYYY-MM-DD' format indicating the end of the period for which data
-is requested.}
+\item{end_date}{A date in 'YYYY-MM-DD' format indicating the end of the
+period for which data is requested.}
 }
 \value{
-A data frame containing the requested data, with the structure and contents depending on
-the specified \code{type}.
+A data frame containing the requested data, with the structure and
+contents depending on the specified \code{type}.
 }
 \description{
-This function acts as a wrapper to download data from various WRDS datasets including CRSP,
-Compustat, and CCM links based on the specified type. It is designed to handle different data
-types by redirecting to the appropriate specific data download function.
+This function acts as a wrapper to download data from various WRDS datasets
+including CRSP, Compustat, and CCM links based on the specified type. It is
+designed to handle different data types by redirecting to the appropriate
+specific data download function.
 }
 \examples{
 \dontrun{

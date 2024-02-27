@@ -10,12 +10,13 @@ check_supported_type(type)
 \item{type}{The dataset type to check for support.}
 }
 \value{
-Does not return a value; instead, it either passes silently if the type is supported
-or stops execution with an error message if the type is unsupported.
+Does not return a value; instead, it either passes silently if the
+type is supported or stops execution with an error message if the type is
+unsupported.
 }
 \description{
-This function checks if a given dataset type is supported by verifying against
-a list of all supported dataset types from different domains.
-If the specified type is not supported, it stops execution and returns an error message
-listing all supported types.
+This function checks if a given dataset type is supported by verifying
+against a list of all supported dataset types from different domains. If the
+specified type is not supported, it stops execution and returns an error
+message listing all supported types.
 }

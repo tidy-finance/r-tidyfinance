@@ -7,21 +7,25 @@
 download_data_factors(type, start_date, end_date)
 }
 \arguments{
-\item{type}{The type of dataset to download, indicating the factor model and frequency.}
+\item{type}{The type of dataset to download, indicating the factor model and
+frequency.}
 
-\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD" format.}
+\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD"
+format.}
 
 \item{end_date}{The end date for filtering the data, in "YYYY-MM-DD" format.}
 }
 \value{
-A tibble with processed factor data, including dates, risk-free rates, market excess returns,
-and other factors, filtered by the specified date range.
+A tibble with processed factor data, including dates, risk-free
+rates, market excess returns, and other factors, filtered by the specified
+date range.
 }
 \description{
-Downloads and processes factor data based on the specified type (Fama-French or Global Q),
-and date range. This function delegates to specific functions based on the type of factors requested:
-Fama-French or Global Q. It checks if the specified type is supported before proceeding with
-the download and processing.
+Downloads and processes factor data based on the specified type (Fama-French
+or Global Q), and date range. This function delegates to specific functions
+based on the type of factors requested: Fama-French or Global Q. It checks if
+the specified type is supported before proceeding with the download and
+processing.
 }
 \examples{
 download_data_factors("factors_ff3_monthly", "2000-01-01", "2020-12-31")

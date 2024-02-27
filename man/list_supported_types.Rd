@@ -7,15 +7,16 @@
 list_supported_types()
 }
 \value{
-A tibble aggregating all supported dataset types with columns: \code{type} (the type of dataset),
-\code{dataset_name} (a descriptive name or file name of the dataset), and \code{domain} (the domain to which the
-dataset belongs, e.g., "Global Q", "Fama-French", "Welch-Goyal").
+A tibble aggregating all supported dataset types with columns: \code{type}
+(the type of dataset), \code{dataset_name} (a descriptive name or file name of
+the dataset), and \code{domain} (the domain to which the dataset belongs, e.g.,
+"Global Q", "Fama-French", "Welch-Goyal").
 }
 \description{
-This function aggregates and returns a comprehensive tibble of all supported dataset types
-from different domains. It includes various datasets
-across different frequencies (daily, weekly, monthly, quarterly, annual) and models
-(e.g., q5 factors, Fama/French 3 and 5 factors, macro predictors).
+This function aggregates and returns a comprehensive tibble of all supported
+dataset types from different domains. It includes various datasets across
+different frequencies (daily, weekly, monthly, quarterly, annual) and models
+(e.g., q5 factors, Fama-French 3 and 5 factors, macro predictors).
 }
 \examples{
 list_supported_types()

@@ -9,7 +9,7 @@ list_tidy_finance_chapters()
 \value{
 A character vector where each element is the name of a chapter
 available in the Tidy Finance resource. These names correspond to specific
-chapter in Tidy Finance with R.
+chapters in Tidy Finance with R.
 }
 \description{
 Returns a character vector containing the names of the chapters available in

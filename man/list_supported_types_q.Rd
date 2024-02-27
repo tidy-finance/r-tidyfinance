@@ -8,11 +8,13 @@ list_supported_types_q()
 }
 \value{
 A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
-(the file name of the dataset), and \code{domain} (the domain to which the dataset belongs, always "Global Q").
+(the file name of the dataset), and \code{domain} (the domain to which the
+dataset belongs, always "Global Q").
 }
 \description{
 This function returns a tibble with the supported Global Q dataset types,
-including their names and frequencies (daily, weekly, weekly week-to-week, monthly, quarterly, annual).
-Each dataset type is associated with the Global Q model, specifically the q5 factors model for the year 2022.
-Additionally, it annotates each dataset with the domain "Global Q".
+including their names and frequencies (daily, weekly, weekly week-to-week,
+monthly, quarterly, annual). Each dataset type is associated with the Global
+Q model, specifically the q5 factors model for the year 2022. Additionally,
+it annotates each dataset with the domain "Global Q".
 }
