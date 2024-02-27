@@ -2,6 +2,7 @@
 
 export(assign_portfolio)
 export(create_summary_statistics)
+export(create_wrds_dummy_database)
 export(disconnection_connection)
 export(download_data)
 export(download_data_factors)
