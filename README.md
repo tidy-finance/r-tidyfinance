@@ -8,8 +8,8 @@
 
 This repository contains an R package that collects helper functions for
 developers and researchers familiar with [Tidy Finance with
-R](https://www.tidy-finance.org/r/). The functions provide shortcuts to
-selected issues that the book discusses in detail.
+R](https://www.tidy-finance.org/r/index.html). The functions provide
+shortcuts to selected issues that the book discusses in detail.
 
 ## Installation
 
@@ -33,7 +33,7 @@ pak::pak("tidy-finance/r-tidyfinance")
 
 The main functionality of the `tidyfinance` package centers around data
 download. You can download most of the data that we used in [Tidy
-Finance with R](https://www.tidy-finance.org/r/) using the
+Finance with R](https://www.tidy-finance.org/r/index.html) using the
 `download_data()` function or its children. For instance, both functions
 give the same result:
 
@@ -86,7 +86,7 @@ additional supported types.
 ### Other Helpers
 
 We include functions to check out content from
-[tidy-finance.org](https://www.tidy-finance.org/r):
+[tidy-finance.org](https://www.tidy-finance.org/r/index.html):
 
 ``` r
 list_tidy_finance_chapters()
