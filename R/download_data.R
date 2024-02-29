@@ -522,11 +522,11 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
   if (!(version %in% c("v1", "v2"))) stop("Parameter version must be equal to v1 or v2.")
 
-  con <- get_wrds_connection()
-
   check_if_package_installed("dbplyr", type)
 
   in_schema <- getNamespace("dbplyr")$in_schema
+
+  con <- get_wrds_connection()
 
   if (grepl("crsp_monthly", type)) {
 
@@ -872,7 +872,6 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 #'   (inv), and others.
 #'
 #' @examples
-#'
 #' compustat <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
 #'
 #' @import dplyr
@@ -881,11 +880,11 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 #' @export
 download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
 
-  con <- get_wrds_connection()
-
   check_if_package_installed("dbplyr", type)
 
   in_schema <- getNamespace("dbplyr")$in_schema
+
+  con <- get_wrds_connection()
 
   if (grepl("compustat_annual", type)) {
     funda_db <- tbl(con, in_schema("comp", "funda"))
@@ -963,6 +962,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
 #' ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)
 #'
 #' @import dplyr
+#' @importFrom tidyr replace_na
 #' @importFrom lubridate today
 #'
 #' @export
@@ -970,11 +970,11 @@ download_data_wrds_ccm_links <- function(
     linktype = c("LU", "LC"), linkprim = c("P", "C"), usedflag = 1
   ) {
 
-  con <- get_wrds_connection()
-
   check_if_package_installed("dbplyr", "wrds_ccm_links")
 
   in_schema <- getNamespace("dbplyr")$in_schema
+
+  con <- get_wrds_connection()
 
   ccmxpf_linktable_db <- tbl(con, in_schema("crsp", "ccmxpf_linktable"))
 
@@ -984,7 +984,7 @@ download_data_wrds_ccm_links <- function(
              usedflag == local(usedflag)) |>
     select(permno = lpermno, gvkey, linkdt, linkenddt) |>
     collect() |>
-    mutate(linkenddt = replace_na(linkenddt, lubridate::today()))
+    mutate(linkenddt = tidyr::replace_na(linkenddt, lubridate::today()))
 
   disconnection_connection(con)
 
@@ -1011,11 +1011,11 @@ download_data_wrds_ccm_links <- function(
 #' @export
 download_data_wrds_fisd <- function() {
 
-  con <- get_wrds_connection()
-
   check_if_package_installed("dbplyr", "fisd_mergedissue")
 
   in_schema <- getNamespace("dbplyr")$in_schema
+
+  con <- get_wrds_connection()
 
   fisd_mergedissue_db <- tbl(con, in_schema("fisd", "fisd_mergedissue"))
 
