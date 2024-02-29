@@ -11,12 +11,12 @@ Authors@R: c(
     person(given = "Stefan", 
            family = "Voigt", 
            email = "stefan.voigt@econ.ku.dk", 
-           role = c("aut", "cre"),
+           role = c("aut"),
            comment = c(ORCID = "0000-0001-5619-3161")),
     person(given = "Patrick", 
            family = "Weiss", 
            email = "patrickw@ru.is", 
-           role = c("aut", "cre"),
+           role = c("aut"),
            comment = c(ORCID = "0000-0002-9282-5872"))      
     )
 Description: Helper functions for empirical research in financial economics.

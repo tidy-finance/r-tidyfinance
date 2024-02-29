@@ -8,7 +8,7 @@
 #' @param x A numeric vector to be trimmed.
 #' @param cut The proportion of data to be trimmed from both ends of the
 #'   distribution. For example, a `cut` of 0.05 will remove the lowest and
-#'   highest 5% of the data. Must be inside [0,0.5].
+#'   highest 5% of the data. Must be between \[0, 0.5\].
 #'
 #' @return A numeric vector with the extreme values removed.
 #'

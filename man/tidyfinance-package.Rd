@@ -20,5 +20,11 @@ Useful links:
 \author{
 \strong{Maintainer}: Christoph Scheuch \email{christoph.scheuch@gmail.com} (\href{https://orcid.org/0009-0004-0423-6819}{ORCID})
 
+Authors:
+\itemize{
+  \item Stefan Voigt \email{stefan.voigt@econ.ku.dk} (\href{https://orcid.org/0000-0001-5619-3161}{ORCID})
+  \item Patrick Weiss \email{patrickw@ru.is} (\href{https://orcid.org/0000-0002-9282-5872}{ORCID})
+}
+
 }
 \keyword{internal}

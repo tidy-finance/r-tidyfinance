@@ -11,7 +11,7 @@ trim(x, cut)
 
 \item{cut}{The proportion of data to be trimmed from both ends of the
 distribution. For example, a \code{cut} of 0.05 will remove the lowest and
-highest 5\% of the data. Must be inside \link{0,0.5}.}
+highest 5\% of the data. Must be between [0, 0.5].}
 }
 \value{
 A numeric vector with the extreme values removed.
