@@ -166,8 +166,10 @@ check_supported_type <- function(type) {
 #'   financial metrics, filtered by the specified date range.
 #'
 #' @examples
-#' download_data("factors_ff3_monthly", "2000-01-01", "2020-12-31")
-#' download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
+#' \dontrun{
+#'   download_data("factors_ff3_monthly", "2000-01-01", "2020-12-31")
+#'   download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
+#' }
 #'
 #' @export
 download_data <- function(type, start_date, end_date) {
@@ -209,8 +211,10 @@ download_data <- function(type, start_date, end_date) {
 #'   date range.
 #'
 #' @examples
-#' download_data_factors("factors_ff3_monthly", "2000-01-01", "2020-12-31")
-#' download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
+#' \dontrun{
+#'   download_data_factors("factors_ff3_monthly", "2000-01-01", "2020-12-31")
+#'   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
+#' }
 #'
 #' @export
 download_data_factors <- function(type, start_date, end_date) {
@@ -247,7 +251,9 @@ download_data_factors <- function(type, start_date, end_date) {
 #'   date range.
 #'
 #' @examples
-#' download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")
+#' \dontrun{
+#'   download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")
+#' }
 #'
 #' @import dplyr
 #' @importFrom lubridate ymd floor_date
@@ -309,7 +315,9 @@ download_data_factors_ff <- function(type, start_date, end_date) {
 #'   date range.
 #'
 #' @examples
-#' download_data_factors_q("factors_q5_daily", "2020-01-01", "2020-12-31")
+#' \dontrun{
+#'   download_data_factors_q("factors_q5_daily", "2020-01-01", "2020-12-31")
+#' }
 #'
 #' @import dplyr
 #' @importFrom lubridate ymd
@@ -368,7 +376,9 @@ download_data_factors_q <- function(
 #'   and including financial metrics.
 #'
 #' @examples
-#' download_data_macro_predictors("macro_predictors_monthly", "2000-01-01", "2020-12-31")
+#' \dontrun{
+#'   download_data_macro_predictors("macro_predictors_monthly", "2000-01-01", "2020-12-31")
+#' }
 #'
 #' @import dplyr
 #' @importFrom tidyr drop_na
@@ -508,9 +518,9 @@ download_data_wrds <- function(type, start_date, end_date) {
 #'   selected data type.
 #'
 #' @examples
-#' crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-12-01", "2020-12-31")
 #' \dontrun{
-#' crsp_daily <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
+#'   crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-12-01", "2020-12-31")
+#'   crsp_daily <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
 #' }
 #'
 #' @import dplyr
@@ -872,7 +882,9 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 #'   (inv), and others.
 #'
 #' @examples
-#' compustat <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
+#' \dontrun{
+#'   compustat <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
+#' }
 #'
 #' @import dplyr
 #' @importFrom lubridate year
@@ -959,7 +971,9 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
 #'   dates are replaced with today's date.
 #'
 #' @examples
-#' ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)
+#' \dontrun{
+#'   ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)
+#' }
 #'
 #' @import dplyr
 #' @importFrom tidyr replace_na
@@ -1009,7 +1023,9 @@ download_data_wrds_ccm_links <- function(
 #'   issuer.
 #'
 #' @examples
-#' fisd <- download_data_wrds_fisd()
+#' \dontrun{
+#'   fisd <- download_data_wrds_fisd()
+#' }
 #'
 #' @import dplyr
 #'
@@ -1097,7 +1113,9 @@ download_data_wrds_fisd <- function() {
 #'   information (i.e., price/yield, volume, counterparty, and reporting side).
 #'
 #' @examples
-#' one_bond <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
+#' \dontrun{
+#'   one_bond <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
+#' }
 #'
 #' @import dplyr
 #' @importFrom lubridate as_datetime

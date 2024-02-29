@@ -10,5 +10,5 @@ bibentry(bibtype = "Book",
          year = "2023",
          publisher = "Chapman and Hall/CRC",
          edition = "1st",
-         url = "https://tidy-finance.org/r",
-         doi = "https://doi.org/10.1201/b23237")
+         url = "https://www.tidy-finance.org/r/index.html",
+         doi = "10.1201/b23237")

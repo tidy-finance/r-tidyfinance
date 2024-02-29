@@ -43,9 +43,9 @@ data types. The function also adjusts returns for delisting and calculates
 market capitalization and excess returns over the risk-free rate.
 }
 \examples{
-crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-12-01", "2020-12-31")
 \dontrun{
-crsp_daily <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
+  crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-12-01", "2020-12-31")
+  crsp_daily <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
 }
 
 }

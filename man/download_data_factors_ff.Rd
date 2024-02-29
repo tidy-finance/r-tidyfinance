@@ -29,6 +29,8 @@ including date conversion, scaling factor values, and filtering by the
 specified date range.
 }
 \examples{
-download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")
+\dontrun{
+  download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")
+}
 
 }
