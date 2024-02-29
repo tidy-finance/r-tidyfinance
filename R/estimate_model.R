@@ -32,11 +32,11 @@
 #' single_var_model <- estimate_model(data, "ret_excess ~ mkt_excess")
 #'
 #' # Estimate model with multiple independent variables
-#' multi_var_model <- estimate_model(data, "ret_excess ~ mkt_excess + hmb + sml")
+#' multi_var_model <- estimate_model(data, "ret_excess ~ mkt_excess + smb + hml")
 #'
 #' @export
 #'
-#' @importFrom stats setNames lm reformulate coefficients
+#' @importFrom stats setNames lm as.formula coefficients
 #'
 #' @seealso \code{\link[stats]{lm}} for details on the underlying linear model fitting used.
 estimate_model <- function(data, model, min_obs = 1) {
@@ -59,7 +59,7 @@ estimate_model <- function(data, model, min_obs = 1) {
            paste(missing_vars, collapse=", "), ".")
     }
 
-    fit <- stats::lm(as.formula(model), data = data)
+    fit <- stats::lm(stats::as.formula(model), data = data)
     beta <- stats::coefficients(fit)[names(stats::coefficients(fit)) %in% independent_vars]
 
     if (length(beta) == 1) {

@@ -1,5 +1,5 @@
 bibentry(bibtype = "Book",
-         textVersion = 'Scheuch, Voigt, and Weiss (2023). Tidy Finance with R (1st ed.). Chapman and Hall/CRC. https://doi.org/10.1201/b23237.'
+         textVersion = "Scheuch, Voigt, and Weiss (2023). Tidy Finance with R (1st ed.). Chapman and Hall/CRC. https://doi.org/10.1201/b23237.",
          title = "Tidy Finance with R",
          author = c(person(given = "Christoph",
                            family = "Scheuch"),
