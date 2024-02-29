@@ -793,6 +793,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
         }
       }
 
+      disconnection_connection(con)
+
       processed_data <- bind_rows(crsp_daily_list)
 
     } else {
@@ -838,6 +840,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
         }
       }
+
+      disconnection_connection(con)
 
       processed_data <- bind_rows(crsp_daily_list)
 
@@ -1062,6 +1066,8 @@ download_data_wrds_fisd <- function() {
     filter(country_domicile == "USA") |>
     select(issuer_id, sic_code) |>
     collect()
+
+  disconnection_connection(con)
 
   fisd <- fisd |>
     inner_join(fisd_issuer, join_by(issuer_id))
