@@ -30,7 +30,6 @@ calculates book equity (be), operating profitability (op), and investment
 (inv) for each company.
 }
 \examples{
-
 compustat <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
 
 }
