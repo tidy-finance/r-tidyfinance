@@ -4,7 +4,14 @@
 \alias{download_data_wrds_crsp}
 \title{Download Data from WRDS CRSP}
 \usage{
-download_data_wrds_crsp(type, start_date, end_date, ..., batch_size = 500)
+download_data_wrds_crsp(
+  type,
+  start_date,
+  end_date,
+  batch_size = 500,
+  version = "v2",
+  ...
+)
 }
 \arguments{
 \item{type}{A string specifying the type of CRSP data to download:
@@ -16,10 +23,12 @@ period for which data is requested.}
 \item{end_date}{A Date object or string specifying the end date of the
 period.}
 
-\item{...}{Additional arguments to be passed to underlying functions.}
-
 \item{batch_size}{An optional integer specifying the batch size for
 processing daily data, with a default of 500.}
+
+\item{version}{An optional character specifying which CRSP version to use. "v2" (the default) uses the updated second version of CRSP, and "v1" downloads the legacy version of CRSP.}
+
+\item{...}{Additional arguments to be passed to underlying functions.}
 }
 \value{
 A data frame containing CRSP stock returns, adjusted for delistings,

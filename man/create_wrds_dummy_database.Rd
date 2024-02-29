@@ -7,15 +7,16 @@
 create_wrds_dummy_database(path)
 }
 \arguments{
-\item{path}{The file path where the SQLite database should be saved.
-If not provided, the default path is "data/tidy_finance_r.sqlite".}
+\item{path}{The file path where the SQLite database should be saved. If not
+provided, the default path is "data/tidy_finance_r.sqlite".}
 }
 \value{
 Invisible NULL. Side effect: downloads a file to the specified path.
 }
 \description{
-Downloads the WRDS dummy database from a specified URL and saves it to the specified path.
-If the file already exists, the user is prompted before it is replaced.
+Downloads the WRDS dummy database from the respective Tidy Finance GitHub
+repository and saves it to the specified path. If the file already exists,
+the user is prompted before it is replaced.
 }
 \examples{
 create_wrds_dummy_database(path = "path/to/your/directory/tidy_finance_r.sqlite")

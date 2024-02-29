@@ -633,8 +633,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
     } else {
 
-      msf_db <- tbl(wrds, in_schema("crsp", "msf_v2"))
-      stksecurityinfohist_db <- tbl(wrds, in_schema("crsp", "stksecurityinfohist"))
+      msf_db <- tbl(con, in_schema("crsp", "msf_v2"))
+      stksecurityinfohist_db <- tbl(con, in_schema("crsp", "stksecurityinfohist"))
 
       crsp_monthly <- msf_db |>
         filter(mthcaldt >= start_date & mthcaldt <= end_date) |>
@@ -715,10 +715,10 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
                   join_by(month)
         ) |>
         mutate(
-          ret_excess = ret - rf,
+          ret_excess = ret - risk_free,
           ret_excess = pmax(ret_excess, -1)
         ) |>
-        select(-rf)
+        select(-risk_free)
 
       processed_data <- crsp_monthly |>
         drop_na(ret_excess, mktcap, mktcap_lag)
@@ -797,7 +797,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
     } else {
 
-      dsf_db <- tbl(wrds, in_schema("crsp", "dsf_v2"))
+      dsf_db <- tbl(con, in_schema("crsp", "dsf_v2"))
 
       permnos <- dsf_db |>
         distinct(permno) |>
@@ -1086,7 +1086,10 @@ utils::globalVariables(
     "dlstcd", "dlstdt", "exchcd", "gvkey", "indfmt", "inv", "itcb", "linkdt", "linkenddt",
     "lpermno", "lt", "mktcap", "namedt", "nameendt", "oancf", "permno", "pstk", "pstkl", "pstkrv", "ret",
     "ret_adj", "ret_excess", "risk_free", "sale", "shrcd", "shrout", "siccd", "txdb", "txditc", "xint",
-    "xsga","ret_excess"
+    "xsga","ret_excess",
+    "dlycaldt", "dlyret", "issuertype", "mthcaldt", "mthprc", "mthret", "prc", "primaryexch",
+    "secinfoenddt", "secinfostartdt", "securitysubtype", "securitytype", "sharetype",
+    "usincflg"
   )
 )
 
