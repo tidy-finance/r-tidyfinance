@@ -10,7 +10,8 @@
 #' @return Invisible NULL. Side effect: downloads a file to the specified path.
 #'
 #' @examples
-#' create_wrds_dummy_database(path = "path/to/your/directory/tidy_finance_r.sqlite")
+#' path <- paste0(tempdir(), "/tidy_finance_r.sqlite")
+#' create_wrds_dummy_database(path)
 #'
 #' @export
 create_wrds_dummy_database <- function(path) {
