@@ -24,7 +24,7 @@ securities. It finally returns a data frame with selected fields from the
 \code{fisd_mergedissuer} table for issuers domiciled in the USA.
 }
 \examples{
-\dontrun{
+\donttest{
   fisd <- download_data_wrds_fisd()
 }
 

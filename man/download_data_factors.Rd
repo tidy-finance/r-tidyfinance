@@ -28,7 +28,7 @@ the specified type is supported before proceeding with the download and
 processing.
 }
 \examples{
-\dontrun{
+\donttest{
   download_data_factors("factors_ff3_monthly", "2000-01-01", "2020-12-31")
   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
 }

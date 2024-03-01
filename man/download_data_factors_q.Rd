@@ -37,7 +37,7 @@ The processing includes date conversion, renaming variables to a standardized
 format, scaling factor values, and filtering by the specified date range.
 }
 \examples{
-\dontrun{
+\donttest{
   download_data_factors_q("factors_q5_daily", "2020-01-01", "2020-12-31")
 }
 

@@ -166,7 +166,7 @@ check_supported_type <- function(type) {
 #'   financial metrics, filtered by the specified date range.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   download_data("factors_ff3_monthly", "2000-01-01", "2020-12-31")
 #'   download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
 #' }
@@ -211,7 +211,7 @@ download_data <- function(type, start_date, end_date) {
 #'   date range.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   download_data_factors("factors_ff3_monthly", "2000-01-01", "2020-12-31")
 #'   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
 #' }
@@ -251,7 +251,7 @@ download_data_factors <- function(type, start_date, end_date) {
 #'   date range.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")
 #' }
 #'
@@ -315,7 +315,7 @@ download_data_factors_ff <- function(type, start_date, end_date) {
 #'   date range.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   download_data_factors_q("factors_q5_daily", "2020-01-01", "2020-12-31")
 #' }
 #'
@@ -376,7 +376,7 @@ download_data_factors_q <- function(
 #'   and including financial metrics.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   download_data_macro_predictors("macro_predictors_monthly", "2000-01-01", "2020-12-31")
 #' }
 #'
@@ -469,7 +469,7 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
 #'   contents depending on the specified `type`.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   crsp_monthly <- download_data_wrds("wrds_crsp_monthly", "2000-01-01", "2020-12-31")
 #'   compustat_annual <- download_data_wrds("wrds_compustat_annual", "2000-01-01", "2020-12-31")
 #'   ccm_links <- download_data_wrds("wrds_ccm_links", "2000-01-01", "2020-12-31")
@@ -518,7 +518,7 @@ download_data_wrds <- function(type, start_date, end_date) {
 #'   selected data type.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-12-01", "2020-12-31")
 #'   crsp_daily <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
 #' }
@@ -882,7 +882,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 #'   (inv), and others.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   compustat <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
 #' }
 #'
@@ -971,7 +971,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
 #'   dates are replaced with today's date.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)
 #' }
 #'
@@ -1023,7 +1023,7 @@ download_data_wrds_ccm_links <- function(
 #'   issuer.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   fisd <- download_data_wrds_fisd()
 #' }
 #'
@@ -1113,7 +1113,7 @@ download_data_wrds_fisd <- function() {
 #'   information (i.e., price/yield, volume, counterparty, and reporting side).
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   one_bond <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
 #' }
 #'

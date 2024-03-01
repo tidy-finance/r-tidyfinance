@@ -34,7 +34,7 @@ primacy of the link (\code{linkprim}), and whether to use flagged links
 (\code{usedflag}).
 }
 \examples{
-\dontrun{
+\donttest{
   ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)
 }
 

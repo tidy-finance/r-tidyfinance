@@ -29,7 +29,7 @@ including date conversion, scaling factor values, and filtering by the
 specified date range.
 }
 \examples{
-\dontrun{
+\donttest{
   download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")
 }
 

@@ -36,7 +36,7 @@ processes the raw data into a structured format, calculating additional
 financial metrics and filtering by the specified date range.
 }
 \examples{
-\dontrun{
+\donttest{
   download_data_macro_predictors("macro_predictors_monthly", "2000-01-01", "2020-12-31")
 }
 

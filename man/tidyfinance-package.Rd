@@ -6,7 +6,7 @@
 \alias{tidyfinance-package}
 \title{tidyfinance: Tidy Finance Helper Functions}
 \description{
-Helper functions for empirical research in financial economics. This package covers many topics presented in Tidy Finance with R, visit the book's website (\url{https://www.tidy-finance.org/r/}). The functions provide shortcuts to issues that the book discusses in detail.
+Helper functions for empirical research in financial economics. This package covers many topics presented in "Tidy Finance with R", visit the book's website (\url{https://www.tidy-finance.org/r/}). The functions provide shortcuts to issues that the book discusses in detail.
 }
 \seealso{
 Useful links:

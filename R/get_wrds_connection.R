@@ -16,11 +16,11 @@
 #'   `WRDS_PASSWORD`, respectively, before using this function.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   # Before using this function, set your WRDS credentials:
 #'   # Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")
 #'
-#'   con <- get_wrds_connections()
+#'   con <- get_wrds_connection()
 #'   # Use `con` with DBI-compliant functions to interact with the WRDS database
 #'   # Remember to disconnect after use:
 #'   # disconnect_connection(con)
