@@ -270,7 +270,7 @@ download_data_factors_ff <- function(type, start_date, end_date) {
   factors_ff_types <- list_supported_types_ff()
   dataset <- factors_ff_types$dataset_name[factors_ff_types$type == type]
 
-  raw_data <- download_french_data(dataset)
+  raw_data <- suppressMessages(download_french_data(dataset))
   raw_data <- raw_data$subsets$data[[1]]
 
   if (grepl("monthly", type)) {
@@ -519,7 +519,7 @@ download_data_wrds <- function(type, start_date, end_date) {
 #'
 #' @examples
 #' \donttest{
-#'   crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-12-01", "2020-12-31")
+#'   crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-11-01", "2020-12-31")
 #'   crsp_daily <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
 #' }
 #'
@@ -636,7 +636,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
           ret_excess = ret_adj - risk_free,
           ret_excess = pmax(ret_excess, -1)
         ) |>
-        select(-ret_adj, -risk_free)
+        select(-risk_free, -hml, -smb)
 
       processed_data <- crsp_monthly |>
         drop_na(ret_excess, mktcap, mktcap_lag)
@@ -728,7 +728,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
           ret_excess = ret - risk_free,
           ret_excess = pmax(ret_excess, -1)
         ) |>
-        select(-risk_free)
+        select(-risk_free, -hml, -smb)
 
       processed_data <- crsp_monthly |>
         drop_na(ret_excess, mktcap, mktcap_lag)
@@ -1330,7 +1330,7 @@ utils::globalVariables(
     "xsga","ret_excess",
     "dlycaldt", "dlyret", "issuertype", "mthcaldt", "mthprc", "mthret", "prc", "primaryexch",
     "secinfoenddt", "secinfostartdt", "securitysubtype", "securitytype", "sharetype",
-    "usincflg"
+    "usincflg", "hml", "smb"
   )
 )
 
