@@ -20,7 +20,19 @@ list_supported_types_ff <- function() {
     "factors_ff3_weekly", "Fama/French 3 Factors [Weekly]",
     "factors_ff3_monthly", "Fama/French 3 Factors",
     "factors_ff5_daily", "Fama/French 5 Factors (2x3) [Daily]",
-    "factors_ff5_monthly", "Fama/French 5 Factors (2x3)"
+    "factors_ff5_monthly", "Fama/French 5 Factors (2x3)",
+    "factors_ff_industry_5_monthly", "5 Industry Portfolios",
+    "factors_ff_industry_5_daily", "5 Industry Portfolios [Daily]",
+    "factors_ff_industry_10_monthly", "10 Industry Portfolios",
+    "factors_ff_industry_10_daily", "10 Industry Portfolios [Daily]",
+    "factors_ff_industry_30_monthly", "30 Industry Portfolios",
+    "factors_ff_industry_30_daily", "30 Industry Portfolios [Daily]",
+    "factors_ff_industry_38_monthly", "38 Industry Portfolios",
+    "factors_ff_industry_38_daily", "38 Industry Portfolios [Daily]",
+    "factors_ff_industry_48_monthly", "48 Industry Portfolios",
+    "factors_ff_industry_48_daily", "48 Industry Portfolios [Daily]",
+    "factors_ff_industry_49_monthly", "49 Industry Portfolios",
+    "factors_ff_industry_49_daily", "49 Industry Portfolios [Daily]"
   ) |>
     mutate(domain = "Fama-French")
 }
@@ -253,6 +265,7 @@ download_data_factors <- function(type, start_date, end_date) {
 #' @examples
 #' \donttest{
 #'   download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")
+#'   download_data_factors_ff("factors_ff_industry_10_monthly", "2000-01-01", "2020-12-31")
 #' }
 #'
 #' @import dplyr
@@ -281,14 +294,25 @@ download_data_factors_ff <- function(type, start_date, end_date) {
       mutate(date = lubridate::ymd(date))
   }
 
-  processed_data <-  processed_data |>
-    mutate(
-      across(-c(date), ~as.numeric(.) / 100)
-    ) |>
-    rename_with(tolower) |>
-    rename(mkt_excess = `mkt-rf`) |>
-    filter(date >= start_date & date <= end_date)  |>
-    select(date, risk_free = rf, mkt_excess, everything())
+  if (grepl("industry", type)) {
+    processed_data <- processed_data |>
+      mutate(across(where(is.numeric), ~ . / 100)) |>
+      rename_with(tolower) |>
+      filter(date >= start_date & date <= end_date) |>
+      select(date, everything())
+  } else {
+    processed_data <-  processed_data |>
+      mutate(
+        across(-c(date), ~as.numeric(.) / 100)
+      ) |>
+      rename_with(tolower) |>
+      rename(mkt_excess = `mkt-rf`) |>
+      filter(date >= start_date & date <= end_date)  |>
+      select(date, risk_free = rf, mkt_excess, everything())
+  }
+
+  processed_data <- processed_data |>
+    mutate(across(-date, ~na_if(.,-99.99)))
 
   processed_data
 }
