@@ -688,7 +688,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
           shrout,
           prc = mthprc,
           primaryexch,
-          siccd
+          siccd,
+          ...
         ) |>
         collect() |>
         mutate(
