@@ -294,25 +294,21 @@ download_data_factors_ff <- function(type, start_date, end_date) {
       mutate(date = lubridate::ymd(date))
   }
 
-  if (grepl("industry", type)) {
-    processed_data <- processed_data |>
-      mutate(across(where(is.numeric), ~ . / 100)) |>
-      rename_with(tolower) |>
-      filter(date >= start_date & date <= end_date) |>
+  processed_data <- processed_data |>
+    mutate(
+      across(-date, ~na_if(.,-99.99)),
+      across(-date, ~ . / 100),
+    ) |>
+    rename_with(tolower) |>
+    filter(date >= start_date & date <= end_date)
+
+  processed_data <- if (grepl("industry", type)) {
+    processed_data |>
       select(date, everything())
   } else {
-    processed_data <-  processed_data |>
-      mutate(
-        across(-c(date), ~as.numeric(.) / 100)
-      ) |>
-      rename_with(tolower) |>
-      rename(mkt_excess = `mkt-rf`) |>
-      filter(date >= start_date & date <= end_date)  |>
-      select(date, risk_free = rf, mkt_excess, everything())
+    processed_data |>
+      select(date, risk_free = rf, mkt_excess = `mkt-rf`, everything())
   }
-
-  processed_data <- processed_data |>
-    mutate(across(-date, ~na_if(.,-99.99)))
 
   processed_data
 }

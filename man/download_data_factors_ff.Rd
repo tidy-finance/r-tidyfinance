@@ -31,6 +31,7 @@ specified date range.
 \examples{
 \donttest{
   download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")
+  download_data_factors_ff("factors_ff_industry_10_monthly", "2000-01-01", "2020-12-31")
 }
 
 }
