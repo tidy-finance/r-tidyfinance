@@ -39,10 +39,10 @@ Imports:
     lifecycle
 Suggests:
     frenchdata (>= 0.2.0),
-    readxl (>= 1.0.0),
+    readxl (>= 1.4.0),
     RPostgres (>= 1.4.5),
-    dbplyr (>= 2.0.0),
-    DBI (>= 1.0.0),
+    dbplyr (>= 2.5.0),
+    DBI (>= 1.2.2),
     testthat (>= 3.2.0)
 Encoding: UTF-8
 LazyData: true
