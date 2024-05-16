@@ -1,0 +1,32 @@
+# Set global variables ------------------------------------------------
+utils::globalVariables(
+  c(
+    "date", "rp_div", "dp", "dy", "ep", "de", "svar", "bm", "b/m", "ntis", "tbl", "lty", "ltr",
+    "tms", "dfy", "infl", "AAA", "BAA", "D12", "DATE", "E12", "Index", "IndexDiv", "Rfree",
+    "mkt-rf", "mkt_excess", "rf", "year", "month", "f", "mkt", "yyyymm", "yyyyq", "quarter",
+    "yyyy", "logret",
+    "altprc", "at", "at_lag", "be", "capx", "ceq", "cogs", "consol",
+    "datadate", "datafmt", "dlret",
+    "dlstcd", "dlstdt", "exchcd", "gvkey", "indfmt", "inv", "itcb", "linkdt", "linkenddt",
+    "lpermno", "lt", "mktcap", "namedt", "nameendt", "oancf", "permno", "pstk", "pstkl", "pstkrv", "ret",
+    "ret_adj", "ret_excess", "risk_free", "sale", "shrcd", "shrout", "siccd", "txdb", "txditc", "xint",
+    "xsga","ret_excess",
+    "dlycaldt", "dlyret", "issuertype", "mthcaldt", "mthprc", "mthret", "prc", "primaryexch",
+    "secinfoenddt", "secinfostartdt", "securitysubtype", "securitytype", "sharetype",
+    "usincflg", "hml", "smb",
+    "issuer_id", "sic_code", "country_domicile",
+    "complete_cusip", "maturity", "offering_amt", "offering_date",
+    "dated_date", "interest_frequency", "coupon", "last_interest_date",
+    "issue_id", "security_level", "slob", "security_pledge", "asset_backed",
+    "defeased", "defeased_date", "bond_type", "pay_in_kind","pay_in_kind_exp_date",
+    "yankee", "canadian", "foreign_currency", "coupon_type", "fix_frequency",
+    "coupon_change_indicator", "interest_frequency", "rule_144a",
+    "private_placement", "defaulted", "filing_date", "settlement",
+    "convertible", "exchange", "putable", "unit_deal", "exchangeable",
+    "perpetual", "preferred_security",
+    "cusip_id", "trd_exctn_dt", "trd_exctn_tm",
+    "rptd_pr", "entrd_vol_qt", "yld_pt", "rpt_side_cd", "cntra_mp_id",
+    "asof_cd", "days_to_sttl_ct", "days_to_sttl_ct2", "msg_seq_nb", "orig_msg_seq_nb",
+    "pr_trd_dt", "spcl_trd_fl", "stlmnt_dt", "trc_st", "trd_rpt_dt", "trd_rpt_tm", "wis_fl"
+  )
+)
