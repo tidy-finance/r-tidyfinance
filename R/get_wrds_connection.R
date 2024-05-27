@@ -32,6 +32,10 @@
 #'          information on managing database connections.
 get_wrds_connection <- function() {
 
+  if (Sys.getenv("WRDS_USER") == "" || Sys.getenv("WRDS_PASSWORD") == "") {
+    message("WRDS credentials not found. Please set them using set_wrds_credentials().")
+  }
+
   check_if_package_installed("RPostgres", "wrds_*")
 
   dbConnect <- getNamespace("DBI")$dbConnect
@@ -46,24 +50,4 @@ get_wrds_connection <- function() {
     user = Sys.getenv("WRDS_USER"),
     password = Sys.getenv("WRDS_PASSWORD")
   )
-}
-
-#' Disconnect Database Connection
-#'
-#' This function safely disconnects an established database connection using the
-#' DBI package.
-#'
-#' @param con A database connection object created by DBI::dbConnect or any
-#'   similar function that establishes a connection to a database.
-#' @return A logical value: `TRUE` if disconnection was successful, `FALSE`
-#'   otherwise.
-#'
-#' @export
-disconnection_connection <- function(con) {
-
-  check_if_package_installed("DBI", "wrds_*")
-
-  dbDisconnect <- getNamespace("DBI")$dbDisconnect
-
-  dbDisconnect(con)
 }
