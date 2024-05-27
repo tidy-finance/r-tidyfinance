@@ -152,16 +152,21 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
       crsp_monthly <- msf_db |>
         filter(mthcaldt >= start_date & mthcaldt <= end_date) |>
+        select(-c(siccd, primaryexch, conditionaltype, tradingstatusflg)) |>
         inner_join(
           stksecurityinfohist_db |>
             filter(sharetype == "NS" &
                      securitytype == "EQTY" &
                      securitysubtype == "COM" &
                      usincflg == "Y" &
-                     issuertype %in% c("ACOR", "CORP")) |>
-            select(permno, secinfostartdt, secinfoenddt),
+                     issuertype %in% c("ACOR", "CORP") &
+                     primaryexch %in% c("N", "A", "Q") &
+                     conditionaltype %in% c("RW", "NW") &
+                     tradingstatusflg == "A") |>
+            select(permno, secinfostartdt, secinfoenddt,
+                   primaryexch, siccd),
           join_by(permno)
-        ) |>
+        )  |>
         filter(mthcaldt >= secinfostartdt & mthcaldt <= secinfoenddt) |>
         mutate(month = floor_date(mthcaldt, "month")) |>
         select(
@@ -315,6 +320,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
     } else {
 
       dsf_db <- tbl(con, in_schema("crsp", "dsf_v2"))
+      stksecurityinfohist_db <- tbl(con, in_schema("crsp", "stksecurityinfohist"))
 
       permnos <- dsf_db |>
         distinct(permno) |>
@@ -335,8 +341,22 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
         ]
 
         crsp_daily_sub <- dsf_db |>
-          filter(permno %in% permno_batch &
-                   dlycaldt >= start_date & dlycaldt <= end_date) |>
+          filter(permno %in% permno_batch) |>
+          filter(dlycaldt >= start_date & dlycaldt <= end_date) |>
+          inner_join(
+            stksecurityinfohist_db |>
+              filter(sharetype == "NS" &
+                       securitytype == "EQTY" &
+                       securitysubtype == "COM" &
+                       usincflg == "Y" &
+                       issuertype %in% c("ACOR", "CORP") &
+                       primaryexch %in% c("N", "A", "Q") &
+                       conditionaltype %in% c("RW", "NW") &
+                       tradingstatusflg == "A") |>
+              select(permno, secinfostartdt, secinfoenddt),
+            join_by(permno)
+          ) |>
+          filter(dlycaldt >= secinfostartdt & dlycaldt <= secinfoenddt)  |>
           select(permno, date = dlycaldt, ret = dlyret) |>
           collect() |>
           drop_na()
