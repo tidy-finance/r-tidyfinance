@@ -43,9 +43,12 @@ Suggests:
     RPostgres (>= 1.4.5),
     dbplyr (>= 2.5.0),
     DBI (>= 1.2.2),
-    testthat (>= 3.2.0)
+    testthat (>= 3.2.0),
+    knitr,
+    rmarkdown
 Encoding: UTF-8
 LazyData: true
 Config/testthat/edition: 3
 RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr
