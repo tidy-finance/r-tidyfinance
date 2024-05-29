@@ -27,6 +27,7 @@ utils::globalVariables(
     "cusip_id", "trd_exctn_dt", "trd_exctn_tm",
     "rptd_pr", "entrd_vol_qt", "yld_pt", "rpt_side_cd", "cntra_mp_id",
     "asof_cd", "days_to_sttl_ct", "days_to_sttl_ct2", "msg_seq_nb", "orig_msg_seq_nb",
-    "pr_trd_dt", "spcl_trd_fl", "stlmnt_dt", "trc_st", "trd_rpt_dt", "trd_rpt_tm", "wis_fl"
+    "pr_trd_dt", "spcl_trd_fl", "stlmnt_dt", "trc_st", "trd_rpt_dt", "trd_rpt_tm", "wis_fl",
+    "conditionaltype", "tradingstatusflg"
   )
 )
