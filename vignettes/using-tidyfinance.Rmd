@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-`tidyfinance` is an R package [on CRAN](https://cran.r-project.org/web/packages/tidyfinance/index.html) that contains a set of helper functions for empirical research in financial economics, addressing a variety of topics covered in [Tidy Finance with R](https://www.tidy-finance.org/r/) (TFWR). We designed the package to provide easy shortcuts for the applications that we discuss in the book. If you want to inspect the details of the package or propose new features, feel free to visit the package repository on [Github](https://github.com/tidy-finance/r-tidyfinance).
+`tidyfinance` is an R package [on CRAN](https://CRAN.R-project.org/package=tidyfinance) that contains a set of helper functions for empirical research in financial economics, addressing a variety of topics covered in [Tidy Finance with R](https://www.tidy-finance.org/r/) (TFWR). We designed the package to provide easy shortcuts for the applications that we discuss in the book. If you want to inspect the details of the package or propose new features, feel free to visit the package repository on [Github](https://github.com/tidy-finance/r-tidyfinance).
 
 In this vignette, we demonstrate the features of the initial release. We decided to focus on functions that allow you to download the data that we use in TFWR. 
 
@@ -53,7 +53,7 @@ So, for instance, if you want to download monthly Fama-French Three-Factor data,
 download_data("factors_ff3_monthly", "2020-01-01", "2020-12-31")
 ```
 
-Under the hood, the function uses the `frenchdata` package (see its documentation [here](https://cran.r-project.org/web/packages/frenchdata/index.html)) and applies some cleaning steps, as in TFWR. If you haven't installed `frenchdata` yet, you'll get prompted to install it first before you can download this specific data type. 
+Under the hood, the function uses the `frenchdata` package (see its documentation [here](https://CRAN.R-project.org/package=frenchdata)) and applies some cleaning steps, as in TFWR. If you haven't installed `frenchdata` yet, you'll get prompted to install it first before you can download this specific data type. 
 
 You can also access q-Factor data in this way, by calling:
 
