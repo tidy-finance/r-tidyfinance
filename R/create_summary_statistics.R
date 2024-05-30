@@ -57,7 +57,7 @@ create_summary_statistics <- function(
   }
 
   # Determine set of summary statistics to compute
-  if (detail == FALSE) {
+  if (!detail) {
     funs <- list(
       n = function(x) {sum(!is.na(x))},
       mean = mean, sd = stats::sd,
@@ -89,7 +89,7 @@ create_summary_statistics <- function(
       select(...) |>
       tidyr::pivot_longer(cols = everything(), names_to = "variable")
 
-    if (drop_na == TRUE) {
+    if (drop_na) {
       data_long <- tidyr::drop_na(data_long)
     }
 
@@ -103,7 +103,7 @@ create_summary_statistics <- function(
       select({{ by }}, ...) |>
       tidyr::pivot_longer(cols = -{{ by }}, names_to = "variable")
 
-    if (drop_na == TRUE) {
+    if (drop_na) {
       data_long <- tidyr::drop_na(data_long)
     }
 
@@ -115,9 +115,9 @@ create_summary_statistics <- function(
 }
 
 quantile_na_handler <- function(x, probs) {
-  if (any(is.na(x))) {
-    return(rep(as.double(NA)))
+  if (anyNA(x)) {
+    NA_real_
   } else {
-    return(as.double(stats::quantile(x, probs = probs)))
+    unname(stats::quantile(x, probs = probs))
   }
 }

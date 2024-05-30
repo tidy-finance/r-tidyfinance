@@ -42,7 +42,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
   con <- get_wrds_connection()
 
-  if (grepl("crsp_monthly", type)) {
+  if (grepl("crsp_monthly", type, fixed = TRUE)) {
 
     if (version == "v1") {
 
@@ -245,7 +245,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
     }
   }
 
-  if (grepl("crsp_daily", type)) {
+  if (grepl("crsp_daily", type, fixed = TRUE)) {
 
     if (version == "v1") {
 

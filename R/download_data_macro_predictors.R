@@ -46,12 +46,12 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
     quiet = TRUE
   )
 
-  if (grepl("monthly", type)) {
+  if (grepl("monthly", type, fixed = TRUE)) {
     raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Monthly"))
     processed_data <- raw_data |>
       mutate(date = lubridate::ym(yyyymm))
   }
-  if (grepl("quarterly", type)) {
+  if (grepl("quarterly", type, fixed = TRUE)) {
     raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Quarterly"))
     processed_data <- raw_data |>
       mutate(
@@ -61,7 +61,7 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
         date = as.Date(paste0(year, "-", month, "-01"))
       )
   }
-  if (grepl("annual", type)) {
+  if (grepl("annual", type, fixed = TRUE)) {
     raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Annual"))
     processed_data <- raw_data |>
       mutate(date = as.Date(paste0(yyyy, "-01-01")))
