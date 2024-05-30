@@ -160,7 +160,7 @@ download_data_factors_q <- function(
 
   processed_data <- processed_data |>
     rename_with(~sub("R_", "", ., fixed = TRUE)) |>
-    rename_with(~tolower(.)) |>
+    rename_with(tolower) |>
     mutate(across(-date, ~. / 100)) |>
     filter(date >= start_date & date <= end_date) |>
     select(date, risk_free = f, mkt_excess = mkt, everything())
