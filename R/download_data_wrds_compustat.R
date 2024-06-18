@@ -34,7 +34,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
 
   con <- get_wrds_connection()
 
-  if (grepl("compustat_annual", type)) {
+  if (grepl("compustat_annual", type, fixed = TRUE)) {
     funda_db <- tbl(con, in_schema("comp", "funda"))
 
     compustat <- funda_db |>

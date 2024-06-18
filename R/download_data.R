@@ -26,15 +26,15 @@ download_data <- function(type, start_date, end_date) {
 
   check_supported_type(type)
 
-  if (grepl("factors", type)) {
+  if (grepl("factors", type, fixed = TRUE)) {
     processed_data <- download_data_factors(type, start_date, end_date)
   }
 
-  if (grepl("macro_predictors", type)) {
+  if (grepl("macro_predictors", type, fixed = TRUE)) {
     processed_data <- download_data_macro_predictors(type, start_date, end_date)
   }
 
-  if (grepl("wrds", type)) {
+  if (grepl("wrds", type, fixed = TRUE)) {
     processed_data <- download_data_wrds(type, start_date, end_date)
   }
 

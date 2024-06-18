@@ -40,7 +40,7 @@
 #'
 #' @seealso \code{\link[stats]{lm}} for details on the underlying linear model fitting used.
 estimate_model <- function(data, model, min_obs = 1) {
-  model_parts <- strsplit(model, "~")[[1]]
+  model_parts <- strsplit(model, "~", fixed = TRUE)[[1]]
   response_var <- trimws(model_parts[1])
   independent_vars <- strsplit(trimws(model_parts[2]), "[ +]")[[1]]
   independent_vars <- independent_vars[independent_vars != ""]
@@ -48,7 +48,7 @@ estimate_model <- function(data, model, min_obs = 1) {
   if (nrow(data) < min_obs) {
     beta <- stats::setNames(as.numeric(rep(NA, length(independent_vars))), independent_vars)
     if (length(beta) == 1) {
-      return(as.numeric(NA))
+      return(NA_real_)
     } else {
       return(data.frame(t(beta)))
     }
