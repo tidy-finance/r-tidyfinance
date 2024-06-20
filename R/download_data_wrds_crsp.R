@@ -140,7 +140,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
           ret_excess = ret_adj - risk_free,
           ret_excess = pmax(ret_excess, -1)
         ) |>
-        select(-risk_free, -hml, -smb)
+        select(-risk_free, -mkt_excess, -hml, -smb)
 
       processed_data <- crsp_monthly |>
         drop_na(ret_excess, mktcap, mktcap_lag)
@@ -238,7 +238,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
           ret_excess = ret - risk_free,
           ret_excess = pmax(ret_excess, -1)
         ) |>
-        select(-risk_free, -hml, -smb)
+        select(-risk_free, -mkt_excess, -hml, -smb)
 
       processed_data <- crsp_monthly |>
         drop_na(ret_excess, mktcap, mktcap_lag)
@@ -309,7 +309,6 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
               ret_excess = pmax(ret_excess, -1)
             ) |>
             select(permno, date, month, ret, ret_excess)
-
         }
       }
 
@@ -372,7 +371,6 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
               ret_excess = pmax(ret_excess, -1)
             ) |>
             select(permno, date, month, ret, ret_excess)
-
         }
       }
 
