@@ -4,6 +4,13 @@
 # tidyfinance
 
 <!-- badges: start -->
+
+[![](https://www.r-pkg.org/badges/version/tidyfinance)](https://cran.r-project.org/package=tidyfinance)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/tidyfinance)](https://cran.r-project.org/package=tidyfinance)
+[![Project Status: Active - The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![](https://img.shields.io/badge/devel%20version-0.2.0.9000-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
 <!-- badges: end -->
 
 This repository contains an R package that collects helper functions for
