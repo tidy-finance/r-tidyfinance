@@ -52,8 +52,9 @@ create_summary_statistics <- function(
     sapply(class)
 
   if(sum(col_types %in% c("numeric", "integer", "logical")) < length(col_types)) {
-    stop(paste0("The following columns are neither numeric nor integer: ",
-                paste(names(col_types[!col_types %in% c("numeric", "integer", "logical")]), collapse = ", ")))
+    stop("The following columns are neither numeric nor integer: ",
+         toString(names(col_types[!col_types %in% c("numeric", "integer", "logical")]))
+    )
   }
 
   # Determine set of summary statistics to compute

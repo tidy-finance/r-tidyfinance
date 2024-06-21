@@ -34,6 +34,9 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
 
   con <- get_wrds_connection()
 
+  start_date <- as.Date(start_date)
+  end_date <- as.Date(end_date)
+
   if (grepl("compustat_annual", type, fixed = TRUE)) {
     funda_db <- tbl(con, in_schema("comp", "funda"))
 
@@ -42,7 +45,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
         indfmt == "INDL" &
           datafmt == "STD" &
           consol == "C" &
-          datadate >= start_date & datadate <= end_date
+          between(datadate, start_date, end_date)
       ) |>
       select(
         gvkey, datadate, seq, ceq, at, lt, txditc,

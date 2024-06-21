@@ -37,7 +37,11 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
 
   read_xlsx <- getNamespace("readxl")$read_xlsx
 
+  start_date <- as.Date(start_date)
+  end_date <- as.Date(end_date)
+
   temporary_file <- tempfile()
+  on.exit(unlink(temporary_file), add = TRUE)
 
   utils::download.file(
     url = paste0(url, "/export?format=xlsx"),
@@ -68,25 +72,25 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
   }
 
   processed_data <- processed_data |>
-    mutate(across(where(is.character), as.numeric)) |>
     mutate(
+      across(where(is.character), as.numeric),
       IndexDiv = Index + D12,
       logret = log(IndexDiv) - log(lag(IndexDiv)),
       rp_div = lead(logret - Rfree, 1),
-      dp = log(D12) - log(Index),
-      dy = log(D12) - log(lag(Index)),
-      ep = log(E12) - log(Index),
-      de = log(D12) - log(E12),
+      log_d12 = log(D12),
+      log_e12 = log(E12),
+      dp = log_d12 - log(Index),
+      dy = log_d12 - log(lag(Index)),
+      ep = log_e12 - log(Index),
+      de = log_d12 - log_e12,
       tms = lty - tbl,
       dfy = BAA - AAA
     ) |>
     select(date, rp_div, dp, dy, ep, de, svar, bm = `b/m`, ntis, tbl, lty, ltr,
            tms, dfy, infl
     ) |>
-    filter(date >= start_date & date <= end_date) |>
+    filter(between(date, start_date, end_date)) |>
     tidyr::drop_na()
-
-  file.remove(temporary_file)
 
   processed_data
 }
