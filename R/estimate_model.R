@@ -56,7 +56,7 @@ estimate_model <- function(data, model, min_obs = 1) {
     if (!all(independent_vars %in% names(data))) {
       missing_vars <- independent_vars[!independent_vars %in% names(data)]
       stop("The following independent variables are missing in the data: ",
-           paste(missing_vars, collapse=", "), ".")
+           toString(missing_vars), ".")
     }
 
     fit <- stats::lm(stats::as.formula(model), data = data)

@@ -34,8 +34,10 @@ download_data_wrds_clean_trace <- function(cusips, start_date, end_date) {
   trace_enhanced_db <- tbl(con, in_schema("trace", "trace_enhanced"))
 
   trace_all <- trace_enhanced_db |>
-    filter(cusip_id %in% cusips) |>
-    filter(trd_exctn_dt >= start_date & trd_exctn_dt <= end_date) |>
+    filter(
+      cusip_id %in% cusips,
+      between(trd_exctn_dt, start_date, end_date)
+    ) |>
     select(cusip_id, msg_seq_nb, orig_msg_seq_nb,
            entrd_vol_qt, rptd_pr, yld_pt, rpt_side_cd, cntra_mp_id,
            trd_exctn_dt, trd_exctn_tm, trd_rpt_dt, trd_rpt_tm,

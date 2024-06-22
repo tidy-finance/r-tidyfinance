@@ -15,6 +15,6 @@ check_supported_type <- function(type) {
   supported_types <- list_supported_types()
   if (!any(type %in% supported_types$type)) {
     stop("Unsupported type specified. Choose one of the following: ",
-         paste(supported_types$type, collapse = ", "))
+         toString(supported_types$type))
   }
 }
