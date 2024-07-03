@@ -119,22 +119,44 @@ list_supported_types_wrds <- function() {
 #' different frequencies (daily, weekly, monthly, quarterly, annual) and models
 #' (e.g., q5 factors, Fama-French 3 and 5 factors, macro predictors).
 #'
+#' @param domain A character vector to filter for domain specific types
+#'   (e.g. c("WRDS", "Fama-French"))
+#' @param as_vector Logical indicating whether types should be returned as a
+#'   character vector instead of data frame.
+#'
 #' @return A tibble aggregating all supported dataset types with columns: `type`
 #'   (the type of dataset), `dataset_name` (a descriptive name or file name of
 #'   the dataset), and `domain` (the domain to which the dataset belongs, e.g.,
 #'   "Global Q", "Fama-French", "Goyal-Welch").
 #'
 #' @examples
+#' # List all supported types as a data frame
 #' list_supported_types()
 #'
-#' @importFrom dplyr bind_rows
+#' # Filter by domain
+#' list_supported_types(domain = "WRDS")
+#'
+#' # List supported types as a vector
+#' list_supported_types(as_vector = TRUE)
+#'
+#' @importFrom dplyr bind_rows filter
 #'
 #' @export
-list_supported_types <- function() {
-  dplyr::bind_rows(
+list_supported_types <- function(domain = NULL, as_vector = FALSE) {
+  supported_types <- dplyr::bind_rows(
     list_supported_types_q(),
     list_supported_types_ff(),
     list_supported_types_macro_predictors(),
     list_supported_types_wrds()
   )
+  if (!is.null(domain)) {
+    filter_domains <- domain
+    supported_types <- supported_types |>
+      dplyr::filter(.data$domain %in% filter_domains)
+  }
+  if (as_vector) {
+    supported_types$type
+  } else {
+    supported_types
+  }
 }
