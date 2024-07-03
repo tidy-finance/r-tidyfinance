@@ -4,7 +4,14 @@
 \alias{list_supported_types}
 \title{List All Supported Dataset Types}
 \usage{
-list_supported_types()
+list_supported_types(domain = NULL, as_vector = FALSE)
+}
+\arguments{
+\item{domain}{A character vector to filter for domain specific types
+(e.g. c("WRDS", "Fama-French"))}
+
+\item{as_vector}{Logical indicating whether types should be returned as a
+character vector instead of data frame.}
 }
 \value{
 A tibble aggregating all supported dataset types with columns: \code{type}
@@ -19,6 +26,13 @@ different frequencies (daily, weekly, monthly, quarterly, annual) and models
 (e.g., q5 factors, Fama-French 3 and 5 factors, macro predictors).
 }
 \examples{
+# List all supported types as a data frame
 list_supported_types()
+
+# Filter by domain
+list_supported_types(domain = "WRDS")
+
+# List supported types as a vector
+list_supported_types(as_vector = TRUE)
 
 }

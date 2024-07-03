@@ -29,7 +29,7 @@
 #'
 #'   # Add additional columns
 #'   download_data_wrds_crsp("wrds_crsp_monthly", "2020-11-01", "2020-12-31",
-#'                           additional_columns = c("mthcol", "mthvolflg"))
+#'                           additional_columns = c("mthvol", "mthvolflg"))
 #' }
 #'
 #' @import dplyr
