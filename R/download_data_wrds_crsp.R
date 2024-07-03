@@ -7,14 +7,15 @@
 #'
 #' @param type A string specifying the type of CRSP data to download:
 #'   "crsp_monthly" or "crsp_daily".
-#' @param start_date A Date object or string specifying the start date of the
-#'   period for which data is requested.
-#' @param end_date A Date object or string specifying the end date of the
-#'   period.
+#' @param start_date The start date for the data retrieval in "YYYY-MM-DD" format.
+#' @param end_date The end date for the data retrieval in "YYYY-MM-DD" format.
 #' @param batch_size An optional integer specifying the batch size for
 #'   processing daily data, with a default of 500.
-#' @param version An optional character specifying which CRSP version to use. "v2" (the default) uses the updated second version of CRSP, and "v1" downloads the legacy version of CRSP.
-#' @param ... Additional arguments to be passed to underlying functions.
+#' @param version An optional character specifying which CRSP version to use.
+#'   "v2" (the default) uses the updated second version of CRSP, and "v1"
+#'   downloads the legacy version of CRSP.
+#' @param additional_columns Additional columns from the CRSP monthly or
+#'   daily data as a character vector.
 #'
 #' @return A data frame containing CRSP stock returns, adjusted for delistings,
 #'   along with calculated market capitalization and excess returns over the
@@ -25,6 +26,10 @@
 #' \donttest{
 #'   crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-11-01", "2020-12-31")
 #'   crsp_daily <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
+#'
+#'   # Add additional columns
+#'   download_data_wrds_crsp("wrds_crsp_monthly", "2020-11-01", "2020-12-31",
+#'                           additional_columns = c("mthcol", "mthvolflg"))
 #' }
 #'
 #' @import dplyr
@@ -32,7 +37,7 @@
 #' @import lubridate
 #'
 #' @export
-download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500, version = "v2", ...) {
+download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500, version = "v2", additional_columns = NULL) {
 
   if (!(version %in% c("v1", "v2"))) stop("Parameter version must be equal to v1 or v2.")
 
@@ -71,7 +76,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
         select(
           permno, date, month, ret, shrout, altprc,
           exchcd, siccd, dlret, dlstcd,
-          ...
+          additional_columns
         ) |>
         collect() |>
         mutate(
@@ -180,7 +185,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
           prc = mthprc,
           primaryexch,
           siccd,
-          ...
+          additional_columns
         ) |>
         collect() |>
         mutate(
@@ -276,7 +281,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
         crsp_daily_sub <- dsf_db |>
           filter(permno %in% permno_batch) |>
-          select(permno, date, ret) |>
+          select(permno, date, ret, additional_columns) |>
           collect() |>
           drop_na()
 
@@ -310,7 +315,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
               ret_excess = ret - risk_free,
               ret_excess = pmax(ret_excess, -1)
             ) |>
-            select(permno, date, month, ret, ret_excess)
+            select(-risk_free)
         }
       }
 
@@ -360,7 +365,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
             join_by(permno)
           ) |>
           filter(between(dlycaldt, secinfostartdt, secinfoenddt))  |>
-          select(permno, date = dlycaldt, ret = dlyret) |>
+          select(permno, date = dlycaldt, ret = dlyret, additional_columns) |>
           collect() |>
           drop_na()
 
@@ -374,7 +379,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
               ret_excess = ret - risk_free,
               ret_excess = pmax(ret_excess, -1)
             ) |>
-            select(permno, date, month, ret, ret_excess)
+            select(-risk_free)
         }
       }
 

@@ -5,8 +5,7 @@
 #' The trade data is cleaned as suggested by Dick-Nielsen (2009, 2014).
 #'
 #' @param cusips A character vector specifying the 9-digit CUSIPs to download.
-#' @param start_date The start date for filtering the data, in "YYYY-MM-DD"
-#'   format.
+#' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
 #' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
 #'
 #' @return A data frame containing the cleaned trade messages from TRACE for the

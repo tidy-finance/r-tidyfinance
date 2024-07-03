@@ -9,8 +9,7 @@ download_data_wrds_clean_trace(cusips, start_date, end_date)
 \arguments{
 \item{cusips}{A character vector specifying the 9-digit CUSIPs to download.}
 
-\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD"
-format.}
+\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD" format.}
 
 \item{end_date}{The end date for filtering the data, in "YYYY-MM-DD" format.}
 }
