@@ -37,6 +37,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
   if (!(version %in% c("v1", "v2"))) stop("Parameter version must be equal to v1 or v2.")
 
   check_if_package_installed("dbplyr", type)
+  start_date <- as.Date(start_date)
+  end_date <- as.Date(end_date)
 
   in_schema <- getNamespace("dbplyr")$in_schema
 
@@ -51,14 +53,14 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
       msedelist_db <- tbl(con, in_schema("crsp", "msedelist"))
 
       crsp_monthly <- msf_db |>
-        filter(date >= start_date & date <= end_date) |>
+        filter(between(date, start_date, end_date)) |>
         inner_join(
           msenames_db |>
             filter(shrcd %in% c(10, 11)) |>
             select(permno, exchcd, siccd, namedt, nameendt),
           join_by(permno)
         ) |>
-        filter(date >= namedt & date <= nameendt) |>
+        filter(between(date, namedt, nameendt)) |>
         mutate(month = floor_date(date, "month")) |>
         left_join(
           msedelist_db |>
@@ -151,7 +153,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
       stksecurityinfohist_db <- tbl(con, in_schema("crsp", "stksecurityinfohist"))
 
       crsp_monthly <- msf_db |>
-        filter(mthcaldt >= start_date & mthcaldt <= end_date) |>
+        filter(between(mthcaldt, start_date, end_date)) |>
         select(-c(siccd, primaryexch, conditionaltype, tradingstatusflg)) |>
         inner_join(
           stksecurityinfohist_db |>
@@ -167,7 +169,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
                    primaryexch, siccd),
           join_by(permno)
         )  |>
-        filter(mthcaldt >= secinfostartdt & mthcaldt <= secinfoenddt) |>
+        filter(between(mthcaldt, secinfostartdt, secinfoenddt)) |>
         mutate(month = floor_date(mthcaldt, "month")) |>
         select(
           permno,
@@ -250,7 +252,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
     if (version == "v1") {
 
       dsf_db <- tbl(con, in_schema("crsp", "dsf")) |>
-        filter(date >= start_date & date <= end_date)
+        filter(between(date, start_date, end_date))
       msenames_db <- tbl(con, in_schema("crsp", "msenames"))
       msedelist_db <- tbl(con, in_schema("crsp", "msedelist"))
 
@@ -340,8 +342,10 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
         ]
 
         crsp_daily_sub <- dsf_db |>
-          filter(permno %in% permno_batch) |>
-          filter(dlycaldt >= start_date & dlycaldt <= end_date) |>
+          filter(
+            permno %in% permno_batch,
+            between(dlycaldt, start_date, end_date)
+          ) |>
           inner_join(
             stksecurityinfohist_db |>
               filter(sharetype == "NS" &
@@ -355,7 +359,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
               select(permno, secinfostartdt, secinfoenddt),
             join_by(permno)
           ) |>
-          filter(dlycaldt >= secinfostartdt & dlycaldt <= secinfoenddt)  |>
+          filter(between(dlycaldt, secinfostartdt, secinfoenddt))  |>
           select(permno, date = dlycaldt, ret = dlyret) |>
           collect() |>
           drop_na()
