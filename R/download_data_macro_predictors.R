@@ -9,8 +9,7 @@
 #'
 #' @param type The type of dataset to download ("macro_predictors_monthly",
 #'   "macro_predictors_quarterly", "macro_predictors_annual").
-#' @param start_date The start date for filtering the data, in "YYYY-MM-DD"
-#'   format.
+#' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
 #' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
 #' @param url The URL from which to download the dataset, with a default Google
 #'   Sheets export link.

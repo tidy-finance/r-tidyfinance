@@ -4,18 +4,22 @@
 \alias{download_data_wrds_compustat}
 \title{Download Data from WRDS Compustat}
 \usage{
-download_data_wrds_compustat(type, start_date, end_date, ...)
+download_data_wrds_compustat(
+  type,
+  start_date,
+  end_date,
+  additional_columns = NULL
+)
 }
 \arguments{
 \item{type}{The type of financial data to download.}
 
-\item{start_date}{The start date for the data retrieval in "YYYY-MM-DD"
-format.}
+\item{start_date}{The start date for the data retrieval in "YYYY-MM-DD" format.}
 
 \item{end_date}{The end date for the data retrieval in "YYYY-MM-DD" format.}
 
-\item{...}{Additional Compustat variables that should be added from the raw
-data.}
+\item{additional_columns}{Additional columns from the Compustat table
+as a character vector.}
 }
 \value{
 A data frame with financial data for the specified period, including
@@ -32,6 +36,10 @@ calculates book equity (be), operating profitability (op), and investment
 \examples{
 \donttest{
   compustat <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
+
+  # Add additional columns
+  download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31",
+                               additional_columns = c("aodo", "aldo"))
 }
 
 }

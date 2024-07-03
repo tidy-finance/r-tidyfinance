@@ -15,8 +15,7 @@ download_data_macro_predictors(
 \item{type}{The type of dataset to download ("macro_predictors_monthly",
 "macro_predictors_quarterly", "macro_predictors_annual").}
 
-\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD"
-format.}
+\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD" format.}
 
 \item{end_date}{The end date for filtering the data, in "YYYY-MM-DD" format.}
 

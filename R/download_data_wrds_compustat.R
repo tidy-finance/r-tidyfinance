@@ -7,11 +7,10 @@
 #' (inv) for each company.
 #'
 #' @param type The type of financial data to download.
-#' @param start_date The start date for the data retrieval in "YYYY-MM-DD"
-#'   format.
+#' @param start_date The start date for the data retrieval in "YYYY-MM-DD" format.
 #' @param end_date The end date for the data retrieval in "YYYY-MM-DD" format.
-#' @param ... Additional Compustat variables that should be added from the raw
-#'   data.
+#' @param additional_columns Additional columns from the Compustat table
+#'   as a character vector.
 #'
 #' @return A data frame with financial data for the specified period, including
 #'   variables for book equity (be), operating profitability (op), investment
@@ -20,13 +19,17 @@
 #' @examples
 #' \donttest{
 #'   compustat <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
+#'
+#'   # Add additional columns
+#'   download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31",
+#'                                additional_columns = c("aodo", "aldo"))
 #' }
 #'
 #' @import dplyr
 #' @importFrom lubridate year
 #'
 #' @export
-download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
+download_data_wrds_compustat <- function(type, start_date, end_date, additional_columns = NULL) {
 
   check_if_package_installed("dbplyr", type)
 
@@ -51,7 +54,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, ...) {
         gvkey, datadate, seq, ceq, at, lt, txditc,
         txdb, itcb, pstkrv, pstkl, pstk, capx, oancf,
         sale, cogs, xint, xsga,
-        ...
+        additional_columns
       ) |>
       collect()
 
