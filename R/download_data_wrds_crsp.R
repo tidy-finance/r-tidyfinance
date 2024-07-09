@@ -366,8 +366,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
                        issuertype %in% c("ACOR", "CORP") &
                        primaryexch %in% c("N", "A", "Q") &
                        conditionaltype %in% c("RW", "NW") &
-                       tradingstatusflg == "A") |>
-              select(permno, secinfostartdt, secinfoenddt),
+                       tradingstatusflg == "A"),
             join_by(permno)
           ) |>
           filter(between(dlycaldt, secinfostartdt, secinfoenddt))  |>
