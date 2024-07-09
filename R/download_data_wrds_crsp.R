@@ -281,6 +281,12 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
         crsp_daily_sub <- dsf_db |>
           filter(permno %in% permno_batch) |>
+          inner_join(
+            msenames_db |>
+              filter(shrcd %in% c(10, 11)),
+            join_by(permno)
+          ) |>
+          filter(between(date, namedt, nameendt)) |>
           select(permno, date, ret, additional_columns) |>
           collect() |>
           drop_na()
