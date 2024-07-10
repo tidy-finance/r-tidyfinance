@@ -336,7 +336,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
     } else {
 
-      dsf_db <- tbl(con, in_schema("crsp", "dsf_v2"))
+      dsf_db <- tbl(con, in_schema("crsp", "dsf_v2")) |>
+        filter(between(dlycaldt, start_date, end_date))
       stksecurityinfohist_db <- tbl(con, in_schema("crsp", "stksecurityinfohist"))
 
       dsf_db_columns <- c("permno", colnames(dsf_db)[-which(colnames(dsf_db) %in% colnames(stksecurityinfohist_db))])
@@ -360,10 +361,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
         ]
 
         crsp_daily_sub <- dsf_db |>
-          filter(
-            permno %in% permno_batch,
-            between(dlycaldt, start_date, end_date)
-          ) |>
+          filter(permno %in% permno_batch) |>
           select(all_of(dsf_db_columns)) |>
           inner_join(
             stksecurityinfohist_db |>
