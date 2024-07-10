@@ -78,7 +78,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
         select(
           permno, date, month, ret, shrout, altprc,
           exchcd, siccd, dlret, dlstcd,
-          additional_columns
+          all_of(additional_columns)
         ) |>
         collect() |>
         mutate(
@@ -187,7 +187,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
           prc = mthprc,
           primaryexch,
           siccd,
-          additional_columns
+          all_of(additional_columns)
         ) |>
         collect() |>
         mutate(
@@ -292,7 +292,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
             join_by(permno)
           ) |>
           filter(between(date, namedt, nameendt)) |>
-          select(permno, date, ret, additional_columns) |>
+          select(permno, date, ret,
+                 all_of(additional_columns)) |>
           collect() |>
           drop_na(permno, date, ret)
 
@@ -376,7 +377,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
             join_by(permno)
           ) |>
           filter(between(dlycaldt, secinfostartdt, secinfoenddt))  |>
-          select(permno, date = dlycaldt, ret = dlyret, additional_columns) |>
+          select(permno, date = dlycaldt, ret = dlyret,
+                 all_of(additional_columns)) |>
           collect() |>
           drop_na(permno, date, ret)
 
