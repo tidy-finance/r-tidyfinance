@@ -58,6 +58,8 @@ download_data_wrds_compustat <- function(type, start_date, end_date, additional_
       ) |>
       collect()
 
+    disconnection_connection(con)
+
     compustat <- compustat |>
       mutate(
         be = coalesce(seq, ceq + pstk, at - lt) +
@@ -85,9 +87,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, additional_
         inv = at / at_lag - 1,
         inv = if_else(at_lag <= 0, NA, inv)
       )
-
-    disconnection_connection(con)
-
-    processed_data
   }
+
+  processed_data
 }
