@@ -57,12 +57,14 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
       msenames_db <- tbl(con, in_schema("crsp", "msenames"))
       msedelist_db <- tbl(con, in_schema("crsp", "msedelist"))
 
+      msf_db_columns <- c("permno", colnames(msf_db)[-which(colnames(msf_db) %in% colnames(msenames_db))])
+
       crsp_monthly <- msf_db |>
         filter(between(date, start_date, end_date)) |>
+        select(all_of(msf_db_columns)) |>
         inner_join(
           msenames_db |>
-            filter(shrcd %in% c(10, 11)) |>
-            select(permno, exchcd, siccd, namedt, nameendt),
+            filter(shrcd %in% c(10, 11)),
           join_by(permno)
         ) |>
         filter(between(date, namedt, nameendt)) |>
@@ -157,9 +159,11 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
       msf_db <- tbl(con, in_schema("crsp", "msf_v2"))
       stksecurityinfohist_db <- tbl(con, in_schema("crsp", "stksecurityinfohist"))
 
+      msf_db_columns <- c("permno", colnames(msf_db)[-which(colnames(msf_db) %in% colnames(stksecurityinfohist_db))])
+
       crsp_monthly <- msf_db |>
         filter(between(mthcaldt, start_date, end_date)) |>
-        select(-c(siccd, primaryexch, conditionaltype, tradingstatusflg)) |>
+        select(all_of(msf_db_columns)) |>
         inner_join(
           stksecurityinfohist_db |>
             filter(sharetype == "NS" &
@@ -169,9 +173,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
                      issuertype %in% c("ACOR", "CORP") &
                      primaryexch %in% c("N", "A", "Q") &
                      conditionaltype %in% c("RW", "NW") &
-                     tradingstatusflg == "A") |>
-            select(permno, secinfostartdt, secinfoenddt,
-                   primaryexch, siccd),
+                     tradingstatusflg == "A"),
           join_by(permno)
         )  |>
         filter(between(mthcaldt, secinfostartdt, secinfoenddt)) |>
@@ -261,6 +263,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
       msenames_db <- tbl(con, in_schema("crsp", "msenames"))
       msedelist_db <- tbl(con, in_schema("crsp", "msedelist"))
 
+      dsf_db_columns <- c("permno", colnames(dsf_db)[-which(colnames(dsf_db) %in% colnames(msenames_db))])
+
       permnos <- dsf_db |>
         distinct(permno) |>
         pull()
@@ -281,6 +285,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
         crsp_daily_sub <- dsf_db |>
           filter(permno %in% permno_batch) |>
+          select(all_of(dsf_db_columns)) |>
           inner_join(
             msenames_db |>
               filter(shrcd %in% c(10, 11)),
@@ -334,6 +339,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
       dsf_db <- tbl(con, in_schema("crsp", "dsf_v2"))
       stksecurityinfohist_db <- tbl(con, in_schema("crsp", "stksecurityinfohist"))
 
+      dsf_db_columns <- c("permno", colnames(dsf_db)[-which(colnames(dsf_db) %in% colnames(stksecurityinfohist_db))])
+
       permnos <- dsf_db |>
         distinct(permno) |>
         pull()
@@ -357,6 +364,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
             permno %in% permno_batch,
             between(dlycaldt, start_date, end_date)
           ) |>
+          select(all_of(dsf_db_columns)) |>
           inner_join(
             stksecurityinfohist_db |>
               filter(sharetype == "NS" &
