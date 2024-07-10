@@ -86,14 +86,17 @@ download_data_factors_ff <- function(type, start_date, end_date) {
   if (grepl("monthly", type, fixed = TRUE)) {
     processed_data <- raw_data |>
       mutate(date = lubridate::floor_date(lubridate::ymd(paste0(date, "01")), "month"))
-  } else {
+  } else if (grepl("daily|weekly", type, fixed = TRUE)) {
     processed_data <- raw_data |>
       mutate(date = lubridate::ymd(date))
+  } else {
+    stop("This data type has neither daily, weekly, nor monthly frequency.")
   }
 
   processed_data <- processed_data |>
     mutate(
       across(-date, ~na_if(.,-99.99)),
+      across(-date, ~na_if(., -999)),
       across(-date, ~ . / 100)
     ) |>
     rename_with(tolower) |>
