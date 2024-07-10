@@ -289,7 +289,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
           filter(between(date, namedt, nameendt)) |>
           select(permno, date, ret, additional_columns) |>
           collect() |>
-          drop_na()
+          drop_na(permno, date, ret)
 
         if (nrow(crsp_daily_sub) > 0) {
 
@@ -372,7 +372,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
           filter(between(dlycaldt, secinfostartdt, secinfoenddt))  |>
           select(permno, date = dlycaldt, ret = dlyret, additional_columns) |>
           collect() |>
-          drop_na()
+          drop_na(permno, date, ret)
 
         if (nrow(crsp_daily_sub) > 0) {
 
