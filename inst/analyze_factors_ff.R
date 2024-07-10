@@ -22,9 +22,16 @@ for (j in 1:nrow(data_sets_raw)) {
   })
 }
 
+data_sets_columns <- bind_rows(out)
+
 bind_rows(out) |>
   count(columns) |>
-  arrange(-n)
+  arrange(-n) |>
+  mutate(columns_cleaned = gsub("rf", "risk_free", gsub("-rf", "_excess", gsub(" ", "_", tolower(columns))))) |>
+  View()
 
 # For instance this does not work, seems that CSV has a differenent format
 frenchdata::download_french_data("100 Portfolios Formed on Size and Operating Profitability (10 x 10) [ex. Dividends]")
+
+# Here the columns are also messed up and include > and <=
+frenchdata::download_french_data("BE/ME Breakpoints")$subsets$data[[1]]

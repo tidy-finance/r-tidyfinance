@@ -93,22 +93,19 @@ download_data_factors_ff <- function(type, start_date, end_date) {
     stop("This data type has neither daily, weekly, nor monthly frequency.")
   }
 
+  # Transform column values
   processed_data <- processed_data |>
     mutate(
       across(-date, ~na_if(.,-99.99)),
       across(-date, ~na_if(., -999)),
       across(-date, ~ . / 100)
     ) |>
-    rename_with(tolower) |>
     filter(between(date, start_date, end_date))
 
-  processed_data <- if (grepl("industry", type, fixed = TRUE) | grepl("raw", type, fixed = TRUE)) {
-    processed_data |>
-      select(date, everything())
-  } else {
-    processed_data |>
-      select(date, risk_free = rf, mkt_excess = `mkt-rf`, everything())
-  }
+  # Clean column names
+  colnames_raw <- colnames(processed_data)
+  colnames_clean <- gsub("rf", "risk_free", gsub("-rf", "_excess", gsub(" ", "_", tolower(colnames_raw))))
+  colnames(processed_data) <- colnames_clean
 
   processed_data
 }
