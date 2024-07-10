@@ -49,6 +49,7 @@ data_sets_types <- data_sets_raw |>
          type = if_else(!grepl("weekly|daily", type), paste0(type, "_monthly"), type),
          type = gsub("booktomarket", "bm", type),
          type = gsub("operating_profitability", "ob", type),
+         type = gsub("ex_dividend", "exdividend", type),
          type = gsub("investment", "inv", type),
          type = paste0("factors_ff_", type))
 
