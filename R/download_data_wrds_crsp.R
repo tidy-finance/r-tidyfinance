@@ -57,12 +57,14 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
       msenames_db <- tbl(con, in_schema("crsp", "msenames"))
       msedelist_db <- tbl(con, in_schema("crsp", "msedelist"))
 
+      msf_db_columns <- c("permno", colnames(msf_db)[-which(colnames(msf_db) %in% colnames(msenames_db))])
+
       crsp_monthly <- msf_db |>
         filter(between(date, start_date, end_date)) |>
+        select(all_of(msf_db_columns)) |>
         inner_join(
           msenames_db |>
-            filter(shrcd %in% c(10, 11)) |>
-            select(permno, exchcd, siccd, namedt, nameendt),
+            filter(shrcd %in% c(10, 11)),
           join_by(permno)
         ) |>
         filter(between(date, namedt, nameendt)) |>
@@ -76,7 +78,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
         select(
           permno, date, month, ret, shrout, altprc,
           exchcd, siccd, dlret, dlstcd,
-          additional_columns
+          all_of(additional_columns)
         ) |>
         collect() |>
         mutate(
@@ -157,9 +159,11 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
       msf_db <- tbl(con, in_schema("crsp", "msf_v2"))
       stksecurityinfohist_db <- tbl(con, in_schema("crsp", "stksecurityinfohist"))
 
+      msf_db_columns <- c("permno", colnames(msf_db)[-which(colnames(msf_db) %in% colnames(stksecurityinfohist_db))])
+
       crsp_monthly <- msf_db |>
         filter(between(mthcaldt, start_date, end_date)) |>
-        select(-c(siccd, primaryexch, conditionaltype, tradingstatusflg)) |>
+        select(all_of(msf_db_columns)) |>
         inner_join(
           stksecurityinfohist_db |>
             filter(sharetype == "NS" &
@@ -169,9 +173,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
                      issuertype %in% c("ACOR", "CORP") &
                      primaryexch %in% c("N", "A", "Q") &
                      conditionaltype %in% c("RW", "NW") &
-                     tradingstatusflg == "A") |>
-            select(permno, secinfostartdt, secinfoenddt,
-                   primaryexch, siccd),
+                     tradingstatusflg == "A"),
           join_by(permno)
         )  |>
         filter(between(mthcaldt, secinfostartdt, secinfoenddt)) |>
@@ -185,7 +187,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
           prc = mthprc,
           primaryexch,
           siccd,
-          additional_columns
+          all_of(additional_columns)
         ) |>
         collect() |>
         mutate(
@@ -261,6 +263,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
       msenames_db <- tbl(con, in_schema("crsp", "msenames"))
       msedelist_db <- tbl(con, in_schema("crsp", "msedelist"))
 
+      dsf_db_columns <- c("permno", colnames(dsf_db)[-which(colnames(dsf_db) %in% colnames(msenames_db))])
+
       permnos <- dsf_db |>
         distinct(permno) |>
         pull()
@@ -281,9 +285,17 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
         crsp_daily_sub <- dsf_db |>
           filter(permno %in% permno_batch) |>
-          select(permno, date, ret, additional_columns) |>
+          select(all_of(dsf_db_columns)) |>
+          inner_join(
+            msenames_db |>
+              filter(shrcd %in% c(10, 11)),
+            join_by(permno)
+          ) |>
+          filter(between(date, namedt, nameendt)) |>
+          select(permno, date, ret,
+                 all_of(additional_columns)) |>
           collect() |>
-          drop_na()
+          drop_na(permno, date, ret)
 
         if (nrow(crsp_daily_sub) > 0) {
 
@@ -325,8 +337,11 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
     } else {
 
-      dsf_db <- tbl(con, in_schema("crsp", "dsf_v2"))
+      dsf_db <- tbl(con, in_schema("crsp", "dsf_v2")) |>
+        filter(between(dlycaldt, start_date, end_date))
       stksecurityinfohist_db <- tbl(con, in_schema("crsp", "stksecurityinfohist"))
+
+      dsf_db_columns <- c("permno", colnames(dsf_db)[-which(colnames(dsf_db) %in% colnames(stksecurityinfohist_db))])
 
       permnos <- dsf_db |>
         distinct(permno) |>
@@ -347,10 +362,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
         ]
 
         crsp_daily_sub <- dsf_db |>
-          filter(
-            permno %in% permno_batch,
-            between(dlycaldt, start_date, end_date)
-          ) |>
+          filter(permno %in% permno_batch) |>
+          select(all_of(dsf_db_columns)) |>
           inner_join(
             stksecurityinfohist_db |>
               filter(sharetype == "NS" &
@@ -360,14 +373,14 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
                        issuertype %in% c("ACOR", "CORP") &
                        primaryexch %in% c("N", "A", "Q") &
                        conditionaltype %in% c("RW", "NW") &
-                       tradingstatusflg == "A") |>
-              select(permno, secinfostartdt, secinfoenddt),
+                       tradingstatusflg == "A"),
             join_by(permno)
           ) |>
           filter(between(dlycaldt, secinfostartdt, secinfoenddt))  |>
-          select(permno, date = dlycaldt, ret = dlyret, additional_columns) |>
+          select(permno, date = dlycaldt, ret = dlyret,
+                 all_of(additional_columns)) |>
           collect() |>
-          drop_na()
+          drop_na(permno, date, ret)
 
         if (nrow(crsp_daily_sub) > 0) {
 
