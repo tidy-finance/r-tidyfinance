@@ -47,6 +47,9 @@ data_sets_types <- data_sets_raw |>
          type = stringr::str_replace_all(type, " ","_"),
          type = stringr::str_to_lower(type),
          type = if_else(!grepl("weekly|daily", type), paste0(type, "_monthly"), type),
+         type = gsub("booktomarket", "bm", type),
+         type = gsub("operating_profitability", "ob", type),
+         type = gsub("investment", "inv", type),
          type = paste0("factors_ff_", type))
 
 length(unique(data_sets_types$name)) == length(unique(data_sets_types$type))
