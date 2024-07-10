@@ -35,3 +35,18 @@ frenchdata::download_french_data("100 Portfolios Formed on Size and Operating Pr
 
 # Here the columns are also messed up and include > and <=
 frenchdata::download_french_data("BE/ME Breakpoints")$subsets$data[[1]]
+
+# Create types out of data set names
+
+data_sets_types <- data_sets_raw |>
+  distinct(name) |>
+  mutate(type = stringr::str_remove(name, "Fama/French "),
+         type = stringr::str_remove(type, " Factors"),
+         type = stringr::str_remove(type, "Portfolios Formed on "),
+         type = stringr::str_remove_all(type, "[[:punct:]]"),
+         type = stringr::str_replace_all(type, " ","_"),
+         type = stringr::str_to_lower(type),
+         type = if_else(!grepl("weekly|daily", type), paste0(type, "_monthly"), type),
+         type = paste0("factors_ff_", type))
+
+length(unique(data_sets_types$name)) == length(unique(data_sets_types$type))
