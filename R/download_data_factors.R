@@ -103,8 +103,11 @@ download_data_factors_ff <- function(type, start_date, end_date) {
     filter(between(date, start_date, end_date))
 
   # Clean column names
-  colnames_raw <- colnames(processed_data)
-  colnames_clean <- gsub("rf", "risk_free", gsub("-rf", "_excess", gsub(" ", "_", tolower(colnames_raw))))
+  colnames_clean <- colnames(processed_data) |>
+    tolower() |>
+    gsub("-rf", "_excess", x = _) |>
+    gsub("rf", "risk_free", x = _)
+
   colnames(processed_data) <- colnames_clean
 
   processed_data
