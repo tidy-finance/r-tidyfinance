@@ -99,7 +99,7 @@ download_data_factors_ff <- function(type, start_date, end_date) {
     rename_with(tolower) |>
     filter(between(date, start_date, end_date))
 
-  processed_data <- if (grepl("industry", type, fixed = TRUE)) {
+  processed_data <- if (grepl("industry", type, fixed = TRUE) | grepl("raw", type, fixed = TRUE)) {
     processed_data |>
       select(date, everything())
   } else {
