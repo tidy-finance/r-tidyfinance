@@ -4,16 +4,17 @@
 \alias{download_data_factors_ff}
 \title{Download and Process Fama-French Factor Data}
 \usage{
-download_data_factors_ff(type, start_date, end_date)
+download_data_factors_ff(type, start_date = NULL, end_date = NULL)
 }
 \arguments{
 \item{type}{The type of dataset to download, corresponding to the specific
 Fama-French model and frequency.}
 
-\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD"
-format.}
+\item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
+specifying the start date for the data. If not provided, the full dataset is returned.}
 
-\item{end_date}{The end date for filtering the data, in "YYYY-MM-DD" format.}
+\item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
+specifying the end date for the data. If not provided, the full dataset is returned.}
 }
 \value{
 A tibble with processed factor data, including the date, risk-free

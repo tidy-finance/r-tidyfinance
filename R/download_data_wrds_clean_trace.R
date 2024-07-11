@@ -5,8 +5,10 @@
 #' The trade data is cleaned as suggested by Dick-Nielsen (2009, 2014).
 #'
 #' @param cusips A character vector specifying the 9-digit CUSIPs to download.
-#' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
-#' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
+#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the start date for the data. If not provided, a subset of the dataset is returned.
+#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the end date for the data. If not provided, a subset of the dataset is returned.
 #'
 #' @return A data frame containing the cleaned trade messages from TRACE for the
 #'   selected CUSIPs over the time window specified. Output variables include
@@ -22,11 +24,22 @@
 #' @importFrom lubridate as_datetime
 #'
 #' @export
-download_data_wrds_clean_trace <- function(cusips, start_date, end_date) {
+download_data_wrds_clean_trace <- function(
+    cusips, start_date = NULL, end_date = NULL
+  ){
 
   check_if_package_installed("dbplyr", "clean_trace")
-
   in_schema <- getNamespace("dbplyr")$in_schema
+
+  if (is.null(start_date) || is.null(end_date)) {
+    start_date <- Sys.Date() - 720
+    end_date <- Sys.Date() - 365
+    message("No start_date or end_date provided. Using the range ",
+            start_date, " to ", end_date, " to avoid downloading large amounts of data.")
+  } else {
+    start_date <- as.Date(start_date)
+    end_date <- as.Date(end_date)
+  }
 
   con <- get_wrds_connection()
 

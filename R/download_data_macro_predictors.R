@@ -9,8 +9,10 @@
 #'
 #' @param type The type of dataset to download ("macro_predictors_monthly",
 #'   "macro_predictors_quarterly", "macro_predictors_annual").
-#' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
-#' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
+#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the start date for the data. If not provided, the full dataset is returned.
+#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the end date for the data. If not provided, the full dataset is returned.
 #' @param url The URL from which to download the dataset, with a default Google
 #'   Sheets export link.
 #'
@@ -28,16 +30,21 @@
 #' @importFrom utils download.file
 #'
 #' @export
-download_data_macro_predictors <- function(type, start_date, end_date, url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP") {
+download_data_macro_predictors <- function(
+    type, start_date = NULL, end_date = NULL, url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP"
+  ) {
 
   check_supported_type(type)
 
   check_if_package_installed("readxl", type)
-
   read_xlsx <- getNamespace("readxl")$read_xlsx
 
-  start_date <- as.Date(start_date)
-  end_date <- as.Date(end_date)
+  if (is.null(start_date) || is.null(end_date)) {
+    message("No start_date or end_date provided. Returning the full data set.")
+  } else {
+    start_date <- as.Date(start_date)
+    end_date <- as.Date(end_date)
+  }
 
   temporary_file <- tempfile()
   on.exit(unlink(temporary_file), add = TRUE)
@@ -88,8 +95,12 @@ download_data_macro_predictors <- function(type, start_date, end_date, url = "ht
     select(date, rp_div, dp, dy, ep, de, svar, bm = `b/m`, ntis, tbl, lty, ltr,
            tms, dfy, infl
     ) |>
-    filter(between(date, start_date, end_date)) |>
     tidyr::drop_na()
+
+  if (!is.null(start_date) && !is.null(end_date)) {
+    processed_data <- processed_data |>
+      filter(between(date, start_date, end_date))
+  }
 
   processed_data
 }

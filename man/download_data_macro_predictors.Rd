@@ -6,8 +6,8 @@
 \usage{
 download_data_macro_predictors(
   type,
-  start_date,
-  end_date,
+  start_date = NULL,
+  end_date = NULL,
   url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP"
 )
 }
@@ -15,9 +15,11 @@ download_data_macro_predictors(
 \item{type}{The type of dataset to download ("macro_predictors_monthly",
 "macro_predictors_quarterly", "macro_predictors_annual").}
 
-\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD" format.}
+\item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
+specifying the start date for the data. If not provided, the full dataset is returned.}
 
-\item{end_date}{The end date for filtering the data, in "YYYY-MM-DD" format.}
+\item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
+specifying the end date for the data. If not provided, the full dataset is returned.}
 
 \item{url}{The URL from which to download the dataset, with a default Google
 Sheets export link.}

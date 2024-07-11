@@ -7,8 +7,10 @@
 #' (inv) for each company.
 #'
 #' @param type The type of financial data to download.
-#' @param start_date The start date for the data retrieval in "YYYY-MM-DD" format.
-#' @param end_date The end date for the data retrieval in "YYYY-MM-DD" format.
+#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the start date for the data. If not provided, a subset of the dataset is returned.
+#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the end date for the data. If not provided, a subset of the dataset is returned.
 #' @param additional_columns Additional columns from the Compustat table
 #'   as a character vector.
 #'
@@ -29,16 +31,24 @@
 #' @importFrom lubridate year
 #'
 #' @export
-download_data_wrds_compustat <- function(type, start_date, end_date, additional_columns = NULL) {
+download_data_wrds_compustat <- function(
+    type, start_date = NULL, end_date = NULL, additional_columns = NULL
+  ) {
 
   check_if_package_installed("dbplyr", type)
-
   in_schema <- getNamespace("dbplyr")$in_schema
 
-  con <- get_wrds_connection()
+  if (is.null(start_date) || is.null(end_date)) {
+    start_date <- Sys.Date() - 720
+    end_date <- Sys.Date() - 365
+    message("No start_date or end_date provided. Using the range ",
+            start_date, " to ", end_date, " to avoid downloading large amounts of data.")
+  } else {
+    start_date <- as.Date(start_date)
+    end_date <- as.Date(end_date)
+  }
 
-  start_date <- as.Date(start_date)
-  end_date <- as.Date(end_date)
+  con <- get_wrds_connection()
 
   if (grepl("compustat_annual", type, fixed = TRUE)) {
     funda_db <- tbl(con, in_schema("comp", "funda"))
