@@ -89,5 +89,42 @@ download_data_wrds_compustat <- function(type, start_date, end_date, additional_
       )
   }
 
+  if (grepl("compustat_quarterly", type, fixed = TRUE)) {
+    fundq_db <- tbl(con, in_schema("comp", "fundq"))
+
+    compustat <- fundq_db |>
+      filter(
+        indfmt == "INDL" &
+          datafmt == "STD" &
+          consol == "C" &
+          between(datadate, start_date, end_date)
+      ) |>
+      select(
+        gvkey, datadate, rdq, fqtr, fyearq,
+        all_of(additional_columns)
+      ) |>
+      collect()
+
+    disconnection_connection(con)
+
+    compustat <- compustat |>
+      drop_na(fqtr)|>
+      mutate(date = ceiling_date(datadate, "quarter") %m-% months(1),
+             timepoint = paste0(fyearq, fqtr)) |>
+      group_by(gvkey, timepoint) |>
+      filter(datadate == max(datadate)) |>
+      ungroup() |>
+      filter(if_else(is.na(rdq), TRUE, date < rdq)) |>
+      arrange(gvkey, datadate) |>
+      add_count(gvkey, date) |>
+      filter(n == 1) |>
+      select(-n)
+
+    processed_data <- compustat |>
+      select(gvkey, datadate, date,
+             all_of(additional_columns))
+
+  }
+
   processed_data
 }
