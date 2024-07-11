@@ -18,7 +18,7 @@
 #'
 #' @examples
 #' \donttest{
-#'   download_data_factors("factors_ff3_monthly", "2000-01-01", "2020-12-31")
+#'   download_data_factors("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
 #'   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
 #' }
 #'
@@ -45,6 +45,11 @@ download_data_factors <- function(type, start_date, end_date) {
 #' download the data. It processes the raw data into a structured format,
 #' including date conversion, scaling factor values, and filtering by the
 #' specified date range.
+#'
+#' If there are multiple tables in the raw Fama-French data (e.g., value-weighted
+#' and equal-weighted returns), then the function only returns the first table
+#' because these are the most popular. Please use the `frenchdata` package
+#' directly if you need less commonly used tables.
 #'
 #' @param type The type of dataset to download, corresponding to the specific
 #'   Fama-French model and frequency.
@@ -86,26 +91,29 @@ download_data_factors_ff <- function(type, start_date, end_date) {
   if (grepl("monthly", type, fixed = TRUE)) {
     processed_data <- raw_data |>
       mutate(date = lubridate::floor_date(lubridate::ymd(paste0(date, "01")), "month"))
-  } else {
+  } else if (grepl("daily|weekly", type, fixed = TRUE)) {
     processed_data <- raw_data |>
       mutate(date = lubridate::ymd(date))
+  } else {
+    stop("This data type has neither daily, weekly, nor monthly frequency.")
   }
 
+  # Transform column values
   processed_data <- processed_data |>
     mutate(
       across(-date, ~na_if(.,-99.99)),
+      across(-date, ~na_if(., -999)),
       across(-date, ~ . / 100)
     ) |>
-    rename_with(tolower) |>
     filter(between(date, start_date, end_date))
 
-  processed_data <- if (grepl("industry", type, fixed = TRUE)) {
-    processed_data |>
-      select(date, everything())
-  } else {
-    processed_data |>
-      select(date, risk_free = rf, mkt_excess = `mkt-rf`, everything())
-  }
+  # Clean column names
+  colnames_clean <- colnames(processed_data) |>
+    tolower() |>
+    gsub("-rf", "_excess", x = _) |>
+    gsub("rf", "risk_free", x = _)
+
+  colnames(processed_data) <- colnames_clean
 
   processed_data
 }

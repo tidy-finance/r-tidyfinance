@@ -28,6 +28,12 @@ download the data. It processes the raw data into a structured format,
 including date conversion, scaling factor values, and filtering by the
 specified date range.
 }
+\details{
+If there are multiple tables in the raw Fama-French data (e.g., value-weighted
+and equal-weighted returns), then the function only returns the first table
+because these are the most popular. Please use the \code{frenchdata} package
+directly if you need less commonly used tables.
+}
 \examples{
 \donttest{
   download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")

@@ -50,7 +50,7 @@ list_supported_types()
 So, for instance, if you want to download monthly Fama-French Three-Factor data, you can call:
 ```{r}
 #| message: false
-download_data("factors_ff3_monthly", "2020-01-01", "2020-12-31")
+download_data("factors_ff_3_monthly", "2020-01-01", "2020-12-31")
 ```
 
 Under the hood, the function uses the `frenchdata` package (see its documentation [here](https://CRAN.R-project.org/package=frenchdata)) and applies some cleaning steps, as in TFWR. If you haven't installed `frenchdata` yet, you'll get prompted to install it first before you can download this specific data type. 
@@ -61,7 +61,7 @@ You can also access q-Factor data in this way, by calling:
 download_data("factors_q5_daily", "2020-01-01", "2020-12-31")
 ```
 
-To ensure that we can extend the functionality of the download functions for specific types, we also provide domain-specific download functions. The `download_data("factors_ff3_monthly")` actually calls `download_data_factors("factors_ff3_monthly")`, which in turn calls `download_data_factors_ff("factors_ff3_monthly")`. Why did we decide to have these nested function approach?
+To ensure that we can extend the functionality of the download functions for specific types, we also provide domain-specific download functions. The `download_data("factors_ff_3_monthly")` actually calls `download_data_factors("factors_ff_3_monthly")`, which in turn calls `download_data_factors_ff("factors_ff_3_monthly")`. Why did we decide to have these nested function approach?
 
 Suppose that the q-Factor data changes its URL path and our original function does not work anymore. In this case, you can replace the default `url` value in `download_data_factors_q(type, start_date, end_date, url)` to apply the usual cleaning steps. 
 

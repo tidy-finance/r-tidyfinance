@@ -27,7 +27,7 @@ appropriate function for downloading and processing the data.
 }
 \examples{
 \donttest{
-  download_data("factors_ff3_monthly", "2000-01-01", "2020-12-31")
+  download_data("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
   download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
 }
 
