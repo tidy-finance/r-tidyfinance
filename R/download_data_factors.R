@@ -46,6 +46,11 @@ download_data_factors <- function(type, start_date, end_date) {
 #' including date conversion, scaling factor values, and filtering by the
 #' specified date range.
 #'
+#' If there are multiple tables in the raw Fama-French data (e.g., value-weighted
+#' and equal-weighted returns), then the function only returns the first table
+#' because these are the most popular. Please use the `frenchdata` package
+#' directly if you need less commonly used tables.
+#'
 #' @param type The type of dataset to download, corresponding to the specific
 #'   Fama-French model and frequency.
 #' @param start_date The start date for filtering the data, in "YYYY-MM-DD"
