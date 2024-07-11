@@ -134,13 +134,13 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
         )) |>
         select(-c(dlret, dlstcd))
 
-      factors_ff3_monthly <- download_data_factors_ff(
-        "factors_ff3_monthly", start_date, end_date
+      factors_ff_3_monthly <- download_data_factors_ff(
+        "factors_ff_3_monthly", start_date, end_date
       ) |>
         rename(month = date)
 
       crsp_monthly <- crsp_monthly |>
-        left_join(factors_ff3_monthly,
+        left_join(factors_ff_3_monthly,
                   join_by(month)
         ) |>
         mutate(
@@ -232,13 +232,13 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
           .default = "Missing"
         ))
 
-      factors_ff3_monthly <- download_data_factors_ff(
-        "factors_ff3_monthly", start_date, end_date
+      factors_ff_3_monthly <- download_data_factors_ff(
+        "factors_ff_3_monthly", start_date, end_date
       ) |>
         rename(month = date)
 
       crsp_monthly <- crsp_monthly |>
-        left_join(factors_ff3_monthly,
+        left_join(factors_ff_3_monthly,
                   join_by(month)
         ) |>
         mutate(
@@ -265,8 +265,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
         distinct(permno) |>
         pull()
 
-      factors_ff3_daily <- download_data_factors_ff(
-        "factors_ff3_daily", start_date, end_date
+      factors_ff_3_daily <- download_data_factors_ff(
+        "factors_ff_3_daily", start_date, end_date
       )
 
       batches <- ceiling(length(permnos) / batch_size)
@@ -309,7 +309,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
           crsp_daily_list[[j]] <- crsp_daily_sub |>
             mutate(month = floor_date(date, "month")) |>
-            left_join(factors_ff3_daily |>
+            left_join(factors_ff_3_daily |>
                         select(date, risk_free), join_by(date)) |>
             mutate(
               ret_excess = ret - risk_free,
@@ -332,8 +332,8 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
         distinct(permno) |>
         pull()
 
-      factors_ff3_daily <- download_data_factors_ff(
-        "factors_ff3_daily", start_date, end_date
+      factors_ff_3_daily <- download_data_factors_ff(
+        "factors_ff_3_daily", start_date, end_date
       )
 
       batches <- ceiling(length(permnos) / batch_size)
@@ -373,7 +373,7 @@ download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500
 
           crsp_daily_list[[j]] <- crsp_daily_sub |>
             mutate(month = floor_date(date, "month")) |>
-            left_join(factors_ff3_daily |>
+            left_join(factors_ff_3_daily |>
                         select(date, risk_free), join_by(date)) |>
             mutate(
               ret_excess = ret - risk_free,

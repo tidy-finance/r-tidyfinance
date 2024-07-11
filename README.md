@@ -46,13 +46,13 @@ give the same result:
 
 ``` r
 download_data(
-  type = "factors_ff3_monthly", 
+  type = "factors_ff_3_monthly", 
   start_date = "2000-01-01", 
   end_date = "2020-12-31"
 )
 
 download_data_factors_ff(
-  type = "factors_ff3_monthly", 
+  type = "factors_ff_3_monthly", 
   start_date = "2000-01-01", 
   end_date = "2020-12-31"
 )
