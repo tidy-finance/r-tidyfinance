@@ -54,7 +54,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, additional_
         gvkey, datadate, seq, ceq, at, lt, txditc,
         txdb, itcb, pstkrv, pstkl, pstk, capx, oancf,
         sale, cogs, xint, xsga,
-        additional_columns
+        all_of(additional_columns)
       ) |>
       collect()
 
