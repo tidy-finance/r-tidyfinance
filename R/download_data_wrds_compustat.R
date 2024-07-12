@@ -119,7 +119,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, additional_
       filter(if_else(is.na(rdq), TRUE, date < rdq))
 
     processed_data <- compustat |>
-      select(gvkey, datadate, date,
+      select(gvkey, datadate, date, atq, ceqq,
              all_of(additional_columns))
 
   }
