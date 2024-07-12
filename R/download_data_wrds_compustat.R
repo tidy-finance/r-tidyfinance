@@ -114,12 +114,9 @@ download_data_wrds_compustat <- function(type, start_date, end_date, additional_
       mutate(date = ceiling_date(datadate, "quarter") %m-% months(1)) |>
       group_by(gvkey, fyearq, fqtr) |>
       filter(datadate == max(datadate)) |>
+      slice_head(n = 1) |>
       ungroup() |>
-      filter(if_else(is.na(rdq), TRUE, date < rdq)) |>
-      arrange(gvkey, datadate) |>
-      add_count(gvkey, date) |>
-      filter(n == 1) |>
-      select(-n)
+      filter(if_else(is.na(rdq), TRUE, date < rdq))
 
     processed_data <- compustat |>
       select(gvkey, datadate, date,
