@@ -335,7 +335,8 @@ list_supported_types_ff <- function() {
                    "factors_ff_4_emerging_market_bm__and_op_2_x_2___monthly",                "4 Emerging Market Portfolios Formed on Book-to-Market  and Operating Profitability (2 x 2)  ",
                      "factors_ff_4_emerging_market_op_and_inv_2_x_2_monthly",                       "4 Emerging Market Portfolios Formed on Operating Profitability and Investment (2 x 2)",
                      "factors_ff_4_emerging_market_bm_and_inv_2_x_2_monthly",                                "4 Emerging Market Portfolios Formed on Book-to-Market and Investment (2 x 2)"
-     )
+     ) |>
+    mutate(domain = "Fama-French")
 }
 
 #' List Supported Global Q Dataset Types
