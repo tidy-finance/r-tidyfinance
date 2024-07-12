@@ -32,8 +32,8 @@ download_data_wrds_clean_trace <- function(
   in_schema <- getNamespace("dbplyr")$in_schema
 
   if (is.null(start_date) || is.null(end_date)) {
-    start_date <- Sys.Date() - 720
-    end_date <- Sys.Date() - 365
+    start_date <- Sys.Date() %m-% years(2)
+    end_date <- Sys.Date() %m-% years(1)
     message("No start_date or end_date provided. Using the range ",
             start_date, " to ", end_date, " to avoid downloading large amounts of data.")
   } else {

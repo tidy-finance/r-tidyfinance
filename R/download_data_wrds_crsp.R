@@ -49,15 +49,15 @@ download_data_wrds_crsp <- function(
   }
 
   if (!(version %in% c("v1", "v2"))) {
-    stop("Parameter 'versionÄ must be a character equal to 'v1' or 'v2'.")
+    stop("Parameter 'version' must be a character equal to 'v1' or 'v2'.")
   }
 
   check_if_package_installed("dbplyr", type)
   in_schema <- getNamespace("dbplyr")$in_schema
 
   if (is.null(start_date) || is.null(end_date)) {
-    start_date <- Sys.Date() - 720
-    end_date <- Sys.Date() - 365
+    start_date <- Sys.Date() %m-% years(2)
+    end_date <- Sys.Date() %m-% years(1)
     message("No start_date or end_date provided. Using the range ",
             start_date, " to ", end_date, " to avoid downloading large amounts of data.")
   } else {
