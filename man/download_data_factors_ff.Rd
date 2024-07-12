@@ -22,7 +22,7 @@ date range.
 }
 \description{
 Downloads and processes Fama-French factor data based on the specified type
-(e.g., "factors_ff3_monthly"), and date range. The function first checks if
+(e.g., "factors_ff_3_monthly"), and date range. The function first checks if
 the specified type is supported and requires the 'frenchdata' package to
 download the data. It processes the raw data into a structured format,
 including date conversion, scaling factor values, and filtering by the
@@ -36,8 +36,8 @@ directly if you need less commonly used tables.
 }
 \examples{
 \donttest{
-  download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")
-  download_data_factors_ff("factors_ff_industry_10_monthly", "2000-01-01", "2020-12-31")
+  download_data_factors_ff("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
+  download_data_factors_ff("factors_ff_10_industry_portfolios_monthly", "2000-01-01", "2020-12-31")
 }
 
 }
