@@ -30,6 +30,7 @@ processing.
 \examples{
 \donttest{
   download_data_factors("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
+  download_data_factors("factors_ff_3_daily", "2000-01-01", "2020-12-31")
   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
 }
 

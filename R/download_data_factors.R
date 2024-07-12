@@ -19,6 +19,7 @@
 #' @examples
 #' \donttest{
 #'   download_data_factors("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
+#'   download_data_factors("factors_ff_3_daily", "2000-01-01", "2020-12-31")
 #'   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
 #' }
 #'
@@ -42,7 +43,7 @@ download_data_factors <- function(
 #' Download and Process Fama-French Factor Data
 #'
 #' Downloads and processes Fama-French factor data based on the specified type
-#' (e.g., "factors_ff3_monthly"), and date range. The function first checks if
+#' (e.g., "factors_ff_3_monthly"), and date range. The function first checks if
 #' the specified type is supported and requires the 'frenchdata' package to
 #' download the data. It processes the raw data into a structured format,
 #' including date conversion, scaling factor values, and filtering by the
@@ -66,8 +67,8 @@ download_data_factors <- function(
 #'
 #' @examples
 #' \donttest{
-#'   download_data_factors_ff("factors_ff3_monthly", "2000-01-01", "2020-12-31")
-#'   download_data_factors_ff("factors_ff_industry_10_monthly", "2000-01-01", "2020-12-31")
+#'   download_data_factors_ff("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
+#'   download_data_factors_ff("factors_ff_10_industry_portfolios_monthly", "2000-01-01", "2020-12-31")
 #' }
 #'
 #' @import dplyr
@@ -99,7 +100,7 @@ download_data_factors_ff <- function(
   if (grepl("monthly", type, fixed = TRUE)) {
     processed_data <- raw_data |>
       mutate(date = lubridate::floor_date(lubridate::ymd(paste0(date, "01")), "month"))
-  } else if (grepl("daily|weekly", type, fixed = TRUE)) {
+  } else if (grepl("daily|weekly", type)) {
     processed_data <- raw_data |>
       mutate(date = lubridate::ymd(date))
   } else {
