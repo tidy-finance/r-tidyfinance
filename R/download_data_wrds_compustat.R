@@ -110,7 +110,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, additional_
     disconnection_connection(con)
 
     compustat <- compustat |>
-      drop_na(fqtr)|>
+      drop_na(gvkey, datadate, fyear, fqtr)|>
       mutate(date = ceiling_date(datadate, "quarter") %m-% months(1)) |>
       group_by(gvkey, fyearq, fqtr) |>
       filter(datadate == max(datadate)) |>
