@@ -19,8 +19,8 @@
 #'
 #' @examples
 #' \donttest{
-#'   compustat <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
-#'   compustat_quarterly <- download_data_wrds_compustat("wrds_compustat_quarterly", "2020-01-01", "2020-12-31")
+#'   download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
+#'   download_data_wrds_compustat("wrds_compustat_quarterly", "2020-01-01", "2020-12-31")
 #'
 #'   # Add additional columns
 #'   download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31",
@@ -103,6 +103,7 @@ download_data_wrds_compustat <- function(type, start_date, end_date, additional_
       ) |>
       select(
         gvkey, datadate, rdq, fqtr, fyearq,
+        atq, ceqq,
         all_of(additional_columns)
       ) |>
       collect()
