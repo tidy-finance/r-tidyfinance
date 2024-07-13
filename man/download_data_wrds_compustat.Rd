@@ -32,12 +32,14 @@ variables for book equity (be), operating profitability (op), investment
 This function downloads financial data from the WRDS Compustat database for a
 given type of financial data, start date, and end date. It filters the data
 according to industry format, data format, and consolidation level, and
-calculates book equity (be), operating profitability (op), and investment
-(inv) for each company.
+returns the most current data for each reporting period. Additionally, the
+annual data also includes the calculated calculates book equity (be),
+operating profitability (op), and investment (inv) for each company.
 }
 \examples{
 \donttest{
-  compustat <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
+  download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
+  download_data_wrds_compustat("wrds_compustat_quarterly", "2020-01-01", "2020-12-31")
 
   # Add additional columns
   download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31",

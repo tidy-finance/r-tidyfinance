@@ -3,8 +3,9 @@
 #' This function downloads financial data from the WRDS Compustat database for a
 #' given type of financial data, start date, and end date. It filters the data
 #' according to industry format, data format, and consolidation level, and
-#' calculates book equity (be), operating profitability (op), and investment
-#' (inv) for each company.
+#' returns the most current data for each reporting period. Additionally, the
+#' annual data also includes the calculated calculates book equity (be),
+#' operating profitability (op), and investment (inv) for each company.
 #'
 #' @param type The type of financial data to download.
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
@@ -20,7 +21,8 @@
 #'
 #' @examples
 #' \donttest{
-#'   compustat <- download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
+#'   download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
+#'   download_data_wrds_compustat("wrds_compustat_quarterly", "2020-01-01", "2020-12-31")
 #'
 #'   # Add additional columns
 #'   download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31",
@@ -64,9 +66,11 @@ download_data_wrds_compustat <- function(
         gvkey, datadate, seq, ceq, at, lt, txditc,
         txdb, itcb, pstkrv, pstkl, pstk, capx, oancf,
         sale, cogs, xint, xsga,
-        additional_columns
+        all_of(additional_columns)
       ) |>
       collect()
+
+    disconnection_connection(con)
 
     compustat <- compustat |>
       mutate(
@@ -95,9 +99,41 @@ download_data_wrds_compustat <- function(
         inv = at / at_lag - 1,
         inv = if_else(at_lag <= 0, NA, inv)
       )
+  }
+
+  if (grepl("compustat_quarterly", type, fixed = TRUE)) {
+    fundq_db <- tbl(con, in_schema("comp", "fundq"))
+
+    compustat <- fundq_db |>
+      filter(
+        indfmt == "INDL" &
+          datafmt == "STD" &
+          consol == "C" &
+          between(datadate, start_date, end_date)
+      ) |>
+      select(
+        gvkey, datadate, rdq, fqtr, fyearq,
+        atq, ceqq,
+        all_of(additional_columns)
+      ) |>
+      collect()
 
     disconnection_connection(con)
 
-    processed_data
+    compustat <- compustat |>
+      drop_na(gvkey, datadate, fyearq, fqtr)|>
+      mutate(date = ceiling_date(datadate, "quarter") %m-% months(1)) |>
+      group_by(gvkey, fyearq, fqtr) |>
+      filter(datadate == max(datadate)) |>
+      slice_head(n = 1) |>
+      ungroup() |>
+      filter(if_else(is.na(rdq), TRUE, date < rdq))
+
+    processed_data <- compustat |>
+      select(gvkey, datadate, date, atq, ceqq,
+             all_of(additional_columns))
+
   }
+
+  processed_data
 }
