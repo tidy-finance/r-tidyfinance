@@ -26,7 +26,6 @@
 download_data_wrds_fisd <- function() {
 
   check_if_package_installed("dbplyr", "fisd_mergedissue")
-
   in_schema <- getNamespace("dbplyr")$in_schema
 
   con <- get_wrds_connection()

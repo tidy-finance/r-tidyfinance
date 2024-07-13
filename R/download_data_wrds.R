@@ -9,10 +9,10 @@
 #'   one of the predefined patterns to indicate the dataset: "wrds_crsp" for
 #'   CRSP data, "wrds_compustat" for Compustat data, or "wrds_ccm_links" for CCM
 #'   links data.
-#' @param start_date A date in 'YYYY-MM-DD' format indicating the start of the
-#'   period for which data is requested.
-#' @param end_date A date in 'YYYY-MM-DD' format indicating the end of the
-#'   period for which data is requested.
+#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the start date for the data. If not provided, a subset of the dataset is returned.
+#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the end date for the data. If not provided, a subste of the dataset is returned.
 #'
 #' @return A data frame containing the requested data, with the structure and
 #'   contents depending on the specified `type`.
@@ -25,7 +25,7 @@
 #' }
 #'
 #' @export
-download_data_wrds <- function(type, start_date, end_date) {
+download_data_wrds <- function(type, start_date = NULL, end_date = NULL) {
 
   check_supported_type(type)
 

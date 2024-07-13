@@ -6,17 +6,19 @@
 \usage{
 download_data_wrds_compustat(
   type,
-  start_date,
-  end_date,
+  start_date = NULL,
+  end_date = NULL,
   additional_columns = NULL
 )
 }
 \arguments{
 \item{type}{The type of financial data to download.}
 
-\item{start_date}{The start date for the data retrieval in "YYYY-MM-DD" format.}
+\item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
+specifying the start date for the data. If not provided, a subset of the dataset is returned.}
 
-\item{end_date}{The end date for the data retrieval in "YYYY-MM-DD" format.}
+\item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
+specifying the end date for the data. If not provided, a subset of the dataset is returned.}
 
 \item{additional_columns}{Additional columns from the Compustat table
 as a character vector.}

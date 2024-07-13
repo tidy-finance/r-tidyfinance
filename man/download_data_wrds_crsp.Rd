@@ -6,8 +6,8 @@
 \usage{
 download_data_wrds_crsp(
   type,
-  start_date,
-  end_date,
+  start_date = NULL,
+  end_date = NULL,
   batch_size = 500,
   version = "v2",
   additional_columns = NULL
@@ -17,9 +17,11 @@ download_data_wrds_crsp(
 \item{type}{A string specifying the type of CRSP data to download:
 "crsp_monthly" or "crsp_daily".}
 
-\item{start_date}{The start date for the data retrieval in "YYYY-MM-DD" format.}
+\item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
+specifying the start date for the data. If not provided, a subset of the dataset is returned.}
 
-\item{end_date}{The end date for the data retrieval in "YYYY-MM-DD" format.}
+\item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
+specifying the end date for the data. If not provided, a subset of the dataset is returned.}
 
 \item{batch_size}{An optional integer specifying the batch size for
 processing daily data, with a default of 500.}

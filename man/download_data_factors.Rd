@@ -4,7 +4,7 @@
 \alias{download_data_factors}
 \title{Download and Process Factor Data}
 \usage{
-download_data_factors(type, start_date, end_date)
+download_data_factors(type, start_date = NULL, end_date = NULL)
 }
 \arguments{
 \item{type}{The type of dataset to download, indicating the factor model and

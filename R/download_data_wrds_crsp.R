@@ -7,8 +7,10 @@
 #'
 #' @param type A string specifying the type of CRSP data to download:
 #'   "crsp_monthly" or "crsp_daily".
-#' @param start_date The start date for the data retrieval in "YYYY-MM-DD" format.
-#' @param end_date The end date for the data retrieval in "YYYY-MM-DD" format.
+#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the start date for the data. If not provided, a subset of the dataset is returned.
+#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the end date for the data. If not provided, a subset of the dataset is returned.
 #' @param batch_size An optional integer specifying the batch size for
 #'   processing daily data, with a default of 500.
 #' @param version An optional character specifying which CRSP version to use.
@@ -37,15 +39,31 @@
 #' @import lubridate
 #'
 #' @export
-download_data_wrds_crsp <- function(type, start_date, end_date, batch_size = 500, version = "v2", additional_columns = NULL) {
+download_data_wrds_crsp <- function(
+    type, start_date = NULL, end_date = NULL, batch_size = 500, version = "v2", additional_columns = NULL
+  ) {
 
-  if (!(version %in% c("v1", "v2"))) stop("Parameter version must be equal to v1 or v2.")
+  batch_size <- as.integer(batch_size)
+  if (batch_size <= 0) {
+    stop("Paramter 'batch_size' must be an integer larger than 0.")
+  }
+
+  if (!(version %in% c("v1", "v2"))) {
+    stop("Parameter 'version' must be a character equal to 'v1' or 'v2'.")
+  }
 
   check_if_package_installed("dbplyr", type)
-  start_date <- as.Date(start_date)
-  end_date <- as.Date(end_date)
-
   in_schema <- getNamespace("dbplyr")$in_schema
+
+  if (is.null(start_date) || is.null(end_date)) {
+    start_date <- Sys.Date() %m-% years(2)
+    end_date <- Sys.Date() %m-% years(1)
+    message("No start_date or end_date provided. Using the range ",
+            start_date, " to ", end_date, " to avoid downloading large amounts of data.")
+  } else {
+    start_date <- as.Date(start_date)
+    end_date <- as.Date(end_date)
+  }
 
   con <- get_wrds_connection()
 

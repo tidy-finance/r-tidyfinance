@@ -24,7 +24,9 @@
 #' }
 #'
 #' @export
-download_data_factors <- function(type, start_date, end_date) {
+download_data_factors <- function(
+    type, start_date = NULL, end_date = NULL
+  ) {
 
   check_supported_type(type)
 
@@ -54,9 +56,10 @@ download_data_factors <- function(type, start_date, end_date) {
 #'
 #' @param type The type of dataset to download, corresponding to the specific
 #'   Fama-French model and frequency.
-#' @param start_date The start date for filtering the data, in "YYYY-MM-DD"
-#'   format.
-#' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
+#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the start date for the data. If not provided, the full dataset is returned.
+#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the end date for the data. If not provided, the full dataset is returned.
 #'
 #' @return A tibble with processed factor data, including the date, risk-free
 #'   rate, market excess return, and other factors, filtered by the specified
@@ -72,16 +75,21 @@ download_data_factors <- function(type, start_date, end_date) {
 #' @importFrom lubridate ymd floor_date
 #'
 #' @export
-download_data_factors_ff <- function(type, start_date, end_date) {
+download_data_factors_ff <- function(
+    type, start_date = NULL, end_date = NULL
+  ) {
 
   check_supported_type(type)
 
   check_if_package_installed("frenchdata", type)
-
   download_french_data <- getNamespace("frenchdata")$download_french_data
 
-  start_date <- as.Date(start_date)
-  end_date <- as.Date(end_date)
+  if (is.null(start_date) || is.null(end_date)) {
+    message("No start_date or end_date provided. Returning the full data set.")
+  } else {
+    start_date <- as.Date(start_date)
+    end_date <- as.Date(end_date)
+  }
 
   factors_ff_types <- list_supported_types_ff()
   dataset <- factors_ff_types$dataset_name[factors_ff_types$type == type]
@@ -105,8 +113,7 @@ download_data_factors_ff <- function(type, start_date, end_date) {
       across(-date, ~na_if(.,-99.99)),
       across(-date, ~na_if(., -999)),
       across(-date, ~ . / 100)
-    ) |>
-    filter(between(date, start_date, end_date))
+    )
 
   # Clean column names
   colnames_clean <- colnames(processed_data) |>
@@ -115,6 +122,11 @@ download_data_factors_ff <- function(type, start_date, end_date) {
     gsub("rf", "risk_free", x = _)
 
   colnames(processed_data) <- colnames_clean
+
+  if (!is.null(start_date) && !is.null(end_date)) {
+    processed_data <- processed_data |>
+      filter(between(date, start_date, end_date))
+  }
 
   processed_data
 }
@@ -130,9 +142,10 @@ download_data_factors_ff <- function(type, start_date, end_date) {
 #'
 #' @param type The type of dataset to download (e.g., "factors_q5_daily",
 #'   "factors_q5_monthly").
-#' @param start_date The start date for filtering the data, in "YYYY-MM-DD"
-#'   format.
-#' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
+#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the start date for the data. If not provided, the full dataset is returned.
+#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
+#'   specifying the end date for the data. If not provided, the full dataset is returned.
 #' @param url The base URL from which to download the dataset files, with a
 #'   specific path for Global Q datasets.
 #'
@@ -151,12 +164,17 @@ download_data_factors_ff <- function(type, start_date, end_date) {
 #'
 #' @export
 download_data_factors_q <- function(
-    type, start_date, end_date, url = "http://global-q.org/uploads/1/2/2/6/122679606/"
+    type, start_date = NULL, end_date = NULL, url = "http://global-q.org/uploads/1/2/2/6/122679606/"
 ) {
 
   check_supported_type(type)
-  start_date <- as.Date(start_date)
-  end_date <- as.Date(end_date)
+
+  if (is.null(start_date) || is.null(end_date)) {
+    message("No start_date or end_date provided. Returning the full data set.")
+  } else {
+    start_date <- as.Date(start_date)
+    end_date <- as.Date(end_date)
+  }
 
   factors_q_types <- list_supported_types_q()
   dataset <- factors_q_types$dataset_name[factors_q_types$type == type]
@@ -176,8 +194,12 @@ download_data_factors_q <- function(
     rename_with(~sub("R_", "", ., fixed = TRUE)) |>
     rename_with(tolower) |>
     mutate(across(-date, ~. / 100)) |>
-    filter(between(date, start_date, end_date)) |>
     select(date, risk_free = f, mkt_excess = mkt, everything())
+
+  if (!is.null(start_date) && !is.null(end_date)) {
+    processed_data <- processed_data |>
+      filter(between(date, start_date, end_date))
+  }
 
   processed_data
 }
