@@ -407,6 +407,7 @@ list_supported_types_wrds <- function() {
     "wrds_crsp_monthly", "crsp.msf, crsp.msenames, crsp.msedelist",
     "wrds_crsp_daily", "crsp.dsf, crsp.msenames, crsp.msedelist",
     "wrds_compustat_annual", "comp.funda",
+    "wrds_compustat_quarterly", "comp.fundq",
     "wrds_ccm_links", "crsp.ccmxpf_linktable",
     "wrds_fisd", "fisd.fisd_mergedissue, fisd.fisd_mergedissuer",
     "wrds_trace", "trace.trace_enhanced"
