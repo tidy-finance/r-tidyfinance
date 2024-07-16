@@ -30,7 +30,7 @@
 #' }
 #'
 #' @import dplyr
-#' @importFrom lubridate year, ceiling_date, floor_date
+#' @importFrom lubridate year ceiling_date floor_date
 #'
 #' @export
 download_data_wrds_compustat <- function(
