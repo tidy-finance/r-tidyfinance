@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 `r badger::badge_cran_download(type = "grand-total")`
 `r badger::badge_repostatus("Active")`
 `r badger::badge_github_version(color = "blue")`
+[![R-CMD-check](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 This repository contains an R package that collects helper functions for developers and researchers familiar with [Tidy Finance with R](https://www.tidy-finance.org/r/index.html). The functions provide shortcuts to selected issues that the book discusses in detail.
