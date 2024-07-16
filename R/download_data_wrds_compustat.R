@@ -30,7 +30,7 @@
 #' }
 #'
 #' @import dplyr
-#' @importFrom lubridate year
+#' @importFrom lubridate year, ceiling_date, floor_date
 #'
 #' @export
 download_data_wrds_compustat <- function(
@@ -87,7 +87,7 @@ download_data_wrds_compustat <- function(
       group_by(gvkey, year) |>
       filter(datadate == max(datadate)) |>
       ungroup() |>
-      mutate(date = floor_date(datadate, "month"))
+      mutate(date = lubridate::floor_date(datadate, "month"))
 
     processed_data <- compustat |>
       left_join(
@@ -124,7 +124,7 @@ download_data_wrds_compustat <- function(
 
     compustat <- compustat |>
       drop_na(gvkey, datadate, fyearq, fqtr)|>
-      mutate(date = ceiling_date(datadate, "quarter") %m-% months(1)) |>
+      mutate(date = lubridate::ceiling_date(datadate, "quarter") %m-% months(1)) |>
       group_by(gvkey, fyearq, fqtr) |>
       filter(datadate == max(datadate)) |>
       slice_head(n = 1) |>
