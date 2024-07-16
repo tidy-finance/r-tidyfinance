@@ -86,7 +86,8 @@ download_data_wrds_compustat <- function(
       mutate(year = lubridate::year(datadate)) |>
       group_by(gvkey, year) |>
       filter(datadate == max(datadate)) |>
-      ungroup()
+      ungroup() |>
+      mutate(date = floor_date(datadate, "month"))
 
     processed_data <- compustat |>
       left_join(
@@ -98,7 +99,8 @@ download_data_wrds_compustat <- function(
       mutate(
         inv = at / at_lag - 1,
         inv = if_else(at_lag <= 0, NA, inv)
-      )
+      ) |>
+      select(gvkey, datadate, date, year, everything())
   }
 
   if (grepl("compustat_quarterly", type, fixed = TRUE)) {
