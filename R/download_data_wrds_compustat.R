@@ -63,7 +63,7 @@ download_data_wrds_compustat <- function(
           between(datadate, start_date, end_date)
       ) |>
       select(
-        gvkey, datadate, seq, ceq, at, lt, txditc,
+        gvkey, date_reference = datadate, seq, ceq, at, lt, txditc,
         txdb, itcb, pstkrv, pstkl, pstk, capx, oancf,
         sale, cogs, xint, xsga,
         all_of(additional_columns)
@@ -83,11 +83,11 @@ download_data_wrds_compustat <- function(
       )
 
     compustat <- compustat |>
-      mutate(year = lubridate::year(datadate)) |>
+      mutate(year = lubridate::year(date_reference)) |>
       group_by(gvkey, year) |>
-      filter(datadate == max(datadate)) |>
+      filter(date_reference == max(date_reference)) |>
       ungroup() |>
-      mutate(date = lubridate::floor_date(datadate, "month"))
+      mutate(date = lubridate::floor_date(date_reference, "month"))
 
     processed_data <- compustat |>
       left_join(
@@ -100,7 +100,7 @@ download_data_wrds_compustat <- function(
         inv = at / at_lag - 1,
         inv = if_else(at_lag <= 0, NA, inv)
       ) |>
-      select(gvkey, datadate, date, year, everything())
+      select(gvkey, date, date_reference, everything(), -year)
   }
 
   if (grepl("compustat_quarterly", type, fixed = TRUE)) {
@@ -114,7 +114,7 @@ download_data_wrds_compustat <- function(
           between(datadate, start_date, end_date)
       ) |>
       select(
-        gvkey, datadate, rdq, fqtr, fyearq,
+        gvkey, date_reference = datadate, rdq, fqtr, fyearq,
         atq, ceqq,
         all_of(additional_columns)
       ) |>
@@ -123,19 +123,19 @@ download_data_wrds_compustat <- function(
     disconnection_connection(con)
 
     compustat <- compustat |>
-      drop_na(gvkey, datadate, fyearq, fqtr)|>
-      mutate(date = lubridate::ceiling_date(datadate, "quarter") %m-% months(1)) |>
+      drop_na(gvkey, date_reference, fyearq, fqtr)|>
+      mutate(date = lubridate::floor_date(date_reference, "month")) |>
       group_by(gvkey, fyearq, fqtr) |>
-      filter(datadate == max(datadate)) |>
+      filter(date_reference == max(date_reference)) |>
       slice_head(n = 1) |>
       ungroup() |>
       filter(if_else(is.na(rdq), TRUE, date < rdq))
 
     processed_data <- compustat |>
-      select(gvkey, datadate, date, atq, ceqq,
+      select(gvkey, date, date_reference, atq, ceqq,
              all_of(additional_columns))
 
   }
 
-  processed_data
+  return(processed_data)
 }
