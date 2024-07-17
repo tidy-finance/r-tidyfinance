@@ -43,6 +43,7 @@ Suggests:
     RPostgres (>= 1.4.5),
     dbplyr (>= 2.5.0),
     DBI (>= 1.2.2),
+    httr2 (>= 1.0.0),
     testthat (>= 3.2.0),
     knitr,
     rmarkdown
