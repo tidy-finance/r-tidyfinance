@@ -17,7 +17,7 @@
 #'
 #' @examples
 #' \donttest{
-#'   one_bond <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
+#'   clean_trace <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
 #' }
 #'
 #' @import dplyr
