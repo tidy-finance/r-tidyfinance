@@ -15,8 +15,10 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(tidyverse)
 library(tidyfinance)
+library(dplyr)
+library(lubridate)
+
 set.seed(1234)
 ```
 
@@ -157,7 +159,7 @@ If you prefer to follow the Fama-French protocol for joining company fundamental
 crsp_monthly |> 
   left_join(
     compustat_annual |>
-      mutate(date = ymd(str_c(year(date) + 1, "0701"))),
+      mutate(date = ymd(paste0(year(date) + 1, "0701"))),
     join_by(gvkey, date)
   )
 ```
