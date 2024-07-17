@@ -4,7 +4,7 @@
 \alias{download_data_factors}
 \title{Download and Process Factor Data}
 \usage{
-download_data_factors(type, start_date, end_date)
+download_data_factors(type, start_date = NULL, end_date = NULL)
 }
 \arguments{
 \item{type}{The type of dataset to download, indicating the factor model and
@@ -29,7 +29,8 @@ processing.
 }
 \examples{
 \donttest{
-  download_data_factors("factors_ff3_monthly", "2000-01-01", "2020-12-31")
+  download_data_factors("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
+  download_data_factors("factors_ff_3_daily", "2000-01-01", "2020-12-31")
   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
 }
 

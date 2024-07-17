@@ -4,7 +4,7 @@
 \alias{download_data_wrds}
 \title{Download Data from WRDS}
 \usage{
-download_data_wrds(type, start_date, end_date)
+download_data_wrds(type, start_date = NULL, end_date = NULL)
 }
 \arguments{
 \item{type}{A string specifying the type of data to download. It should match
@@ -12,11 +12,11 @@ one of the predefined patterns to indicate the dataset: "wrds_crsp" for
 CRSP data, "wrds_compustat" for Compustat data, or "wrds_ccm_links" for CCM
 links data.}
 
-\item{start_date}{A date in 'YYYY-MM-DD' format indicating the start of the
-period for which data is requested.}
+\item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
+specifying the start date for the data. If not provided, a subset of the dataset is returned.}
 
-\item{end_date}{A date in 'YYYY-MM-DD' format indicating the end of the
-period for which data is requested.}
+\item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
+specifying the end date for the data. If not provided, a subste of the dataset is returned.}
 }
 \value{
 A data frame containing the requested data, with the structure and

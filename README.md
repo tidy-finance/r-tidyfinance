@@ -11,6 +11,7 @@
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![](https://img.shields.io/badge/devel%20version-0.2.1.9000-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
+[![R-CMD-check](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 This repository contains an R package that collects helper functions for
@@ -46,13 +47,13 @@ give the same result:
 
 ``` r
 download_data(
-  type = "factors_ff3_monthly", 
+  type = "factors_ff_3_monthly", 
   start_date = "2000-01-01", 
   end_date = "2020-12-31"
 )
 
 download_data_factors_ff(
-  type = "factors_ff3_monthly", 
+  type = "factors_ff_3_monthly", 
   start_date = "2000-01-01", 
   end_date = "2020-12-31"
 )

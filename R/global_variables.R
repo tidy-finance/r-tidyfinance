@@ -29,6 +29,7 @@ utils::globalVariables(
     "asof_cd", "days_to_sttl_ct", "days_to_sttl_ct2", "msg_seq_nb", "orig_msg_seq_nb",
     "pr_trd_dt", "spcl_trd_fl", "stlmnt_dt", "trc_st", "trd_rpt_dt", "trd_rpt_tm", "wis_fl",
     "conditionaltype", "tradingstatusflg",
-    "log_d12", "log_e12"
+    "log_d12", "log_e12",
+    "rdq", "fqtr", "fyearq", "atq", "ceqq"
   )
 )
