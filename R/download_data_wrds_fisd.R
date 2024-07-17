@@ -9,6 +9,9 @@
 #' `fisd_mergedissue` table after joining it with issuer information from the
 #' `fisd_mergedissuer` table for issuers domiciled in the USA.
 #'
+#' @param additional_columns Additional columns from the FISD table
+#'   as a character vector.
+#'
 #' @return A data frame containing a subset of FISD data with fields related to
 #'   the bond's characteristics and issuer information. This includes complete
 #'   CUSIP, maturity date, offering amount, offering date, dated date, interest
@@ -18,12 +21,14 @@
 #' @examples
 #' \donttest{
 #'   fisd <- download_data_wrds_fisd()
+#'   fisd_extended <- download_data_wrds_fisd(additional_columns = c("asset_backed", "defeased"))
 #' }
 #'
 #' @import dplyr
+#' @importFrom tidyr all_of
 #'
 #' @export
-download_data_wrds_fisd <- function() {
+download_data_wrds_fisd <- function(additional_columns = NULL) {
 
   check_if_package_installed("dbplyr", "fisd_mergedissue")
   in_schema <- getNamespace("dbplyr")$in_schema
@@ -64,16 +69,9 @@ download_data_wrds_fisd <- function() {
       preferred_security == "N" | is.na(preferred_security)
     ) |>
     select(
-      cusip = complete_cusip,
-      maturity_date = maturity,
-      offering_amount = offering_amt,
-      offering_date,
-      dated_date,
-      interest_frequency,
-      coupon,
-      last_interest_date,
-      issue_id,
-      issuer_id
+      complete_cusip, maturity, offering_amt, offering_date, dated_date,
+      interest_frequency, coupon, last_interest_date, issue_id, issuer_id,
+      tidyr::all_of(additional_columns)
     ) |>
     collect()
 
