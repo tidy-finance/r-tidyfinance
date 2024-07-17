@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' \donttest{
-#'   macro_predictors_monthly <- download_data_macro_predictors("macro_predictors_monthly", "2000-01-01", "2020-12-31")
+#'   macro_predictors_monthly <- download_data_macro_predictors("macro_predictors_monthly")
 #' }
 #'
 #' @import dplyr
@@ -97,7 +97,7 @@ download_data_macro_predictors <- function(
     ) |>
     tidyr::drop_na()
 
-  if (!is.null(start_date) && !is.null(end_date)) {
+  if (!missing(start_date) && !missing(end_date)) {
     processed_data <- processed_data |>
       filter(between(date, start_date, end_date))
   }
