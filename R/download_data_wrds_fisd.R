@@ -11,7 +11,7 @@
 #'
 #' @return A data frame containing a subset of FISD data with fields related to
 #'   the bond's characteristics and issuer information. This includes complete
-#'   CUSIP, maturity, offering amount, offering date, dated date, interest
+#'   CUSIP, maturity date, offering amount, offering date, dated date, interest
 #'   frequency, coupon, last interest date, issue ID, issuer ID, SIC code of the
 #'   issuer.
 #'
@@ -64,12 +64,16 @@ download_data_wrds_fisd <- function() {
       preferred_security == "N" | is.na(preferred_security)
     ) |>
     select(
-      complete_cusip, maturity,
-      offering_amt, offering_date,
+      cusip = complete_cusip,
+      maturity_date = maturity,
+      offering_amount = offering_amt,
+      offering_date,
       dated_date,
-      interest_frequency, coupon,
+      interest_frequency,
+      coupon,
       last_interest_date,
-      issue_id, issuer_id
+      issue_id,
+      issuer_id
     ) |>
     collect()
 
