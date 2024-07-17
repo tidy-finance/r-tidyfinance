@@ -44,9 +44,10 @@ download_data_wrds_ccm_links <- function(
     filter(linktype %in% local(linktype) &
              linkprim %in% local(linkprim) &
              usedflag == local(usedflag)) |>
-    select(permno = lpermno, gvkey, linkdt, linkenddt) |>
+    select(permno = lpermno, gvkey,
+           start_date = linkdt, end_date = linkenddt) |>
     collect() |>
-    mutate(linkenddt = tidyr::replace_na(linkenddt, lubridate::today()))
+    mutate(end_date = tidyr::replace_na(end_date, lubridate::today()))
 
   disconnection_connection(con)
 
