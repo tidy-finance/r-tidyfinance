@@ -6,8 +6,8 @@
 \usage{
 download_data_macro_predictors(
   type,
-  start_date = NULL,
-  end_date = NULL,
+  start_date,
+  end_date,
   url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP"
 )
 }
@@ -38,7 +38,7 @@ financial metrics and filtering by the specified date range.
 }
 \examples{
 \donttest{
-  download_data_macro_predictors("macro_predictors_monthly", "2000-01-01", "2020-12-31")
+  macro_predictors_monthly <- download_data_macro_predictors("macro_predictors_monthly")
 }
 
 }
