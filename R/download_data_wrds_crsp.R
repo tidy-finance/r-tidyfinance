@@ -40,7 +40,7 @@
 #'
 #' @export
 download_data_wrds_crsp <- function(
-    type, start_date = NULL, end_date = NULL, batch_size = 500, version = "v2", additional_columns = NULL
+    type, start_date, end_date, batch_size = 500, version = "v2", additional_columns = NULL
   ) {
 
   batch_size <- as.integer(batch_size)
@@ -55,7 +55,7 @@ download_data_wrds_crsp <- function(
   check_if_package_installed("dbplyr", type)
   in_schema <- getNamespace("dbplyr")$in_schema
 
-  if (is.null(start_date) || is.null(end_date)) {
+  if (missing(start_date) || missing(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
     end_date <- Sys.Date() %m-% years(1)
     message("No start_date or end_date provided. Using the range ",

@@ -25,13 +25,17 @@
 #'
 #' @export
 download_data_wrds_clean_trace <- function(
-    cusips, start_date = NULL, end_date = NULL
+    cusips, start_date, end_date
   ){
 
   check_if_package_installed("dbplyr", "clean_trace")
   in_schema <- getNamespace("dbplyr")$in_schema
 
-  if (is.null(start_date) || is.null(end_date)) {
+  if (missing(cusips)) {
+    stop("Error: No cusip provided. Please provide at least one cusip.")
+  }
+
+  if (missing(start_date) || missing(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
     end_date <- Sys.Date() %m-% years(1)
     message("No start_date or end_date provided. Using the range ",
@@ -220,9 +224,7 @@ download_data_wrds_clean_trace <- function(
     arrange(cusip_id, trd_exctn_dt, trd_exctn_tm) |>
     select(cusip_id, trd_exctn_dt, trd_exctn_tm,
            rptd_pr, entrd_vol_qt, yld_pt, rpt_side_cd, cntra_mp_id) |>
-    mutate(trd_exctn_tm = format(lubridate::as_datetime(trd_exctn_tm, tz = "America/New_York"), "%H:%M:%S")) |>
-    rename(date = trd_exctn_dt,
-           execution_time = trd_exctn_tm)
+    mutate(trd_exctn_tm = format(lubridate::as_datetime(trd_exctn_tm, tz = "America/New_York"), "%H:%M:%S"))
 
   trace_final
 }
