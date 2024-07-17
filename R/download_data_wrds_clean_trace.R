@@ -222,7 +222,7 @@ download_data_wrds_clean_trace <- function(
            rptd_pr, entrd_vol_qt, yld_pt, rpt_side_cd, cntra_mp_id) |>
     mutate(trd_exctn_tm = format(lubridate::as_datetime(trd_exctn_tm, tz = "America/New_York"), "%H:%M:%S")) |>
     rename(date = trd_exctn_dt,
-           time_execution = trd_exctn_tm)
+           execution_time = trd_exctn_tm)
 
   trace_final
 }

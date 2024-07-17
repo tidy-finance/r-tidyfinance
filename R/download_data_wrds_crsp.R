@@ -86,7 +86,7 @@ download_data_wrds_crsp <- function(
           join_by(permno)
         ) |>
         filter(between(date, namedt, nameendt)) |>
-        mutate(date_reference = date,
+        mutate(reference_date = date,
                date = floor_date(date, "month")) |>
         left_join(
           msedelist_db |>
@@ -95,7 +95,7 @@ download_data_wrds_crsp <- function(
           join_by(permno, date)
         ) |>
         select(
-          permno, date, date_reference, ret, shrout, altprc,
+          permno, date, reference_date, ret, shrout, altprc,
           exchcd, siccd, dlret, dlstcd,
           all_of(additional_columns)
         ) |>
@@ -199,7 +199,7 @@ download_data_wrds_crsp <- function(
         select(
           permno,
           date,
-          date_reference = mthcaldt,
+          reference_date = mthcaldt,
           ret = mthret,
           shrout,
           prc = mthprc,
