@@ -5,3 +5,5 @@
 ^README\.Rmd$
 ^revdep$
 ^CRAN-SUBMISSION$
+^doc$
+^Meta$
