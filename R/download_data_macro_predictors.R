@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' \donttest{
-#'   download_data_macro_predictors("macro_predictors_monthly", "2000-01-01", "2020-12-31")
+#'   macro_predictors_monthly <- download_data_macro_predictors("macro_predictors_monthly", "2000-01-01", "2020-12-31")
 #' }
 #'
 #' @import dplyr
