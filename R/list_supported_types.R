@@ -415,6 +415,22 @@ list_supported_types_wrds <- function() {
     mutate(domain = "WRDS")
 }
 
+#' List Supported Stock Data Types
+#'
+#' Returns a tibble listing the supported stock data types and their corresponding dataset names.
+#'
+#' @return A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
+#'
+#'
+#' @importFrom tibble tibble
+#'
+list_supported_types_stocks <- function() {
+  tibble(
+    "type" = "stocks_yf",
+    "dataset_name" = "Yahoo Finance"
+  )
+}
+
 #' List All Supported Dataset Types
 #'
 #' This function aggregates and returns a comprehensive tibble of all supported
@@ -450,7 +466,8 @@ list_supported_types <- function(domain = NULL, as_vector = FALSE) {
     list_supported_types_q(),
     list_supported_types_ff(),
     list_supported_types_macro_predictors(),
-    list_supported_types_wrds()
+    list_supported_types_wrds(),
+    list_supported_types_stocks()
   )
   if (!is.null(domain)) {
     filter_domains <- domain
