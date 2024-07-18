@@ -128,8 +128,8 @@ download_data_wrds_compustat <- function(
       filter(datadate == max(datadate)) |>
       slice_head(n = 1) |>
       ungroup() |>
-      arrange(gvkey, date, rdq) |>
       group_by(gvkey, date) |>
+      arrange(gvkey, date, rdq) |>
       slice_head(n = 1) |>
       ungroup() |>
       filter(if_else(is.na(rdq), TRUE, date < rdq))
