@@ -1,0 +1,182 @@
+---
+title: "Date Columns in `tidyfinance`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{dates-in-tidyfinance}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+#| message: false
+#| warning: false
+library(tidyfinance)
+library(dplyr)
+library(lubridate)
+```
+
+Working with dates can be cumbersome, in particular when combining data sets from different contexts. When designing the output tables for the `download_data()` function we faced a trade-off between (i) preserving original column names that experienced users might know and for which the original sources provide documentation, and (ii) introducing consistent columns names across data sets where necessary. We decided to consistently use the `date` column with `<date>` column type across various data sets to facilitate joins and avoid unnecessary conversions. In this vignette, we walk you through some examples. 
+
+Let us start with the popular Fama-French factors that come in daily, weekly, and monthly versions. After downloading the monthly data, you can see that each row refers to a specific month of a year and the `date` column refers to the first day of a month. 
+
+```{r}
+factors_ff_3_monthly <- download_data("factors_ff_3_monthly")
+factors_ff_3_monthly
+```
+
+Why did we use the first day of a month here? This convention has the big advantage that you can easily add or subtract months or compute date differences. For instance, in the following code chunk, we subtract 3 months from the original date and then compute the difference in months:
+
+```{r}
+factors_ff_3_monthly |> 
+  select(date) |> 
+  mutate(date_lag3 = date %m-% months(3),
+         date_difference = interval(date_lag3, date) %/% months(1))
+```
+
+As another example, the `date` column is arguably straight forward for daily data, such as daily Fama-French factors:
+
+```{r}
+factors_ff_3_daily <- download_data("factors_ff_3_daily")
+factors_ff_3_daily
+```
+
+Each row refers to a trading date, so `date` refers to the actual date. So computing date differences to the last row might yield an integer larger than 1. 
+
+```{r}
+factors_ff_3_daily |> 
+  select(date) |> 
+  mutate(date_difference = interval(lag(date), date) %/% days(1)) 
+```
+
+Similarly, working with daily CRSP data is straight-forward:
+
+```{r}
+#| output: false
+#| eval: false
+crsp_daily <- download_data("wrds_crsp_daily")
+crsp_daily |> 
+  select(permno, date)
+```
+
+However, enforcing this consistency poses a challenge for monthly CRSP data. As CRSP calculates the monthly returns based on the last available price for each month, we decided to use `date` following our convention of beginning-of-month and use `calculation_date` as the date that CRSP uses to calculate the returns. In fact, the CRSP 2.0 update introduced the column `mthcaldt` instead of `date`, hence our name `calculation_date`. For most applications, you will not need `calculation_date`, so it serves primarily an informational purpose. 
+
+```{r}
+#| output: false
+#| eval: false
+crsp_monthly <- download_data("wrds_crsp_monthly")
+crsp_monthly |> 
+  select(permno, date, calculation_date)
+```
+
+A similar challenge arises with Compustat data. The `datadate` column of the original Compustat tables refers to the date of the fiscal year end or quarter. For many cases, this date is the December 31st of a fiscal year, but they can be any end of month throughout a calendar year. To comply with our notion of consistency, we introduce the column `date`, which is simply the beginning of the month of each `datadate`:
+
+```{r}
+#| output: false
+#| eval: false
+compustat_annual <- download_data("wrds_compustat_annual")
+compustat_annual |> 
+  select(gvkey, date, datadate)
+```
+
+If you want to use year or month information in your application, you can simply parse them from `date`:
+
+```{r}
+#| output: false
+#| eval: false
+compustat_annual |> 
+  mutate(year = year(date),
+         month = month(date)) |> 
+  select(gvkey, date, datadate, year, month)
+```
+
+For completeness, you can do the same for quarterly Compustat data: 
+
+```{r}
+#| output: false
+#| eval: false
+compustat_quarterly <- download_data("wrds_compustat_quarterly")
+compustat_quarterly |> 
+  select(gvkey, date, datadate) |> 
+  mutate(year = year(date),
+         month = month(date),
+         quarter = quarter(date))
+```
+
+## Joining multiple data sources
+
+As a first example, let us combine the Fama-French factors with monthly CRSP returns. We can simply run:
+
+```{r}
+#| output: false
+#| eval: false
+crsp_monthly |> 
+  left_join(factors_ff_3_monthly, join_by(date)) |> 
+  select(permno, date, risk_free, mkt_excess, smb, hml)
+```
+
+Similarly, the same logic applies to daily CRSP returns:
+```{r}
+#| output: false
+#| eval: false
+crsp_daily |> 
+  left_join(factors_ff_3_daily, join_by(date)) |> 
+  select(permno, date, risk_free, mkt_excess, smb, hml)
+```
+
+Of course, be careful not to join data sets from different contexts, e.g., joining daily Fama-French data to monthly CRSP data. However, the worst that can happen is that you get meaningless or missing rows. 
+
+Now, let us move to the involved case of joining CRSP with Compustat data. To achieve that, we have to first load the CCM links and join them to the monthly CRSP data (the same logic applies to daily CRSP data). 
+
+```{r}
+#| output: false
+#| eval: false
+ccm_links <- download_data("wrds_ccm_links")
+crsp_monthly <- crsp_monthly |> 
+  left_join(ccm_links, join_by(permno), relationship = "many-to-many") |> 
+  filter(between(date, linkdt, linkenddt)) |> 
+  select(-c(linkdt, linkenddt))
+```
+
+So if you want to join information from Compustat for the **same date**, you just join by `gvkey` and `date`:
+
+```{r}
+#| output: false
+#| eval: false
+crsp_monthly |> 
+  left_join(
+    compustat_annual, join_by(gvkey, date)
+  )
+```
+
+If you want to lag the Compustat information by 6 months to incorporate the fact that there is usually a considerable lag between fiscal year ends and the release of accounting reports, you can just add months to the `date` column in Compustat: 
+
+```{r}
+#| output: false
+#| eval: false
+crsp_monthly |> 
+  left_join(
+    compustat_annual |> 
+      mutate(date = date %m+% months(6)), 
+    join_by(gvkey, date)
+  )
+```
+
+If you prefer to follow the Fama-French protocol for joining company fundamentals to stock returns (see our chapter on this procedure [here](https://www.tidy-finance.org/r/replicating-fama-and-french-factors.html)), you should do:
+
+```{r}
+#| output: false
+#| eval: false
+crsp_monthly |> 
+  left_join(
+    compustat_annual |>
+      mutate(date = ymd(paste0(year(date) + 1, "0701"))),
+    join_by(gvkey, date)
+  )
+```

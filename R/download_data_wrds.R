@@ -25,7 +25,7 @@
 #' }
 #'
 #' @export
-download_data_wrds <- function(type, start_date = NULL, end_date = NULL) {
+download_data_wrds <- function(type, start_date, end_date) {
 
   check_supported_type(type)
 

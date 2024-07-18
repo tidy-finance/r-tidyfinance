@@ -4,7 +4,7 @@
 \alias{download_data_factors_ff}
 \title{Download and Process Fama-French Factor Data}
 \usage{
-download_data_factors_ff(type, start_date = NULL, end_date = NULL)
+download_data_factors_ff(type, start_date, end_date)
 }
 \arguments{
 \item{type}{The type of dataset to download, corresponding to the specific

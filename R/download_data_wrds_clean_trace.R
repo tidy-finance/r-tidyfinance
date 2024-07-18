@@ -17,7 +17,7 @@
 #'
 #' @examples
 #' \donttest{
-#'   one_bond <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
+#'   clean_trace <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
 #' }
 #'
 #' @import dplyr
@@ -25,13 +25,17 @@
 #'
 #' @export
 download_data_wrds_clean_trace <- function(
-    cusips, start_date = NULL, end_date = NULL
+    cusips, start_date, end_date
   ){
 
   check_if_package_installed("dbplyr", "clean_trace")
   in_schema <- getNamespace("dbplyr")$in_schema
 
-  if (is.null(start_date) || is.null(end_date)) {
+  if (missing(cusips)) {
+    stop("Error: No cusip provided. Please provide at least one cusip.")
+  }
+
+  if (missing(start_date) || missing(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
     end_date <- Sys.Date() %m-% years(1)
     message("No start_date or end_date provided. Using the range ",
