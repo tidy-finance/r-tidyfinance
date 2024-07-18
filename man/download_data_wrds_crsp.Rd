@@ -6,8 +6,8 @@
 \usage{
 download_data_wrds_crsp(
   type,
-  start_date = NULL,
-  end_date = NULL,
+  start_date,
+  end_date,
   batch_size = 500,
   version = "v2",
   additional_columns = NULL

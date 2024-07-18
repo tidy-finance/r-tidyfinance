@@ -19,13 +19,13 @@
 #' @examples
 #' \donttest{
 #'   download_data_factors("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
-#'   download_data_factors("factors_ff_3_daily", "2000-01-01", "2020-12-31")
+#'   download_data_factors("factors_ff_3_daily")
 #'   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
 #' }
 #'
 #' @export
 download_data_factors <- function(
-    type, start_date = NULL, end_date = NULL
+    type, start_date, end_date
   ) {
 
   check_supported_type(type)
@@ -76,7 +76,7 @@ download_data_factors <- function(
 #'
 #' @export
 download_data_factors_ff <- function(
-    type, start_date = NULL, end_date = NULL
+    type, start_date, end_date
   ) {
 
   check_supported_type(type)
@@ -84,7 +84,7 @@ download_data_factors_ff <- function(
   check_if_package_installed("frenchdata", type)
   download_french_data <- getNamespace("frenchdata")$download_french_data
 
-  if (is.null(start_date) || is.null(end_date)) {
+  if (missing(start_date) || missing(end_date)) {
     message("No start_date or end_date provided. Returning the full data set.")
   } else {
     start_date <- as.Date(start_date)
@@ -123,7 +123,7 @@ download_data_factors_ff <- function(
 
   colnames(processed_data) <- colnames_clean
 
-  if (!is.null(start_date) && !is.null(end_date)) {
+  if (!missing(start_date) && !missing(end_date)) {
     processed_data <- processed_data |>
       filter(between(date, start_date, end_date))
   }
@@ -164,12 +164,12 @@ download_data_factors_ff <- function(
 #'
 #' @export
 download_data_factors_q <- function(
-    type, start_date = NULL, end_date = NULL, url = "http://global-q.org/uploads/1/2/2/6/122679606/"
+    type, start_date, end_date, url = "http://global-q.org/uploads/1/2/2/6/122679606/"
 ) {
 
   check_supported_type(type)
 
-  if (is.null(start_date) || is.null(end_date)) {
+  if (missing(start_date) || missing(end_date)) {
     message("No start_date or end_date provided. Returning the full data set.")
   } else {
     start_date <- as.Date(start_date)
@@ -196,7 +196,7 @@ download_data_factors_q <- function(
     mutate(across(-date, ~. / 100)) |>
     select(date, risk_free = f, mkt_excess = mkt, everything())
 
-  if (!is.null(start_date) && !is.null(end_date)) {
+  if (!missing(start_date) && !missing(end_date)) {
     processed_data <- processed_data |>
       filter(between(date, start_date, end_date))
   }

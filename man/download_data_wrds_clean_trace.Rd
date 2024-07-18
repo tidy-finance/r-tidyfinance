@@ -4,7 +4,7 @@
 \alias{download_data_wrds_clean_trace}
 \title{Download Cleaned TRACE Data from WRDS}
 \usage{
-download_data_wrds_clean_trace(cusips, start_date = NULL, end_date = NULL)
+download_data_wrds_clean_trace(cusips, start_date, end_date)
 }
 \arguments{
 \item{cusips}{A character vector specifying the 9-digit CUSIPs to download.}
@@ -28,7 +28,7 @@ The trade data is cleaned as suggested by Dick-Nielsen (2009, 2014).
 }
 \examples{
 \donttest{
-  one_bond <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
+  clean_trace <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
 }
 
 }

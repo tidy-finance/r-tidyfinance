@@ -4,12 +4,16 @@
 \alias{download_data_wrds_fisd}
 \title{Download Filtered FISD Data from WRDS}
 \usage{
-download_data_wrds_fisd()
+download_data_wrds_fisd(additional_columns = NULL)
+}
+\arguments{
+\item{additional_columns}{Additional columns from the FISD table
+as a character vector.}
 }
 \value{
 A data frame containing a subset of FISD data with fields related to
 the bond's characteristics and issuer information. This includes complete
-CUSIP, maturity, offering amount, offering date, dated date, interest
+CUSIP, maturity date, offering amount, offering date, dated date, interest
 frequency, coupon, last interest date, issue ID, issuer ID, SIC code of the
 issuer.
 }
@@ -26,6 +30,7 @@ securities. It finally returns a data frame with selected fields from the
 \examples{
 \donttest{
   fisd <- download_data_wrds_fisd()
+  fisd_extended <- download_data_wrds_fisd(additional_columns = c("asset_backed", "defeased"))
 }
 
 }

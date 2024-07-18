@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' \donttest{
-#'   download_data_macro_predictors("macro_predictors_monthly", "2000-01-01", "2020-12-31")
+#'   macro_predictors_monthly <- download_data_macro_predictors("macro_predictors_monthly")
 #' }
 #'
 #' @import dplyr
@@ -31,7 +31,7 @@
 #'
 #' @export
 download_data_macro_predictors <- function(
-    type, start_date = NULL, end_date = NULL, url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP"
+    type, start_date, end_date, url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP"
   ) {
 
   check_supported_type(type)
@@ -39,7 +39,7 @@ download_data_macro_predictors <- function(
   check_if_package_installed("readxl", type)
   read_xlsx <- getNamespace("readxl")$read_xlsx
 
-  if (is.null(start_date) || is.null(end_date)) {
+  if (missing(start_date) || missing(end_date)) {
     message("No start_date or end_date provided. Returning the full data set.")
   } else {
     start_date <- as.Date(start_date)
@@ -97,7 +97,7 @@ download_data_macro_predictors <- function(
     ) |>
     tidyr::drop_na()
 
-  if (!is.null(start_date) && !is.null(end_date)) {
+  if (!missing(start_date) && !missing(end_date)) {
     processed_data <- processed_data |>
       filter(between(date, start_date, end_date))
   }

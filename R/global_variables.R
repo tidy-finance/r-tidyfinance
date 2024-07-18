@@ -11,7 +11,7 @@ utils::globalVariables(
     "lpermno", "lt", "mktcap", "namedt", "nameendt", "oancf", "permno", "pstk", "pstkl", "pstkrv", "ret",
     "ret_adj", "ret_excess", "risk_free", "sale", "shrcd", "shrout", "siccd", "txdb", "txditc", "xint",
     "xsga","ret_excess",
-    "dlycaldt", "dlyret", "issuertype", "mthcaldt", "mthprc", "mthret", "prc", "primaryexch",
+    "dlycaldt", "dlyret", "issuertype", "mthcaldt", "calculation_date", "mthprc", "mthret", "prc", "primaryexch",
     "secinfoenddt", "secinfostartdt", "securitysubtype", "securitytype", "sharetype",
     "usincflg", "hml", "smb",
     "issuer_id", "sic_code", "country_domicile",
