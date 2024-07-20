@@ -32,7 +32,7 @@
 #'          information on managing database connections.
 get_wrds_connection <- function() {
 
-  if (Sys.getenv("WRDS_USER") == "" || Sys.getenv("WRDS_PASSWORD") == "") {
+  if (nzchar(Sys.getenv("WRDS_USER")) || nzchar(Sys.getenv("WRDS_PASSWORD"))) {
     message("WRDS credentials not found. Please set them using set_wrds_credentials().")
   }
 

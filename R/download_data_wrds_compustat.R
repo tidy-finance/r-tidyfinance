@@ -51,7 +51,7 @@ download_data_wrds_compustat <- function(
   con <- get_wrds_connection()
 
   if (grepl("compustat_annual", type, fixed = TRUE)) {
-    funda_db <- tbl(con, dbplyr::in_schema("comp", "funda"))
+    funda_db <- tbl(con, I("comp.funda"))
 
     compustat <- funda_db |>
       filter(
@@ -102,7 +102,7 @@ download_data_wrds_compustat <- function(
   }
 
   if (grepl("compustat_quarterly", type, fixed = TRUE)) {
-    fundq_db <- tbl(con, dbplyr::in_schema("comp", "fundq"))
+    fundq_db <- tbl(con, I("comp.fundq"))
 
     compustat <- fundq_db |>
       filter(

@@ -26,7 +26,7 @@
 #' @export
 download_data_wrds_clean_trace <- function(
     cusips, start_date, end_date
-  ){
+  ) {
 
   check_if_package_installed("dbplyr", "clean_trace")
 
@@ -46,7 +46,7 @@ download_data_wrds_clean_trace <- function(
 
   con <- get_wrds_connection()
 
-  trace_enhanced_db <- tbl(con, dbplyr::in_schema("trace", "trace_enhanced"))
+  trace_enhanced_db <- tbl(con, I("trace.trace_enhanced"))
 
   trace_all <- trace_enhanced_db |>
     filter(

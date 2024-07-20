@@ -36,7 +36,7 @@ download_data_wrds_ccm_links <- function(
 
   con <- get_wrds_connection()
 
-  ccmxpf_linktable_db <- tbl(con, dbplyr::in_schema("crsp", "ccmxpf_linktable"))
+  ccmxpf_linktable_db <- tbl(con, I("crsp.ccmxpf_linktable"))
 
   ccm_links <- ccmxpf_linktable_db |>
     filter(linktype %in% local(linktype) &
