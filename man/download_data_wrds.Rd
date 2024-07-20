@@ -4,7 +4,7 @@
 \alias{download_data_wrds}
 \title{Download Data from WRDS}
 \usage{
-download_data_wrds(type, start_date = NULL, end_date = NULL)
+download_data_wrds(type, start_date, end_date)
 }
 \arguments{
 \item{type}{A string specifying the type of data to download. It should match

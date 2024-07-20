@@ -1,7 +1,7 @@
 Package: tidyfinance
 Type: Package
 Title: Tidy Finance Helper Functions
-Version: 0.2.1.9000
+Version: 0.2.1.9003
 Authors@R: c(
     person(given = "Christoph", 
            family = "Scheuch", 
@@ -43,6 +43,7 @@ Suggests:
     RPostgres (>= 1.4.5),
     dbplyr (>= 2.5.0),
     DBI (>= 1.2.2),
+    httr2 (>= 1.0.0),
     testthat (>= 3.2.0),
     knitr,
     rmarkdown

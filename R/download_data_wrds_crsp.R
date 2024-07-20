@@ -40,7 +40,7 @@
 #'
 #' @export
 download_data_wrds_crsp <- function(
-    type, start_date = NULL, end_date = NULL, batch_size = 500, version = "v2", additional_columns = NULL
+    type, start_date, end_date, batch_size = 500, version = "v2", additional_columns = NULL
   ) {
 
   batch_size <- as.integer(batch_size)
@@ -54,7 +54,7 @@ download_data_wrds_crsp <- function(
 
   check_if_package_installed("dbplyr", type)
 
-  if (is.null(start_date) || is.null(end_date)) {
+  if (missing(start_date) || missing(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
     end_date <- Sys.Date() %m-% years(1)
     message("No start_date or end_date provided. Using the range ",
@@ -85,21 +85,22 @@ download_data_wrds_crsp <- function(
           join_by(permno)
         ) |>
         filter(between(date, namedt, nameendt)) |>
-        mutate(month = floor_date(date, "month")) |>
+        mutate(calculation_date = date,
+               date = floor_date(date, "month")) |>
         left_join(
           msedelist_db |>
             select(permno, dlstdt, dlret, dlstcd) |>
-            mutate(month = floor_date(dlstdt, "month")),
-          join_by(permno, month)
+            mutate(date = floor_date(dlstdt, "month")),
+          join_by(permno, date)
         ) |>
         select(
-          permno, date, month, ret, shrout, altprc,
+          permno, date, calculation_date, ret, shrout, altprc,
           exchcd, siccd, dlret, dlstcd,
           all_of(additional_columns)
         ) |>
         collect() |>
         mutate(
-          month = ymd(month),
+          date = ymd(date),
           shrout = shrout * 1000
         )
 
@@ -112,11 +113,11 @@ download_data_wrds_crsp <- function(
         )
 
       mktcap_lag <- crsp_monthly |>
-        mutate(month = month %m+% months(1)) |>
-        select(permno, month, mktcap_lag = mktcap)
+        mutate(date = date %m+% months(1)) |>
+        select(permno, date, mktcap_lag = mktcap)
 
       crsp_monthly <- crsp_monthly |>
-        left_join(mktcap_lag, join_by(permno, month))
+        left_join(mktcap_lag, join_by(permno, date))
 
       crsp_monthly <- crsp_monthly |>
         mutate(exchange = case_when(
@@ -155,12 +156,11 @@ download_data_wrds_crsp <- function(
 
       factors_ff_3_monthly <- download_data_factors_ff(
         "factors_ff_3_monthly", start_date, end_date
-      ) |>
-        rename(month = date)
+      )
 
       crsp_monthly <- crsp_monthly |>
         left_join(factors_ff_3_monthly,
-                  join_by(month)
+                  join_by(date)
         ) |>
         mutate(
           ret_excess = ret_adj - risk_free,
@@ -194,11 +194,11 @@ download_data_wrds_crsp <- function(
           join_by(permno)
         )  |>
         filter(between(mthcaldt, secinfostartdt, secinfoenddt)) |>
-        mutate(month = floor_date(mthcaldt, "month")) |>
+        mutate(date = floor_date(mthcaldt, "month")) |>
         select(
           permno,
-          date = mthcaldt,
-          month,
+          date,
+          calculation_date = mthcaldt,
           ret = mthret,
           shrout,
           prc = mthprc,
@@ -208,7 +208,7 @@ download_data_wrds_crsp <- function(
         ) |>
         collect() |>
         mutate(
-          month = ymd(month),
+          date = ymd(date),
           shrout = shrout * 1000
         )
 
@@ -221,11 +221,11 @@ download_data_wrds_crsp <- function(
         )
 
       mktcap_lag <- crsp_monthly |>
-        mutate(month = month %m+% months(1)) |>
-        select(permno, month, mktcap_lag = mktcap)
+        mutate(date = date %m+% months(1)) |>
+        select(permno, date, mktcap_lag = mktcap)
 
       crsp_monthly <- crsp_monthly |>
-        left_join(mktcap_lag, join_by(permno, month))
+        left_join(mktcap_lag, join_by(permno, date))
 
       crsp_monthly <- crsp_monthly |>
         mutate(exchange = case_when(
@@ -253,12 +253,11 @@ download_data_wrds_crsp <- function(
 
       factors_ff_3_monthly <- download_data_factors_ff(
         "factors_ff_3_monthly", start_date, end_date
-      ) |>
-        rename(month = date)
+      )
 
       crsp_monthly <- crsp_monthly |>
         left_join(factors_ff_3_monthly,
-                  join_by(month)
+                  join_by(date)
         ) |>
         mutate(
           ret_excess = ret - risk_free,
@@ -337,7 +336,6 @@ download_data_wrds_crsp <- function(
             select(-dlstdt)
 
           crsp_daily_list[[j]] <- crsp_daily_sub |>
-            mutate(month = floor_date(date, "month")) |>
             left_join(factors_ff_3_daily |>
                         select(date, risk_free), join_by(date)) |>
             mutate(
@@ -402,7 +400,6 @@ download_data_wrds_crsp <- function(
         if (nrow(crsp_daily_sub) > 0) {
 
           crsp_daily_list[[j]] <- crsp_daily_sub |>
-            mutate(month = floor_date(date, "month")) |>
             left_join(factors_ff_3_daily |>
                         select(date, risk_free), join_by(date)) |>
             mutate(
