@@ -37,7 +37,6 @@ download_data_macro_predictors <- function(
   check_supported_type(type)
 
   check_if_package_installed("readxl", type)
-  read_xlsx <- getNamespace("readxl")$read_xlsx
 
   if (is.null(start_date) || is.null(end_date)) {
     message("No start_date or end_date provided. Returning the full data set.")
@@ -57,7 +56,7 @@ download_data_macro_predictors <- function(
   )
 
   if (grepl("monthly", type, fixed = TRUE)) {
-    raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Monthly"))
+    raw_data <- suppressMessages(readxl::read_xlsx(temporary_file, sheet = "Monthly"))
     processed_data <- raw_data |>
       mutate(date = lubridate::ym(yyyymm))
   }

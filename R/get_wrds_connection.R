@@ -38,11 +38,8 @@ get_wrds_connection <- function() {
 
   check_if_package_installed("RPostgres", "wrds_*")
 
-  dbConnect <- getNamespace("DBI")$dbConnect
-  Postgres <- getNamespace("RPostgres")$Postgres
-
-  dbConnect(
-    Postgres(),
+  DBI::dbConnect(
+    RPostgres::Postgres(),
     host = "wrds-pgdata.wharton.upenn.edu",
     dbname = "wrds",
     port = 9737,

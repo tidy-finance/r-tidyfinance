@@ -38,7 +38,6 @@ download_data_wrds_compustat <- function(
   ) {
 
   check_if_package_installed("dbplyr", type)
-  in_schema <- getNamespace("dbplyr")$in_schema
 
   if (is.null(start_date) || is.null(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
@@ -53,7 +52,7 @@ download_data_wrds_compustat <- function(
   con <- get_wrds_connection()
 
   if (grepl("compustat_annual", type, fixed = TRUE)) {
-    funda_db <- tbl(con, in_schema("comp", "funda"))
+    funda_db <- tbl(con, dbplyr::in_schema("comp", "funda"))
 
     compustat <- funda_db |>
       filter(
@@ -102,7 +101,7 @@ download_data_wrds_compustat <- function(
   }
 
   if (grepl("compustat_quarterly", type, fixed = TRUE)) {
-    fundq_db <- tbl(con, in_schema("comp", "fundq"))
+    fundq_db <- tbl(con, dbplyr::in_schema("comp", "fundq"))
 
     compustat <- fundq_db |>
       filter(

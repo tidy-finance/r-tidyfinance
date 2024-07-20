@@ -53,7 +53,6 @@ download_data_wrds_crsp <- function(
   }
 
   check_if_package_installed("dbplyr", type)
-  in_schema <- getNamespace("dbplyr")$in_schema
 
   if (is.null(start_date) || is.null(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
@@ -71,9 +70,9 @@ download_data_wrds_crsp <- function(
 
     if (version == "v1") {
 
-      msf_db <- tbl(con, in_schema("crsp", "msf"))
-      msenames_db <- tbl(con, in_schema("crsp", "msenames"))
-      msedelist_db <- tbl(con, in_schema("crsp", "msedelist"))
+      msf_db <- tbl(con, dbplyr::in_schema("crsp", "msf"))
+      msenames_db <- tbl(con, dbplyr::in_schema("crsp", "msenames"))
+      msedelist_db <- tbl(con, dbplyr::in_schema("crsp", "msedelist"))
 
       msf_db_columns <- c("permno", colnames(msf_db)[-which(colnames(msf_db) %in% colnames(msenames_db))])
 
@@ -174,8 +173,8 @@ download_data_wrds_crsp <- function(
 
     } else {
 
-      msf_db <- tbl(con, in_schema("crsp", "msf_v2"))
-      stksecurityinfohist_db <- tbl(con, in_schema("crsp", "stksecurityinfohist"))
+      msf_db <- tbl(con, dbplyr::in_schema("crsp", "msf_v2"))
+      stksecurityinfohist_db <- tbl(con, dbplyr::in_schema("crsp", "stksecurityinfohist"))
 
       msf_db_columns <- c("permno", colnames(msf_db)[-which(colnames(msf_db) %in% colnames(stksecurityinfohist_db))])
 
@@ -276,10 +275,10 @@ download_data_wrds_crsp <- function(
 
     if (version == "v1") {
 
-      dsf_db <- tbl(con, in_schema("crsp", "dsf")) |>
+      dsf_db <- tbl(con, dbplyr::in_schema("crsp", "dsf")) |>
         filter(between(date, start_date, end_date))
-      msenames_db <- tbl(con, in_schema("crsp", "msenames"))
-      msedelist_db <- tbl(con, in_schema("crsp", "msedelist"))
+      msenames_db <- tbl(con, dbplyr::in_schema("crsp", "msenames"))
+      msedelist_db <- tbl(con, dbplyr::in_schema("crsp", "msedelist"))
 
       dsf_db_columns <- c("permno", colnames(dsf_db)[-which(colnames(dsf_db) %in% colnames(msenames_db))])
 
@@ -355,9 +354,9 @@ download_data_wrds_crsp <- function(
 
     } else {
 
-      dsf_db <- tbl(con, in_schema("crsp", "dsf_v2")) |>
+      dsf_db <- tbl(con, dbplyr::in_schema("crsp", "dsf_v2")) |>
         filter(between(dlycaldt, start_date, end_date))
-      stksecurityinfohist_db <- tbl(con, in_schema("crsp", "stksecurityinfohist"))
+      stksecurityinfohist_db <- tbl(con, dbplyr::in_schema("crsp", "stksecurityinfohist"))
 
       dsf_db_columns <- c("permno", colnames(dsf_db)[-which(colnames(dsf_db) %in% colnames(stksecurityinfohist_db))])
 

@@ -26,11 +26,10 @@
 download_data_wrds_fisd <- function() {
 
   check_if_package_installed("dbplyr", "fisd_mergedissue")
-  in_schema <- getNamespace("dbplyr")$in_schema
 
   con <- get_wrds_connection()
 
-  fisd_mergedissue_db <- tbl(con, in_schema("fisd", "fisd_mergedissue"))
+  fisd_mergedissue_db <- tbl(con, dbplyr::in_schema("fisd", "fisd_mergedissue"))
 
   fisd <- fisd_mergedissue_db |>
     filter(
@@ -73,7 +72,7 @@ download_data_wrds_fisd <- function() {
     ) |>
     collect()
 
-  fisd_mergedissuer_db <- tbl(con, in_schema("fisd", "fisd_mergedissuer"))
+  fisd_mergedissuer_db <- tbl(con, dbplyr::in_schema("fisd", "fisd_mergedissuer"))
 
   fisd_issuer <- fisd_mergedissuer_db |>
     filter(country_domicile == "USA") |>

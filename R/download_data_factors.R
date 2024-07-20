@@ -82,7 +82,6 @@ download_data_factors_ff <- function(
   check_supported_type(type)
 
   check_if_package_installed("frenchdata", type)
-  download_french_data <- getNamespace("frenchdata")$download_french_data
 
   if (is.null(start_date) || is.null(end_date)) {
     message("No start_date or end_date provided. Returning the full data set.")
@@ -94,7 +93,7 @@ download_data_factors_ff <- function(
   factors_ff_types <- list_supported_types_ff()
   dataset <- factors_ff_types$dataset_name[factors_ff_types$type == type]
 
-  raw_data <- suppressMessages(download_french_data(dataset))
+  raw_data <- suppressMessages(frenchdata::download_french_data(dataset))
   raw_data <- raw_data$subsets$data[[1]]
 
   if (grepl("monthly", type, fixed = TRUE)) {

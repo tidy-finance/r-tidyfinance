@@ -26,10 +26,9 @@
 #' @export
 download_data_wrds_clean_trace <- function(
     cusips, start_date = NULL, end_date = NULL
-  ){
+  ) {
 
   check_if_package_installed("dbplyr", "clean_trace")
-  in_schema <- getNamespace("dbplyr")$in_schema
 
   if (is.null(start_date) || is.null(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
@@ -43,7 +42,7 @@ download_data_wrds_clean_trace <- function(
 
   con <- get_wrds_connection()
 
-  trace_enhanced_db <- tbl(con, in_schema("trace", "trace_enhanced"))
+  trace_enhanced_db <- tbl(con, dbplyr::in_schema("trace", "trace_enhanced"))
 
   trace_all <- trace_enhanced_db |>
     filter(
