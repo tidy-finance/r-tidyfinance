@@ -61,7 +61,7 @@ download_data_macro_predictors <- function(
       mutate(date = lubridate::ym(yyyymm))
   }
   if (grepl("quarterly", type, fixed = TRUE)) {
-    raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Quarterly"))
+    raw_data <- suppressMessages(readxl::read_xlsx(temporary_file, sheet = "Quarterly"))
     processed_data <- raw_data |>
       mutate(
         year = substr(yyyyq, 1, 4),
