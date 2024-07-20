@@ -71,7 +71,7 @@ download_data_macro_predictors <- function(
       )
   }
   if (grepl("annual", type, fixed = TRUE)) {
-    raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Annual"))
+    raw_data <- suppressMessages(readxl::read_xlsx(temporary_file, sheet = "Annual"))
     processed_data <- raw_data |>
       mutate(date = as.Date(paste0(yyyy, "-01-01")))
   }
