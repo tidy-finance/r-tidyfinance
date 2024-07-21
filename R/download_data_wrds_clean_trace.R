@@ -10,17 +10,16 @@
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, a subset of the dataset is returned.
 #'
-#' @return A data frame containing the cleaned trade messages from TRACE for the
+#' @returns A data frame containing the cleaned trade messages from TRACE for the
 #'   selected CUSIPs over the time window specified. Output variables include
 #'   identifying information (i.e., CUSIP, trade date/time) and trade-specific
 #'   information (i.e., price/yield, volume, counterparty, and reporting side).
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   clean_trace <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
 #' }
-#'
-#' @export
 download_data_wrds_clean_trace <- function(
     cusips, start_date, end_date
   ) {

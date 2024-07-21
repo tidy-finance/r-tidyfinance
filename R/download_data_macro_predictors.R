@@ -16,14 +16,14 @@
 #' @param url The URL from which to download the dataset, with a default Google
 #'   Sheets export link.
 #'
-#' @return A tibble with processed data, filtered by the specified date range
+#' @returns A tibble with processed data, filtered by the specified date range
 #'   and including financial metrics.
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   macro_predictors_monthly <- download_data_macro_predictors("macro_predictors_monthly")
 #' }
-#' @export
 download_data_macro_predictors <- function(
     type, start_date, end_date, url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP"
   ) {

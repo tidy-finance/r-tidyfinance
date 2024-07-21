@@ -14,15 +14,15 @@
 #' @param usedflag An integer indicating whether to use flagged links. The
 #'   default is `1`, indicating that only flagged links should be used.
 #'
-#' @return A data frame with the columns `permno`, `gvkey`, `linkdt`, and
+#' @returns A data frame with the columns `permno`, `gvkey`, `linkdt`, and
 #'   `linkenddt`, where `linkenddt` is the end date of the link, and missing end
 #'   dates are replaced with today's date.
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)
 #' }
-#' @export
 download_data_wrds_ccm_links <- function(
     linktype = c("LU", "LC"), linkprim = c("P", "C"), usedflag = 1
 ) {

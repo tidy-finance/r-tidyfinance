@@ -44,7 +44,6 @@ single_var_model <- estimate_model(data, "ret_excess ~ mkt_excess")
 
 # Estimate model with multiple independent variables
 multi_var_model <- estimate_model(data, "ret_excess ~ mkt_excess + smb + hml")
-
 }
 \seealso{
 \code{\link[stats]{lm}} for details on the underlying linear model fitting used.

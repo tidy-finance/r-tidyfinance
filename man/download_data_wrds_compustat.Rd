@@ -44,5 +44,4 @@ operating profitability (op), and investment (inv) for each company.
   # Add additional columns
   download_data_wrds_compustat("wrds_compustat_annual", additional_columns = c("aodo", "aldo"))
 }
-
 }

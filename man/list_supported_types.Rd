@@ -34,5 +34,4 @@ list_supported_types(domain = "WRDS")
 
 # List supported types as a vector
 list_supported_types(as_vector = TRUE)
-
 }

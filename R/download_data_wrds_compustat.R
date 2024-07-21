@@ -15,10 +15,11 @@
 #' @param additional_columns Additional columns from the Compustat table
 #'   as a character vector.
 #'
-#' @return A data frame with financial data for the specified period, including
+#' @returns A data frame with financial data for the specified period, including
 #'   variables for book equity (be), operating profitability (op), investment
 #'   (inv), and others.
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
@@ -27,8 +28,6 @@
 #'   # Add additional columns
 #'   download_data_wrds_compustat("wrds_compustat_annual", additional_columns = c("aodo", "aldo"))
 #' }
-#'
-#' @export
 download_data_wrds_compustat <- function(
     type, start_date, end_date, additional_columns = NULL
   ) {

@@ -7,13 +7,12 @@
 #' @param path The file path where the SQLite database should be saved. If not
 #'   provided, the default path is "data/tidy_finance_r.sqlite".
 #'
-#' @return Invisible NULL. Side effect: downloads a file to the specified path.
+#' @returns Invisible `NULL`. Side effect: downloads a file to the specified path.
 #'
+#' @export
 #' @examples
 #' path <- paste0(tempdir(), "/tidy_finance_r.sqlite")
 #' create_wrds_dummy_database(path)
-#'
-#' @export
 create_wrds_dummy_database <- function(path) {
 
   if (missing(path)) {

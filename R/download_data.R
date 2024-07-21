@@ -15,16 +15,15 @@
 #'   specifying the end date for the data. If not provided, the full dataset or a subset is returned,
 #'   depending on the dataset type.
 #'
-#' @return A tibble with processed data, including dates and the relevant
+#' @returns A tibble with processed data, including dates and the relevant
 #'   financial metrics, filtered by the specified date range.
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   download_data("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
 #'   download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
 #' }
-#'
-#' @export
 download_data <- function(type, start_date, end_date) {
 
   check_supported_type(type)

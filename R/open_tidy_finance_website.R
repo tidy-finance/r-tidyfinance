@@ -11,14 +11,13 @@
 #'   "beta-estimation.html"). If the chapter name does not exist, then the
 #'   function opens the main page.
 #'
+#' @returns Invisible NULL. The function is called for its side effect of opening
+#'   a web page.
+#'
+#' @export
 #' @examples
 #' open_tidy_finance_website()
 #' open_tidy_finance_website("beta-estimation")
-#'
-#' @export
-#'
-#' @return Invisible NULL. The function is called for its side effect of opening
-#'   a web page.
 open_tidy_finance_website <- function(chapter = NULL) {
   base_url <- "https://www.tidy-finance.org/r/"
   if (!is.null(chapter)) {

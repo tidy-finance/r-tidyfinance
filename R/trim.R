@@ -10,14 +10,13 @@
 #'   distribution. For example, a `cut` of 0.05 will remove the lowest and
 #'   highest 5% of the data. Must be between \[0, 0.5\].
 #'
-#' @return A numeric vector with the extreme values removed.
+#' @returns A numeric vector with the extreme values removed.
 #'
+#' @export
 #' @examples
 #' set.seed(123)
 #' data <- rnorm(100)
 #' trimmed_data <- trim(x = data, cut = 0.05)
-#'
-#' @export
 trim <- function(x, cut) {
   if (cut < 0 || cut > 0.5) {
     stop("The parameter 'cut' must be inside [0, 0.5].")

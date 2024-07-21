@@ -11,7 +11,7 @@ create_wrds_dummy_database(path)
 provided, the default path is "data/tidy_finance_r.sqlite".}
 }
 \value{
-Invisible NULL. Side effect: downloads a file to the specified path.
+Invisible \code{NULL}. Side effect: downloads a file to the specified path.
 }
 \description{
 Downloads the WRDS dummy database from the respective Tidy Finance GitHub
@@ -21,5 +21,4 @@ the user is prompted before it is replaced.
 \examples{
 path <- paste0(tempdir(), "/tidy_finance_r.sqlite")
 create_wrds_dummy_database(path)
-
 }

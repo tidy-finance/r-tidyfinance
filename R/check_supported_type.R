@@ -7,10 +7,9 @@
 #'
 #' @param type The dataset type to check for support.
 #'
-#' @return Does not return a value; instead, it either passes silently if the
+#' @returns Does not return a value; instead, it either passes silently if the
 #'   type is supported or stops execution with an error message if the type is
 #'   unsupported.
-#'
 check_supported_type <- function(type) {
   supported_types <- list_supported_types(as_vector = TRUE)
   if (!any(type %in% supported_types)) {
