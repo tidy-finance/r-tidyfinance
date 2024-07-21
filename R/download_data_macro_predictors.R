@@ -23,12 +23,6 @@
 #' \donttest{
 #'   macro_predictors_monthly <- download_data_macro_predictors("macro_predictors_monthly")
 #' }
-#'
-#' @import dplyr
-#' @importFrom tidyr drop_na
-#' @importFrom lubridate ym
-#' @importFrom utils download.file
-#'
 #' @export
 download_data_macro_predictors <- function(
     type, start_date, end_date, url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP"
@@ -59,7 +53,7 @@ download_data_macro_predictors <- function(
   if (grepl("monthly", type, fixed = TRUE)) {
     raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Monthly"))
     processed_data <- raw_data |>
-      mutate(date = lubridate::ym(yyyymm))
+      mutate(date = ym(yyyymm))
   }
   if (grepl("quarterly", type, fixed = TRUE)) {
     raw_data <- suppressMessages(read_xlsx(temporary_file, sheet = "Quarterly"))

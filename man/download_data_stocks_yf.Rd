@@ -29,5 +29,4 @@ download_data_stocks_yf(symbols = c("AAPL", "MSFT"))
 
 download_data_stocks_yf("2021-01-01", "2022-01-01", symbols = "GOOGL")
 }
-
 }

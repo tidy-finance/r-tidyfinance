@@ -35,8 +35,8 @@ Imports:
     tidyr (>= 1.3.1),
     purrr (>= 1.0.2),
     lubridate (>= 1.9.3),
-    tibble (>= 3.2.1),
-    lifecycle
+    lifecycle,
+    stats
 Suggests:
     frenchdata (>= 0.2.0),
     readxl (>= 1.4.0),

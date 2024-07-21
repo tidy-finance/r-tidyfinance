@@ -15,8 +15,6 @@
 #' open_tidy_finance_website()
 #' open_tidy_finance_website("beta-estimation")
 #'
-#' @importFrom utils browseURL
-#'
 #' @export
 #'
 #' @return Invisible NULL. The function is called for its side effect of opening

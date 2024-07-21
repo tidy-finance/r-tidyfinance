@@ -28,9 +28,6 @@
 #'   download_data_wrds_compustat("wrds_compustat_annual", additional_columns = c("aodo", "aldo"))
 #' }
 #'
-#' @import dplyr
-#' @importFrom lubridate year ceiling_date floor_date
-#'
 #' @export
 download_data_wrds_compustat <- function(
     type, start_date, end_date, additional_columns = NULL
@@ -82,11 +79,11 @@ download_data_wrds_compustat <- function(
       )
 
     compustat <- compustat |>
-      mutate(year = lubridate::year(datadate)) |>
+      mutate(year = year(datadate)) |>
       group_by(gvkey, year) |>
       filter(datadate == max(datadate)) |>
       ungroup() |>
-      mutate(date = lubridate::floor_date(datadate, "month"))
+      mutate(date = floor_date(datadate, "month"))
 
     processed_data <- compustat |>
       left_join(
@@ -122,8 +119,8 @@ download_data_wrds_compustat <- function(
     disconnection_connection(con)
 
     compustat <- compustat |>
-      drop_na(gvkey, datadate, fyearq, fqtr)|>
-      mutate(date = lubridate::floor_date(datadate, "month")) |>
+      tidyr::drop_na(gvkey, datadate, fyearq, fqtr) |>
+      mutate(date = floor_date(datadate, "month")) |>
       group_by(gvkey, fyearq, fqtr) |>
       filter(datadate == max(datadate)) |>
       slice_head(n = 1) |>

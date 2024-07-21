@@ -11,13 +11,9 @@
 #'   execution with an error message advising the installation of the package.
 #'   Since the function is designed to stop if the package is not found, it does
 #'   not explicitly return a value upon successful completion.
-#'
-#' @importFrom rlang check_installed
-#'
 check_if_package_installed <- function(package, type) {
   rlang::check_installed(
     package,
     reason = paste0("to download type '", type, "'")
   )
 }
-

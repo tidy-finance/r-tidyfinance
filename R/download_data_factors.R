@@ -70,10 +70,6 @@ download_data_factors <- function(
 #'   download_data_factors_ff("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
 #'   download_data_factors_ff("factors_ff_10_industry_portfolios_monthly", "2000-01-01", "2020-12-31")
 #' }
-#'
-#' @import dplyr
-#' @importFrom lubridate ymd floor_date
-#'
 #' @export
 download_data_factors_ff <- function(
     type, start_date, end_date
@@ -99,10 +95,10 @@ download_data_factors_ff <- function(
 
   if (grepl("monthly", type, fixed = TRUE)) {
     processed_data <- raw_data |>
-      mutate(date = lubridate::floor_date(lubridate::ymd(paste0(date, "01")), "month"))
+      mutate(date = floor_date(ymd(paste0(date, "01")), "month"))
   } else if (grepl("daily|weekly", type)) {
     processed_data <- raw_data |>
-      mutate(date = lubridate::ymd(date))
+      mutate(date = ymd(date))
   } else {
     stop("This data type has neither daily, weekly, nor monthly frequency.")
   }
@@ -157,11 +153,6 @@ download_data_factors_ff <- function(
 #' \donttest{
 #'   download_data_factors_q("factors_q5_daily", "2020-01-01", "2020-12-31")
 #' }
-#'
-#' @import dplyr
-#' @importFrom lubridate ymd
-#' @importFrom utils read.csv
-#'
 #' @export
 download_data_factors_q <- function(
     type, start_date, end_date, url = "http://global-q.org/uploads/1/2/2/6/122679606/"
@@ -182,12 +173,12 @@ download_data_factors_q <- function(
 
   if (grepl("monthly", type, fixed = TRUE)) {
     processed_data <- raw_data |>
-      mutate(date = lubridate::ymd(paste(year, month, "01", sep = "-"))) |>
+      mutate(date = ymd(paste(year, month, "01", sep = "-"))) |>
       select(-c(year, month))
   }
   if (grepl("daily", type, fixed = TRUE)) {
     processed_data <- raw_data |>
-      mutate(DATE = lubridate::ymd(DATE))
+      mutate(DATE = ymd(DATE))
   }
 
   processed_data <- processed_data |>

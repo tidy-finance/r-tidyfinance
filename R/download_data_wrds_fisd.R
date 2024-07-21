@@ -24,9 +24,6 @@
 #'   fisd_extended <- download_data_wrds_fisd(additional_columns = c("asset_backed", "defeased"))
 #' }
 #'
-#' @import dplyr
-#' @importFrom tidyr all_of
-#'
 #' @export
 download_data_wrds_fisd <- function(additional_columns = NULL) {
 
@@ -54,7 +51,7 @@ download_data_wrds_fisd <- function(additional_columns = NULL) {
       coupon_type %in% c("F", "Z"),
       is.na(fix_frequency),
       coupon_change_indicator == "N",
-      interest_frequency %in% c("0", "1","2", "4", "12"),
+      interest_frequency %in% c("0", "1", "2", "4", "12"),
       rule_144a == "N",
       private_placement == "N" | is.na(private_placement),
       defaulted == "N",
@@ -71,7 +68,7 @@ download_data_wrds_fisd <- function(additional_columns = NULL) {
     select(
       complete_cusip, maturity, offering_amt, offering_date, dated_date,
       interest_frequency, coupon, last_interest_date, issue_id, issuer_id,
-      tidyr::all_of(additional_columns)
+      all_of(additional_columns)
     ) |>
     collect()
 

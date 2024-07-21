@@ -41,5 +41,4 @@ format, scaling factor values, and filtering by the specified date range.
 \donttest{
   download_data_factors_q("factors_q5_daily", "2020-01-01", "2020-12-31")
 }
-
 }

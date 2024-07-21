@@ -22,11 +22,6 @@
 #' \donttest{
 #'   ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)
 #' }
-#'
-#' @import dplyr
-#' @importFrom tidyr replace_na
-#' @importFrom lubridate today
-#'
 #' @export
 download_data_wrds_ccm_links <- function(
     linktype = c("LU", "LC"), linkprim = c("P", "C"), usedflag = 1
@@ -46,7 +41,7 @@ download_data_wrds_ccm_links <- function(
              usedflag == local(usedflag)) |>
     select(permno = lpermno, gvkey, linkdt, linkenddt) |>
     collect() |>
-    mutate(linkenddt = tidyr::replace_na(linkenddt, lubridate::today()))
+    mutate(linkenddt = tidyr::replace_na(linkenddt, today()))
 
   disconnection_connection(con)
 

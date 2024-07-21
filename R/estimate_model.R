@@ -35,9 +35,6 @@
 #' multi_var_model <- estimate_model(data, "ret_excess ~ mkt_excess + smb + hml")
 #'
 #' @export
-#'
-#' @importFrom stats setNames lm as.formula coefficients
-#'
 #' @seealso \code{\link[stats]{lm}} for details on the underlying linear model fitting used.
 estimate_model <- function(data, model, min_obs = 1) {
   model_parts <- strsplit(model, "~", fixed = TRUE)[[1]]

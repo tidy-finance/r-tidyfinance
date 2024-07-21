@@ -33,11 +33,6 @@
 #'   download_data_wrds_crsp("wrds_crsp_monthly", "2020-11-01", "2020-12-31",
 #'                           additional_columns = c("mthvol", "mthvolflg"))
 #' }
-#'
-#' @import dplyr
-#' @import tidyr
-#' @import lubridate
-#'
 #' @export
 download_data_wrds_crsp <- function(
     type, start_date, end_date, batch_size = 500, version = "v2", additional_columns = NULL
@@ -170,7 +165,7 @@ download_data_wrds_crsp <- function(
         select(-risk_free, -mkt_excess, -hml, -smb)
 
       processed_data <- crsp_monthly |>
-        drop_na(ret_excess, mktcap, mktcap_lag)
+        tidyr::drop_na(ret_excess, mktcap, mktcap_lag)
 
     } else {
 
@@ -267,7 +262,7 @@ download_data_wrds_crsp <- function(
         select(-risk_free, -mkt_excess, -hml, -smb)
 
       processed_data <- crsp_monthly |>
-        drop_na(ret_excess, mktcap, mktcap_lag)
+        tidyr::drop_na(ret_excess, mktcap, mktcap_lag)
     }
   }
 
@@ -312,7 +307,7 @@ download_data_wrds_crsp <- function(
           select(permno, date, ret,
                  all_of(additional_columns)) |>
           collect() |>
-          drop_na(permno, date, ret)
+          tidyr::drop_na(permno, date, ret)
 
         if (nrow(crsp_daily_sub) > 0) {
 
@@ -320,7 +315,7 @@ download_data_wrds_crsp <- function(
             filter(permno %in% permno_batch) |>
             select(permno, dlstdt, dlret) |>
             collect() |>
-            drop_na()
+            tidyr::drop_na()
 
           crsp_daily_sub <- crsp_daily_sub |>
             left_join(msedelist_sub, join_by(permno, date == dlstdt)) |>
@@ -332,7 +327,7 @@ download_data_wrds_crsp <- function(
             select(-c(dlret, dlstdt)) |>
             left_join(msedelist_sub |>
                         select(permno, dlstdt), join_by(permno)) |>
-            mutate(dlstdt = replace_na(dlstdt, as.Date(end_date))) |>
+            mutate(dlstdt = tidyr::replace_na(dlstdt, as.Date(end_date))) |>
             filter(date <= dlstdt) |>
             select(-dlstdt)
 
@@ -396,7 +391,7 @@ download_data_wrds_crsp <- function(
           select(permno, date = dlycaldt, ret = dlyret,
                  all_of(additional_columns)) |>
           collect() |>
-          drop_na(permno, date, ret)
+          tidyr::drop_na(permno, date, ret)
 
         if (nrow(crsp_daily_sub) > 0) {
 

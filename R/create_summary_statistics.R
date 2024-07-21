@@ -38,10 +38,6 @@
 #'   represents a variable (and a group if `by` is used), and columns include
 #'   the computed statistics.
 #'
-#' @import dplyr
-#' @import tidyr
-#' @importFrom purrr partial
-#'
 #' @export
 create_summary_statistics <- function(
     data, ..., by = NULL, detail = FALSE, drop_na = FALSE
@@ -60,7 +56,7 @@ create_summary_statistics <- function(
   # Determine set of summary statistics to compute
   if (!detail) {
     funs <- list(
-      n = function(x) {sum(!is.na(x))},
+      n = function(x) sum(!is.na(x)),
       mean = mean, sd = stats::sd,
       min = min,
       q50 = partial(quantile_na_handler, probs = 0.50),
@@ -68,7 +64,7 @@ create_summary_statistics <- function(
     )
   } else {
     funs <- list(
-      n = function(x) {sum(!is.na(x))},
+      n = function(x) sum(!is.na(x)),
       mean = mean, sd = stats::sd,
       min = min,
       q01 = partial(quantile_na_handler, probs = 0.01),
@@ -119,6 +115,6 @@ quantile_na_handler <- function(x, probs) {
   if (anyNA(x)) {
     NA_real_
   } else {
-    unname(stats::quantile(x, probs = probs))
+    unname(quantile(x, probs = probs))
   }
 }
