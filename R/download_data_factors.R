@@ -12,18 +12,17 @@
 #'   format.
 #' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
 #'
-#' @return A tibble with processed factor data, including dates, risk-free
+#' @returns A tibble with processed factor data, including dates, risk-free
 #'   rates, market excess returns, and other factors, filtered by the specified
 #'   date range.
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   download_data_factors("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
 #'   download_data_factors("factors_ff_3_daily")
 #'   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
 #' }
-#'
-#' @export
 download_data_factors <- function(
     type, start_date, end_date
   ) {
@@ -61,16 +60,16 @@ download_data_factors <- function(
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, the full dataset is returned.
 #'
-#' @return A tibble with processed factor data, including the date, risk-free
+#' @returns A tibble with processed factor data, including the date, risk-free
 #'   rate, market excess return, and other factors, filtered by the specified
 #'   date range.
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   download_data_factors_ff("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
 #'   download_data_factors_ff("factors_ff_10_industry_portfolios_monthly", "2000-01-01", "2020-12-31")
 #' }
-#' @export
 download_data_factors_ff <- function(
     type, start_date, end_date
   ) {
@@ -144,15 +143,15 @@ download_data_factors_ff <- function(
 #' @param url The base URL from which to download the dataset files, with a
 #'   specific path for Global Q datasets.
 #'
-#' @return A tibble with processed factor data, including the date, risk-free
+#' @returns A tibble with processed factor data, including the date, risk-free
 #'   rate, market excess return, and other factors, filtered by the specified
 #'   date range.
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   download_data_factors_q("factors_q5_daily", "2020-01-01", "2020-12-31")
 #' }
-#' @export
 download_data_factors_q <- function(
     type, start_date, end_date, url = "http://global-q.org/uploads/1/2/2/6/122679606/"
 ) {

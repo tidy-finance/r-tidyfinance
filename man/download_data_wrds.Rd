@@ -34,5 +34,4 @@ specific data download function.
   compustat_annual <- download_data_wrds("wrds_compustat_annual", "2020-01-01", "2020-12-31")
   ccm_links <- download_data_wrds("wrds_ccm_links", "2020-01-01", "2020-12-31")
 }
-
 }

@@ -28,5 +28,4 @@ Downloads historical stock data for a given symbol and date range from specified
 \dontrun{
 download_data_stocks(type = "stocks_yf", symbols = c("AAPL", "MSFT"))
 }
-
 }

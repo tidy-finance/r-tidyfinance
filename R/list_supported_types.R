@@ -7,10 +7,9 @@
 #' factors). Additionally, it annotates each dataset with the domain
 #' "Fama-French".
 #'
-#' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
+#' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (a descriptive name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "Fama-French").
-#'
 list_supported_types_ff <- function() {
 
   # data_sets_raw <- frenchdata::get_french_data_list()$files_list
@@ -345,7 +344,7 @@ list_supported_types_ff <- function() {
 #' Q model, specifically the q5 factors model for the year 2022. Additionally,
 #' it annotates each dataset with the domain "Global Q".
 #'
-#' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
+#' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (the file name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "Global Q").
 list_supported_types_q <- function() {
@@ -369,7 +368,7 @@ list_supported_types_q <- function() {
 #' "PredictorData2022.xlsx" for the year 2022. Additionally, it annotates each
 #' dataset with the domain "Goyal-Welch".
 #'
-#' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
+#' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (the file name of the dataset, which is the same for all types), and
 #'   `domain` (the domain to which the dataset belongs, always "Goyal-Welch").
 list_supported_types_macro_predictors <- function() {
@@ -387,7 +386,7 @@ list_supported_types_macro_predictors <- function() {
 #' This function returns a tibble with the supported dataset types provided via
 #' WRDS. Additionally, it annotates each dataset with the domain "WRDS".
 #'
-#' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
+#' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (the file name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "WRDS").
 list_supported_types_wrds <- function() {
@@ -408,7 +407,7 @@ list_supported_types_wrds <- function() {
 #'
 #' Returns a tibble listing the supported stock data types and their corresponding dataset names.
 #'
-#' @return A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
+#' @returns A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
 list_supported_types_stocks <- function() {
   tibble(
     "type" = "stocks_yf",
@@ -428,11 +427,12 @@ list_supported_types_stocks <- function() {
 #' @param as_vector Logical indicating whether types should be returned as a
 #'   character vector instead of data frame.
 #'
-#' @return A tibble aggregating all supported dataset types with columns: `type`
+#' @returns A tibble aggregating all supported dataset types with columns: `type`
 #'   (the type of dataset), `dataset_name` (a descriptive name or file name of
 #'   the dataset), and `domain` (the domain to which the dataset belongs, e.g.,
 #'   "Global Q", "Fama-French", "Goyal-Welch").
 #'
+#' @export
 #' @examples
 #' # List all supported types as a data frame
 #' list_supported_types()
@@ -442,8 +442,6 @@ list_supported_types_stocks <- function() {
 #'
 #' # List supported types as a vector
 #' list_supported_types(as_vector = TRUE)
-#'
-#' @export
 list_supported_types <- function(domain = NULL, as_vector = FALSE) {
   supported_types <- dplyr::bind_rows(
     list_supported_types_q(),

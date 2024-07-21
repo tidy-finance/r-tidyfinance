@@ -14,17 +14,16 @@
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, a subste of the dataset is returned.
 #'
-#' @return A data frame containing the requested data, with the structure and
+#' @returns A data frame containing the requested data, with the structure and
 #'   contents depending on the specified `type`.
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   crsp_monthly <- download_data_wrds("wrds_crsp_monthly", "2020-01-01", "2020-12-31")
 #'   compustat_annual <- download_data_wrds("wrds_compustat_annual", "2020-01-01", "2020-12-31")
 #'   ccm_links <- download_data_wrds("wrds_ccm_links", "2020-01-01", "2020-12-31")
 #' }
-#'
-#' @export
 download_data_wrds <- function(type, start_date, end_date) {
 
   check_supported_type(type)

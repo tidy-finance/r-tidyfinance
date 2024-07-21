@@ -10,14 +10,13 @@
 #' @param symbols A character vector of stock symbols to download data for. At least one
 #'   symbol must be provided.
 #'
-#' @return A tibble containing the downloaded stock data with columns depending on the data source.
+#' @returns A tibble containing the downloaded stock data with columns depending on the data source.
 #'
+#' @export
 #' @examples
 #' \dontrun{
 #' download_data_stocks(type = "stocks_yf", symbols = c("AAPL", "MSFT"))
 #' }
-#'
-#' @export
 download_data_stocks <- function(type, start_date, end_date, symbols) {
 
   check_supported_type(type)
@@ -40,16 +39,16 @@ download_data_stocks <- function(type, start_date, end_date, symbols) {
 #' @param symbols A character vector of stock symbols to download data for. At least one
 #'   symbol must be provided.
 #'
-#' @return A tibble containing the downloaded stock data with columns: symbol,
+#' @returns A tibble containing the downloaded stock data with columns: symbol,
 #'   date, volume, open, low, high, close, and adjusted_close.
 #'
+#' @export
 #' @examples
 #' \dontrun{
 #' download_data_stocks_yf(symbols = c("AAPL", "MSFT"))
 #'
 #' download_data_stocks_yf("2021-01-01", "2022-01-01", symbols = "GOOGL")
 #' }
-#' @export
 download_data_stocks_yf <- function(start_date, end_date, symbols) {
 
   if (missing(symbols)) {

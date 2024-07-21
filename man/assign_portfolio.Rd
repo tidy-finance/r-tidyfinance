@@ -55,5 +55,4 @@ data <- data.frame(
 )
 assign_portfolio(data, "market_cap", n_portfolios = 5)
 assign_portfolio(data, "market_cap", percentiles = c(0.2, 0.4, 0.6, 0.8), exchanges = c("NYSE"))
-
 }

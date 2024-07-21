@@ -33,5 +33,4 @@ processing.
   download_data_factors("factors_ff_3_daily")
   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
 }
-
 }

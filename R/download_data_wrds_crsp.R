@@ -19,11 +19,12 @@
 #' @param additional_columns Additional columns from the CRSP monthly or
 #'   daily data as a character vector.
 #'
-#' @return A data frame containing CRSP stock returns, adjusted for delistings,
+#' @returns A data frame containing CRSP stock returns, adjusted for delistings,
 #'   along with calculated market capitalization and excess returns over the
 #'   risk-free rate. The structure of the returned data frame depends on the
 #'   selected data type.
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-11-01", "2020-12-31")
@@ -33,7 +34,6 @@
 #'   download_data_wrds_crsp("wrds_crsp_monthly", "2020-11-01", "2020-12-31",
 #'                           additional_columns = c("mthvol", "mthvolflg"))
 #' }
-#' @export
 download_data_wrds_crsp <- function(
     type, start_date, end_date, batch_size = 500, version = "v2", additional_columns = NULL
   ) {

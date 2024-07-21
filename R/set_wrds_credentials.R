@@ -8,12 +8,13 @@
 #' to add the .Renviron file to the .gitignore file to prevent it from being tracked
 #' by version control.
 #'
-#' @return Invisibly returns TRUE. Displays messages to the user based on their input and actions taken.
+#' @returns Invisibly returns TRUE. Displays messages to the user based on their input and actions taken.
+#'
+#' @export
 #' @examples
 #' \dontrun{
 #' set_wrds_credentials()
 #' }
-#' @export
 set_wrds_credentials <- function() {
   wrds_user <- readline(prompt = "Enter your WRDS username: ")
   wrds_password <- readline(prompt = "Enter your WRDS password: ")

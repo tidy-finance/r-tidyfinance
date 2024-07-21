@@ -22,8 +22,13 @@
 #'   Exchanges must be stored in a column named `exchange` in `data`. If `NULL`,
 #'   no filtering is applied.
 #'
-#' @return A vector of portfolio assignments for each row in the input `data`.
+#' @returns A vector of portfolio assignments for each row in the input `data`.
 #'
+#' @note This function will stop and throw an error if both `n_portfolios` and
+#'   `percentiles` are provided or if neither is provided. Ensure that you only
+#'   use one of these parameters for specifying portfolio breakpoints.
+#'
+#' @export
 #' @examples
 #' data <- data.frame(
 #'   id = 1:100,
@@ -32,12 +37,6 @@
 #' )
 #' assign_portfolio(data, "market_cap", n_portfolios = 5)
 #' assign_portfolio(data, "market_cap", percentiles = c(0.2, 0.4, 0.6, 0.8), exchanges = c("NYSE"))
-#'
-#' @export
-#'
-#' @note This function will stop and throw an error if both `n_portfolios` and
-#'   `percentiles` are provided or if neither is provided. Ensure that you only
-#'   use one of these parameters for specifying portfolio breakpoints.
 assign_portfolio <- function(data,
                              sorting_variable,
                              n_portfolios = NULL,
