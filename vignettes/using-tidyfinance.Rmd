@@ -73,12 +73,12 @@ This feature becomes more apparent for other data sources such as `wrds_crsp_mon
 download_data("wrds_crsp_monthly", "2020-01-01", "2020-12-31")
 ```
 
-If you want to add further columns, you can add them via `...` to `download_data_wrds_crsp()`, for instance:
+If you want to add further columns, you can add them via `additional_columns` to `download_data_wrds_crsp()`, for instance:
 
 ```{r}
 #| output: false
 #| eval: false
-download_data_wrds_crsp("wrds_crsp_monthly", "2020-01-01", "2020-12-31", mthvol)
+download_data_wrds_crsp("wrds_crsp_monthly", "2020-01-01", "2020-12-31", additional_columns = "mthvol")
 ```
 
 Note that the function downloads CRSP v2 as default, as we do in our book since February 2024. If you want to download the old version of CRSP before the update, you can use the `version = v1` parameter in `download_data_wrds_crsp()` . 
@@ -88,7 +88,7 @@ As another example, you can do the same for Compustat:
 ```{r}
 #| output: false
 #| eval: false
-download_data_wrds_compustat("wrds_compustat_annual", "2000-01-01", "2020-12-31", acoxar, amc, aldo)
+download_data_wrds_compustat("wrds_compustat_annual", "2000-01-01", "2020-12-31", additional_columns = c("acoxar", "amc", "aldo"))
 ```
 
 Check out the list of supported types and the corresponding download functions for more information on the respective customization options. We decided to provide limited functionality for the initial release on purpose and rather respond to community request than overengineer the package from the start.  
