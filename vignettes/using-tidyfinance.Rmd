@@ -117,21 +117,20 @@ We discuss winsorization in TFWR, so we figured providing this function could be
 ```{r}
 #| message: false
 #| warning: false
-library(tibble)
 library(dplyr)
 
 set.seed(123)
-data <- tibble(x = rnorm(100)) |> 
+data <- tibble(x = rnorm(100)) |>
   arrange(x)
 
-data |> 
+data |>
   mutate(x_winsorized = winsorize(x, 0.01))
 ```
 
 If you rather want to replace the bottom and top quantiles of your distribution with missing values, then you can use `trim()`
 
 ```{r}
-data |> 
+data |>
   mutate(x_trimmed = trim(x, 0.01))
 ```
 
@@ -152,10 +151,10 @@ data <- tibble(
   market_cap = runif(100, 1e6, 1e9)
 )
 
-data |> 
+data |>
   mutate(
     portfolio = assign_portfolio(
-      pick(everything()), "market_cap", n_portfolios = 5, exchanges = c("NYSE"))
+      pick(everything()), "market_cap", n_portfolios = 5, exchanges = "NYSE")
   )
 ```
 
