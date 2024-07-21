@@ -7,5 +7,6 @@
 #' @importFrom lifecycle deprecated
 #' @importFrom purrr partial
 #' @importFrom stats quantile
+#' @importFrom stats setNames
 ## usethis namespace: end
 NULL

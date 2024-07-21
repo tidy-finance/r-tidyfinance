@@ -43,7 +43,8 @@ estimate_model <- function(data, model, min_obs = 1) {
   independent_vars <- independent_vars[independent_vars != ""]
 
   if (nrow(data) < min_obs) {
-    beta <- stats::setNames(as.numeric(rep(NA, length(independent_vars))), independent_vars)
+    beta <- setNames(as.numeric(rep(NA, length(independent_vars))),
+                     independent_vars)
     if (length(beta) == 1) {
       return(NA_real_)
     } else {
