@@ -11,8 +11,6 @@
 #'   (a descriptive name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "Fama-French").
 #'
-#' @importFrom tibble tribble
-#'
 list_supported_types_ff <- function() {
 
   # data_sets_raw <- frenchdata::get_french_data_list()$files_list
@@ -36,7 +34,7 @@ list_supported_types_ff <- function() {
   # datapasta::dp_set_max_rows(300)
   # datapasta::tribble_paste(data_sets_types)
 
-  tibble::tribble(
+  tribble(
                                                                        ~type,                                                                                                 ~dataset_name,
                                                       "factors_ff_3_monthly",                                                                                       "Fama/French 3 Factors",
                                                        "factors_ff_3_weekly",                                                                              "Fama/French 3 Factors [Weekly]",
@@ -350,9 +348,6 @@ list_supported_types_ff <- function() {
 #' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (the file name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "Global Q").
-#'
-#' @importFrom tibble tribble
-#'
 list_supported_types_q <- function() {
   tribble(
     ~type, ~dataset_name,
@@ -377,9 +372,6 @@ list_supported_types_q <- function() {
 #' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (the file name of the dataset, which is the same for all types), and
 #'   `domain` (the domain to which the dataset belongs, always "Goyal-Welch").
-#'
-#' @importFrom tibble tribble
-#'
 list_supported_types_macro_predictors <- function() {
   tribble(
     ~type, ~dataset_name,
@@ -398,9 +390,6 @@ list_supported_types_macro_predictors <- function() {
 #' @return A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (the file name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "WRDS").
-#'
-#' @importFrom tibble tribble
-#'
 list_supported_types_wrds <- function() {
   tribble(
     ~type, ~dataset_name,
@@ -420,10 +409,6 @@ list_supported_types_wrds <- function() {
 #' Returns a tibble listing the supported stock data types and their corresponding dataset names.
 #'
 #' @return A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
-#'
-#'
-#' @importFrom tibble tibble
-#'
 list_supported_types_stocks <- function() {
   tibble(
     "type" = "stocks_yf",
@@ -457,8 +442,6 @@ list_supported_types_stocks <- function() {
 #'
 #' # List supported types as a vector
 #' list_supported_types(as_vector = TRUE)
-#'
-#' @importFrom dplyr bind_rows filter
 #'
 #' @export
 list_supported_types <- function(domain = NULL, as_vector = FALSE) {

@@ -17,8 +17,6 @@
 #' data <- rnorm(100)
 #' trimmed_data <- trim(x = data, cut = 0.05)
 #'
-#' @importFrom stats quantile
-#'
 #' @export
 trim <- function(x, cut) {
   if (cut < 0 || cut > 0.5) {

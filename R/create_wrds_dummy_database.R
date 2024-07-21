@@ -16,26 +16,26 @@
 #' @export
 create_wrds_dummy_database <- function(path) {
 
-  if(missing(path)) {
+  if (missing(path)) {
     stop("Please provide a file path for the SQLite database. We recommend 'data/tidy_finance_r.sqlite'.")
   }
 
-  if(file.exists(path)) {
+  if (file.exists(path)) {
     response <- readline(prompt = "The database file already exists at this path. Do you want to replace it? (Y/n): ")
-    if(tolower(response) != "y") {
+    if (tolower(response) != "y") {
       message("Operation aborted by the user.")
       return(invisible(NULL))
     }
   }
 
   url <- "https://github.com/tidy-finance/website/tree/main/blog/tidy-finance-dummy-data/data/tidy_finance.sqlite"
-  download.file(
+  utils::download.file(
     url = url,
     destfile = path,
     quiet = TRUE
   )
 
-  message(paste0("Downloaded WRDS dummy database to ", path, "."))
+  message("Downloaded WRDS dummy database to ", path, ".")
 
   return(invisible(NULL))
 }

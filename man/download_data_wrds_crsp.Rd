@@ -54,5 +54,4 @@ market capitalization and excess returns over the risk-free rate.
   download_data_wrds_crsp("wrds_crsp_monthly", "2020-11-01", "2020-12-31",
                           additional_columns = c("mthvol", "mthvolflg"))
 }
-
 }

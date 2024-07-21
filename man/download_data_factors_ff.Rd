@@ -40,5 +40,4 @@ directly if you need less commonly used tables.
   download_data_factors_ff("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
   download_data_factors_ff("factors_ff_10_industry_portfolios_monthly", "2000-01-01", "2020-12-31")
 }
-
 }

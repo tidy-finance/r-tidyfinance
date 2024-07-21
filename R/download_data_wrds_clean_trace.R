@@ -20,9 +20,6 @@
 #'   clean_trace <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
 #' }
 #'
-#' @import dplyr
-#' @importFrom lubridate as_datetime
-#'
 #' @export
 download_data_wrds_clean_trace <- function(
     cusips, start_date, end_date
@@ -223,7 +220,7 @@ download_data_wrds_clean_trace <- function(
     arrange(cusip_id, trd_exctn_dt, trd_exctn_tm) |>
     select(cusip_id, trd_exctn_dt, trd_exctn_tm,
            rptd_pr, entrd_vol_qt, yld_pt, rpt_side_cd, cntra_mp_id) |>
-    mutate(trd_exctn_tm = format(lubridate::as_datetime(trd_exctn_tm, tz = "America/New_York"), "%H:%M:%S"))
+    mutate(trd_exctn_tm = format(as_datetime(trd_exctn_tm, tz = "America/New_York"), "%H:%M:%S"))
 
   trace_final
 }

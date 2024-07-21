@@ -37,5 +37,4 @@ primacy of the link (\code{linkprim}), and whether to use flagged links
 \donttest{
   ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)
 }
-
 }

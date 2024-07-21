@@ -49,10 +49,6 @@ download_data_stocks <- function(type, start_date, end_date, symbols) {
 #'
 #' download_data_stocks_yf("2021-01-01", "2022-01-01", symbols = "GOOGL")
 #' }
-#'
-#' @importFrom tibble tibble
-#' @importFrom dplyr bind_rows
-#' @import lubridate
 #' @export
 download_data_stocks_yf <- function(start_date, end_date, symbols) {
 
@@ -94,7 +90,7 @@ download_data_stocks_yf <- function(start_date, end_date, symbols) {
 
       ohlcv <- unlist(raw_data[[1]]$indicators$quote, recursive = FALSE)
 
-      processed_data_symbol <- tibble::tibble(
+      processed_data_symbol <- tibble(
         "symbol" = symbols[j],
         "date" = as.Date(as.POSIXct(as.numeric(raw_data[[1]]$timestamp), origin = "1970-01-01")),
         "volume" = as.numeric(ohlcv$volume),
