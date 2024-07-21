@@ -13,7 +13,5 @@ disconnection_connection <- function(con) {
 
   check_if_package_installed("DBI", "wrds_*")
 
-  dbDisconnect <- getNamespace("DBI")$dbDisconnect
-
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
 }

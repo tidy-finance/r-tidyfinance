@@ -32,17 +32,14 @@
 #'          information on managing database connections.
 get_wrds_connection <- function() {
 
-  if (Sys.getenv("WRDS_USER") == "" || Sys.getenv("WRDS_PASSWORD") == "") {
+  if (!nzchar(Sys.getenv("WRDS_USER")) || !nzchar(Sys.getenv("WRDS_PASSWORD"))) {
     message("WRDS credentials not found. Please set them using set_wrds_credentials().")
   }
 
   check_if_package_installed("RPostgres", "wrds_*")
 
-  dbConnect <- getNamespace("DBI")$dbConnect
-  Postgres <- getNamespace("RPostgres")$Postgres
-
-  dbConnect(
-    Postgres(),
+  DBI::dbConnect(
+    RPostgres::Postgres(),
     host = "wrds-pgdata.wharton.upenn.edu",
     dbname = "wrds",
     port = 9737,

@@ -61,10 +61,6 @@ download_data_stocks_yf <- function(start_date, end_date, symbols) {
   }
 
   check_if_package_installed("httr2", "stocks_yf")
-  request <- getNamespace("httr2")$request
-  req_error <- getNamespace("httr2")$req_error
-  req_perform <- getNamespace("httr2")$req_perform
-  resp_body_json <- getNamespace("httr2")$resp_body_json
 
   if (missing(start_date) || missing(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
@@ -80,7 +76,7 @@ download_data_stocks_yf <- function(start_date, end_date, symbols) {
 
   processed_data <- list()
 
-  for (j in 1:length(symbols)) {
+  for (j in seq_along(symbols)) {
     url <- paste0(
       "https://query2.finance.yahoo.com/v8/finance/chart/",
       symbols[j],
@@ -89,12 +85,12 @@ download_data_stocks_yf <- function(start_date, end_date, symbols) {
       "&interval=1d"
     )
 
-    response <- request(url) |>
-      req_error(is_error = \(resp) FALSE) |>
-      req_perform()
+    response <- httr2::request(url) |>
+      httr2::req_error(is_error = \(resp) FALSE) |>
+      httr2::req_perform()
 
     if (response$status_code == 200) {
-      raw_data <- resp_body_json(response)$chart$result
+      raw_data <- httr2::resp_body_json(response)$chart$result
 
       ohlcv <- unlist(raw_data[[1]]$indicators$quote, recursive = FALSE)
 
@@ -111,7 +107,7 @@ download_data_stocks_yf <- function(start_date, end_date, symbols) {
 
       processed_data[[j]] <- processed_data_symbol
     } else {
-      error_message <- resp_body_json(response)$chart$error
+      error_message <- httr2::resp_body_json(response)$chart$error
       warning("Failed to retrieve data for symbol '", symbols[j],
               "' with status code ", response$status_code,
               " (", error_message$code, "): ", error_message$description)
