@@ -336,6 +336,41 @@ list_supported_types_ff <- function() {
     mutate(domain = "Fama-French")
 }
 
+#' List Supported Legacy Fama-French Dataset Types
+#'
+#' This function returns a tibble with the legacy names of initially supported
+#' Fama-French dataset types, including their names and frequencies (daily, weekly, monthly).
+#' Each dataset type is associated with a specific Fama-French model (e.g., 3 factors, 5
+#' factors). Additionally, it annotates each dataset with the domain "Fama-French".
+#' Not included in the exported `list_supported_types()` function.
+#'
+#' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
+#'   (a descriptive name of the dataset), and `domain` (the domain to which the
+#'   dataset belongs, always "Fama-French").
+list_supported_types_ff_legacy <- function() {
+  tribble(
+    ~type, ~dataset_name,
+    "factors_ff3_daily", "Fama/French 3 Factors [Daily]",
+    "factors_ff3_weekly", "Fama/French 3 Factors [Weekly]",
+    "factors_ff3_monthly", "Fama/French 3 Factors",
+    "factors_ff5_daily", "Fama/French 5 Factors (2x3) [Daily]",
+    "factors_ff5_monthly", "Fama/French 5 Factors (2x3)",
+    "factors_ff_industry_5_monthly", "5 Industry Portfolios",
+    "factors_ff_industry_5_daily", "5 Industry Portfolios [Daily]",
+    "factors_ff_industry_10_monthly", "10 Industry Portfolios",
+    "factors_ff_industry_10_daily", "10 Industry Portfolios [Daily]",
+    "factors_ff_industry_30_monthly", "30 Industry Portfolios",
+    "factors_ff_industry_30_daily", "30 Industry Portfolios [Daily]",
+    "factors_ff_industry_38_monthly", "38 Industry Portfolios",
+    "factors_ff_industry_38_daily", "38 Industry Portfolios [Daily]",
+    "factors_ff_industry_48_monthly", "48 Industry Portfolios",
+    "factors_ff_industry_48_daily", "48 Industry Portfolios [Daily]",
+    "factors_ff_industry_49_monthly", "49 Industry Portfolios",
+    "factors_ff_industry_49_daily", "49 Industry Portfolios [Daily]"
+  ) |>
+    mutate(domain = "Fama-French")
+}
+
 #' List Supported Global Q Dataset Types
 #'
 #' This function returns a tibble with the supported Global Q dataset types,
