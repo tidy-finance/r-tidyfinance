@@ -19,12 +19,12 @@
 #' trimmed_data <- trim(x = data, cut = 0.05)
 trim <- function(x, cut) {
   if (cut < 0 || cut > 0.5) {
-    stop("The parameter 'cut' must be inside [0, 0.5].")
+    cli::cli_abort("{.arg cut} must be inside [0, 0.5].")
   }
 
   lb <- quantile(x, cut, na.rm = TRUE)
   up <- quantile(x, 1 - cut, na.rm = TRUE)
-  x <- replace(x, x > up, NA)
-  x <- replace(x, x < lb, NA)
+  x <- replace(x, x > up, NA_real_)
+  x <- replace(x, x < lb, NA_real_)
   x
 }

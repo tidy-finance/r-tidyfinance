@@ -40,11 +40,13 @@ download_data_wrds_crsp <- function(
 
   batch_size <- as.integer(batch_size)
   if (batch_size <= 0) {
-    stop("Paramter 'batch_size' must be an integer larger than 0.")
+    cli::cli_abort("{.arg batch_size} must be an integer larger than 0.")
   }
 
   if (!(version %in% c("v1", "v2"))) {
-    stop("Parameter 'version' must be a character equal to 'v1' or 'v2'.")
+    cli::cli_abort(
+      "{.arg version} must be a character equal to {.str v1} or {.str v2}."
+    )
   }
 
   check_if_package_installed("dbplyr", type)
@@ -52,8 +54,10 @@ download_data_wrds_crsp <- function(
   if (missing(start_date) || missing(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
     end_date <- Sys.Date() %m-% years(1)
-    message("No start_date or end_date provided. Using the range ",
-            start_date, " to ", end_date, " to avoid downloading large amounts of data.")
+    cli::cli_inform(c(
+      "No {.arg start_date} or {.arg end_date} provided.",
+      "Using the range {start_date} to {end_date} to avoid downloading large amounts of data."
+    ))
   } else {
     start_date <- as.Date(start_date)
     end_date <- as.Date(end_date)

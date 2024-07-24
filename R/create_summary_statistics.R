@@ -47,10 +47,11 @@ create_summary_statistics <- function(
     select(...) |>
     sapply(class)
 
-  if(sum(col_types %in% c("numeric", "integer", "logical")) < length(col_types)) {
-    stop("The following columns are neither numeric nor integer: ",
-         toString(names(col_types[!col_types %in% c("numeric", "integer", "logical")]))
-    )
+  if (sum(col_types %in% c("numeric", "integer", "logical")) < length(col_types)) {
+    cli::cli_abort(sprintf(
+      "The following columns are neither numeric nor integer: %s",
+      toString(names(col_types[!col_types %in% c("numeric", "integer", "logical")]))
+    ))
   }
 
   # Determine set of summary statistics to compute

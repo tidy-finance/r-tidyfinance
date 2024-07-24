@@ -36,7 +36,7 @@
 #'   market_cap = runif(100, 1e6, 1e9)
 #' )
 #' assign_portfolio(data, "market_cap", n_portfolios = 5)
-#' assign_portfolio(data, "market_cap", percentiles = c(0.2, 0.4, 0.6, 0.8), exchanges = c("NYSE"))
+#' assign_portfolio(data, "market_cap", percentiles = c(0.2, 0.4, 0.6, 0.8), exchanges = "NYSE")
 assign_portfolio <- function(data,
                              sorting_variable,
                              n_portfolios = NULL,
@@ -44,14 +44,18 @@ assign_portfolio <- function(data,
                              exchanges = NULL) {
 
   if (!is.null(n_portfolios) && !is.null(percentiles)) {
-    stop("Please provide either n_portfolios or percentiles, not both.")
+    cli::cli_abort(
+      "Please provide either {.arg n_portfolios} or {.arg percentiles}, not both."
+    )
   } else if (is.null(n_portfolios) && is.null(percentiles)) {
-    stop("You must provide either n_portfolios or percentiles.")
+    cli::cli_abort(
+      "You must provide either {.arg n_portfolios} or {.arg percentiles}."
+    )
   }
 
   if (!is.null(exchanges)) {
     if (!("exchange" %in% colnames(data))) {
-      stop("Please provide the column exchange when filtering.")
+      cli::cli_abort("Please provide the column exchange when filtering.")
     }
     data_breakpoints <- data[data$exchange %in% exchanges, ]
   } else {
