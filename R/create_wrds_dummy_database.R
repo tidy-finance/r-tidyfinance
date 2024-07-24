@@ -25,7 +25,7 @@ create_wrds_dummy_database <- function(path) {
   if (file.exists(path)) {
     response <- readline(prompt = "The database file already exists at this path. Do you want to replace it? (Y/n): ")
     if (tolower(response) != "y") {
-      cli::cli_inform("operation aborted by the user.")
+      cli::cli_inform("Operation aborted by the user.")
       return(invisible(NULL))
     }
   }
