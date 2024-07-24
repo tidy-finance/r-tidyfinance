@@ -52,7 +52,7 @@ download_data_stocks <- function(type, start_date, end_date, symbols) {
 download_data_stocks_yf <- function(start_date, end_date, symbols) {
 
   if (missing(symbols)) {
-    stop("Error: No symbol provided. Please provide at least one symbol.")
+    cli::cli_abort("{.arg symbols} not provided. Please provide at least one symbol.")
   }
 
   check_if_package_installed("httr2", "stocks_yf")
@@ -60,8 +60,10 @@ download_data_stocks_yf <- function(start_date, end_date, symbols) {
   if (missing(start_date) || missing(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
     end_date <- Sys.Date() %m-% years(1)
-    message("No start_date or end_date provided. Using the range ",
-            start_date, " to ", end_date, " to avoid downloading large amounts of data.")
+    cli::cli_inform(c(
+      "No {.arg start_date} or {.arg end_date} provided.",
+      "Using the range {start_date} to {end_date} to avoid downloading large amounts of data."
+    ))
     start_timestamp <- as.integer(as.POSIXct(start_date, tz = "UTC"))
     end_timestamp <- as.integer(as.POSIXct(end_date, tz = "UTC"))
   } else {
@@ -103,10 +105,10 @@ download_data_stocks_yf <- function(start_date, end_date, symbols) {
       processed_data[[j]] <- processed_data_symbol
     } else {
       error_message <- httr2::resp_body_json(response)$chart$error
-      warning("Failed to retrieve data for symbol '", symbols[j],
-              "' with status code ", response$status_code,
-              " (", error_message$code, "): ", error_message$description)
+      cli::cli_warn(
+        "Failed to retrieve data for symbol {symbols[j]} with status code {response$status_code} ({error_message$code}): {error_message$description}"
+      )
     }
   }
-  dplyr::bind_rows(processed_data)
+  bind_rows(processed_data)
 }

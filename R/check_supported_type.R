@@ -14,6 +14,8 @@ check_supported_type <- function(type) {
   supported_types <- list_supported_types(as_vector = TRUE)
   supported_types_legacy <- list_supported_types_ff_legacy()$type
   if (!any(type %in% c(supported_types, supported_types_legacy))) {
-    stop("Unsupported type specified. Call the function list_supported_types() to get all supported types.")
+    cli::cli_abort(
+      "Unsupported {.arg type} specified. Call the function {.fn list_supported_types} to get all supported types."
+    )
   }
 }

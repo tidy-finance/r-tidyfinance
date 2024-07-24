@@ -33,7 +33,9 @@ download_data_macro_predictors <- function(
   check_if_package_installed("readxl", type)
 
   if (missing(start_date) || missing(end_date)) {
-    message("No start_date or end_date provided. Returning the full data set.")
+    cli::cli_inform(
+      "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
+    )
   } else {
     start_date <- as.Date(start_date)
     end_date <- as.Date(end_date)
@@ -60,7 +62,7 @@ download_data_macro_predictors <- function(
       mutate(
         year = substr(yyyyq, 1, 4),
         quarter = substr(yyyyq, 5, 5),
-        month = as.integer(quarter)*3-2,
+        month = as.integer(quarter) * 3 - 2,
         date = as.Date(paste0(year, "-", month, "-01"))
       )
   }

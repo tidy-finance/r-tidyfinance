@@ -16,13 +16,16 @@
 create_wrds_dummy_database <- function(path) {
 
   if (missing(path)) {
-    stop("Please provide a file path for the SQLite database. We recommend 'data/tidy_finance_r.sqlite'.")
+    cli::cli_abort(c(
+      "Please provide a file path for the SQLite database.",
+      i = "We recommend {.path data/tidy_finance_r.sqlite}"
+    ))
   }
 
   if (file.exists(path)) {
     response <- readline(prompt = "The database file already exists at this path. Do you want to replace it? (Y/n): ")
     if (tolower(response) != "y") {
-      message("Operation aborted by the user.")
+      cli::cli_inform("operation aborted by the user.")
       return(invisible(NULL))
     }
   }
@@ -34,7 +37,7 @@ create_wrds_dummy_database <- function(path) {
     quiet = TRUE
   )
 
-  message("Downloaded WRDS dummy database to ", path, ".")
+  cli::cli_inform("Downloaded WRDS dummy database to {.path {path}}.")
 
   return(invisible(NULL))
 }

@@ -79,7 +79,9 @@ download_data_factors_ff <- function(
   check_if_package_installed("frenchdata", type)
 
   if (missing(start_date) || missing(end_date)) {
-    message("No start_date or end_date provided. Returning the full data set.")
+    cli::cli_inform(
+      "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
+    )
   } else {
     start_date <- as.Date(start_date)
     end_date <- as.Date(end_date)
@@ -98,13 +100,15 @@ download_data_factors_ff <- function(
     processed_data <- raw_data |>
       mutate(date = ymd(date))
   } else {
-    stop("This data type has neither daily, weekly, nor monthly frequency.")
+    cli::cli_abort(
+      "This data type has neither daily, weekly, nor monthly frequency."
+    )
   }
 
   # Transform column values
   processed_data <- processed_data |>
     mutate(
-      across(-date, ~na_if(.,-99.99)),
+      across(-date, ~na_if(., -99.99)),
       across(-date, ~na_if(., -999)),
       across(-date, ~ . / 100)
     )
@@ -159,7 +163,9 @@ download_data_factors_q <- function(
   check_supported_type(type)
 
   if (missing(start_date) || missing(end_date)) {
-    message("No start_date or end_date provided. Returning the full data set.")
+    cli::cli_inform(
+      "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
+    )
   } else {
     start_date <- as.Date(start_date)
     end_date <- as.Date(end_date)

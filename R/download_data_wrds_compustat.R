@@ -37,8 +37,10 @@ download_data_wrds_compustat <- function(
   if (missing(start_date) || missing(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
     end_date <- Sys.Date() %m-% years(1)
-    message("No start_date or end_date provided. Using the range ",
-            start_date, " to ", end_date, " to avoid downloading large amounts of data.")
+    cli::cli_inform(c(
+      "No start_date or end_date provided.",
+      "Using the range {start_date}, to {end_date}, to avoid downloading large amounts of data."
+    ))
   } else {
     start_date <- as.Date(start_date)
     end_date <- as.Date(end_date)
