@@ -10,7 +10,7 @@
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![](https://img.shields.io/badge/devel%20version-0.2.1.9000-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
+[![](https://img.shields.io/badge/devel%20version-0.3.0.9000-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
 [![R-CMD-check](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -21,7 +21,9 @@ shortcuts to selected issues that the book discusses in detail.
 
 ## Installation
 
-You can install the released version of `tidyfinance` from CRAN via:
+You can install the released version of `tidyfinance` [from
+CRAN](https://cran.r-project.org/web/packages/tidyfinance/index.html)
+via:
 
 ``` r
 install.packages("tidyfinance")
