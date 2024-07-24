@@ -110,11 +110,9 @@ download_data_factors_ff <- function(
     )
 
   # Clean column names
-  colnames_clean <- colnames(processed_data) |>
-    tolower() |>
-    gsub("-rf", "_excess", x = _) |>
-    gsub("rf", "risk_free", x = _)
-
+  colnames_lower <- tolower(colnames(processed_data))
+  colnames_clean <- gsub("-rf", "_excess", colnames_lower)
+  colnames_clean <- gsub("rf", "risk_free", colnames_clean)
   colnames(processed_data) <- colnames_clean
 
   if (!missing(start_date) && !missing(end_date)) {
