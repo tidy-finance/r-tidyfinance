@@ -168,7 +168,7 @@ download_data_wrds_crsp <- function(
         select(-risk_free, -mkt_excess, -hml, -smb)
 
       processed_data <- crsp_monthly |>
-        tidyr::drop_na(ret_excess, mktcap, mktcap_lag)
+        tidyr::drop_na(ret_excess, mktcap)
 
     } else {
 
@@ -265,7 +265,7 @@ download_data_wrds_crsp <- function(
         select(-risk_free, -mkt_excess, -hml, -smb)
 
       processed_data <- crsp_monthly |>
-        tidyr::drop_na(ret_excess, mktcap, mktcap_lag)
+        tidyr::drop_na(ret_excess, mktcap)
     }
   }
 
