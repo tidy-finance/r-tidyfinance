@@ -47,7 +47,8 @@ assign_portfolio <- function(data,
     cli::cli_abort(
       "Please provide either {.arg n_portfolios} or {.arg percentiles}, not both."
     )
-  } else if (is.null(n_portfolios) && is.null(percentiles)) {
+  }
+  if (is.null(n_portfolios) && is.null(percentiles)) {
     cli::cli_abort(
       "You must provide either {.arg n_portfolios} or {.arg percentiles}."
     )

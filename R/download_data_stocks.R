@@ -64,12 +64,9 @@ download_data_stocks_yf <- function(start_date, end_date, symbols) {
       "No {.arg start_date} or {.arg end_date} provided.",
       "Using the range {start_date} to {end_date} to avoid downloading large amounts of data."
     ))
-    start_timestamp <- as.integer(as.POSIXct(start_date, tz = "UTC"))
-    end_timestamp <- as.integer(as.POSIXct(end_date, tz = "UTC"))
-  } else {
-    start_timestamp <- as.integer(as.POSIXct(start_date, tz = "UTC"))
-    end_timestamp <- as.integer(as.POSIXct(end_date, tz = "UTC"))
   }
+  start_timestamp <- as.integer(as.POSIXct(start_date, tz = "UTC"))
+  end_timestamp <- as.integer(as.POSIXct(end_date, tz = "UTC"))
 
   processed_data <- list()
 

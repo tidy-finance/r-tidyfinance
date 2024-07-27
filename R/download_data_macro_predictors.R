@@ -55,8 +55,7 @@ download_data_macro_predictors <- function(
     raw_data <- suppressMessages(readxl::read_xlsx(temporary_file, sheet = "Monthly"))
     processed_data <- raw_data |>
       mutate(date = ym(yyyymm))
-  }
-  if (grepl("quarterly", type, fixed = TRUE)) {
+  } else if (grepl("quarterly", type, fixed = TRUE)) {
     raw_data <- suppressMessages(readxl::read_xlsx(temporary_file, sheet = "Quarterly"))
     processed_data <- raw_data |>
       mutate(
@@ -65,8 +64,7 @@ download_data_macro_predictors <- function(
         month = as.integer(quarter) * 3 - 2,
         date = as.Date(paste0(year, "-", month, "-01"))
       )
-  }
-  if (grepl("annual", type, fixed = TRUE)) {
+  } else if (grepl("annual", type, fixed = TRUE)) {
     raw_data <- suppressMessages(readxl::read_xlsx(temporary_file, sheet = "Annual"))
     processed_data <- raw_data |>
       mutate(date = as.Date(paste0(yyyy, "-01-01")))

@@ -75,7 +75,7 @@ download_data_wrds_compustat <- function(
           coalesce(pstkrv, pstkl, pstk, 0),
         be = if_else(be <= 0, NA, be),
         op = (sale - coalesce(cogs, 0) -
-                coalesce(xsga, 0) - coalesce(xint, 0)) / be,
+                coalesce(xsga, 0) - coalesce(xint, 0)) / be
       )
 
     compustat <- compustat |>

@@ -30,15 +30,10 @@ download_data <- function(type, start_date, end_date) {
 
   if (grepl("factors", type, fixed = TRUE)) {
     processed_data <- download_data_factors(type, start_date, end_date)
-  }
-
-  if (grepl("macro_predictors", type, fixed = TRUE)) {
+  } else if (grepl("macro_predictors", type, fixed = TRUE)) {
     processed_data <- download_data_macro_predictors(type, start_date, end_date)
-  }
-
-  if (grepl("wrds", type, fixed = TRUE)) {
+  } else if (grepl("wrds", type, fixed = TRUE)) {
     processed_data <- download_data_wrds(type, start_date, end_date)
   }
-
   processed_data
 }
