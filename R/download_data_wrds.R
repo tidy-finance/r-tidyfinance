@@ -30,11 +30,9 @@ download_data_wrds <- function(type, start_date, end_date) {
 
   if (grepl("wrds_crsp", type, fixed = TRUE)) {
     processed_data <- download_data_wrds_crsp(type, start_date, end_date)
-  }
-  if (grepl("wrds_compustat", type, fixed = TRUE)) {
+  } else if (grepl("wrds_compustat", type, fixed = TRUE)) {
     processed_data <- download_data_wrds_compustat(type, start_date, end_date)
-  }
-  if (grepl("wrds_ccm_links", type, fixed = TRUE)) {
+  } else if (grepl("wrds_ccm_links", type, fixed = TRUE)) {
     processed_data <- download_data_wrds_ccm_links()
   }
 
