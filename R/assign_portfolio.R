@@ -79,5 +79,5 @@ assign_portfolio <- function(data,
     sorting_values_all, breakpoints, all.inside = TRUE
   )
 
-  return(portfolio_indices)
+  portfolio_indices
 }

@@ -39,5 +39,5 @@ create_wrds_dummy_database <- function(path) {
 
   cli::cli_inform("Downloaded WRDS dummy database to {.path {path}}.")
 
-  return(invisible(NULL))
+  invisible(NULL)
 }

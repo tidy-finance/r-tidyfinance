@@ -137,5 +137,5 @@ download_data_wrds_compustat <- function(
 
   }
 
-  return(processed_data)
+  processed_data
 }
