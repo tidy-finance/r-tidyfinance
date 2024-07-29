@@ -24,7 +24,7 @@
 #'   compustat_annual <- download_data_wrds("wrds_compustat_annual", "2020-01-01", "2020-12-31")
 #'   ccm_links <- download_data_wrds("wrds_ccm_links", "2020-01-01", "2020-12-31")
 #' }
-download_data_wrds <- function(type, start_date, end_date) {
+download_data_wrds <- function(type, start_date = NULL, end_date = NULL) {
 
   check_supported_type(type)
 

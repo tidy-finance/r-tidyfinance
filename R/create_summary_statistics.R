@@ -42,6 +42,7 @@
 create_summary_statistics <- function(
     data, ..., by = NULL, detail = FALSE, drop_na = FALSE
   ) {
+  by <- enquo(by)
   # Check that all variables to summarize are numeric or integer
   col_types <- data |>
     select(...) |>
@@ -81,7 +82,7 @@ create_summary_statistics <- function(
     )
   }
 
-  if (missing(by)) {
+  if (rlang::quo_is_null(by)) {
     # Summarize across all observations if no "by" column is specified
     data_long <- data |>
       select(...) |>
@@ -98,15 +99,15 @@ create_summary_statistics <- function(
   } else {
     # Summarize by group column if "by" column is specified
     data_long <- data |>
-      select({{ by }}, ...) |>
-      tidyr::pivot_longer(cols = -{{ by }}, names_to = "variable")
+      select(!!by, ...) |>
+      tidyr::pivot_longer(cols = -!!by, names_to = "variable")
 
     if (drop_na) {
       data_long <- tidyr::drop_na(data_long)
     }
 
     data_long |>
-      group_by(.data$variable, {{ by }}) |>
+      group_by(.data$variable, !!by) |>
       summarize(across(everything(), funs, .names =  "{.fn}"),
                 .groups = "drop")
   }

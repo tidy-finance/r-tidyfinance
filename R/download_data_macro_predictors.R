@@ -25,14 +25,14 @@
 #'   macro_predictors_monthly <- download_data_macro_predictors("macro_predictors_monthly")
 #' }
 download_data_macro_predictors <- function(
-    type, start_date, end_date, url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP"
+    type, start_date = NULL, end_date = NULL, url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP"
   ) {
 
   check_supported_type(type)
 
   check_if_package_installed("readxl", type)
 
-  if (missing(start_date) || missing(end_date)) {
+  if (is.null(start_date) || is.null(end_date)) {
     cli::cli_inform(
       "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
     )
@@ -90,7 +90,7 @@ download_data_macro_predictors <- function(
     ) |>
     tidyr::drop_na()
 
-  if (!missing(start_date) && !missing(end_date)) {
+  if (!is.null(start_date) && !is.null(end_date)) {
     processed_data <- processed_data |>
       filter(between(date, start_date, end_date))
   }
