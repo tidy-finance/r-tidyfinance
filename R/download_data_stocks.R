@@ -52,8 +52,7 @@ download_data_stocks <- function(type, symbols, start_date = NULL, end_date = NU
 #' }
 download_data_stocks_yf <- function(symbols, start_date = NULL, end_date = NULL) {
 
-  # TODO: perpahs check for not NA
-  if (!is.character(symbols)) {
+  if (!is.character(symbols) || anyNA(symbols)) {
     cli::cli_abort("{.arg symbols} not provided. Please provide at least one symbol.")
   }
 

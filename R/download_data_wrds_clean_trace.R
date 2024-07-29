@@ -26,7 +26,7 @@ download_data_wrds_clean_trace <- function(
 
   check_if_package_installed("dbplyr", "clean_trace")
 
-  if (!is.character(cusips) || !all(nchar(cusips) == 9)) {
+  if (!is.character(cusips) || anyNA(cusips) || !all(nchar(cusips) == 9)) {
     cli::cli_abort(
       "{.arg cusip} must be a character vector of 9-digit CUSIPs, not {.obj_type_friendly {cusips}}."
     )
