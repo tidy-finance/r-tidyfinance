@@ -53,7 +53,9 @@ download_data_stocks <- function(type, symbols, start_date = NULL, end_date = NU
 download_data_stocks_yf <- function(symbols, start_date = NULL, end_date = NULL) {
 
   if (!is.character(symbols) || anyNA(symbols)) {
-    cli::cli_abort("{.arg symbols} not provided. Please provide at least one symbol.")
+    cli::cli_abort(
+      "{.arg symbols} must be character vector, not {.obj_type_friendly {symbols}}."
+    )
   }
 
   check_if_package_installed("httr2", "stocks_yf")
