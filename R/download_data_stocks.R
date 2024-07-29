@@ -33,12 +33,12 @@ download_data_stocks <- function(type, symbols, start_date = NULL, end_date = NU
 #'
 #' Downloads historical stock data from Yahoo Finance for given symbols and date range.
 #'
+#' @param symbols A character vector of stock symbols to download data for. At least one
+#'   symbol must be provided.
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the start date for the data. If not provided, a subset of the dataset is returned.
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, a subset of the dataset is returned.
-#' @param symbols A character vector of stock symbols to download data for. At least one
-#'   symbol must be provided.
 #'
 #' @returns A tibble containing the downloaded stock data with columns: symbol,
 #'   date, volume, open, low, high, close, and adjusted_close.
