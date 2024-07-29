@@ -4,19 +4,20 @@
 \alias{download_data_stocks}
 \title{Download Stock Data}
 \usage{
-download_data_stocks(type, start_date, end_date, symbols)
+download_data_stocks(type, symbols, start_date = NULL, end_date = NULL)
 }
 \arguments{
-\item{type}{A character string representing the data source type. Currently supported type is "stocks_yf" for Yahoo Finance. Defaults to "stocks_yf".}
+\item{type}{A character string representing the data source type.
+Currently supported type is \code{"stocks_yf"} for Yahoo Finance. Defaults to \code{"stocks_yf"}.}
+
+\item{symbols}{A character vector of stock symbols to download data for. At least one
+symbol must be provided.}
 
 \item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
 specifying the start date for the data. If not provided, a subset of the dataset is returned.}
 
 \item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
 specifying the end date for the data. If not provided, a subset of the dataset is returned.}
-
-\item{symbols}{A character vector of stock symbols to download data for. At least one
-symbol must be provided.}
 }
 \value{
 A tibble containing the downloaded stock data with columns depending on the data source.
