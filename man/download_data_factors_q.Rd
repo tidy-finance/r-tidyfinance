@@ -8,7 +8,7 @@ download_data_factors_q(
   type,
   start_date = NULL,
   end_date = NULL,
-  url = "http://global-q.org/uploads/1/2/2/6/122679606/"
+  url = "https://global-q.org/uploads/1/2/2/6/122679606/"
 )
 }
 \arguments{

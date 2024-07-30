@@ -8,5 +8,6 @@
 #' @importFrom purrr partial
 #' @importFrom stats quantile
 #' @importFrom stats setNames
+#' @importFrom utils read.csv
 ## usethis namespace: end
 NULL

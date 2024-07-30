@@ -1,7 +1,7 @@
 Type: Package
 Package: tidyfinance
 Title: Tidy Finance Helper Functions
-Version: 0.3.0.9001
+Version: 0.3.0.9002
 Authors@R: c(
     person("Christoph", "Scheuch", , "christoph.scheuch@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0004-0423-6819")),
@@ -40,7 +40,6 @@ Suggests:
     frenchdata (>= 0.2.0),
     httr2 (>= 1.0.0),
     knitr,
-    readxl (>= 1.4.0),
     rmarkdown,
     RPostgres (>= 1.4.5),
     testthat (>= 3.2.0)

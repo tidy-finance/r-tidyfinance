@@ -154,7 +154,7 @@ download_data_factors_ff <- function(
 #'   download_data_factors_q("factors_q5_daily", "2020-01-01", "2020-12-31")
 #' }
 download_data_factors_q <- function(
-    type, start_date = NULL, end_date = NULL, url = "http://global-q.org/uploads/1/2/2/6/122679606/"
+    type, start_date = NULL, end_date = NULL, url = "https://global-q.org/uploads/1/2/2/6/122679606/"
 ) {
 
   check_supported_type(type)
