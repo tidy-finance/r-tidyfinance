@@ -8,7 +8,9 @@ Authors@R: c(
     person("Stefan", "Voigt", , "stefan.voigt@econ.ku.dk", role = "aut",
            comment = c(ORCID = "0000-0001-5619-3161")),
     person("Patrick", "Weiss", , "patrickw@ru.is", role = "aut",
-           comment = c(ORCID = "0000-0002-9282-5872"))
+           comment = c(ORCID = "0000-0002-9282-5872")),
+    person("Maximilian", "Mücke", role = "ctb",
+           comment = c(ORCID = "0009-0000-9432-9795"))
   )
 Description: Helper functions for empirical research in financial
     economics, addressing a variety of topics covered in Scheuch, Voigt,

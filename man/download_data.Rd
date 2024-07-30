@@ -4,7 +4,7 @@
 \alias{download_data}
 \title{Download and Process Data Based on Type}
 \usage{
-download_data(type, start_date, end_date)
+download_data(type, start_date = NULL, end_date = NULL)
 }
 \arguments{
 \item{type}{The type of dataset to download, indicating either factor data or

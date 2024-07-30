@@ -26,5 +26,10 @@ Authors:
   \item Patrick Weiss \email{patrickw@ru.is} (\href{https://orcid.org/0000-0002-9282-5872}{ORCID})
 }
 
+Other contributors:
+\itemize{
+  \item Maximilian Mücke (\href{https://orcid.org/0009-0000-9432-9795}{ORCID}) [contributor]
+}
+
 }
 \keyword{internal}

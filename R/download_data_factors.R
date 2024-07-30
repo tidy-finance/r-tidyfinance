@@ -24,15 +24,14 @@
 #'   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
 #' }
 download_data_factors <- function(
-    type, start_date, end_date
+    type, start_date = NULL, end_date = NULL
   ) {
 
   check_supported_type(type)
 
   if (grepl("factors_ff", type, fixed = TRUE)) {
     processed_data <- download_data_factors_ff(type, start_date, end_date)
-  }
-  if (grepl("factors_q", type, fixed = TRUE)) {
+  } else if (grepl("factors_q", type, fixed = TRUE)) {
     processed_data <- download_data_factors_q(type, start_date, end_date)
   }
 
@@ -71,14 +70,14 @@ download_data_factors <- function(
 #'   download_data_factors_ff("factors_ff_10_industry_portfolios_monthly", "2000-01-01", "2020-12-31")
 #' }
 download_data_factors_ff <- function(
-    type, start_date, end_date
+    type, start_date = NULL, end_date = NULL
   ) {
 
   check_supported_type(type)
 
   check_if_package_installed("frenchdata", type)
 
-  if (missing(start_date) || missing(end_date)) {
+  if (is.null(start_date) || is.null(end_date)) {
     cli::cli_inform(
       "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
     )
@@ -119,7 +118,7 @@ download_data_factors_ff <- function(
   colnames_clean <- gsub("rf", "risk_free", colnames_clean, fixed = TRUE)
   colnames(processed_data) <- colnames_clean
 
-  if (!missing(start_date) && !missing(end_date)) {
+  if (!is.null(start_date) && !is.null(end_date)) {
     processed_data <- processed_data |>
       filter(between(date, start_date, end_date))
   }
@@ -155,12 +154,12 @@ download_data_factors_ff <- function(
 #'   download_data_factors_q("factors_q5_daily", "2020-01-01", "2020-12-31")
 #' }
 download_data_factors_q <- function(
-    type, start_date, end_date, url = "http://global-q.org/uploads/1/2/2/6/122679606/"
+    type, start_date = NULL, end_date = NULL, url = "http://global-q.org/uploads/1/2/2/6/122679606/"
 ) {
 
   check_supported_type(type)
 
-  if (missing(start_date) || missing(end_date)) {
+  if (is.null(start_date) || is.null(end_date)) {
     cli::cli_inform(
       "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
     )
@@ -188,7 +187,7 @@ download_data_factors_q <- function(
     mutate(across(-date, ~. / 100)) |>
     select(date, risk_free = f, mkt_excess = mkt, everything())
 
-  if (!missing(start_date) && !missing(end_date)) {
+  if (!is.null(start_date) && !is.null(end_date)) {
     processed_data <- processed_data |>
       filter(between(date, start_date, end_date))
   }

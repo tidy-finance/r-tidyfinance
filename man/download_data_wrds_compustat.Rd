@@ -6,8 +6,8 @@
 \usage{
 download_data_wrds_compustat(
   type,
-  start_date,
-  end_date,
+  start_date = NULL,
+  end_date = NULL,
   additional_columns = NULL
 )
 }

@@ -4,7 +4,7 @@
 \alias{download_data_wrds_clean_trace}
 \title{Download Cleaned TRACE Data from WRDS}
 \usage{
-download_data_wrds_clean_trace(cusips, start_date, end_date)
+download_data_wrds_clean_trace(cusips, start_date = NULL, end_date = NULL)
 }
 \arguments{
 \item{cusips}{A character vector specifying the 9-digit CUSIPs to download.}
