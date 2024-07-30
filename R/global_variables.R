@@ -1,7 +1,7 @@
 # Set global variables ------------------------------------------------
 utils::globalVariables(
   c(
-    "date", "rp_div", "dp", "dy", "ep", "de", "svar", "bm", "b/m", "ntis", "tbl", "lty", "ltr",
+    "date", "rp_div", "dp", "dy", "ep", "de", "svar", "bm", "b.m", "ntis", "tbl", "lty", "ltr",
     "tms", "dfy", "infl", "AAA", "BAA", "D12", "DATE", "E12", "Index", "IndexDiv", "Rfree",
     "mkt-rf", "mkt_excess", "rf", "year", "month", "f", "mkt", "yyyymm", "yyyyq", "quarter",
     "yyyy", "logret",
