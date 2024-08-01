@@ -40,9 +40,9 @@
 #'   use one of these parameters for specifying portfolio breakpoints.
 assign_portfolio <- function(data,
                              sorting_variable,
-                             n_portfolios = NULL,
+                             n_portfolios = NULL, # TODO: I suggest renaming this to breakpoints_number.
                              percentiles = NULL,
-                             exchanges = NULL) {
+                             exchanges = NULL) { # TODO: I suggest renaming this to breakpoints_exchanges (as it might otherwise confuse people what the output will be)
 
   if (!is.null(n_portfolios) && !is.null(percentiles)) {
     stop("Please provide either n_portfolios or percentiles, not both.")
@@ -69,6 +69,21 @@ assign_portfolio <- function(data,
   breakpoints <- quantile(
     sorting_values, probs = probs, na.rm = TRUE, names = FALSE
   )
+
+  # TODO: We need to fix three problematic cases:
+  # a) Portfolio 1 and n are overpopulated
+  # b) Portfolio 1 is overpopulated
+  # c) Portfolio n is overpopulated
+  # One suggestion: Caveat: All the beauty of base R..
+  if(breakpoints[1] == breakpoints[2] && breakpoints[length(breakpoints)-1] == breakpoints[length(breakpoints)]) {
+    sorting_values <- sorting_values[which(sorting_values > breakpoints[1] && sorting_values < breakpoints[length(breakpoints)])]
+    breakpoints_new <- quantile(
+      sorting_values, probs = probs, na.rm = TRUE, names = FALSE
+    )
+
+    breakpoints <- c(breakpoints[1], breakpoints_new[2:(length(breakpoints)-1)], breakpoints[length(breakpoints)])
+  }
+
 
   sorting_values_all <- data[[sorting_variable]]
   portfolio_indices <- findInterval(
