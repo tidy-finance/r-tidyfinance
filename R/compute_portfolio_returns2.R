@@ -63,8 +63,7 @@ compute_portfolio_returns <- function(
           sorting_variable = sorting_variables[1],
           n_portfolios = n_portfolios[1],
           breakpoint_exchanges = breakpoint_exchanges
-        ),
-        portfolio = as.factor(portfolio)
+        )
       ) |>
       group_by(portfolio, date) |>
       summarize(
