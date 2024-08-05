@@ -31,7 +31,7 @@
 #'   market_cap = runif(100, 1e6, 1e9)
 #' )
 #' assign_portfolio(data, "market_cap", n_portfolios = 5)
-#' assign_portfolio(data, "market_cap", percentiles = c(0.2, 0.4, 0.6, 0.8), exchanges = c("NYSE"))
+#' assign_portfolio(data, "market_cap", percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
 #'
 #' @export
 #'
@@ -42,7 +42,7 @@ assign_portfolio <- function(data,
                              sorting_variable,
                              n_portfolios = NULL, # TODO: I suggest renaming this to breakpoints_number.
                              percentiles = NULL,
-                             exchanges = NULL) { # TODO: I suggest renaming this to breakpoints_exchanges (as it might otherwise confuse people what the output will be)
+                             breakpoint_exchanges = NULL) {
 
   if (!is.null(n_portfolios) && !is.null(percentiles)) {
     stop("Please provide either n_portfolios or percentiles, not both.")
@@ -50,11 +50,11 @@ assign_portfolio <- function(data,
     stop("You must provide either n_portfolios or percentiles.")
   }
 
-  if (!is.null(exchanges)) {
+  if (!is.null(breakpoint_exchanges)) {
     if (!("exchange" %in% colnames(data))) {
       stop("Please provide the column exchange when filtering.")
     }
-    data_breakpoints <- data[data$exchange %in% exchanges, ]
+    data_breakpoints <- data[data$exchange %in% breakpoint_exchanges, ]
   } else {
     data_breakpoints <- data
   }
