@@ -28,7 +28,7 @@
 #' data <- data.frame(
 #'   id = 1:100,
 #'   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),
-#'   market_cap = runif(100, 1e6, 1e9)
+#'   market_cap = 1:100
 #' )
 #' assign_portfolio(data, "market_cap", n_portfolios = 5)
 #' assign_portfolio(data, "market_cap", percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
@@ -54,7 +54,8 @@ assign_portfolio <- function(data,
     if (!("exchange" %in% colnames(data))) {
       stop("Please provide the column exchange when filtering.")
     }
-    data_breakpoints <- data[data$exchange %in% breakpoint_exchanges, ]
+    data_breakpoints <- data |>
+      filter(exchange %in% breakpoint_exchanges)
   } else {
     data_breakpoints <- data
   }
@@ -70,13 +71,9 @@ assign_portfolio <- function(data,
     sorting_values, probs = probs, na.rm = TRUE, names = FALSE
   )
 
-  # TODO: We need to fix three problematic cases:
-  # a) Portfolio 1 and n are overpopulated
-  # b) Portfolio 1 is overpopulated
-  # c) Portfolio n is overpopulated
-  # One suggestion: Caveat: All the beauty of base R..
-  if(breakpoints[1] == breakpoints[2] && breakpoints[length(breakpoints)-1] == breakpoints[length(breakpoints)]) {
-    sorting_values <- sorting_values[which(sorting_values > breakpoints[1] && sorting_values < breakpoints[length(breakpoints)])]
+  # Portfolio 1 and n are overpopulated
+  if (breakpoints[1] == breakpoints[2] && breakpoints[length(breakpoints)-1] == breakpoints[length(breakpoints)]) {
+    sorting_values <- sorting_values[which(sorting_values > breakpoints[1] & sorting_values < breakpoints[length(breakpoints)])]
     breakpoints_new <- quantile(
       sorting_values, probs = probs, na.rm = TRUE, names = FALSE
     )
@@ -84,7 +81,27 @@ assign_portfolio <- function(data,
     breakpoints <- c(breakpoints[1], breakpoints_new[2:(length(breakpoints)-1)], breakpoints[length(breakpoints)])
   }
 
+  # Portfolio 1 is overpopulated
+  if (breakpoints[1] == breakpoints[2]) {
+    sorting_values <- sorting_values[which(sorting_values > breakpoints[1])]
+    breakpoints_new <- quantile(
+      sorting_values, probs = probs, na.rm = TRUE, names = FALSE
+    )
 
+    breakpoints <- c(breakpoints[1], breakpoints_new[2:(length(breakpoints))])
+  }
+
+  # Portfolio n is overpopulated
+  if (breakpoints[length(breakpoints)-1] == breakpoints[length(breakpoints)]) {
+    sorting_values <- sorting_values[which(sorting_values < breakpoints[length(breakpoints)])]
+    breakpoints_new <- quantile(
+      sorting_values, probs = probs, na.rm = TRUE, names = FALSE
+    )
+
+    breakpoints <- c(breakpoints_new[1:(length(breakpoints)-1)], breakpoints[length(breakpoints)])
+  }
+
+  # Assign portfolios
   sorting_values_all <- data[[sorting_variable]]
   portfolio_indices <- findInterval(
     sorting_values_all, breakpoints, all.inside = TRUE
