@@ -60,9 +60,5 @@ estimate_model <- function(data, model, min_obs = 1) {
   beta <- stats::coef(fit)
   beta <- beta[names(beta) %in% independent_vars]
 
-  if (length(beta) == 1) {
-    as.numeric(beta)
-  } else {
-    as_tibble(t(beta))
-  }
+  as_tibble(t(beta))
 }
