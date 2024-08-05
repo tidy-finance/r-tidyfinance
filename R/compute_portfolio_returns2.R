@@ -1,27 +1,3 @@
-# # Move lag_method to separate function?
-#
-# if (lag_method == "fama-french") {
-#
-# }
-#
-# if (lag_method == "6-months") {
-#
-# }
-#
-# if (lag_method == "mixed") {
-#
-# }
-#
-# tidy_finance <- DBI::dbConnect(
-#   RSQLite::SQLite(),
-#   "../website/r/data/tidy_finance_r.sqlite",
-#   extended_types = TRUE
-# )
-#
-# sorting_data <- tbl(tidy_finance, "crsp_monthly") |>
-#   select(permno, date, ret_excess, mktcap, mktcap_lag), exchange |>
-#   collect()
-
 # NOTE: use sorting variables and n_portfolios as vectors
 # NOTE: don't drop missing portfolio rows, users should take care of this before sorts
 # NOTE: align naming with books (not single, double)
