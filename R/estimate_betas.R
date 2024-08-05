@@ -12,6 +12,8 @@ estimate_betas <- function(
 
   # TODO: throw error for negative months_lookback, min_obs and n_cores
 
+  # TODO: add support for daily data
+
   roll_model_estimation <- function(data, model, months_lookback, min_obs) {
     data <- data |>
       arrange(date)
