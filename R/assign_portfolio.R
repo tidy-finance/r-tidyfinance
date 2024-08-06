@@ -67,6 +67,10 @@ assign_portfolio <- function(data,
   }
 
   sorting_values <- data_breakpoints[[sorting_variable]]
+
+  # Exit condition for identical sorting variables
+  if (length(unique(sorting_values)) == 1) return(rep(NA_real_, nrow(data_breakpoints)))
+
   breakpoints <- quantile(
     sorting_values, probs = probs, na.rm = TRUE, names = FALSE
   )
