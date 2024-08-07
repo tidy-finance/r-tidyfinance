@@ -25,7 +25,8 @@
 #'   no filtering is applied.
 #' @param fix_extremes An optional logical parameter specifying if all extreme
 #'   values should be assigned to the edge portfolios (TRUE, the default), or
-#'   not (FALSE).
+#'   not (FALSE). If sufficiently large clusters are detected, `percentiles` is
+#'   ignored and equally-spaced portfolios are returned for these cases.
 #'
 #' @return A vector of portfolio assignments for each row in the input `data`.
 #'
@@ -70,6 +71,7 @@ assign_portfolio <- function(data,
     probs <- seq(0, 1, length.out = n_portfolios + 1)
   } else {
     probs <- c(0, percentiles, 1)
+    n_portfolios <- length(probs) - 1
   }
 
   sorting_values <- data_breakpoints[[sorting_variable]]
@@ -84,30 +86,28 @@ assign_portfolio <- function(data,
   if (fix_extremes) {
     # Portfolio 1 and n are overpopulated
     if (breakpoints[1] == breakpoints[2] && breakpoints[length(breakpoints)-1] == breakpoints[length(breakpoints)]) {
+      if (!is.null(percentiles)) warning("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+
       sorting_values_new <- sorting_values[which(sorting_values > breakpoints[1] & sorting_values < breakpoints[length(breakpoints)])]
 
-      if (length(breakpoints) > 4) {
-        probs_new <- probs[c(1, 3:(length(breakpoints)-2), length(breakpoints))]
-      } else {
-        probs_new <- c(0, 1)
-      }
+      probs_new <- seq(0, 1, length.out = n_portfolios - 1)
 
       breakpoints_new <- quantile(
         sorting_values_new, probs = probs_new, na.rm = TRUE, names = FALSE
       )
+
+      breakpoints_new[n_portfolios - 1] <- breakpoints_new[n_portfolios - 1] + 1e-15
 
       breakpoints <- c(breakpoints[1], breakpoints_new, breakpoints[length(breakpoints)])
     }
 
     # Portfolio 1 is overpopulated
     if (breakpoints[1] == breakpoints[2]) {
+      if (!is.null(percentiles)) warning("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+
       sorting_values_new <- sorting_values[which(sorting_values > breakpoints[1])]
 
-      if (length(breakpoints) > 3) {
-        probs_new <- probs[c(1, 3:length(breakpoints))]
-      } else {
-        probs_new <- c(0, 1)
-      }
+      probs_new <- seq(0, 1, length.out = n_portfolios)
 
       breakpoints_new <- quantile(
         sorting_values_new, probs = probs_new, na.rm = TRUE, names = FALSE
@@ -118,17 +118,17 @@ assign_portfolio <- function(data,
 
     # Portfolio n is overpopulated
     if (breakpoints[length(breakpoints)-1] == breakpoints[length(breakpoints)]) {
+      if (!is.null(percentiles)) warning("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+
       sorting_values_new <- sorting_values[which(sorting_values < breakpoints[length(breakpoints)])]
 
-      if (length(breakpoints) > 3) {
-        probs_new <- probs[c(1:(length(breakpoints)-2), length(breakpoints))]
-      } else {
-        probs_new <- c(0, 1)
-      }
+      probs_new <- seq(0, 1, length.out = n_portfolios)
 
       breakpoints_new <- quantile(
         sorting_values_new, probs = probs_new, na.rm = TRUE, names = FALSE
       )
+
+      breakpoints_new[n_portfolios] <- breakpoints_new[n_portfolios] + 1e-15
 
       breakpoints <- c(breakpoints_new, breakpoints[length(breakpoints)])
     }
