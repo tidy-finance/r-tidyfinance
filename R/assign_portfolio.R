@@ -141,6 +141,8 @@ assign_portfolio <- function(data,
     }
   }
 
+  breakpoints[2:(n_portfolios + 1)] <- breakpoints[2:(n_portfolios + 1)] + 1e-20
+
   # Assign portfolios
   sorting_values_all <- data[[sorting_variable]]
   portfolio_indices <- findInterval(
