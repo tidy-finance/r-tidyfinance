@@ -7,8 +7,8 @@
 #' The function requires either the number of portfolios to be created or
 #' specific percentiles for the breakpoints, but not both. The function also
 #' handles cases where the sorting variable clusters on the edges, by assigning
-#' all extreme values to the edge portfolio(s) and sorting the remaining values
-#' into the remaining buckets (which can be deactivated).
+#' all extreme values to the edge portfolio(s) and attempting to sort the
+#' remaining values into the equal-sized portfolios (which can be deactivated).
 #'
 #' @param data A data frame containing the dataset for portfolio assignment.
 #' @param sorting_variable A string specifying the column name in `data` to be
@@ -23,10 +23,13 @@
 #'   filter the data before computing breakpoints and assigning portfolios.
 #'   Exchanges must be stored in a column named `exchange` in `data`. If `NULL`,
 #'   no filtering is applied.
-#' @param fix_extremes An optional logical parameter specifying if all extreme
-#'   values should be assigned to the edge portfolios (TRUE, the default), or
-#'   not (FALSE). If sufficiently large clusters are detected, `percentiles` is
-#'   ignored and equally-spaced portfolios are returned for these cases.
+#' @param smoothing_with_extremes An optional logical parameter specifying if to
+#'   attempt smoothing non-extreme portfoliosif the sorting variable bunches on
+#'   the extremes (TRUE, the default), or not (FALSE). In some cases, smoothing
+#'   will not result in equal-sized portfolios off the edges due to multiple
+#'   clusters. If sufficiently large bunching is detected, `percentiles` is
+#'   ignored and equally-spaced portfolios are returned for these cases with a
+#'   warning.
 #'
 #' @return A vector of portfolio assignments for each row in the input `data`.
 #'
@@ -68,6 +71,7 @@ assign_portfolio <- function(data,
   }
 
   if (!is.null(n_portfolios)) {
+    if (n_portfolios <= 1) stop("Number of portfolios must be larger than 1.")
     probs <- seq(0, 1, length.out = n_portfolios + 1)
   } else {
     probs <- c(0, percentiles, 1)
@@ -76,19 +80,22 @@ assign_portfolio <- function(data,
 
   sorting_values <- data_breakpoints[[sorting_variable]]
 
+  # Exit condition for identical sorting variables
+  if (length(unique(sorting_values)) == 1) {
+    warning()
+    return(rep(1, nrow(data_breakpoints)))
+  }
+
   breakpoints <- quantile(
     sorting_values, probs = probs, na.rm = TRUE, names = FALSE
   )
 
-  # Exit condition for identical sorting variables
-  if (length(unique(breakpoints)) == 1) return(rep(NA_real_, nrow(data_breakpoints)))
-
-  if (fix_extremes) {
+  if (smoothing_with_extremes) {
     # Portfolio 1 and n are overpopulated
-    if (breakpoints[1] == breakpoints[2] && breakpoints[length(breakpoints)-1] == breakpoints[length(breakpoints)]) {
+    if (breakpoints[1] == breakpoints[2] && breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]) {
       if (!is.null(percentiles)) warning("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
 
-      sorting_values_new <- sorting_values[which(sorting_values > breakpoints[1] & sorting_values < breakpoints[length(breakpoints)])]
+      sorting_values_new <- sorting_values[which(sorting_values > breakpoints[1] & sorting_values < breakpoints[n_portfolios + 1])]
 
       probs_new <- seq(0, 1, length.out = n_portfolios - 1)
 
@@ -98,7 +105,7 @@ assign_portfolio <- function(data,
 
       breakpoints_new[n_portfolios - 1] <- breakpoints_new[n_portfolios - 1] + 1e-15
 
-      breakpoints <- c(breakpoints[1], breakpoints_new, breakpoints[length(breakpoints)])
+      breakpoints <- c(breakpoints[1], breakpoints_new, breakpoints[n_portfolios + 1])
     }
 
     # Portfolio 1 is overpopulated
@@ -117,10 +124,10 @@ assign_portfolio <- function(data,
     }
 
     # Portfolio n is overpopulated
-    if (breakpoints[length(breakpoints)-1] == breakpoints[length(breakpoints)]) {
+    if (breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]) {
       if (!is.null(percentiles)) warning("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
 
-      sorting_values_new <- sorting_values[which(sorting_values < breakpoints[length(breakpoints)])]
+      sorting_values_new <- sorting_values[which(sorting_values < breakpoints[n_portfolios])]
 
       probs_new <- seq(0, 1, length.out = n_portfolios)
 
@@ -130,7 +137,7 @@ assign_portfolio <- function(data,
 
       breakpoints_new[n_portfolios] <- breakpoints_new[n_portfolios] + 1e-15
 
-      breakpoints <- c(breakpoints_new, breakpoints[length(breakpoints)])
+      breakpoints <- c(breakpoints_new, breakpoints[n_portfolios + 1])
     }
   }
 
