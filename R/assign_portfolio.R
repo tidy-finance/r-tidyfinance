@@ -82,7 +82,7 @@ assign_portfolio <- function(data,
 
   # Exit condition for identical sorting variables
   if (length(unique(sorting_values)) == 1) {
-    warning()
+    warning("The sorting variable is constant and only one portfolio is returned.")
     return(rep(1, nrow(data_breakpoints)))
   }
 
@@ -148,6 +148,8 @@ assign_portfolio <- function(data,
   portfolio_indices <- findInterval(
     sorting_values_all, breakpoints, all.inside = TRUE
   )
+
+  if (length(unique(portfolio_indices)) != n_portfolios) warning("The number of portfolios differs from the specified parameter due to large clusters in the sorting variable.")
 
   return(portfolio_indices)
 }
