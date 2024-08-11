@@ -26,6 +26,8 @@ for each time period and then aggregating the results over time to obtain averag
 and corresponding t-statistics.
 }
 \examples{
+set.seed(1234)
+
 data <- tibble(
   date = rep(seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-01"), by = "month"), each = 50),
   permno = rep(1:50, times = 12),

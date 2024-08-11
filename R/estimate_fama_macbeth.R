@@ -17,6 +17,8 @@
 #' @export
 #'
 #' @examples
+#' set.seed(1234)
+#'
 #' data <- tibble(
 #'   date = rep(seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-01"), by = "month"), each = 50),
 #'   permno = rep(1:50, times = 12),
@@ -36,9 +38,28 @@ estimate_fama_macbeth <- function(data, model, vcov = "newey-west") {
     cli::cli_abort("{.arg vcov} must be either 'iid' or 'newey-west'.")
   }
 
+  # Check that the data has a date column
+  if (!"date" %in% colnames(data)) {
+    cli::cli_abort("The data must contain a 'date' column.")
+  }
+
   # Cross-sectional regressions
   cross_sections <- data |>
     tidyr::nest(data = -date) |>
+    mutate(
+      row_check = purrr::map_lgl(data, ~ nrow(.) > length(all.vars(as.formula(model))))
+    )
+
+  # Check if any date grouping has fewer rows than columns in the model
+  if (any(!cross_sections$row_check)) {
+    cli::cli_abort(
+      "Each date grouping must have more rows than the number of predictors in the model to estimate coefficients. Please check your data."
+    )
+  }
+
+  # Proceed with estimation if all checks pass
+  cross_sections <- cross_sections |>
+    select(-row_check) |>
     mutate(estimates = purrr::map(data, ~ estimate_model(., model))) |>
     tidyr::unnest(estimates) |>
     select(-data) |>
