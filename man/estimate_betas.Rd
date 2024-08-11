@@ -9,7 +9,8 @@ estimate_betas(
   model,
   months_lookback,
   min_obs = round(months_lookback * 0.8, 0),
-  n_cores = 1
+  future_strategy = "multisession",
+  future_workers = 1
 )
 }
 \arguments{
@@ -22,7 +23,11 @@ estimate_betas(
 \item{min_obs}{An integer specifying the minimum number of observations required to estimate the model.
 Defaults to 80\% of \code{months_lookback}.}
 
-\item{n_cores}{An integer specifying the number of cores to use for parallel processing. Defaults to 1.}
+\item{future_strategy}{A character specifying the strategy for resolving \code{future}'s parallelization capabilites
+("sequential", "multisession", "multicore", "cluster"). Defaults to "multisession".}
+
+\item{future_workers}{An integer specifying the number of workers to use for processing (e.g. number of sessions
+for "multisession"). Defaults to 1.}
 }
 \value{
 A tibble with the estimated betas for each time period.
@@ -32,8 +37,9 @@ This function estimates rolling betas for a given model using the provided data.
 It supports parallel processing for faster computation using the \code{furrr} package.
 }
 \examples{
+# Estimate monthly betas using monthly return data
 set.seed(1234)
-data <- tibble::tibble(
+data_monthly <- tibble::tibble(
   date = rep(seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-01"), by = "month"), each = 50),
   permno = rep(1:50, times = 12),
   ret_excess = rnorm(600, 0, 0.1),
@@ -42,7 +48,22 @@ data <- tibble::tibble(
   hml = rnorm(600, 0, 0.1),
 )
 
-estimate_betas(data,  "ret_excess ~ mkt_excess", 3)
-estimate_betas(data,  "ret_excess ~ mkt_excess + smb + hml", 6)
+estimate_betas(data_monthly,  "ret_excess ~ mkt_excess", 3)
+estimate_betas(data_monthly,  "ret_excess ~ mkt_excess + smb + hml", 6)
+
+Estimate monthly betas using daily return data
+data_daily <- tibble::tibble(
+  date = rep(seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-31"), by = "day"), each = 50),
+  permno = rep(1:50, times = 366),
+  ret_excess = rnorm(18300, 0, 0.02),
+  mkt_excess = rnorm(18300, 0, 0.02),
+  smb = rnorm(18300, 0, 0.02),
+  hml = rnorm(18300, 0, 0.02),
+)
+
+data_daily <- data_daily |>
+  mutate(date = lubridate::floor_date(date, "month"))
+
+estimate_betas(data_daily, "ret_excess ~ mkt_excess + smb + hml", months_lookback = 6, future_workers = 4)
 
 }
