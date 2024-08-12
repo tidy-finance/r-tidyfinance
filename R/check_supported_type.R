@@ -7,13 +7,15 @@
 #'
 #' @param type The dataset type to check for support.
 #'
-#' @return Does not return a value; instead, it either passes silently if the
+#' @returns Does not return a value; instead, it either passes silently if the
 #'   type is supported or stops execution with an error message if the type is
 #'   unsupported.
-#'
 check_supported_type <- function(type) {
   supported_types <- list_supported_types(as_vector = TRUE)
-  if (!any(type %in% supported_types)) {
-    stop("Unsupported type specified. Call the function list_supported_types() to get all supported types.")
+  supported_types_legacy <- list_supported_types_ff_legacy()$type
+  if (!any(type %in% c(supported_types, supported_types_legacy))) {
+    cli::cli_abort(
+      "Unsupported {.arg type} specified. Call the function {.fn list_supported_types} to get all supported types."
+    )
   }
 }

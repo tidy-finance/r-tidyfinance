@@ -2,23 +2,23 @@
 #'
 #' Downloads historical stock data for a given symbol and date range from specified sources.
 #'
-#' @param type A character string representing the data source type. Currently supported type is "stocks_yf" for Yahoo Finance. Defaults to "stocks_yf".
+#' @param type A character string representing the data source type.
+#'   Currently supported type is `"stocks_yf"` for Yahoo Finance. Defaults to `"stocks_yf"`.
+#' @param symbols A character vector of stock symbols to download data for. At least one
+#'   symbol must be provided.
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the start date for the data. If not provided, a subset of the dataset is returned.
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, a subset of the dataset is returned.
-#' @param symbols A character vector of stock symbols to download data for. At least one
-#'   symbol must be provided.
 #'
-#' @return A tibble containing the downloaded stock data with columns depending on the data source.
+#' @returns A tibble containing the downloaded stock data with columns depending on the data source.
 #'
+#' @export
 #' @examples
 #' \dontrun{
 #' download_data_stocks(type = "stocks_yf", symbols = c("AAPL", "MSFT"))
 #' }
-#'
-#' @export
-download_data_stocks <- function(type, start_date, end_date, symbols) {
+download_data_stocks <- function(type, symbols, start_date = NULL, end_date = NULL) {
 
   check_supported_type(type)
 
@@ -33,42 +33,43 @@ download_data_stocks <- function(type, start_date, end_date, symbols) {
 #'
 #' Downloads historical stock data from Yahoo Finance for given symbols and date range.
 #'
+#' @param symbols A character vector of stock symbols to download data for. At least one
+#'   symbol must be provided.
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the start date for the data. If not provided, a subset of the dataset is returned.
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, a subset of the dataset is returned.
-#' @param symbols A character vector of stock symbols to download data for. At least one
-#'   symbol must be provided.
 #'
-#' @return A tibble containing the downloaded stock data with columns: symbol,
+#' @returns A tibble containing the downloaded stock data with columns: symbol,
 #'   date, volume, open, low, high, close, and adjusted_close.
 #'
+#' @export
 #' @examples
 #' \dontrun{
-#' download_data_stocks_yf(symbols = c("AAPL", "MSFT"))
+#' download_data_stocks_yf(c("AAPL", "MSFT"))
 #'
-#' download_data_stocks_yf("2021-01-01", "2022-01-01", symbols = "GOOGL")
+#' download_data_stocks_yf("GOOGL", "2021-01-01", "2022-01-01" )
 #' }
-#' @export
-download_data_stocks_yf <- function(start_date, end_date, symbols) {
+download_data_stocks_yf <- function(symbols, start_date = NULL, end_date = NULL) {
 
-  if (missing(symbols)) {
-    stop("Error: No symbol provided. Please provide at least one symbol.")
+  if (!is.character(symbols) || anyNA(symbols)) {
+    cli::cli_abort(
+      "{.arg symbols} must be character vector, not {.obj_type_friendly {symbols}}."
+    )
   }
 
   check_if_package_installed("httr2", "stocks_yf")
 
-  if (missing(start_date) || missing(end_date)) {
+  if (is.null(start_date) || is.null(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
     end_date <- Sys.Date() %m-% years(1)
-    message("No start_date or end_date provided. Using the range ",
-            start_date, " to ", end_date, " to avoid downloading large amounts of data.")
-    start_timestamp <- as.integer(as.POSIXct(start_date, tz = "UTC"))
-    end_timestamp <- as.integer(as.POSIXct(end_date, tz = "UTC"))
-  } else {
-    start_timestamp <- as.integer(as.POSIXct(start_date, tz = "UTC"))
-    end_timestamp <- as.integer(as.POSIXct(end_date, tz = "UTC"))
+    cli::cli_inform(c(
+      "No {.arg start_date} or {.arg end_date} provided.",
+      "Using the range {start_date} to {end_date} to avoid downloading large amounts of data."
+    ))
   }
+  start_timestamp <- as.integer(as.POSIXct(start_date, tz = "UTC"))
+  end_timestamp <- as.integer(as.POSIXct(end_date, tz = "UTC"))
 
   processed_data <- list()
 
@@ -104,10 +105,10 @@ download_data_stocks_yf <- function(start_date, end_date, symbols) {
       processed_data[[j]] <- processed_data_symbol
     } else {
       error_message <- httr2::resp_body_json(response)$chart$error
-      warning("Failed to retrieve data for symbol '", symbols[j],
-              "' with status code ", response$status_code,
-              " (", error_message$code, "): ", error_message$description)
+      cli::cli_warn(
+        "Failed to retrieve data for symbol {symbols[j]} with status code {response$status_code} ({error_message$code}): {error_message$description}"
+      )
     }
   }
-  dplyr::bind_rows(processed_data)
+  bind_rows(processed_data)
 }

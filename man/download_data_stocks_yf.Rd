@@ -4,17 +4,17 @@
 \alias{download_data_stocks_yf}
 \title{Download Stock Data from Yahoo Finance}
 \usage{
-download_data_stocks_yf(start_date, end_date, symbols)
+download_data_stocks_yf(symbols, start_date = NULL, end_date = NULL)
 }
 \arguments{
+\item{symbols}{A character vector of stock symbols to download data for. At least one
+symbol must be provided.}
+
 \item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
 specifying the start date for the data. If not provided, a subset of the dataset is returned.}
 
 \item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
 specifying the end date for the data. If not provided, a subset of the dataset is returned.}
-
-\item{symbols}{A character vector of stock symbols to download data for. At least one
-symbol must be provided.}
 }
 \value{
 A tibble containing the downloaded stock data with columns: symbol,
@@ -25,8 +25,8 @@ Downloads historical stock data from Yahoo Finance for given symbols and date ra
 }
 \examples{
 \dontrun{
-download_data_stocks_yf(symbols = c("AAPL", "MSFT"))
+download_data_stocks_yf(c("AAPL", "MSFT"))
 
-download_data_stocks_yf("2021-01-01", "2022-01-01", symbols = "GOOGL")
+download_data_stocks_yf("GOOGL", "2021-01-01", "2022-01-01" )
 }
 }

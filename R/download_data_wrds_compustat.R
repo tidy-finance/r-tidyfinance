@@ -15,10 +15,11 @@
 #' @param additional_columns Additional columns from the Compustat table
 #'   as a character vector.
 #'
-#' @return A data frame with financial data for the specified period, including
+#' @returns A data frame with financial data for the specified period, including
 #'   variables for book equity (be), operating profitability (op), investment
 #'   (inv), and others.
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
@@ -27,19 +28,19 @@
 #'   # Add additional columns
 #'   download_data_wrds_compustat("wrds_compustat_annual", additional_columns = c("aodo", "aldo"))
 #' }
-#'
-#' @export
 download_data_wrds_compustat <- function(
-    type, start_date, end_date, additional_columns = NULL
+    type, start_date = NULL, end_date = NULL, additional_columns = NULL
   ) {
 
   check_if_package_installed("dbplyr", type)
 
-  if (missing(start_date) || missing(end_date)) {
+  if (is.null(start_date) || is.null(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
     end_date <- Sys.Date() %m-% years(1)
-    message("No start_date or end_date provided. Using the range ",
-            start_date, " to ", end_date, " to avoid downloading large amounts of data.")
+    cli::cli_inform(c(
+      "No start_date or end_date provided.",
+      "Using the range {start_date}, to {end_date}, to avoid downloading large amounts of data."
+    ))
   } else {
     start_date <- as.Date(start_date)
     end_date <- as.Date(end_date)
@@ -74,7 +75,7 @@ download_data_wrds_compustat <- function(
           coalesce(pstkrv, pstkl, pstk, 0),
         be = if_else(be <= 0, NA, be),
         op = (sale - coalesce(cogs, 0) -
-                coalesce(xsga, 0) - coalesce(xint, 0)) / be,
+                coalesce(xsga, 0) - coalesce(xint, 0)) / be
       )
 
     compustat <- compustat |>
@@ -136,5 +137,5 @@ download_data_wrds_compustat <- function(
 
   }
 
-  return(processed_data)
+  processed_data
 }

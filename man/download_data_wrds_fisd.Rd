@@ -32,5 +32,4 @@ securities. It finally returns a data frame with selected fields from the
   fisd <- download_data_wrds_fisd()
   fisd_extended <- download_data_wrds_fisd(additional_columns = c("asset_backed", "defeased"))
 }
-
 }

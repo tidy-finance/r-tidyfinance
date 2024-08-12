@@ -6,8 +6,8 @@
 \usage{
 download_data_wrds_compustat(
   type,
-  start_date,
-  end_date,
+  start_date = NULL,
+  end_date = NULL,
   additional_columns = NULL
 )
 }
@@ -44,5 +44,4 @@ operating profitability (op), and investment (inv) for each company.
   # Add additional columns
   download_data_wrds_compustat("wrds_compustat_annual", additional_columns = c("aodo", "aldo"))
 }
-
 }

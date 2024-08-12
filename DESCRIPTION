@@ -1,14 +1,16 @@
 Type: Package
 Package: tidyfinance
 Title: Tidy Finance Helper Functions
-Version: 0.2.1.9003
+Version: 0.3.0.9003
 Authors@R: c(
     person("Christoph", "Scheuch", , "christoph.scheuch@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0004-0423-6819")),
     person("Stefan", "Voigt", , "stefan.voigt@econ.ku.dk", role = "aut",
            comment = c(ORCID = "0000-0001-5619-3161")),
     person("Patrick", "Weiss", , "patrickw@ru.is", role = "aut",
-           comment = c(ORCID = "0000-0002-9282-5872"))
+           comment = c(ORCID = "0000-0002-9282-5872")),
+    person("Maximilian", "Mücke", role = "ctb",
+           comment = c(ORCID = "0009-0000-9432-9795"))
   )
 Description: Helper functions for empirical research in financial
     economics, addressing a variety of topics covered in Scheuch, Voigt,
@@ -24,6 +26,7 @@ BugReports: https://github.com/tidy-finance/r-tidyfinance/issues
 Depends: 
     R (>= 4.1)
 Imports:
+    cli,
     dplyr (>= 1.1.4),
     lifecycle,
     lubridate (>= 1.9.3),
@@ -37,9 +40,9 @@ Suggests:
     frenchdata (>= 0.2.0),
     httr2 (>= 1.0.0),
     knitr,
-    readxl (>= 1.4.0),
     rmarkdown,
     RPostgres (>= 1.4.5),
+    sandwich (>= 3.1-0),
     testthat (>= 3.2.0)
 VignetteBuilder:
     knitr

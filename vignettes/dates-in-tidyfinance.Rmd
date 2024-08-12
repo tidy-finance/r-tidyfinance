@@ -2,7 +2,7 @@
 title: "Date Columns in `tidyfinance`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{dates-in-tidyfinance}
+  %\VignetteIndexEntry{Date Columns in `tidyfinance`}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

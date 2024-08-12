@@ -12,19 +12,18 @@
 #' @param additional_columns Additional columns from the FISD table
 #'   as a character vector.
 #'
-#' @return A data frame containing a subset of FISD data with fields related to
+#' @returns A data frame containing a subset of FISD data with fields related to
 #'   the bond's characteristics and issuer information. This includes complete
 #'   CUSIP, maturity date, offering amount, offering date, dated date, interest
 #'   frequency, coupon, last interest date, issue ID, issuer ID, SIC code of the
 #'   issuer.
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   fisd <- download_data_wrds_fisd()
 #'   fisd_extended <- download_data_wrds_fisd(additional_columns = c("asset_backed", "defeased"))
 #' }
-#'
-#' @export
 download_data_wrds_fisd <- function(additional_columns = NULL) {
 
   check_if_package_installed("dbplyr", "fisd_mergedissue")

@@ -10,32 +10,35 @@
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, a subset of the dataset is returned.
 #'
-#' @return A data frame containing the cleaned trade messages from TRACE for the
+#' @returns A data frame containing the cleaned trade messages from TRACE for the
 #'   selected CUSIPs over the time window specified. Output variables include
 #'   identifying information (i.e., CUSIP, trade date/time) and trade-specific
 #'   information (i.e., price/yield, volume, counterparty, and reporting side).
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   clean_trace <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
 #' }
-#'
-#' @export
 download_data_wrds_clean_trace <- function(
-    cusips, start_date, end_date
+    cusips, start_date = NULL, end_date = NULL
   ) {
 
   check_if_package_installed("dbplyr", "clean_trace")
 
-  if (missing(cusips)) {
-    stop("Error: No cusip provided. Please provide at least one cusip.")
+  if (!is.character(cusips) || anyNA(cusips) || !all(nchar(cusips) == 9)) {
+    cli::cli_abort(
+      "{.arg cusip} must be a character vector of 9-digit CUSIPs, not {.obj_type_friendly {cusips}}."
+    )
   }
 
-  if (missing(start_date) || missing(end_date)) {
+  if (is.null(start_date) || is.null(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
     end_date <- Sys.Date() %m-% years(1)
-    message("No start_date or end_date provided. Using the range ",
-            start_date, " to ", end_date, " to avoid downloading large amounts of data.")
+    cli::cli_inform(c(
+      "No {.arg start_date} or {.arg end_date} provided.",
+      "Using the range {start_date} to {end_date}, to avoid downloading large amounts of data."
+    ))
   } else {
     start_date <- as.Date(start_date)
     end_date <- as.Date(end_date)

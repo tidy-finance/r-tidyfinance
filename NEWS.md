@@ -1,5 +1,28 @@
 # tidyfinance (development version)
 
+# tidyfinance 0.3.0
+
+## New features
+
+* Added support for all available Fama-French datasets (check via `list_supported_types()`). All type names are created from a string cleaning algorithm and are hence more consistent. We kept implicit support for legacy type names to avoid breaking existing code.
+* Added new function to download stock data from Yahoo Finance: `download_data_stocks()`.
+* Added support for `wrds_compustat_quarterly`. 
+
+## Bug fixes
+
+* CRSP monthly data always contains the historically accurate stock characteristics instead of the oft misleading most recent information.
+* Consistently implemented the `additional_columns` option for CRSP and Compustat instead of having the error prone option to pass columns via `...`.
+* Added replacement of `-999` by NA in Fama-French types, which was missing in the initial implementation. 
+
+## Improvements
+
+* Refactored the column name cleaning procedure in `download_data_factors()` to support all available column names in the Fama-French universe.
+* Made all `start_date` and `end_date` optional with a message to user which dates are used as defaults.
+* Introduced automatic checks via GitHub Actions workflows.
+* Synchronized `date` column and its references across WRDS types (see corresponding vignette for more information).
+* Improved handling of imports with `tidyfinance-package.R` file. 
+* Reformatted DESCRIPTION and roxygen comments for more consistency with `tidyverse` style.
+
 # tidyfinance 0.2.1
 
 ## New features

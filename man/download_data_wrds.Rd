@@ -4,7 +4,7 @@
 \alias{download_data_wrds}
 \title{Download Data from WRDS}
 \usage{
-download_data_wrds(type, start_date, end_date)
+download_data_wrds(type, start_date = NULL, end_date = NULL)
 }
 \arguments{
 \item{type}{A string specifying the type of data to download. It should match
@@ -34,5 +34,4 @@ specific data download function.
   compustat_annual <- download_data_wrds("wrds_compustat_annual", "2020-01-01", "2020-12-31")
   ccm_links <- download_data_wrds("wrds_ccm_links", "2020-01-01", "2020-12-31")
 }
-
 }

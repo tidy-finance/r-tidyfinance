@@ -23,7 +23,7 @@ test_that("assign_portfolio assigns portfolios correctly with percentiles", {
 test_that("assign_portfolio correctly calculates breakpoints based on filtered exchanges but assigns to all data", {
   n_portfolios <- 5
   sorting_variable <- "market_cap"
-  exchanges <- c("NYSE")
+  exchanges <- "NYSE"
 
   assigned_portfolios_with_exchanges <- assign_portfolio(data, sorting_variable, n_portfolios = n_portfolios, exchanges = exchanges)
   assigned_portfolios_without_exchanges <- assign_portfolio(data, sorting_variable, n_portfolios = n_portfolios)
@@ -36,11 +36,11 @@ test_that("assign_portfolio correctly calculates breakpoints based on filtered e
 test_that("assign_portfolio throws an error if both n_portfolios and percentiles are provided", {
   sorting_variable <- "market_cap"
   expect_error(assign_portfolio(data, sorting_variable, n_portfolios = 5, percentiles = c(0.25, 0.75)),
-               "Please provide either n_portfolios or percentiles, not both.")
+               "Please provide either `n_portfolios` or `percentiles`, not both.")
 })
 
 test_that("assign_portfolio throws an error if neither n_portfolios nor percentiles are provided", {
   sorting_variable <- "market_cap"
   expect_error(assign_portfolio(data, sorting_variable),
-               "You must provide either n_portfolios or percentiles.")
+               "You must provide either `n_portfolios` or `percentiles`.")
 })

@@ -4,14 +4,13 @@
 #' the Tidy Finance resource. This function provides a quick reference to the
 #' various topics covered.
 #'
-#' @examples
-#' list_tidy_finance_chapters()
-#'
-#' @export
-#'
-#' @return A character vector where each element is the name of a chapter
+#' @returns A character vector where each element is the name of a chapter
 #'   available in the Tidy Finance resource. These names correspond to specific
 #'   chapters in Tidy Finance with R.
+#'
+#' @export
+#' @examples
+#' list_tidy_finance_chapters()
 list_tidy_finance_chapters <- function() {
   c(
     "setting-up-your-environment",

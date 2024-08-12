@@ -6,9 +6,9 @@
 \usage{
 download_data_macro_predictors(
   type,
-  start_date,
-  end_date,
-  url = "https://docs.google.com/spreadsheets/d/1g4LOaRj4TvwJr9RIaA_nwrXXWTOy46bP"
+  start_date = NULL,
+  end_date = NULL,
+  sheet_id = "1bM7vCWd3WOt95Sf9qjLPZjoiafgF_8EG"
 )
 }
 \arguments{
@@ -21,8 +21,8 @@ specifying the start date for the data. If not provided, the full dataset is ret
 \item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
 specifying the end date for the data. If not provided, the full dataset is returned.}
 
-\item{url}{The URL from which to download the dataset, with a default Google
-Sheets export link.}
+\item{sheet_id}{The Google Sheets ID from which to download the dataset, with the
+default "1bM7vCWd3WOt95Sf9qjLPZjoiafgF_8EG".}
 }
 \value{
 A tibble with processed data, filtered by the specified date range

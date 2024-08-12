@@ -7,23 +7,25 @@
 #' @param path The file path where the SQLite database should be saved. If not
 #'   provided, the default path is "data/tidy_finance_r.sqlite".
 #'
-#' @return Invisible NULL. Side effect: downloads a file to the specified path.
+#' @returns Invisible `NULL`. Side effect: downloads a file to the specified path.
 #'
+#' @export
 #' @examples
 #' path <- paste0(tempdir(), "/tidy_finance_r.sqlite")
 #' create_wrds_dummy_database(path)
-#'
-#' @export
 create_wrds_dummy_database <- function(path) {
 
   if (missing(path)) {
-    stop("Please provide a file path for the SQLite database. We recommend 'data/tidy_finance_r.sqlite'.")
+    cli::cli_abort(c(
+      "Please provide a file path for the SQLite database.",
+      i = "We recommend {.path data/tidy_finance_r.sqlite}"
+    ))
   }
 
   if (file.exists(path)) {
     response <- readline(prompt = "The database file already exists at this path. Do you want to replace it? (Y/n): ")
     if (tolower(response) != "y") {
-      message("Operation aborted by the user.")
+      cli::cli_inform("Operation aborted by the user.")
       return(invisible(NULL))
     }
   }
@@ -35,7 +37,7 @@ create_wrds_dummy_database <- function(path) {
     quiet = TRUE
   )
 
-  message("Downloaded WRDS dummy database to ", path, ".")
+  cli::cli_inform("Downloaded WRDS dummy database to {.path {path}}.")
 
-  return(invisible(NULL))
+  invisible(NULL)
 }

@@ -6,19 +6,6 @@
 #' groups specified by the `by` argument. Additional detail levels for quantiles
 #' can be included.
 #'
-#' @param data A data frame containing the variables to be summarized.
-#' @param ... Comma-separated list of unquoted variable names in the data frame
-#'   to summarize. These variables must be either numeric, integer, or logical.
-#' @param by An optional unquoted variable name to group the data before
-#'   summarizing. If NULL (the default), summary statistics are computed across
-#'   all observations.
-#' @param detail A logical flag indicating whether to compute detailed summary
-#'   statistics including additional quantiles. Defaults to FALSE, which
-#'   computes basic statistics (n, mean, sd, min, median, max). When TRUE,
-#'   additional quantiles (1%, 5%, 10%, 25%, 75%, 90%, 95%, 99%) are computed.
-#' @param drop_na A logical flag indicating whether to drop missing values for
-#'   each variabl (default is FALSE).
-#'
 #' @details The function first checks that all specified variables are of type
 #' numeric, integer, or logical. If any variables do not meet this criterion,
 #' the function stops and returns an error message indicating the non-conforming
@@ -33,7 +20,20 @@
 #' `by` variable is provided, statistics are computed within each level of the
 #' `by` variable.
 #'
-#' @return A tibble with summary statistics for each selected variable. If `by`
+#' @param data A data frame containing the variables to be summarized.
+#' @param ... Comma-separated list of unquoted variable names in the data frame
+#'   to summarize. These variables must be either numeric, integer, or logical.
+#' @param by An optional unquoted variable name to group the data before
+#'   summarizing. If `NULL` (the default), summary statistics are computed across
+#'   all observations.
+#' @param detail A logical flag indicating whether to compute detailed summary
+#'   statistics including additional quantiles. Defaults to FALSE, which
+#'   computes basic statistics (n, mean, sd, min, median, max). When TRUE,
+#'   additional quantiles (1%, 5%, 10%, 25%, 75%, 90%, 95%, 99%) are computed.
+#' @param drop_na A logical flag indicating whether to drop missing values for
+#'   each variabl (default is FALSE).
+#'
+#' @returns A tibble with summary statistics for each selected variable. If `by`
 #'   is specified, the output includes the grouping variable as well. Each row
 #'   represents a variable (and a group if `by` is used), and columns include
 #'   the computed statistics.
@@ -42,15 +42,17 @@
 create_summary_statistics <- function(
     data, ..., by = NULL, detail = FALSE, drop_na = FALSE
   ) {
+  by <- enquo(by)
   # Check that all variables to summarize are numeric or integer
   col_types <- data |>
     select(...) |>
     sapply(class)
 
-  if(sum(col_types %in% c("numeric", "integer", "logical")) < length(col_types)) {
-    stop("The following columns are neither numeric nor integer: ",
-         toString(names(col_types[!col_types %in% c("numeric", "integer", "logical")]))
-    )
+  if (sum(col_types %in% c("numeric", "integer", "logical")) < length(col_types)) {
+    cli::cli_abort(sprintf(
+      "The following columns are neither numeric nor integer: %s",
+      toString(names(col_types[!col_types %in% c("numeric", "integer", "logical")]))
+    ))
   }
 
   # Determine set of summary statistics to compute
@@ -80,7 +82,7 @@ create_summary_statistics <- function(
     )
   }
 
-  if (missing(by)) {
+  if (rlang::quo_is_null(by)) {
     # Summarize across all observations if no "by" column is specified
     data_long <- data |>
       select(...) |>
@@ -97,15 +99,15 @@ create_summary_statistics <- function(
   } else {
     # Summarize by group column if "by" column is specified
     data_long <- data |>
-      select({{ by }}, ...) |>
-      tidyr::pivot_longer(cols = -{{ by }}, names_to = "variable")
+      select(!!by, ...) |>
+      tidyr::pivot_longer(cols = -!!by, names_to = "variable")
 
     if (drop_na) {
       data_long <- tidyr::drop_na(data_long)
     }
 
     data_long |>
-      group_by(.data$variable, {{ by }}) |>
+      group_by(.data$variable, !!by) |>
       summarize(across(everything(), funs, .names =  "{.fn}"),
                 .groups = "drop")
   }

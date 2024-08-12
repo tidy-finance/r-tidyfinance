@@ -34,7 +34,6 @@ username and password as environment variables \code{WRDS_USER} and
   # Remember to disconnect after use:
   # disconnect_connection(con)
 }
-
 }
 \seealso{
 \code{\link[RPostgres]{Postgres}}, \code{\link[DBI]{dbDisconnect}} for more

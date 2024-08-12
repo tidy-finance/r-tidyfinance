@@ -15,31 +15,25 @@
 #'   specifying the end date for the data. If not provided, the full dataset or a subset is returned,
 #'   depending on the dataset type.
 #'
-#' @return A tibble with processed data, including dates and the relevant
+#' @returns A tibble with processed data, including dates and the relevant
 #'   financial metrics, filtered by the specified date range.
 #'
+#' @export
 #' @examples
 #' \donttest{
 #'   download_data("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
 #'   download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
 #' }
-#'
-#' @export
-download_data <- function(type, start_date, end_date) {
+download_data <- function(type, start_date = NULL, end_date = NULL) {
 
   check_supported_type(type)
 
   if (grepl("factors", type, fixed = TRUE)) {
     processed_data <- download_data_factors(type, start_date, end_date)
-  }
-
-  if (grepl("macro_predictors", type, fixed = TRUE)) {
+  } else if (grepl("macro_predictors", type, fixed = TRUE)) {
     processed_data <- download_data_macro_predictors(type, start_date, end_date)
-  }
-
-  if (grepl("wrds", type, fixed = TRUE)) {
+  } else if (grepl("wrds", type, fixed = TRUE)) {
     processed_data <- download_data_wrds(type, start_date, end_date)
   }
-
   processed_data
 }

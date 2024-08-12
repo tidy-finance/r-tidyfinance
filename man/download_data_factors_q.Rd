@@ -6,9 +6,9 @@
 \usage{
 download_data_factors_q(
   type,
-  start_date,
-  end_date,
-  url = "http://global-q.org/uploads/1/2/2/6/122679606/"
+  start_date = NULL,
+  end_date = NULL,
+  url = "https://global-q.org/uploads/1/2/2/6/122679606/"
 )
 }
 \arguments{
