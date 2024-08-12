@@ -8,10 +8,8 @@
 #' @param months_lookback An integer specifying the number of months to look back when estimating the rolling model.
 #' @param min_obs An integer specifying the minimum number of observations required to estimate the model.
 #'  Defaults to 80% of `months_lookback`.
-#' @param future_strategy A character specifying the strategy for resolving `future`'s parallelization capabilites
-#'  ("sequential", "multisession", "multicore", "cluster"). Defaults to "multisession".
-#' @param future_workers An integer specifying the number of workers to use for processing (e.g. number of sessions
-#'  for "multisession"). Defaults to 1.
+#' @param use_furrr A logical indicating whether to use the `furrr` package and its paralellization capabilities.
+#'  Defaults to FALSE.
 #'
 #' @return A tibble with the estimated betas for each time period.
 #'
@@ -32,7 +30,7 @@
 #' estimate_betas(data_monthly,  "ret_excess ~ mkt_excess", 3)
 #' estimate_betas(data_monthly,  "ret_excess ~ mkt_excess + smb + hml", 6)
 #'
-#' # Estimate monthly betas using daily return data
+#' # Estimate monthly betas using daily return data and parallelization
 #' data_daily <- tibble::tibble(
 #'   date = rep(seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-31"), by = "day"), each = 50),
 #'   permno = rep(1:50, times = 366),
@@ -45,15 +43,15 @@
 #' data_daily <- data_daily |>
 #'   mutate(date = lubridate::floor_date(date, "month"))
 #'
-#' estimate_betas(data_daily, "ret_excess ~ mkt_excess", months_lookback = 6, future_workers = 4)
+#' future::plan(strategy = "multisession", workers = 4)
+#' estimate_betas(data_daily, "ret_excess ~ mkt_excess", 6, use_furrr = TRUE)
 #'
 estimate_betas <- function(
     data,
     model,
     months_lookback,
     min_obs = round(months_lookback * 0.8, 0),
-    future_strategy = "multisession",
-    future_workers = 1
+    use_furrr = FALSE
 ) {
 
   # Check for valid parameters
@@ -61,12 +59,12 @@ estimate_betas <- function(
     cli::cli_abort("{.arg months_lookback} must be a positive integer.")
   }
 
-  if (min_obs <= 0 ) {
+  if (min_obs <= 0) {
     cli::cli_abort("{.arg min_obs} must be a positive integer.")
   }
 
-  if (future_workers <= 0) {
-    cli::cli_abort("{.arg future_workers} must be a positive integer.")
+  if (!is.logical(use_furrr)) {
+    cli::cli_abort("{.arg use_furrr} must be a logical.")
   }
 
   # Warning if months_lookback is too low to estimate all model parameters
@@ -94,24 +92,19 @@ estimate_betas <- function(
     )
   }
 
-  if (future_workers == 1) {
-    betas <- data |>
-      tidyr::nest(data = -permno) |>
-      mutate(
-        beta = purrr::map(data, ~ roll_model_estimation(., model, months_lookback, min_obs))
-      )
-  }
-
-  if (future_workers > 1) {
-    rlang::check_installed("furrr")
-    rlang::check_installed("future")
-
-    future::plan(strategy = future_strategy, workers = future_workers)
+  if (use_furrr) {
+    rlang::check_installed("furrr", reason = "To use furrr::future_map")
 
     betas <- data |>
       tidyr::nest(data = -permno) |>
       mutate(
         beta = furrr::future_map(data, ~ roll_model_estimation(., model, months_lookback, min_obs))
+      )
+  } else {
+    betas <- data |>
+      tidyr::nest(data = -permno) |>
+      mutate(
+        beta = purrr::map(data, ~ roll_model_estimation(., model, months_lookback, min_obs))
       )
   }
 

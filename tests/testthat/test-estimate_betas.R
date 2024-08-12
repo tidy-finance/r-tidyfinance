@@ -20,15 +20,14 @@ test_that("Input validation: negative or zero min_obs throws error", {
   expect_error(estimate_betas(data, "ret_excess ~ mkt_excess", 3, min_obs = 0))
 })
 
-test_that("Input validation: invalid future_workers throws error", {
+test_that("Input validation: invalid use_furrr throws error", {
   data <- tibble::tibble(
     date = as.Date("2020-01-01"),
     permno = 1,
     ret_excess = 0,
     mkt_excess = 0
   )
-  expect_error(estimate_betas(data, "ret_excess ~ mkt_excess", 3, future_workers = 0))
-  expect_error(estimate_betas(data, "ret_excess ~ mkt_excess", 3, future_workers = -1))
+  expect_error(estimate_betas(data, "ret_excess ~ mkt_excess", 3, use_furr = 0))
 })
 
 test_that("Output structure: correct column names and number of rows", {
@@ -66,8 +65,10 @@ test_that("Performance: Single vs multiple workers give the same result", {
     mkt_excess = rnorm(24, 0, 0.1)
   )
 
-  result_single <- estimate_betas(data, "ret_excess ~ mkt_excess", 3, future_workers = 1)
-  result_multi <- estimate_betas(data, "ret_excess ~ mkt_excess", 3, future_workers = 2)
+  future::plan(strategy = "multisession")
+
+  result_single <- estimate_betas(data, "ret_excess ~ mkt_excess", 3)
+  result_multi <- estimate_betas(data, "ret_excess ~ mkt_excess", 3, use_furrr = TRUE)
 
   expect_equal(result_single, result_multi)
 })
