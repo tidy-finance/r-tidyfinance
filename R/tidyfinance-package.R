@@ -6,7 +6,7 @@
 ## usethis namespace: start
 #' @importFrom lifecycle deprecated
 #' @importFrom purrr partial map map_dbl
-#' @importFrom stats quantile setNames
+#' @importFrom stats quantile setNames as.formula
 #' @importFrom utils read.csv
 #' @importFrom tidyr pivot_longer unnest nest
 ## usethis namespace: end
