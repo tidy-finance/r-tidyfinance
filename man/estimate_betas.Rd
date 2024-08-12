@@ -51,7 +51,7 @@ data_monthly <- tibble::tibble(
 estimate_betas(data_monthly,  "ret_excess ~ mkt_excess", 3)
 estimate_betas(data_monthly,  "ret_excess ~ mkt_excess + smb + hml", 6)
 
-Estimate monthly betas using daily return data
+# Estimate monthly betas using daily return data
 data_daily <- tibble::tibble(
   date = rep(seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-31"), by = "day"), each = 50),
   permno = rep(1:50, times = 366),
@@ -64,6 +64,6 @@ data_daily <- tibble::tibble(
 data_daily <- data_daily |>
   mutate(date = lubridate::floor_date(date, "month"))
 
-estimate_betas(data_daily, "ret_excess ~ mkt_excess + smb + hml", months_lookback = 6, future_workers = 4)
+estimate_betas(data_daily, "ret_excess ~ mkt_excess", months_lookback = 6, future_workers = 4)
 
 }
