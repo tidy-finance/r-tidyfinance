@@ -9,7 +9,8 @@ assign_portfolio(
   sorting_variable,
   n_portfolios = NULL,
   percentiles = NULL,
-  exchanges = NULL
+  breakpoint_exchanges = NULL,
+  fix_extremes = TRUE
 )
 }
 \arguments{
@@ -26,6 +27,14 @@ sized portfolios to create. This parameter is mutually exclusive with
 determining the breakpoints of the portfolios. This parameter is mutually
 exclusive with \code{n_portfolios}.}
 
+\item{fix_extremes}{An optional logical parameter specifying if to
+attempt smoothing non-extreme portfolios if the sorting variable bunches on
+the extremes (TRUE, the default), or not (FALSE). In some cases, smoothing
+will not result in equal-sized portfolios off the edges due to multiple
+clusters. If sufficiently large bunching is detected, \code{percentiles} is
+ignored and equally-spaced portfolios are returned for these cases with a
+warning.}
+
 \item{exchanges}{An optional character vector specifying exchange names to
 filter the data before computing breakpoints and assigning portfolios.
 Exchanges must be stored in a column named \code{exchange} in \code{data}. If \code{NULL},
@@ -35,12 +44,13 @@ no filtering is applied.}
 A vector of portfolio assignments for each row in the input \code{data}.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This function assigns data points to portfolios based on a specified sorting
 variable. It can optionally filter the data by exchanges before assignment.
 The function requires either the number of portfolios to be created or
-specific percentiles for the breakpoints, but not both.
+specific percentiles for the breakpoints, but not both. The function also
+handles cases where the sorting variable clusters on the edges, by assigning
+all extreme values to the edge portfolio(s) and attempting to sort the
+remaining values into the equal-sized portfolios (which can be deactivated).
 }
 \note{
 This function will stop and throw an error if both \code{n_portfolios} and
@@ -51,8 +61,9 @@ use one of these parameters for specifying portfolio breakpoints.
 data <- data.frame(
   id = 1:100,
   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),
-  market_cap = runif(100, 1e6, 1e9)
+  market_cap = 1:100
 )
 assign_portfolio(data, "market_cap", n_portfolios = 5)
-assign_portfolio(data, "market_cap", percentiles = c(0.2, 0.4, 0.6, 0.8), exchanges = "NYSE")
+assign_portfolio(data, "market_cap", percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
+
 }
