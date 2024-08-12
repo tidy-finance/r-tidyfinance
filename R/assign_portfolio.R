@@ -55,14 +55,14 @@ assign_portfolio <- function(data,
                              fix_extremes = TRUE) {
 
   if (!is.null(n_portfolios) && !is.null(percentiles)) {
-    stop("Please provide either n_portfolios or percentiles, not both.")
+    cli::cli_abort("Please provide either n_portfolios or percentiles, not both.")
   } else if (is.null(n_portfolios) && is.null(percentiles)) {
-    stop("You must provide either n_portfolios or percentiles.")
+    cli::cli_abort("You must provide either n_portfolios or percentiles.")
   }
 
   if (!is.null(breakpoint_exchanges)) {
     if (!("exchange" %in% colnames(data))) {
-      stop("Please provide the column exchange when filtering.")
+      cli::cli_abort("Please provide the column exchange when filtering.")
     }
     data_breakpoints <- data |>
       filter(exchange %in% breakpoint_exchanges)
@@ -71,8 +71,11 @@ assign_portfolio <- function(data,
   }
 
   if (!is.null(n_portfolios)) {
-    if (n_portfolios <= 1) stop("Number of portfolios must be larger than 1.")
-    probs <- seq(0, 1, length.out = n_portfolios + 1)
+    if (n_portfolios <= 1) {
+      cli::cli_abort("Number of portfolios must be larger than 1.")
+    } else {
+      probs <- seq(0, 1, length.out = n_portfolios + 1)
+    }
   } else {
     probs <- c(0, percentiles, 1)
     n_portfolios <- length(probs) - 1
@@ -82,7 +85,7 @@ assign_portfolio <- function(data,
 
   # Exit condition for identical sorting variables
   if (length(unique(sorting_values)) == 1) {
-    warning("The sorting variable is constant and only one portfolio is returned.")
+    cli::cli_warn("The sorting variable is constant and only one portfolio is returned.")
     return(rep(1, nrow(data_breakpoints)))
   }
 
@@ -93,7 +96,9 @@ assign_portfolio <- function(data,
   if (smoothing_with_extremes) {
     # Portfolio 1 and n are overpopulated
     if (breakpoints[1] == breakpoints[2] && breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]) {
-      if (!is.null(percentiles)) warning("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+      if (!is.null(percentiles)) {
+        cli::cli_warn("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+      }
 
       sorting_values_new <- sorting_values[which(sorting_values > breakpoints[1] & sorting_values < breakpoints[n_portfolios + 1])]
 
@@ -110,7 +115,9 @@ assign_portfolio <- function(data,
 
     # Portfolio 1 is overpopulated
     if (breakpoints[1] == breakpoints[2]) {
-      if (!is.null(percentiles)) warning("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+      if (!is.null(percentiles)) {
+        cli::cli_warn("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+      }
 
       sorting_values_new <- sorting_values[which(sorting_values > breakpoints[1])]
 
@@ -125,7 +132,9 @@ assign_portfolio <- function(data,
 
     # Portfolio n is overpopulated
     if (breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]) {
-      if (!is.null(percentiles)) warning("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+      if (!is.null(percentiles)) {
+        cli::cli_warn("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+      }
 
       sorting_values_new <- sorting_values[which(sorting_values < breakpoints[n_portfolios])]
 
@@ -149,7 +158,9 @@ assign_portfolio <- function(data,
     sorting_values_all, breakpoints, all.inside = TRUE
   )
 
-  if (length(unique(portfolio_indices)) != n_portfolios) warning("The number of portfolios differs from the specified parameter due to large clusters in the sorting variable.")
+  if (length(unique(portfolio_indices)) != n_portfolios) {
+    cli::cli_warn("The number of portfolios differs from the specified parameter due to large clusters in the sorting variable.")
+  }
 
   return(portfolio_indices)
 }

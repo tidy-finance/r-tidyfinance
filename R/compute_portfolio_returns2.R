@@ -25,10 +25,10 @@ compute_portfolio_returns <- function(
   if (sorting_method == "univariate") {
 
     if (length(sorting_variables) > 1) {
-      stop("Only provide one sorting variable for univariate sorts.")
+      cli::cli_abort("Only provide one sorting variable for univariate sorts.")
     }
     if (length(n_portfolios) > 1) {
-      stop("Only provide one number of portfolios for univariate sorts.")
+      cli::cli_abort("Only provide one number of portfolios for univariate sorts.")
     }
 
     portfolio_returns <- sorting_data |>
@@ -51,10 +51,10 @@ compute_portfolio_returns <- function(
 
   if (sorting_method == "bivariate-dependent") {
     if (length(sorting_variables) != 2) {
-      stop("Provide two sorting variables for bivariate sorts.")
+      cli::cli_abort("Provide two sorting variables for bivariate sorts.")
     }
     if (length(n_portfolios) != 2) {
-      stop("Provide two numbers of portfolios for bivariate sorts.")
+      cli::cli_abort("Provide two numbers of portfolios for bivariate sorts.")
     }
 
      portfolio_returns <- sorting_data |>
@@ -89,10 +89,10 @@ compute_portfolio_returns <- function(
 
   if (sorting_method == "bivariate-independent") {
     if (length(sorting_variables) != 2) {
-      stop("Provide two sorting variables for bivariate sorts.")
+      cli::cli_abort("Provide two sorting variables for bivariate sorts.")
     }
     if (length(n_portfolios) != 2) {
-      stop("Provide two numbers of portfolios for bivariate sorts.")
+      cli::cli_abort("Provide two numbers of portfolios for bivariate sorts.")
     }
 
     portfolio_returns <- sorting_data |>
