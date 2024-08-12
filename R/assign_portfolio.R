@@ -23,8 +23,8 @@
 #'   filter the data before computing breakpoints and assigning portfolios.
 #'   Exchanges must be stored in a column named `exchange` in `data`. If `NULL`,
 #'   no filtering is applied.
-#' @param smoothing_with_extremes An optional logical parameter specifying if to
-#'   attempt smoothing non-extreme portfoliosif the sorting variable bunches on
+#' @param fix_extremes An optional logical parameter specifying if to
+#'   attempt smoothing non-extreme portfolios if the sorting variable bunches on
 #'   the extremes (TRUE, the default), or not (FALSE). In some cases, smoothing
 #'   will not result in equal-sized portfolios off the edges due to multiple
 #'   clusters. If sufficiently large bunching is detected, `percentiles` is
@@ -93,7 +93,7 @@ assign_portfolio <- function(data,
     sorting_values, probs = probs, na.rm = TRUE, names = FALSE
   )
 
-  if (smoothing_with_extremes) {
+  if (fix_extremes) {
     # Portfolio 1 and n are overpopulated
     if (breakpoints[1] == breakpoints[2] && breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]) {
       if (!is.null(percentiles)) {
