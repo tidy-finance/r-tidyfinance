@@ -16,9 +16,7 @@
 #' @param min_obs The minimum number of observations required to estimate the
 #'   model. Defaults to 1.
 #'
-#' @returns If a single independent variable is specified, a numeric value
-#'   representing the coefficient of that variable. If multiple independent
-#'   variables are specified, a data frame with a row for each coefficient and
+#' @returns A data frame with a row for each coefficient and
 #'   column names corresponding to the independent variables.
 #'
 #' @seealso [stats::lm()] for details on the underlying linear model fitting used.
@@ -31,10 +29,11 @@
 #'   hml = rnorm(100)
 #' )
 #' # Estimate model with a single independent variable
-#' single_var_model <- estimate_model(data, "ret_excess ~ mkt_excess")
+#' estimate_model(data, "ret_excess ~ mkt_excess")
 #'
 #' # Estimate model with multiple independent variables
-#' multi_var_model <- estimate_model(data, "ret_excess ~ mkt_excess + smb + hml")
+#' estimate_model(data, "ret_excess ~ mkt_excess + smb + hml")
+#'
 estimate_model <- function(data, model, min_obs = 1) {
   model_parts <- strsplit(model, "~", fixed = TRUE)[[1]]
   response_var <- trimws(model_parts[1])
@@ -60,9 +59,5 @@ estimate_model <- function(data, model, min_obs = 1) {
   beta <- stats::coef(fit)
   beta <- beta[names(beta) %in% independent_vars]
 
-  if (length(beta) == 1) {
-    as.numeric(beta)
-  } else {
-    as_tibble(t(beta))
-  }
+  as_tibble(t(beta))
 }

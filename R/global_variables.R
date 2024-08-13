@@ -30,6 +30,8 @@ utils::globalVariables(
     "pr_trd_dt", "spcl_trd_fl", "stlmnt_dt", "trc_st", "trd_rpt_dt", "trd_rpt_tm", "wis_fl",
     "conditionaltype", "tradingstatusflg",
     "log_d12", "log_e12",
-    "rdq", "fqtr", "fyearq", "atq", "ceqq"
+    "rdq", "fqtr", "fyearq", "atq", "ceqq",
+    "beta_date", "estimates", "name", "risk_premium", "row_check",
+    "standard_error", "t_statistic", "value"
   )
 )
