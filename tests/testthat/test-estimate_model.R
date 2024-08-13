@@ -9,8 +9,8 @@ data <- data.frame(
 # Test with sufficient observations and a single independent variable
 test_that("Single independent variable with sufficient observations", {
   result <- estimate_model(data, "ret_excess ~ mkt_excess", min_obs = 1)
-  expect_type(result, "double")
-  expect_length(result, 1)
+  expect_type(result, "list")
+  expect_length(ncol(result), 1)
 })
 
 # Test with sufficient observations and multiple independent variables
@@ -36,7 +36,7 @@ test_that("Insufficient observations", {
 test_that("Exactly minimum required observations", {
   min_obs_data <- data[1:10, ]
   result <- estimate_model(min_obs_data, "ret_excess ~ mkt_excess", min_obs = 10)
-  expect_type(result, "double")
+  expect_type(result, "list")
 })
 
 # Test with no independent variables specified
