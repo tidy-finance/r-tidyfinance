@@ -38,13 +38,13 @@
 #'   \itemize{
 #'     \item `portfolio`: The portfolio identifier.
 #'     \item `date`: The date of the portfolio return.
-#'     \item `ret_excess_vw`: The value-weighted excess return of the portfolio.
+#'     \item `ret_excess_vw`: The value-weighted excess return of the portfolio (only computed if the `sorting_data` contains the column mktcap_lag)
 #'     \item `ret_excess_ew`: The equal-weighted excess return of the portfolio.
 #'   }
 #'
 #' @note
 #' Ensure that the `sorting_data` contains all the required columns: the specified sorting variables,
-#' `mktcap_lag`, and `ret_excess`. The function will stop and throw an error if any required columns are missing.
+#' and `ret_excess`. The function will stop and throw an error if any required columns are missing.
 #'
 #' @export
 #'
@@ -104,10 +104,16 @@ compute_portfolio_returns <- function(
     }
   }
 
-  required_columns <- c(sorting_variables, "mktcap_lag", "ret_excess")
+  required_columns <- c(sorting_variables, "ret_excess")
   missing_columns <- setdiff(required_columns, colnames(sorting_data))
   if (length(missing_columns) > 0) {
     cli::cli_abort(glue::glue("The 'sorting_data' is missing the following required columns: {paste(missing_columns, collapse = ', ')}."))
+  }
+
+  mktcap_lag_missing <- !"mktcap_lag"%in%colnames(sorting_data)
+
+  if (mktcap_lag_missing){
+    sorting_data$mktcap_lag <- 1
   }
 
   if (sorting_method == "univariate") {
@@ -300,5 +306,8 @@ compute_portfolio_returns <- function(
                 .groups = "drop")
   }
 
+  if(mktcap_lag_missing){
+    portfolio_returns <- portfolio_returns |> select(-ret_excess_vw)
+  }
   portfolio_returns
 }
