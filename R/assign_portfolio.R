@@ -156,7 +156,7 @@ assign_portfolio <- function(data,
     sorting_values_all, breakpoints, all.inside = TRUE
   )
 
-  if (length(unique(portfolio_indices)) != n_portfolios) {
+  if (length(unique(na.omit(portfolio_indices)) )!= n_portfolios) {
     cli::cli_warn("The number of portfolios differs from the specified parameter due to large clusters in the sorting variable.")
   }
 
