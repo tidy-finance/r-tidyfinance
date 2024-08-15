@@ -12,7 +12,9 @@
 #' @export
 disconnection_connection <- function(con) {
 
-  check_if_package_installed("DBI", "wrds_*")
+  rlang::check_installed(
+    "DBI", reason = "to download types wrds_*."
+  )
 
   DBI::dbDisconnect(con)
 }

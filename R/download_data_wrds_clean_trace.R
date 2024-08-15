@@ -24,7 +24,9 @@ download_data_wrds_clean_trace <- function(
     cusips, start_date = NULL, end_date = NULL
   ) {
 
-  check_if_package_installed("dbplyr", "clean_trace")
+  rlang::check_installed(
+    "dbplyr", reason = "to download type clean_trace."
+  )
 
   if (!is.character(cusips) || anyNA(cusips) || !all(nchar(cusips) == 9)) {
     cli::cli_abort(

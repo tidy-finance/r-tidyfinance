@@ -49,7 +49,9 @@ download_data_wrds_crsp <- function(
     )
   }
 
-  check_if_package_installed("dbplyr", type)
+  rlang::check_installed(
+    "dbplyr", reason = paste0("to download type ", type, ".")
+  )
 
   if (is.null(start_date) || is.null(end_date)) {
     start_date <- Sys.Date() %m-% years(2)
