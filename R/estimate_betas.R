@@ -108,7 +108,7 @@ estimate_betas <- function(
   }
 
   if (use_furrr) {
-    rlang::check_installed("furrr", reason = "To use furrr::future_map")
+    rlang::check_installed("furrr", reason = "To use furrr::future_map in estimate_betas()")
 
     betas <- data |>
       tidyr::nest(data = -permno) |>
