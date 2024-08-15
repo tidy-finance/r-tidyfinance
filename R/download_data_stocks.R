@@ -23,7 +23,7 @@ download_data_stocks <- function(type, symbols, start_date = NULL, end_date = NU
   check_supported_type(type)
 
   if (grepl("stocks_yf", type, fixed = TRUE)) {
-    processed_data <- download_data_stocks_yf(start_date, end_date, symbols)
+    processed_data <- download_data_stocks_yf(symbols, start_date, end_date)
   }
 
   processed_data
