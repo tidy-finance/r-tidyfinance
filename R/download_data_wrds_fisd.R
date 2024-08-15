@@ -26,7 +26,9 @@
 #' }
 download_data_wrds_fisd <- function(additional_columns = NULL) {
 
-  check_if_package_installed("dbplyr", "fisd_mergedissue")
+  rlang::check_installed(
+    "dbplyr", reason = "to download type fisdmergedissue."
+  )
 
   con <- get_wrds_connection()
 

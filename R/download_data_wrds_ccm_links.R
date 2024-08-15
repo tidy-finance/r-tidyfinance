@@ -27,7 +27,9 @@ download_data_wrds_ccm_links <- function(
     linktype = c("LU", "LC"), linkprim = c("P", "C"), usedflag = 1
 ) {
 
-  check_if_package_installed("dbplyr", "wrds_ccm_links")
+  rlang::check_installed(
+    "dbplyr", reason = "to download type wrds_ccm_links."
+  )
 
   con <- get_wrds_connection()
 
