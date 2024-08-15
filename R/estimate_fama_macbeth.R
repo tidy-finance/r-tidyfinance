@@ -70,7 +70,9 @@ estimate_fama_macbeth <- function(data, model, vcov = "newey-west") {
     if (vcov == "iid") {
       sqrt(stats::vcov(model)[1, 1])
     } else if (vcov == "newey-west") {
-      check_if_package_installed("sandwich")
+      rlang::check_installed(
+        "sandwich", reason = "to use `vcov = newey-west` in `estimate_fama_macbeth()`."
+      )
       sqrt(sandwich::NeweyWest(model))
     }
   }

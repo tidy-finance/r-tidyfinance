@@ -36,7 +36,9 @@ get_wrds_connection <- function() {
     )
   }
 
-  check_if_package_installed("RPostgres", "wrds_*")
+  rlang::check_installed(
+    "RPostgres", reason = "to download types wrds_*."
+  )
 
   DBI::dbConnect(
     RPostgres::Postgres(),

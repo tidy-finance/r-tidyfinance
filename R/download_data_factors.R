@@ -75,7 +75,9 @@ download_data_factors_ff <- function(
 
   check_supported_type(type)
 
-  check_if_package_installed("frenchdata", type)
+  rlang::check_installed(
+    "frenchdata", reason = paste0("to download type ", type, ".")
+  )
 
   if (is.null(start_date) || is.null(end_date)) {
     cli::cli_inform(
