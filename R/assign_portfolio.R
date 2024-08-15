@@ -58,14 +58,14 @@ assign_portfolio <- function(data,
     cli::cli_abort("You must provide either n_portfolios or percentiles.")
   }
 
+  data_breakpoints <- data
+
   if (!is.null(breakpoint_exchanges)) {
     if (!("exchange" %in% colnames(data))) {
       cli::cli_abort("Please provide the column exchange when filtering.")
     }
-    data_breakpoints <- data |>
+    data_breakpoints <- data_breakpoints |>
       filter(exchange %in% breakpoint_exchanges)
-  } else {
-    data_breakpoints <- data
   }
 
   if (!is.null(n_portfolios)) {
