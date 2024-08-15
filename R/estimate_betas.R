@@ -5,9 +5,9 @@
 #'
 #' @param data A tibble containing the data with columns `date`, `permno`, and other variables used in the model.
 #' @param model A formula representing the model to be estimated (e.g., `ret_excess ~ mkt_excess + smb + hml`).
-#' @param months_lookback An integer specifying the number of months to look back when estimating the rolling model.
+#' @param lookback A Period object specifying the number of months, days, hours, minutes, or seconds to look back when estimating the rolling model.
 #' @param min_obs An integer specifying the minimum number of observations required to estimate the model.
-#'  Defaults to 80% of `months_lookback`.
+#'  Defaults to 80% of `lookback`.
 #' @param use_furrr A logical indicating whether to use the `furrr` package and its paralellization capabilities.
 #'  Defaults to FALSE.
 #'
@@ -27,8 +27,8 @@
 #'   hml = rnorm(600, 0, 0.1),
 #' )
 #'
-#' estimate_betas(data_monthly,  "ret_excess ~ mkt_excess", 3)
-#' estimate_betas(data_monthly,  "ret_excess ~ mkt_excess + smb + hml", 6)
+#' estimate_betas(data_monthly,  "ret_excess ~ mkt_excess", months(3))
+#' estimate_betas(data_monthly,  "ret_excess ~ mkt_excess + smb + hml", months(6))
 #'
 #' # Estimate monthly betas using daily return data and parallelization
 #' data_daily <- tibble(
@@ -43,20 +43,35 @@
 #' data_daily <- data_daily |>
 #'   mutate(date = lubridate::floor_date(date, "month"))
 #'
-#' plan(strategy = "multisession", workers = 4)
-#' estimate_betas(data_daily, "ret_excess ~ mkt_excess", 6, use_furrr = TRUE)
+#' # Change future::plan(strategy = "multisession", workers = 4) settings
+#' estimate_betas(data_daily, "ret_excess ~ mkt_excess", days(90), use_furrr = TRUE)
 #'
 estimate_betas <- function(
     data,
     model,
-    months_lookback,
-    min_obs = round(months_lookback * 0.8, 0),
+    lookback,
+    min_obs = round(lookback * 0.8, 0),
     use_furrr = FALSE
 ) {
 
   # Check for valid parameters
-  if (months_lookback <= 0) {
-    cli::cli_abort("{.arg months_lookback} must be a positive integer.")
+  if (lookback@month > 0) {
+    lookback <- lookback@month
+    period <- "month"
+  } else if (lookback@day > 0) {
+    lookback <- lookback@day
+    period <- "day"
+  } else if (lookback@hour > 0) {
+    lookback <- lookback@hour
+    period <- "hour"
+  } else if (lookback@minute > 0) {
+    lookback <- lookback@minute
+    period <- "minute"
+  } else if (lookback@second > 0) {
+    lookback <- lookback@second
+    period <- "second"
+  } else {
+    cli::cli_abort("{.arg lookback} must contain either a positive month, days, hours, minutes, or seconds")
   }
 
   if (min_obs <= 0) {
@@ -67,22 +82,22 @@ estimate_betas <- function(
     cli::cli_abort("{.arg use_furrr} must be a logical.")
   }
 
-  # Warning if months_lookback is too low to estimate all model parameters
+  # Warning if lookback is too low to estimate all model parameters
   num_params <- length(all.vars(as.formula(model))) - 1
-  if (months_lookback < num_params) {
-    cli::cli_warn("{.arg months_lookback} is too low to estimate all model parameters. Consider increasing it.")
+  if (lookback < num_params) {
+    cli::cli_warn("{.arg lookback} is too low to estimate all model parameters. Consider increasing it.")
   }
 
-  roll_model_estimation <- function(df, model, months_lookback, min_obs) {
+  roll_model_estimation <- function(df, model, lookback, period, min_obs) {
     data <- data |>
       arrange(date)
 
     betas <- slider::slide_period_dfr(
       .x = data,
       .i = data$date,
-      .period = "month",
+      .period = period,
       .f = ~ estimate_model(., model, min_obs),
-      .before = months_lookback - 1,
+      .before = lookback - 1,
       .complete = FALSE
     )
 
@@ -98,13 +113,13 @@ estimate_betas <- function(
     betas <- data |>
       tidyr::nest(data = -permno) |>
       mutate(
-        beta = furrr::future_map(data, ~ roll_model_estimation(., model, months_lookback, min_obs))
+        beta = furrr::future_map(data, ~ roll_model_estimation(., model, lookback, period, min_obs))
       )
   } else {
     betas <- data |>
       tidyr::nest(data = -permno) |>
       mutate(
-        beta = purrr::map(data, ~ roll_model_estimation(., model, months_lookback, min_obs))
+        beta = purrr::map(data, ~ roll_model_estimation(., model, lookback, period, min_obs))
       )
   }
 
