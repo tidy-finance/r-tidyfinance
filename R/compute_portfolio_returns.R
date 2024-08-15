@@ -284,7 +284,7 @@ compute_portfolio_returns <- function(
             breakpoint_exchanges = breakpoint_exchanges
           )) |>
         ungroup() |>
-        select(permno, date, portfolio_main, portfolio)
+        select(permno, date, portfolio_main, portfolio_secondary)
 
       portfolio_returns <- sorting_data |>
         left_join(portfolio_data |>
@@ -294,7 +294,7 @@ compute_portfolio_returns <- function(
                   join_by(permno, closest(date >= lower_bound), date < upper_bound),
                   relationship = "many-to-one")
     }
-    portfolio_returns <- portfolio_returns  |>
+    portfolio_returns <- portfolio_returns |>
       group_by(portfolio_main, portfolio_secondary, date) |>
       summarize(
         ret_excess_vw = stats::weighted.mean(ret_excess, mktcap_lag),
@@ -309,5 +309,7 @@ compute_portfolio_returns <- function(
   if(mktcap_lag_missing){
     portfolio_returns <- portfolio_returns |> select(-ret_excess_vw)
   }
-  portfolio_returns
+
+  portfolio_returns[!is.na(portfolio_returns$portfolio),]
+
 }
