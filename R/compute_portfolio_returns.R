@@ -130,9 +130,9 @@ compute_portfolio_returns <- function(
     cli::cli_abort(glue::glue("The 'sorting_data' is missing the following required columns: {paste(missing_columns, collapse = ', ')}."))
   }
 
-  mktcap_lag_missing <- !"mktcap_lag"%in%colnames(sorting_data)
+  mktcap_lag_missing <- !"mktcap_lag" %in% colnames(sorting_data)
 
-  if (mktcap_lag_missing){
+  if (mktcap_lag_missing) {
     sorting_data$mktcap_lag <- 1
   }
 
@@ -153,6 +153,7 @@ compute_portfolio_returns <- function(
             data = pick(everything()),
             sorting_variable = sorting_variables[1],
             n_portfolios = n_portfolios[1],
+            percentiles = percentiles[[1]],
             breakpoint_exchanges = breakpoint_exchanges
           )
         )
@@ -165,6 +166,7 @@ compute_portfolio_returns <- function(
             data = pick(everything()),
             sorting_variable = sorting_variables[1],
             n_portfolios = n_portfolios[1],
+            percentiles = percentiles[[1]],
             breakpoint_exchanges = breakpoint_exchanges
           )) |>
         ungroup() |>
@@ -204,6 +206,7 @@ compute_portfolio_returns <- function(
             pick(everything()),
             sorting_variable = sorting_variables[1],
             n_portfolios = n_portfolios[1],
+            percentiles = percentiles[[1]],
             breakpoint_exchanges = breakpoint_exchanges
           )) |>
         ungroup() |>
@@ -213,6 +216,7 @@ compute_portfolio_returns <- function(
             pick(everything()),
             sorting_variable = sorting_variables[2],
             n_portfolios = n_portfolios[2],
+            percentiles = percentiles[[2]],
             breakpoint_exchanges = breakpoint_exchanges
           )) |>
         ungroup()
@@ -226,6 +230,7 @@ compute_portfolio_returns <- function(
             pick(everything()),
             sorting_variable = sorting_variables[1],
             n_portfolios = n_portfolios[1],
+            percentiles = percentiles[[1]],
             breakpoint_exchanges = breakpoint_exchanges
           )) |>
         ungroup() |>
@@ -235,6 +240,7 @@ compute_portfolio_returns <- function(
             pick(everything()),
             sorting_variable = sorting_variables[2],
             n_portfolios = n_portfolios[2],
+            percentiles = percentiles[[2]],
             breakpoint_exchanges = breakpoint_exchanges
           )) |>
         ungroup() |>
@@ -276,12 +282,14 @@ compute_portfolio_returns <- function(
             pick(everything()),
             sorting_variable = sorting_variables[1],
             n_portfolios = n_portfolios[1],
+            percentiles = percentiles[[1]],
             breakpoint_exchanges = breakpoint_exchanges
           ),
           portfolio_main = assign_portfolio(
             pick(everything()),
             sorting_variable = sorting_variables[2],
             n_portfolios = n_portfolios[2],
+            percentiles = percentiles[[2]],
             breakpoint_exchanges = breakpoint_exchanges
           )) |>
         ungroup()
@@ -295,12 +303,14 @@ compute_portfolio_returns <- function(
             pick(everything()),
             sorting_variable = sorting_variables[1],
             n_portfolios = n_portfolios[1],
+            percentiles = percentiles[[1]],
             breakpoint_exchanges = breakpoint_exchanges
           ),
           portfolio_main = assign_portfolio(
             pick(everything()),
             sorting_variable = sorting_variables[2],
             n_portfolios = n_portfolios[2],
+            percentiles = percentiles[[2]],
             breakpoint_exchanges = breakpoint_exchanges
           )) |>
         ungroup() |>
