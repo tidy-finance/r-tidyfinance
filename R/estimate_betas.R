@@ -50,7 +50,7 @@ estimate_betas <- function(
     data,
     model,
     lookback,
-    min_obs = round(lookback * 0.8, 0),
+    min_obs = NULL,
     use_furrr = FALSE
 ) {
 
@@ -74,7 +74,9 @@ estimate_betas <- function(
     cli::cli_abort("{.arg lookback} must contain either a positive month, days, hours, minutes, or seconds")
   }
 
-  if (min_obs <= 0) {
+  if(is.null(min_obs)){
+    min_obs <- round(lookback * 0.8, 0)
+  } else if (min_obs <= 0) {
     cli::cli_abort("{.arg min_obs} must be a positive integer.")
   }
 
@@ -89,12 +91,12 @@ estimate_betas <- function(
   }
 
   roll_model_estimation <- function(df, model, lookback, period, min_obs) {
-    data <- data |>
+    df <- df |>
       arrange(date)
 
     betas <- slider::slide_period_dfr(
-      .x = data,
-      .i = data$date,
+      .x = df,
+      .i = df$date,
       .period = period,
       .f = ~ estimate_model(., model, min_obs),
       .before = lookback - 1,
@@ -102,7 +104,7 @@ estimate_betas <- function(
     )
 
     bind_cols(
-      tibble(date = unique(data$date)),
+      tibble(date = unique(df$date)),
       betas
     )
   }
