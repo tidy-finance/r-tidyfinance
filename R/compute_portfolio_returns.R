@@ -148,10 +148,6 @@ compute_portfolio_returns <- function(
       cli::cli_abort("Only provide one sorting variable for univariate sorts.")
     }
 
-    if (length(n_portfolios) > 1) {
-      cli::cli_abort("Only provide one number of portfolios for univariate sorts.")
-    }
-
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
         group_by(date) |>
@@ -200,10 +196,6 @@ compute_portfolio_returns <- function(
   if (sorting_method == "bivariate-dependent") {
     if (length(sorting_variables) != 2) {
       cli::cli_abort("Provide two sorting variables for bivariate sorts.")
-    }
-
-    if (length(n_portfolios) != 2) {
-      cli::cli_abort("Provide two numbers of portfolios for bivariate sorts.")
     }
 
     if (is.null(rebalancing_month)) {
@@ -276,10 +268,6 @@ compute_portfolio_returns <- function(
   if (sorting_method == "bivariate-independent") {
     if (length(sorting_variables) != 2) {
       cli::cli_abort("Provide two sorting variables for bivariate sorts.")
-    }
-
-    if (length(n_portfolios) != 2) {
-      cli::cli_abort("Provide two numbers of portfolios for bivariate sorts.")
     }
 
     if (is.null(rebalancing_month)) {
