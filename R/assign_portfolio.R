@@ -21,7 +21,7 @@
 #'   filter the data before computing breakpoints and assigning portfolios.
 #'   Exchanges must be stored in a column named `exchange` in `data`. If `NULL`,
 #'   no filtering is applied.
-#' @param fix_extremes An optional logical parameter specifying if to
+#' @param smooth_bunching An optional logical parameter specifying if to
 #'   attempt smoothing non-extreme portfolios if the sorting variable bunches on
 #'   the extremes (TRUE, the default), or not (FALSE). In some cases, smoothing
 #'   will not result in equal-sized portfolios off the edges due to multiple
@@ -50,7 +50,7 @@ assign_portfolio <- function(data,
                              n_portfolios = NULL,
                              percentiles = NULL,
                              breakpoint_exchanges = NULL,
-                             fix_extremes = TRUE) {
+                             smooth_bunching = TRUE) {
 
   if (!is.null(n_portfolios) && !is.null(percentiles)) {
     cli::cli_abort("Please provide either n_portfolios or percentiles, not both.")
@@ -91,11 +91,11 @@ assign_portfolio <- function(data,
     sorting_values, probs = probs, na.rm = TRUE, names = FALSE
   )
 
-  if (fix_extremes) {
+  if (smooth_bunching) {
     # Portfolio 1 and n are overpopulated
     if (breakpoints[1] == breakpoints[2] && breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]) {
       if (!is.null(percentiles)) {
-        cli::cli_warn("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+        cli::cli_warn("`smooth_bunching` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
       }
 
       sorting_values_new <- sorting_values[which(sorting_values > breakpoints[1] & sorting_values < breakpoints[n_portfolios + 1])]
@@ -114,7 +114,7 @@ assign_portfolio <- function(data,
     # Portfolio 1 is overpopulated
     if (breakpoints[1] == breakpoints[2]) {
       if (!is.null(percentiles)) {
-        cli::cli_warn("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+        cli::cli_warn("`smooth_bunching` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
       }
 
       sorting_values_new <- sorting_values[which(sorting_values > breakpoints[1])]
@@ -131,7 +131,7 @@ assign_portfolio <- function(data,
     # Portfolio n is overpopulated
     if (breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]) {
       if (!is.null(percentiles)) {
-        cli::cli_warn("`fix_extremes` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+        cli::cli_warn("`smooth_bunching` is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
       }
 
       sorting_values_new <- sorting_values[which(sorting_values < breakpoints[n_portfolios])]
@@ -157,7 +157,7 @@ assign_portfolio <- function(data,
   )
 
   if (length(unique(na.omit(portfolio_indices)) )!= n_portfolios) {
-    cli::cli_warn("The number of portfolios differs from the specified parameter due to large clusters in the sorting variable.")
+    cli::cli_warn("The number of portfolios differs from the specified parameter due to clusters in the sorting variable.")
   }
 
   return(portfolio_indices)
