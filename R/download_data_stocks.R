@@ -75,6 +75,8 @@ download_data_stocks_yf <- function(symbols, start_date = NULL, end_date = NULL)
 
   processed_data <- list()
 
+  cli::cli_progress_bar("Downloading symbols", total = length(symbols), clear = TRUE)
+
   for (j in seq_along(symbols)) {
     url <- paste0(
       "https://query2.finance.yahoo.com/v8/finance/chart/",
@@ -111,6 +113,8 @@ download_data_stocks_yf <- function(symbols, start_date = NULL, end_date = NULL)
         "Failed to retrieve data for symbol {symbols[j]} with status code {response$status_code} ({error_message$code}): {error_message$description}"
       )
     }
+    cli::cli_progress_update()
   }
+
   bind_rows(processed_data)
 }
