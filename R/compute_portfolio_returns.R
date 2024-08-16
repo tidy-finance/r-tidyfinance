@@ -55,18 +55,21 @@
 #'   parameter, the portfolios contain stocks from all exchanges. Exchanges must
 #'   be stored in a column named `exchange` in `sorting_data`. If `NULL`, no
 #'   filtering is applied.
+#' @param min_portfolio_size An integer specifying the minimum number of
+#'   portfolio constituents (default is set to `0`, effectively deactivating the
+#'   check). Small portfolios' returns are set to zero.
 #'
 #' @return A data frame with computed portfolio returns, containing the
 #'   following columns:
 #'   \itemize{
 #'     \item `portfolio`: The portfolio identifier.
 #'     \item `date`: The date of the portfolio return.
-#'     \item `ret_excess_vw`: The value-weighted excess return of the portfolio (only computed if the `sorting_data` contains the column `mktcap_lag`)
+#'     \item `ret_excess_vw`: The value-weighted excess return of the portfolio (only computed if the `sorting_data` contains `mktcap_lag`)
 #'     \item `ret_excess_ew`: The equal-weighted excess return of the portfolio.
 #'   }
 #'
-#' @note Ensure that the `sorting_data` contains all the required columns: the
-#'   specified sorting variables, and `ret_excess`. The function will stop and
+#' @note Ensure that the `sorting_data` contains all the required columns: The
+#'   specified sorting variables and `ret_excess`. The function will stop and
 #'   throw an error if any required columns are missing.
 #'
 #' @export
@@ -92,7 +95,8 @@ compute_portfolio_returns <- function(
     rebalancing_month = NULL,
     n_portfolios = NULL, # must be a vector
     percentiles = NULL, # must be a list with length == length(sorting_variables)
-    breakpoint_exchanges = NULL
+    breakpoint_exchanges = NULL,
+    min_portfolio_size = 0
 ) {
 
   if (is.null(sorting_variables) || length(sorting_variables) == 0) {
@@ -187,8 +191,8 @@ compute_portfolio_returns <- function(
     portfolio_returns <- portfolio_returns |>
       group_by(portfolio, date) |>
       summarize(
-        ret_excess_vw = stats::weighted.mean(ret_excess, mktcap_lag),
-        ret_excess_ew = mean(ret_excess),
+        ret_excess_vw = if_else(n() < min_portfolio_size, NA_real_, stats::weighted.mean(ret_excess, mktcap_lag)),
+        ret_excess_ew = if_else(n() < min_portfolio_size, NA_real_, mean(ret_excess)),
         .groups = "drop"
       )
   }
@@ -253,11 +257,12 @@ compute_portfolio_returns <- function(
                   join_by(permno, closest(date >= lower_bound), date < upper_bound),
                   relationship = "many-to-one")
     }
+
     portfolio_returns <- portfolio_returns  |>
       group_by(portfolio_main, portfolio_secondary, date) |>
       summarize(
-        ret_excess_vw = stats::weighted.mean(ret_excess, mktcap_lag),
-        ret_excess_ew = mean(ret_excess),
+        ret_excess_vw = if_else(n() < min_portfolio_size, NA_real_, stats::weighted.mean(ret_excess, mktcap_lag)),
+        ret_excess_ew = if_else(n() < min_portfolio_size, NA_real_, mean(ret_excess)),
         .groups = "drop"
       ) |>
       group_by(portfolio = portfolio_main, date) |>
@@ -289,7 +294,6 @@ compute_portfolio_returns <- function(
             breakpoint_exchanges = breakpoint_exchanges
           )) |>
         ungroup()
-
     } else {
       portfolio_data <- sorting_data |>
         filter(month(date) == rebalancing_month) |>
@@ -320,11 +324,12 @@ compute_portfolio_returns <- function(
                   join_by(permno, closest(date >= lower_bound), date < upper_bound),
                   relationship = "many-to-one")
     }
+
     portfolio_returns <- portfolio_returns |>
       group_by(portfolio_main, portfolio_secondary, date) |>
       summarize(
-        ret_excess_vw = stats::weighted.mean(ret_excess, mktcap_lag),
-        ret_excess_ew = mean(ret_excess),
+        ret_excess_vw = if_else(n() < min_portfolio_size, NA_real_, stats::weighted.mean(ret_excess, mktcap_lag)),
+        ret_excess_ew = if_else(n() < min_portfolio_size, NA_real_, mean(ret_excess)),
         .groups = "drop"
       ) |>
       group_by(portfolio = portfolio_main, date) |>
