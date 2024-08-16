@@ -4,13 +4,7 @@
 \alias{estimate_betas}
 \title{Estimate Rolling Betas}
 \usage{
-estimate_betas(
-  data,
-  model,
-  lookback,
-  min_obs = round(lookback * 0.8, 0),
-  use_furrr = FALSE
-)
+estimate_betas(data, model, lookback, min_obs = NULL, use_furrr = FALSE)
 }
 \arguments{
 \item{data}{A tibble containing the data with columns \code{date}, \code{permno}, and other variables used in the model.}

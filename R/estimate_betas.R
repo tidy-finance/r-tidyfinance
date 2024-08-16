@@ -74,7 +74,7 @@ estimate_betas <- function(
     cli::cli_abort("{.arg lookback} must contain either a positive month, days, hours, minutes, or seconds")
   }
 
-  if(is.null(min_obs)){
+  if (is.null(min_obs)) {
     min_obs <- round(lookback * 0.8, 0)
   } else if (min_obs <= 0) {
     cli::cli_abort("{.arg min_obs} must be a positive integer.")
