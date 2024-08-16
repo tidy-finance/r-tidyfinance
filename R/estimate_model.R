@@ -40,7 +40,7 @@ estimate_model <- function(data, model, min_obs = 1) {
   independent_vars <- strsplit(trimws(model_parts[2]), "[ +]")[[1]]
   independent_vars <- independent_vars[nzchar(independent_vars)]
 
-  if (nrow(data) < min_obs) {
+  if (nrow(data) < min_obs || nrow(data) <= length(independent_vars)) {
     if (length(independent_vars) == 0) {
       return(NA_real_)
     }

@@ -43,3 +43,30 @@ test_that("Exactly minimum required observations", {
 test_that("No independent variables specified", {
   expect_error(estimate_model(data, min_obs = 1))
 })
+
+test_that("estimate_model returns tibble with only NAs when insufficient data", {
+  set.seed(1234)
+  df <- tibble(
+    date = seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-01"), by = "month"),
+    ret_excess = rnorm(12, 0, 0.1),
+    mkt_excess = rnorm(12, 0, 0.1),
+    smb = rnorm(12, 0, 0.1),
+    hml = rnorm(12, 0, 0.1)
+  )
+
+  model <- "ret_excess ~ mkt_excess + smb + hml"
+
+  betas <- slider::slide_period_dfr(
+    .x = df,
+    .i = df$date,
+    .period = "month",
+    .f = ~ estimate_model(., model, min_obs = 2),
+    .before = 3 - 1,
+    .complete = FALSE
+  )
+
+  # Check if all values in the tibble are NA
+  expect_true(all(is.na(betas)))
+  # Check if the output is a tibble
+  expect_s3_class(betas, "tbl_df")
+})
