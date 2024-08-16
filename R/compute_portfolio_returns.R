@@ -1,18 +1,19 @@
 #' Compute Portfolio Returns
 #'
 #' This function computes individual portfolio returns based on specified
-#' sorting variables and sorting methods. The portfolios can be rebalanced at a
-#' monthly or annual frequency, where annual rebalancing is only feasible at a
-#' monthly return frequency. The function supports univariate and bivariate
-#' sorts, with the latter supporting dependent and independent sorting methods.
+#' sorting variables and sorting methods. The portfolios can be rebalanced every
+#' period or on an annual frequency by specifying a rebalancing month, which is
+#' only applicable at a monthly return frequency. The function supports
+#' univariate and bivariate sorts, with the latter supporting dependent and
+#' independent sorting methods.
 #'
 #' @details The function checks for consistency in the provided arguments. For
-#' univariate sorts, a single sorting variable and a corresponding number of
-#' portfolios must be provided. For bivariate sorts, two sorting variables and
-#' two corresponding numbers of portfolios (or percentiles) are required. The
-#' sorting method determines how portfolios are assigned and returns are
-#' computed. The function handles missing and extreme values appropriately based
-#' on the specified sorting method and rebalancing frequency.
+#'   univariate sorts, a single sorting variable and a corresponding number of
+#'   portfolios must be provided. For bivariate sorts, two sorting variables and
+#'   two corresponding numbers of portfolios (or percentiles) are required. The
+#'   sorting method determines how portfolios are assigned and returns are
+#'   computed. The function handles missing and extreme values appropriately
+#'   based on the specified sorting method and rebalancing frequency.
 #'
 #' @param sorting_data A data frame containing the dataset for portfolio
 #'   assignment and return computation. Following CRSP naming conventions, the
@@ -37,9 +38,11 @@
 #'   controlling sorting variable and only portfolio returns for the main
 #'   sorting variable (given as the second element of `sorting_variable`) are
 #'   returned.
-#' @param rebalancing_frequency A string specifying the frequency of
-#'   rebalancing. Default is `"monthly"`. The other supported value is
-#'   `"annual"`.
+#' @param rebalancing_month An integer between 1 and 12 specifying the month in
+#'   which to form portfolios that are held constant for one year. For example,
+#'   setting it to `7` creates portfolios in July that are held constant until
+#'   June of the following year. The default `NULL` corresponds to periodic
+#'   rebalancing.
 #' @param n_portfolios An optional numeric vector specifying the number of
 #'   portfolios to create for each sorting variable. For univariate sorts,
 #'   provide a single number. For bivariate sorts, provide two numbers.
@@ -63,13 +66,13 @@
 #'   }
 #'
 #' @note Ensure that the `sorting_data` contains all the required columns: the
-#' specified sorting variables, and `ret_excess`. The function will stop and
-#' throw an error if any required columns are missing.
+#'   specified sorting variables, and `ret_excess`. The function will stop and
+#'   throw an error if any required columns are missing.
 #'
 #' @export
 #'
 #' @examples
-#' # Univariate sorting with monthly rebalancing
+#' # Univariate sorting with periodic rebalancing
 #' data <- data.frame(
 #'   permno = 1:100,
 #'   date = rep(seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 100), each = 10),
@@ -80,13 +83,13 @@
 #' compute_portfolio_returns(data, sorting_variables = "size", sorting_method = "univariate", n_portfolios = 5)
 #'
 #' # Bivariate dependent sorting with annual rebalancing
-#' compute_portfolio_returns(data, sorting_variables = c("size", "mktcap_lag"), sorting_method = "bivariate-dependent", n_portfolios = c(3, 3), rebalancing_frequency = "annual")
+#' compute_portfolio_returns(data, sorting_variables = c("size", "mktcap_lag"), sorting_method = "bivariate-dependent", n_portfolios = c(3, 3), rebalancing_month = 7)
 #'
 compute_portfolio_returns <- function(
     sorting_data,
     sorting_variables,
     sorting_method,
-    rebalancing_frequency = "monthly",
+    rebalancing_month = NULL,
     n_portfolios = NULL, # must be a vector
     percentiles = NULL, # must be a list with length == length(sorting_variables)
     breakpoint_exchanges = NULL
@@ -136,16 +139,20 @@ compute_portfolio_returns <- function(
     sorting_data$mktcap_lag <- 1
   }
 
-  if (sorting_method == "univariate") {
+  if(!is.null(rebalancing_month) && (rebalancing_month > 12 || rebalancing_month < 1)) {
+    cli::cli_abort("The 'rebalancing_month' must be NULL (periodic rebalancing) or an integer between 1 and 12 (annual rebalancing).")
+  }
 
+  if (sorting_method == "univariate") {
     if (length(sorting_variables) > 1) {
       cli::cli_abort("Only provide one sorting variable for univariate sorts.")
     }
+
     if (length(n_portfolios) > 1) {
       cli::cli_abort("Only provide one number of portfolios for univariate sorts.")
     }
 
-    if (rebalancing_frequency == "monthly") {
+    if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
         group_by(date) |>
         mutate(
@@ -157,9 +164,9 @@ compute_portfolio_returns <- function(
             breakpoint_exchanges = breakpoint_exchanges
           )
         )
-    } else if (rebalancing_frequency == "annual") {
+    } else {
       portfolio_data <- sorting_data |>
-        filter(month(date) == 7) |>
+        filter(month(date) == rebalancing_month) |>
         group_by(date) |>
         mutate(
           portfolio = assign_portfolio(
@@ -194,11 +201,12 @@ compute_portfolio_returns <- function(
     if (length(sorting_variables) != 2) {
       cli::cli_abort("Provide two sorting variables for bivariate sorts.")
     }
+
     if (length(n_portfolios) != 2) {
       cli::cli_abort("Provide two numbers of portfolios for bivariate sorts.")
     }
 
-    if (rebalancing_frequency == "monthly") {
+    if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
         group_by(date) |>
         mutate(
@@ -220,10 +228,9 @@ compute_portfolio_returns <- function(
             breakpoint_exchanges = breakpoint_exchanges
           )) |>
         ungroup()
-
-    } else if (rebalancing_frequency == "annual") {
+    } else {
       portfolio_data <- sorting_data |>
-        filter(month(date) == 7) |>
+        filter(month(date) == rebalancing_month) |>
         group_by(date) |>
         mutate(
           portfolio_secondary = assign_portfolio(
@@ -270,11 +277,12 @@ compute_portfolio_returns <- function(
     if (length(sorting_variables) != 2) {
       cli::cli_abort("Provide two sorting variables for bivariate sorts.")
     }
+
     if (length(n_portfolios) != 2) {
       cli::cli_abort("Provide two numbers of portfolios for bivariate sorts.")
     }
 
-    if (rebalancing_frequency == "monthly") {
+    if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
         group_by(date) |>
         mutate(
@@ -294,9 +302,9 @@ compute_portfolio_returns <- function(
           )) |>
         ungroup()
 
-    } else if (rebalancing_frequency == "annual") {
+    } else {
       portfolio_data <- sorting_data |>
-        filter(month(date) == 7) |>
+        filter(month(date) == rebalancing_month) |>
         group_by(date) |>
         mutate(
           portfolio_secondary = assign_portfolio(
@@ -341,5 +349,4 @@ compute_portfolio_returns <- function(
   }
 
   portfolio_returns[!is.na(portfolio_returns$portfolio),]
-
 }
