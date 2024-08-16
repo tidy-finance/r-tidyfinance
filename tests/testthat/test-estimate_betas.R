@@ -1,4 +1,4 @@
-test_that("Input validation: negative or zero months_lookback throws error", {
+test_that("Input validation: negative or zero lookback throws error", {
   data <- tibble::tibble(
     date = as.Date("2020-01-01"),
     permno = 1,
@@ -38,7 +38,7 @@ test_that("Output structure: correct column names and number of rows", {
     mkt_excess = rnorm(24, 0, 0.1)
   )
 
-  result <- estimate_betas(data, "ret_excess ~ mkt_excess", 3)
+  result <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
 
   expect_true(all(c("date", "beta_mkt_excess") %in% colnames(result)))
   expect_equal(nrow(result), 24)  # Should match the number of unique date-permno pairs
@@ -52,7 +52,7 @@ test_that("Correctness: Known result test", {
     mkt_excess = c(0.1, 0.2, 0.3)
   )
 
-  result <- estimate_betas(data, "ret_excess ~ mkt_excess", 3)
+  result <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
 
   expect_equal(result$beta_mkt_excess, c(NA, 1, 1))
 })
@@ -67,8 +67,8 @@ test_that("Performance: Single vs multiple workers give the same result", {
 
   future::plan(strategy = "multisession")
 
-  result_single <- estimate_betas(data, "ret_excess ~ mkt_excess", 3)
-  result_multi <- estimate_betas(data, "ret_excess ~ mkt_excess", 3, use_furrr = TRUE)
+  result_single <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
+  result_multi <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3), use_furrr = TRUE)
 
   expect_equal(result_single, result_multi)
 })
@@ -81,7 +81,7 @@ test_that("Rolling window behavior: correct handling of boundary dates", {
     mkt_excess = rnorm(6, 0, 0.1)
   )
 
-  result <- estimate_betas(data, "ret_excess ~ mkt_excess", 3)
+  result <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
 
   expect_equal(nrow(result), 6)
   # Check if the first couple of rows have NA values where the window size is not sufficient
@@ -99,7 +99,7 @@ test_that("Daily data test: correctly handles daily data grouped into months", {
   data <- data %>%
     mutate(date = lubridate::floor_date(date, "month"))
 
-  result <- estimate_betas(data, "ret_excess ~ mkt_excess", months_lookback = 6)
+  result <- estimate_betas(data, "ret_excess ~ mkt_excess", lookback = months(6))
 
   expect_equal(nrow(result), length(unique(data$date)) * 2)  # Check if rows match the expected number of date-permno combinations
   expect_true(all(c("date", "beta_mkt_excess") %in% colnames(result)))
@@ -113,9 +113,8 @@ test_that("Edge case: single permno", {
     mkt_excess = rnorm(12, 0, 0.1)
   )
 
-  result <- estimate_betas(data, "ret_excess ~ mkt_excess", 3)
+  result <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
 
   expect_equal(nrow(result), 12)
   expect_true(all(c("date", "beta_mkt_excess") %in% colnames(result)))
 })
-

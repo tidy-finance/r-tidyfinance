@@ -4,23 +4,17 @@
 \alias{estimate_betas}
 \title{Estimate Rolling Betas}
 \usage{
-estimate_betas(
-  data,
-  model,
-  months_lookback,
-  min_obs = round(months_lookback * 0.8, 0),
-  use_furrr = FALSE
-)
+estimate_betas(data, model, lookback, min_obs = NULL, use_furrr = FALSE)
 }
 \arguments{
 \item{data}{A tibble containing the data with columns \code{date}, \code{permno}, and other variables used in the model.}
 
 \item{model}{A formula representing the model to be estimated (e.g., \code{ret_excess ~ mkt_excess + smb + hml}).}
 
-\item{months_lookback}{An integer specifying the number of months to look back when estimating the rolling model.}
+\item{lookback}{A Period object specifying the number of months, days, hours, minutes, or seconds to look back when estimating the rolling model.}
 
 \item{min_obs}{An integer specifying the minimum number of observations required to estimate the model.
-Defaults to 80\% of \code{months_lookback}.}
+Defaults to 80\% of \code{lookback}.}
 
 \item{use_furrr}{A logical indicating whether to use the \code{furrr} package and its paralellization capabilities.
 Defaults to FALSE.}
@@ -44,8 +38,8 @@ data_monthly <- tibble(
   hml = rnorm(600, 0, 0.1),
 )
 
-estimate_betas(data_monthly,  "ret_excess ~ mkt_excess", 3)
-estimate_betas(data_monthly,  "ret_excess ~ mkt_excess + smb + hml", 6)
+estimate_betas(data_monthly,  "ret_excess ~ mkt_excess", months(3))
+estimate_betas(data_monthly,  "ret_excess ~ mkt_excess + smb + hml", months(6))
 
 # Estimate monthly betas using daily return data and parallelization
 data_daily <- tibble(
@@ -60,7 +54,7 @@ data_daily <- tibble(
 data_daily <- data_daily |>
   mutate(date = lubridate::floor_date(date, "month"))
 
-plan(strategy = "multisession", workers = 4)
-estimate_betas(data_daily, "ret_excess ~ mkt_excess", 6, use_furrr = TRUE)
+# Change future::plan(strategy = "multisession", workers = 4) settings
+estimate_betas(data_daily, "ret_excess ~ mkt_excess", days(90), use_furrr = TRUE)
 
 }
