@@ -1,50 +1,70 @@
 #' Compute Portfolio Returns
 #'
-#' This function computes portfolio returns based on specified sorting variables and sorting methods.
-#' The portfolios can be rebalanced at a specified frequency, such as monthly or annually. The function
-#' supports univariate and bivariate sorts and can handle both dependent and independent sorting methods.
+#' This function computes individual portfolio returns based on specified
+#' sorting variables and sorting methods. The portfolios can be rebalanced at a
+#' monthly or annual frequency, where annual rebalancing is only feasible at a
+#' monthly return frequency. The function supports univariate and bivariate
+#' sorts, with the latter supporting dependent and independent sorting methods.
 #'
-#' @details
-#' The function checks for consistency in the provided arguments. For univariate sorts, a single sorting
-#' variable and a corresponding number of portfolios must be provided. For bivariate sorts, two sorting
-#' variables and two corresponding numbers of portfolios (or percentiles) are required. The sorting method
-#' determines how portfolios are assigned and returns are computed. The function handles missing and extreme
-#' values appropriately based on the specified sorting method and rebalancing frequency.
+#' @details The function checks for consistency in the provided arguments. For
+#' univariate sorts, a single sorting variable and a corresponding number of
+#' portfolios must be provided. For bivariate sorts, two sorting variables and
+#' two corresponding numbers of portfolios (or percentiles) are required. The
+#' sorting method determines how portfolios are assigned and returns are
+#' computed. The function handles missing and extreme values appropriately based
+#' on the specified sorting method and rebalancing frequency.
 #'
-#' @param sorting_data A data frame containing the dataset for portfolio assignment and return computation.
-#'   It must contain columns for the sorting variables, `mktcap_lag`, and `ret_excess`.
-#' @param sorting_variables A character vector specifying the column names in `sorting_data` to be used
-#'   for sorting and determining portfolio assignments. For univariate sorts, provide a single variable.
-#'   For bivariate sorts, provide two variables.
-#' @param sorting_method A string specifying the sorting method to be used. Possible values are:
+#' @param sorting_data A data frame containing the dataset for portfolio
+#'   assignment and return computation. Following CRSP naming conventions, the
+#'   panel data must identify individual stocks with `permno` and the time point
+#'   with `date`. It must contain columns for the sorting variables and
+#'   `ret_excess`. Additionally, `mktcap_lag` is needed for value-weighted
+#'   returns.
+#' @param sorting_variables A character vector specifying the column names in
+#'   `sorting_data` to be used for sorting and determining portfolio
+#'   assignments. For univariate sorts, provide a single variable. For bivariate
+#'   sorts, provide two variables, where the first string refers to the
+#'   "control" variable and the second string refers to the main variable of
+#'   interest.
+#' @param sorting_method A string specifying the sorting method to be used.
+#'   Possible values are:
 #'   \itemize{
 #'     \item `"univariate"`: For a single sorting variable.
-#'     \item `"bivariate-dependent"`: For two sorting variables, where the second sort is dependent on the first.
+#'     \item `"bivariate-dependent"`: For two sorting variables, where the second sort (i.e., on the main variable of interest) is dependent on the first.
 #'     \item `"bivariate-independent"`: For two independent sorting variables.
 #'   }
-#' @param rebalancing_frequency A string specifying the frequency of rebalancing. Default is `"monthly"`.
-#'   Other supported value is `"annual"`.
-#' @param n_portfolios An optional numeric vector specifying the number of portfolios to create for each
-#'   sorting variable. For univariate sorts, provide a single number. For bivariate sorts, provide two numbers.
-#'   Must match the length of `sorting_variables`.
-#' @param percentiles An optional list of numeric vectors specifying the percentiles for determining the
-#'   breakpoints of the portfolios. This parameter is mutually exclusive with `n_portfolios`. The length of
-#'   the list must match the length of `sorting_variables`.
-#' @param breakpoint_exchanges An optional character vector specifying exchange names to filter the data
-#'   before computing breakpoints and assigning portfolios. Exchanges must be stored in a column named
-#'   `exchange` in `sorting_data`. If `NULL`, no filtering is applied.
+#'   For bivariate sorts, the portfolio returns are averaged over the
+#'   controlling sorting variable and only portfolio returns for the main
+#'   sorting variable (given as the second element of `sorting_variable`) are
+#'   returned.
+#' @param rebalancing_frequency A string specifying the frequency of
+#'   rebalancing. Default is `"monthly"`. The other supported value is
+#'   `"annual"`.
+#' @param n_portfolios An optional numeric vector specifying the number of
+#'   portfolios to create for each sorting variable. For univariate sorts,
+#'   provide a single number. For bivariate sorts, provide two numbers.
+#' @param percentiles An optional list of numeric vectors specifying the
+#'   percentiles for determining the breakpoints of the portfolios. This
+#'   parameter is mutually exclusive with `n_portfolios`. The length of the list
+#'   must match the length of `sorting_variables`.
+#' @param breakpoint_exchanges An optional character vector specifying exchange
+#'   names to filter the data for computing breakpoints. Irrespective of the
+#'   parameter, the portfolios contain stocks from all exchanges. Exchanges must
+#'   be stored in a column named `exchange` in `sorting_data`. If `NULL`, no
+#'   filtering is applied.
 #'
-#' @return A data frame with computed portfolio returns, containing the following columns:
+#' @return A data frame with computed portfolio returns, containing the
+#'   following columns:
 #'   \itemize{
 #'     \item `portfolio`: The portfolio identifier.
 #'     \item `date`: The date of the portfolio return.
-#'     \item `ret_excess_vw`: The value-weighted excess return of the portfolio (only computed if the `sorting_data` contains the column mktcap_lag)
+#'     \item `ret_excess_vw`: The value-weighted excess return of the portfolio (only computed if the `sorting_data` contains the column `mktcap_lag`)
 #'     \item `ret_excess_ew`: The equal-weighted excess return of the portfolio.
 #'   }
 #'
-#' @note
-#' Ensure that the `sorting_data` contains all the required columns: the specified sorting variables,
-#' and `ret_excess`. The function will stop and throw an error if any required columns are missing.
+#' @note Ensure that the `sorting_data` contains all the required columns: the
+#' specified sorting variables, and `ret_excess`. The function will stop and
+#' throw an error if any required columns are missing.
 #'
 #' @export
 #'
