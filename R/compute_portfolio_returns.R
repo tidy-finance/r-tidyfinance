@@ -24,37 +24,34 @@
 #' @param sorting_variables A character vector specifying the column names in
 #'   `sorting_data` to be used for sorting and determining portfolio
 #'   assignments. For univariate sorts, provide a single variable. For bivariate
-#'   sorts, provide two variables, where the first string refers to the
-#'   "control" variable and the second string refers to the main variable of
-#'   interest.
+#'   sorts, provide two variables, where the first string refers to the main
+#'   variable and the second string refers to the secondary ("control")
+#'   variable.
 #' @param sorting_method A string specifying the sorting method to be used.
 #'   Possible values are:
 #'   \itemize{
 #'     \item `"univariate"`: For a single sorting variable.
-#'     \item `"bivariate-dependent"`: For two sorting variables, where the second sort (i.e., on the main variable of interest) is dependent on the first.
+#'     \item `"bivariate-dependent"`: For two sorting variables, where the main sort is dependent on the secondary variable.
 #'     \item `"bivariate-independent"`: For two independent sorting variables.
 #'   }
 #'   For bivariate sorts, the portfolio returns are averaged over the
-#'   controlling sorting variable and only portfolio returns for the main
-#'   sorting variable (given as the second element of `sorting_variable`) are
-#'   returned.
+#'   controlling sorting variable (i.e., the second sorting variable) and only
+#'   portfolio returns for the main sorting variable (given as the first element
+#'   of `sorting_variable`) are returned.
 #' @param rebalancing_month An integer between 1 and 12 specifying the month in
 #'   which to form portfolios that are held constant for one year. For example,
 #'   setting it to `7` creates portfolios in July that are held constant until
 #'   June of the following year. The default `NULL` corresponds to periodic
 #'   rebalancing.
-#' @param n_portfolios An optional numeric vector specifying the number of
-#'   portfolios to create for each sorting variable. For univariate sorts,
-#'   provide a single number. For bivariate sorts, provide two numbers.
-#' @param percentiles An optional list of numeric vectors specifying the
-#'   percentiles for determining the breakpoints of the portfolios. This
-#'   parameter is mutually exclusive with `n_portfolios`. The length of the list
-#'   must match the length of `sorting_variables`.
-#' @param breakpoint_exchanges An optional character vector specifying exchange
-#'   names to filter the data for computing breakpoints. Irrespective of the
-#'   parameter, the portfolios contain stocks from all exchanges. Exchanges must
-#'   be stored in a column named `exchange` in `sorting_data`. If `NULL`, no
-#'   filtering is applied.
+#' @param breakpoint_options_main An optional named list of arguments passed to
+#'   `breakpoint_function` for the main sorting variable.
+#' @param breakpoint_function_main A function to compute the main sorting
+#'   variable. The default is set to `tidyfinance::compute_breakpoints()`.
+#' @param breakpoint_options_secondary An optional named list of arguments
+#'   passed to `breakpoint_function` for the secondary sorting variable.
+#' @param breakpoint_function_secondary A function to compute the secondary
+#'   sorting variable. The default is set to
+#'   `tidyfinance::compute_breakpoints()`.
 #' @param min_portfolio_size An integer specifying the minimum number of
 #'   portfolio constituents (default is set to `0`, effectively deactivating the
 #'   check). Small portfolios' returns are set to zero.
@@ -77,25 +74,25 @@
 #' @examples
 #' # Univariate sorting with periodic rebalancing
 #' data <- data.frame(
-#'   permno = 1:100,
+#'   permno = 1:500,
 #'   date = rep(seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 100), each = 10),
-#'   mktcap_lag = runif(100, 100, 1000),
-#'   ret_excess = rnorm(100),
-#'   size = runif(100, 50, 150)
+#'   mktcap_lag = runif(500, 100, 1000),
+#'   ret_excess = rnorm(500),
+#'   size = runif(500, 50, 150)
 #' )
-#' compute_portfolio_returns(data, sorting_variables = "size", sorting_method = "univariate", n_portfolios = 5)
+#' compute_portfolio_returns(data, sorting_variables = "size", sorting_method = "univariate", breakpoint_options_main = list(n_portfolios = 5))
 #'
 #' # Bivariate dependent sorting with annual rebalancing
-#' compute_portfolio_returns(data, sorting_variables = c("size", "mktcap_lag"), sorting_method = "bivariate-dependent", n_portfolios = c(3, 3), rebalancing_month = 7)
-#'
+#' compute_portfolio_returns(data, sorting_variables = c("size", "mktcap_lag"), sorting_method = "bivariate-independent", breakpoint_options_main = list(n_portfolios = 5), breakpoint_options_secondary = list(n_portfolios = 3), rebalancing_month = 7)
 compute_portfolio_returns <- function(
     sorting_data,
     sorting_variables,
     sorting_method,
     rebalancing_month = NULL,
-    n_portfolios = NULL, # must be a vector
-    percentiles = NULL, # must be a list with length == length(sorting_variables)
-    breakpoint_exchanges = NULL,
+    breakpoint_options_main = NULL,
+    breakpoint_options_secondary = NULL,
+    breakpoint_function_main = compute_breakpoints,
+    breakpoint_function_secondary = compute_breakpoints,
     min_portfolio_size = 0
 ) {
 
@@ -107,28 +104,8 @@ compute_portfolio_returns <- function(
     cli::cli_abort("Invalid sorting method. Choose 'univariate', 'bivariate-dependent', or 'bivariate-independent'.")
   }
 
-  if (is.null(n_portfolios) && is.null(percentiles)) {
-    cli::cli_abort("You must provide either 'n_portfolios' or 'percentiles'.")
-  }
-
-  if (!is.null(n_portfolios) && !is.null(percentiles)) {
-    cli::cli_abort("Please provide either 'n_portfolios' or 'percentiles', not both.")
-  }
-
-  if (!is.null(n_portfolios) && length(n_portfolios) != length(sorting_variables)) {
-    cli::cli_abort("'n_portfolios' must have the same length as 'sorting_variables'.")
-  }
-
-  if (!is.null(percentiles)) {
-    if (!is.list(percentiles) || length(percentiles) != length(sorting_variables)) {
-      cli::cli_abort("'percentiles' must be a list with the same length as 'sorting_variables'.")
-    }
-  }
-
-  if (!is.null(breakpoint_exchanges)) {
-    if (!("exchange" %in% colnames(sorting_data))) {
-      cli::cli_abort("The 'sorting_data' must contain an 'exchange' column when 'breakpoint_exchanges' is provided.")
-    }
+  if ((sorting_method %in% c("bivariate-dependent", "bivariate-independent")) && is.null(breakpoint_options_secondary)) {
+    cli::cli_warn("No 'breakpoint_options_secondary' specified in bivariate sort.")
   }
 
   required_columns <- c(sorting_variables, "ret_excess")
@@ -158,10 +135,9 @@ compute_portfolio_returns <- function(
         mutate(
           portfolio = assign_portfolio(
             data = pick(everything()),
-            sorting_variable = sorting_variables[1],
-            n_portfolios = n_portfolios[1],
-            percentiles = percentiles[[1]],
-            breakpoint_exchanges = breakpoint_exchanges
+            sorting_variable = sorting_variables,
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main
           )
         )
     } else {
@@ -171,10 +147,9 @@ compute_portfolio_returns <- function(
         mutate(
           portfolio = assign_portfolio(
             data = pick(everything()),
-            sorting_variable = sorting_variables[1],
-            n_portfolios = n_portfolios[1],
-            percentiles = percentiles[[1]],
-            breakpoint_exchanges = breakpoint_exchanges
+            sorting_variable = sorting_variables,
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main
           )) |>
         ungroup() |>
         select(permno, date, portfolio)
@@ -208,20 +183,18 @@ compute_portfolio_returns <- function(
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[1],
-            n_portfolios = n_portfolios[1],
-            percentiles = percentiles[[1]],
-            breakpoint_exchanges = breakpoint_exchanges
+            sorting_variable = sorting_variables[2],
+            breakpoint_options = breakpoint_options_secondary,
+            breakpoint_function = breakpoint_function_secondary
           )) |>
         ungroup() |>
         group_by(date, portfolio_secondary) |>
         mutate(
           portfolio_main = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[2],
-            n_portfolios = n_portfolios[2],
-            percentiles = percentiles[[2]],
-            breakpoint_exchanges = breakpoint_exchanges
+            sorting_variable = sorting_variables[1],
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main
           )) |>
         ungroup()
     } else {
@@ -231,20 +204,18 @@ compute_portfolio_returns <- function(
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[1],
-            n_portfolios = n_portfolios[1],
-            percentiles = percentiles[[1]],
-            breakpoint_exchanges = breakpoint_exchanges
+            sorting_variable = sorting_variables[2],
+            breakpoint_options = breakpoint_options_secondary,
+            breakpoint_function = breakpoint_function_secondary
           )) |>
         ungroup() |>
         group_by(date, portfolio_secondary) |>
         mutate(
           portfolio_main = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[2],
-            n_portfolios = n_portfolios[2],
-            percentiles = percentiles[[2]],
-            breakpoint_exchanges = breakpoint_exchanges
+            sorting_variable = sorting_variables[1],
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main
           )) |>
         ungroup() |>
         select(permno, date, portfolio_main, portfolio_secondary)
@@ -281,17 +252,15 @@ compute_portfolio_returns <- function(
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[1],
-            n_portfolios = n_portfolios[1],
-            percentiles = percentiles[[1]],
-            breakpoint_exchanges = breakpoint_exchanges
+            sorting_variable = sorting_variables[2],
+            breakpoint_options = breakpoint_options_secondary,
+            breakpoint_function = breakpoint_function_secondary
           ),
           portfolio_main = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[2],
-            n_portfolios = n_portfolios[2],
-            percentiles = percentiles[[2]],
-            breakpoint_exchanges = breakpoint_exchanges
+            sorting_variable = sorting_variables[1],
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main
           )) |>
         ungroup()
     } else {
@@ -301,17 +270,15 @@ compute_portfolio_returns <- function(
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[1],
-            n_portfolios = n_portfolios[1],
-            percentiles = percentiles[[1]],
-            breakpoint_exchanges = breakpoint_exchanges
+            sorting_variable = sorting_variables[2],
+            breakpoint_options = breakpoint_options_secondary,
+            breakpoint_function = breakpoint_function_secondary
           ),
           portfolio_main = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[2],
-            n_portfolios = n_portfolios[2],
-            percentiles = percentiles[[2]],
-            breakpoint_exchanges = breakpoint_exchanges
+            sorting_variable = sorting_variables[1],
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main
           )) |>
         ungroup() |>
         select(permno, date, portfolio_main, portfolio_secondary)
