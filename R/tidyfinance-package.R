@@ -1,6 +1,7 @@
 #' @keywords internal
 #' @import dplyr
 #' @import lubridate
+#' @import tibble
 "_PACKAGE"
 
 ## usethis namespace: start

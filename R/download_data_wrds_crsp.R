@@ -294,6 +294,8 @@ download_data_wrds_crsp <- function(
 
       crsp_daily_list <- list()
 
+      cli::cli_progress_bar("Downloading batches", total = batches, clear = TRUE)
+
       for (j in 1:batches) {
 
         permno_batch <- permnos[
@@ -345,6 +347,7 @@ download_data_wrds_crsp <- function(
             ) |>
             select(-risk_free)
         }
+        cli::cli_progress_update()
       }
 
       disconnection_connection(con)
@@ -370,6 +373,8 @@ download_data_wrds_crsp <- function(
       batches <- ceiling(length(permnos) / batch_size)
 
       crsp_daily_list <- list()
+
+      cli::cli_progress_bar("Downloading batches", total = batches, clear = TRUE)
 
       for (j in 1:batches) {
 
@@ -409,6 +414,7 @@ download_data_wrds_crsp <- function(
             ) |>
             select(-risk_free)
         }
+        cli::cli_progress_update()
       }
 
       disconnection_connection(con)

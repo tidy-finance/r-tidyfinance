@@ -59,7 +59,7 @@ download_data_stocks_yf <- function(symbols, start_date = NULL, end_date = NULL)
   }
 
   rlang::check_installed(
-    "httr2", reason = paste0("to download type ", type, ".")
+    "httr2", reason = "to download 'type stocks_yf'."
   )
 
   if (is.null(start_date) || is.null(end_date)) {
@@ -74,6 +74,8 @@ download_data_stocks_yf <- function(symbols, start_date = NULL, end_date = NULL)
   end_timestamp <- as.integer(as.POSIXct(end_date, tz = "UTC"))
 
   processed_data <- list()
+
+  cli::cli_progress_bar("Downloading symbols", total = length(symbols), clear = TRUE)
 
   for (j in seq_along(symbols)) {
     url <- paste0(
@@ -111,6 +113,8 @@ download_data_stocks_yf <- function(symbols, start_date = NULL, end_date = NULL)
         "Failed to retrieve data for symbol {symbols[j]} with status code {response$status_code} ({error_message$code}): {error_message$description}"
       )
     }
+    cli::cli_progress_update()
   }
+
   bind_rows(processed_data)
 }
