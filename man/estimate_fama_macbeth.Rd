@@ -28,8 +28,9 @@ and corresponding t-statistics.
 \examples{
 set.seed(1234)
 
-data <- tibble(
-  date = rep(seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-01"), by = "month"), each = 50),
+data <- tibble::tibble(
+  date = rep(seq.Date(from = as.Date("2020-01-01"),
+                      to = as.Date("2020-12-01"), by = "month"), each = 50),
   permno = rep(1:50, times = 12),
   ret_excess = rnorm(600, 0, 0.1),
   beta = rnorm(600, 1, 0.2),
