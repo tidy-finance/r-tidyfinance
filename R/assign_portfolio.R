@@ -32,7 +32,7 @@
 #' @export
 assign_portfolio <- function(data,
                              sorting_variable,
-                             breakpoint_function = compute_breakpoints(),
+                             breakpoint_function = compute_breakpoints,
                              ...) {
   # Exit condition for identical sorting variables
   if (length(unique(data[[sorting_variable]])) == 1) {
@@ -50,6 +50,8 @@ assign_portfolio <- function(data,
   portfolio_indices <- findInterval(
     data[[sorting_variable]], breakpoints, all.inside = TRUE
   )
+
+  n_portfolios <- list(...)$n_portfolios
 
   if (length(unique(na.omit(portfolio_indices)) )!= n_portfolios) {
     cli::cli_warn("The number of portfolios differs from the specified parameter due to clusters in the sorting variable.")
