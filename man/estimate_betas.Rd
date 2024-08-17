@@ -29,8 +29,9 @@ It supports parallel processing for faster computation using the \code{furrr} pa
 \examples{
 # Estimate monthly betas using monthly return data
 set.seed(1234)
-data_monthly <- tibble(
-  date = rep(seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-01"), by = "month"), each = 50),
+data_monthly <- tibble::tibble(
+  date = rep(seq.Date(from = as.Date("2020-01-01"),
+                      to = as.Date("2020-12-01"), by = "month"), each = 50),
   permno = rep(1:50, times = 12),
   ret_excess = rnorm(600, 0, 0.1),
   mkt_excess = rnorm(600, 0, 0.1),
@@ -42,8 +43,9 @@ estimate_betas(data_monthly,  "ret_excess ~ mkt_excess", months(3))
 estimate_betas(data_monthly,  "ret_excess ~ mkt_excess + smb + hml", months(6))
 
 # Estimate monthly betas using daily return data and parallelization
-data_daily <- tibble(
-  date = rep(seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-31"), by = "day"), each = 50),
+data_daily <- tibble::tibble(
+  date = rep(seq.Date(from = as.Date("2020-01-01"),
+                      to = as.Date("2020-12-31"), by = "day"), each = 50),
   permno = rep(1:50, times = 366),
   ret_excess = rnorm(18300, 0, 0.02),
   mkt_excess = rnorm(18300, 0, 0.02),
@@ -52,9 +54,9 @@ data_daily <- tibble(
 )
 
 data_daily <- data_daily |>
-  mutate(date = lubridate::floor_date(date, "month"))
+  dplyr::mutate(date = lubridate::floor_date(date, "month"))
 
-# Change future::plan(strategy = "multisession", workers = 4) settings
-estimate_betas(data_daily, "ret_excess ~ mkt_excess", days(90), use_furrr = TRUE)
+# Change settings via future::plan(strategy = "multisession", workers = 4)
+estimate_betas(data_daily, "ret_excess ~ mkt_excess", lubridate::days(90), use_furrr = TRUE)
 
 }

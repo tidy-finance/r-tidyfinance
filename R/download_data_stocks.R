@@ -59,7 +59,7 @@ download_data_stocks_yf <- function(symbols, start_date = NULL, end_date = NULL)
   }
 
   rlang::check_installed(
-    "httr2", reason = paste0("to download type ", type, ".")
+    "httr2", reason = "to download 'type stocks_yf'."
   )
 
   if (is.null(start_date) || is.null(end_date)) {

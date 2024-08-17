@@ -1,5 +1,5 @@
 test_that("Input validation: negative or zero lookback throws error", {
-  data <- tibble::tibble(
+  data <- tibble(
     date = as.Date("2020-01-01"),
     permno = 1,
     ret_excess = 0,
@@ -10,7 +10,7 @@ test_that("Input validation: negative or zero lookback throws error", {
 })
 
 test_that("Input validation: negative or zero min_obs throws error", {
-  data <- tibble::tibble(
+  data <- tibble(
     date = as.Date("2020-01-01"),
     permno = 1,
     ret_excess = 0,
@@ -21,7 +21,7 @@ test_that("Input validation: negative or zero min_obs throws error", {
 })
 
 test_that("Input validation: invalid use_furrr throws error", {
-  data <- tibble::tibble(
+  data <- tibble(
     date = as.Date("2020-01-01"),
     permno = 1,
     ret_excess = 0,
@@ -31,7 +31,7 @@ test_that("Input validation: invalid use_furrr throws error", {
 })
 
 test_that("Output structure: correct column names and number of rows", {
-  data <- tibble::tibble(
+  data <- tibble(
     date = rep(seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-01"), by = "month"), each = 2),
     permno = rep(1:2, times = 12),
     ret_excess = rnorm(24, 0, 0.1),
@@ -45,7 +45,7 @@ test_that("Output structure: correct column names and number of rows", {
 })
 
 test_that("Correctness: Known result test", {
-  data <- tibble::tibble(
+  data <- tibble(
     date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01")),
     permno = c(1, 1, 1),
     ret_excess = c(0.1, 0.2, 0.3),
@@ -58,14 +58,12 @@ test_that("Correctness: Known result test", {
 })
 
 test_that("Performance: Single vs multiple workers give the same result", {
-  data <- tibble::tibble(
+  data <- tibble(
     date = rep(seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-01"), by = "month"), each = 2),
     permno = rep(1:2, times = 12),
     ret_excess = rnorm(24, 0, 0.1),
     mkt_excess = rnorm(24, 0, 0.1)
   )
-
-  future::plan(strategy = "multisession")
 
   result_single <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
   result_multi <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3), use_furrr = TRUE)
@@ -74,7 +72,7 @@ test_that("Performance: Single vs multiple workers give the same result", {
 })
 
 test_that("Rolling window behavior: correct handling of boundary dates", {
-  data <- tibble::tibble(
+  data <- tibble(
     date = seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-06-01"), by = "month"),
     permno = 1,
     ret_excess = rnorm(6, 0, 0.1),
@@ -89,7 +87,7 @@ test_that("Rolling window behavior: correct handling of boundary dates", {
 })
 
 test_that("Daily data test: correctly handles daily data grouped into months", {
-  data <- tibble::tibble(
+  data <- tibble(
     date = rep(seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-31"), by = "day"), each = 2),
     permno = rep(1:2, times = 366),
     ret_excess = rnorm(732, 0, 0.02),
@@ -106,7 +104,7 @@ test_that("Daily data test: correctly handles daily data grouped into months", {
 })
 
 test_that("Edge case: single permno", {
-  data <- tibble::tibble(
+  data <- tibble(
     date = seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-01"), by = "month"),
     permno = 1,
     ret_excess = rnorm(12, 0, 0.1),
