@@ -1,5 +1,25 @@
 # tidyfinance (development version)
 
+## New features
+
+* Added `list_supported_indexes()` and `download_data_constituents()` to download index constituents.
+* Added `estimate_betas()` to estimate risk factor betas.
+* Added `estimate_fama_macbeth()` to estimate Fama-MacBeth models.
+* 
+
+## Bug fixes
+
+* Retained explicit missing values in `mktcap_lag` in monthly CRSP.
+
+## Improvements
+
+* Migrated to `cli` for error messages and warnings.
++ Aligned documentation across functions. 
+* Switched to NULL for optional default values. 
++ Removed dependency from named placeholder that is only available from R 4.2 on.
+* Removed `readxl` dependency from `download_data_macro_predictors()`.
+* Removed redundant `check_if_package_installed()` function. 
+
 # tidyfinance 0.3.0
 
 ## New features
