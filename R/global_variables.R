@@ -33,6 +33,7 @@ utils::globalVariables(
     "rdq", "fqtr", "fyearq", "atq", "ceqq",
     "beta_date", "estimates", "name", "risk_premium", "row_check",
     "standard_error", "t_statistic", "value",
-    "Anlageklasse", "Emittententicker", "Name", "Asset.Class", "Ticker", "symbol"
+    "Anlageklasse", "Emittententicker", "Name", "Asset.Class", "Ticker", "symbol",
+    "VALUE"
   )
 )

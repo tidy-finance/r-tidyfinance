@@ -25,8 +25,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' dax_constituents <- download_data_constituents("DAX")
-#' print(dax_constituents)
+#' download_data_constituents("DAX")
 #' }
 #'
 download_data_constituents <- function(index) {
@@ -44,7 +43,12 @@ download_data_constituents <- function(index) {
   url <- supported_indexes$url[supported_indexes$index == index]
 
   response <- httr2::request(url) |>
+    httr2::req_error(is_error = \(resp) FALSE) |>
     httr2::req_perform()
+
+  if (response$status_code != 200) {
+    cli::cli_abort("Failed to download data for index {.arg index}. Please check the index name or try again later.")
+  }
 
   constituents_raw <- suppressWarnings(httr2::resp_body_string(response)) |>
     textConnection() |>

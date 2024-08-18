@@ -33,8 +33,7 @@ The function performs the following steps:
 }
 \examples{
 \dontrun{
-dax_constituents <- download_data_constituents("DAX")
-print(dax_constituents)
+download_data_constituents("DAX")
 }
 
 }
