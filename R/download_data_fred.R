@@ -3,7 +3,7 @@
 #' This function downloads a specified data series from the Federal Reserve Economic Data (FRED) website,
 #' processes the data, and returns it as a tibble.
 #'
-#' @param series A character string specifying the FRED series ID to download.
+#' @param series A character vector specifying the FRED series ID to download.
 #' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
 #' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
 #'
@@ -24,7 +24,7 @@
 #' @examples
 #' \dontrun{
 #' download_data_fred("CPIAUCNS")
-#' download_data_fred("CPIAUCNS", "2020-01-01", "2020-12-31")
+#' download_data_fred(c("GDP", "CPIAUCNS"), "2010-01-01", "2010-12-31")
 #' }
 #'
 download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
@@ -43,26 +43,37 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
     end_date <- as.Date(end_date)
   }
 
-  url <- paste0("https://fred.stlouisfed.org/series/", series, "/downloaddata/", series, ".csv")
+  fred_processed <- list()
 
-  response <- httr2::request(url) |>
-    httr2::req_error(is_error = \(resp) FALSE) |>
-    httr2::req_perform()
+  cli::cli_progress_bar("Downloading series", total = length(series), clear = TRUE)
+  for (j in seq_along(series)) {
 
-  if (response$status_code != 200) {
-    cli::cli_abort("Failed to download data from FRED for {.arg series}. Please check the series ID or try again later.")
+    url <- paste0("https://fred.stlouisfed.org/series/", series[j], "/downloaddata/", series[j], ".csv")
+
+    response <- httr2::request(url) |>
+      httr2::req_error(is_error = \(resp) FALSE) |>
+      httr2::req_perform()
+
+    if (response$status_code == 200) {
+      fred_raw <- suppressWarnings(httr2::resp_body_string(response)) |>
+        textConnection() |>
+        read.csv() |>
+        as_tibble()
+
+      fred_processed[[j]] <- fred_raw |>
+        mutate(date = as.Date(DATE),
+               value = as.numeric(VALUE),
+               series = series[j],
+               .keep = "none")
+    } else {
+      cli::cli_warn(
+        "Failed to retrieve data for series {series[j]} with status code {response$status_code}."
+      )
+    }
+    cli::cli_progress_update()
   }
 
-  fred_raw <- suppressWarnings(httr2::resp_body_string(response)) |>
-    textConnection() |>
-    read.csv() |>
-    as_tibble()
-
-  fred_processed <- fred_raw |>
-    mutate(date = as.Date(DATE),
-           value = VALUE,
-           series = series,
-           .keep = "none")
+  fred_processed <- bind_rows(fred_processed)
 
   if (!is.null(start_date) && !is.null(end_date)) {
     fred_processed <- fred_processed |>

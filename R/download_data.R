@@ -26,7 +26,7 @@
 #'   download_data("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
 #'   download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
 #'   download_data("constituents", index = "DAX")
-#'   download_data("fred", series = "GDP")
+#'   download_data("fred", series = c("GDP", "CPIAUCNS"))
 #' }
 download_data <- function(type, start_date = NULL, end_date = NULL, ...) {
 

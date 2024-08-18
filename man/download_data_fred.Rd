@@ -7,7 +7,7 @@
 download_data_fred(series, start_date = NULL, end_date = NULL)
 }
 \arguments{
-\item{series}{A character string specifying the FRED series ID to download.}
+\item{series}{A character vector specifying the FRED series ID to download.}
 
 \item{start_date}{The start date for filtering the data, in "YYYY-MM-DD" format.}
 
@@ -33,7 +33,7 @@ includes the date, value, and the series ID.
 \examples{
 \dontrun{
 download_data_fred("CPIAUCNS")
-download_data_fred("CPIAUCNS", "2020-01-01", "2020-12-31")
+download_data_fred(c("GDP", "CPIAUCNS"), "2010-01-01", "2010-12-31")
 }
 
 }

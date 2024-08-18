@@ -7,8 +7,8 @@ test_that("function returns full data set when no date range is provided", {
 })
 
 test_that("function handles invalid series ID", {
-  expect_error(download_data_fred("INVALID_SERIES"),
-               regexp = "Failed to download data from FRED for")
+  expect_warning(download_data_fred("INVALID_SERIES"),
+                 regexp = "Failed to retrieve data for series INVALID_SERIES with status code 404.")
 })
 
 test_that("function handles start_date after end_date", {
