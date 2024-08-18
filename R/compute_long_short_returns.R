@@ -26,8 +26,8 @@
 #'   size = runif(100, 50, 150)
 #' )
 #' portfolio_returns <- compute_portfolio_returns(
-#'   data, sorting_variables = "size", sorting_method = "univariate",
-#'   breakpoint_options_main = list(n_portfolios = 5)
+#'   data, "size", "univariate",
+#'   breakpoint_options_main = breakpoint_options(n_portfolios = 5)
 #' )
 #' compute_long_short_returns(portfolio_returns)
 #'

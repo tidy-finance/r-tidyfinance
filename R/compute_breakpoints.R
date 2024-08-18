@@ -54,9 +54,11 @@
 #' @note This function will stop and throw an error if both `n_portfolios` and
 #'   `percentiles` are provided or if neither is provided. Ensure that you only
 #'   use one of these parameters.
-compute_breakpoints <- function(data,
-                                sorting_variable,
-                                breakpoint_options) {
+compute_breakpoints <- function(
+    data,
+    sorting_variable,
+    breakpoint_options
+  ) {
 
   if (!is.list(breakpoint_options)) {
     cli::cli_abort("Please provide a named list with breakpoint options.")
@@ -68,14 +70,14 @@ compute_breakpoints <- function(data,
   smooth_bunching <- breakpoint_options[["smooth_bunching"]]
 
   if (!is.null(n_portfolios) && !is.null(percentiles)) {
-    cli::cli_abort("Please provide either 'n_portfolios' or 'percentiles', not both.")
+    cli::cli_abort("Please provide either {.arg n_portfolios} or {.arg percentiles}, not both.")
   } else if (is.null(n_portfolios) && is.null(percentiles)) {
-    cli::cli_abort("You must provide either 'n_portfolios' or 'percentiles.'")
+    cli::cli_abort("You must provide either {.arg n_portfolios} or {.arg percentiles}")
   }
 
   if (!is.null(breakpoint_exchanges)) {
     if (!("exchange" %in% colnames(data))) {
-      cli::cli_abort("Please provide the column 'exchange' when filtering.")
+      cli::cli_abort("Please provide the column 'exchange' when filtering using {.arg breakpoint_exchanges}.")
     }
     data <- data |>
       filter(exchange %in% breakpoint_exchanges)
@@ -83,7 +85,7 @@ compute_breakpoints <- function(data,
 
   if (!is.null(n_portfolios)) {
     if (n_portfolios <= 1) {
-      cli::cli_abort("Number of portfolios must be larger than 1.")
+      cli::cli_abort("{.arg n_portfolios} must be larger than 1.")
     } else {
       probs <- seq(0, 1, length.out = n_portfolios + 1)
     }
@@ -102,7 +104,7 @@ compute_breakpoints <- function(data,
     # Portfolio 1 and n are overpopulated
     if (breakpoints[1] == breakpoints[2] && breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]) {
       if (!is.null(percentiles)) {
-        cli::cli_warn("'smooth_bunching' is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+        cli::cli_warn("{.arg smooth_bunching} is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
       }
 
       sorting_values_new <- sorting_values[which(sorting_values > breakpoints[1] & sorting_values < breakpoints[n_portfolios + 1])]
@@ -121,7 +123,7 @@ compute_breakpoints <- function(data,
     # Portfolio 1 is overpopulated
     if (breakpoints[1] == breakpoints[2]) {
       if (!is.null(percentiles)) {
-        cli::cli_warn("'smooth_bunching' is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+        cli::cli_warn("{.arg smooth_bunching} is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
       }
 
       sorting_values_new <- sorting_values[which(sorting_values > breakpoints[1])]
@@ -138,7 +140,7 @@ compute_breakpoints <- function(data,
     # Portfolio n is overpopulated
     if (breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]) {
       if (!is.null(percentiles)) {
-        cli::cli_warn("'smooth_bunching' is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
+        cli::cli_warn("{.arg smooth_bunching} is TRUE and equally-spaced portfolios are returned for non-edge portfolios.")
       }
 
       sorting_values_new <- sorting_values[which(sorting_values < breakpoints[n_portfolios])]

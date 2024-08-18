@@ -9,7 +9,7 @@ compute_portfolio_returns(
   sorting_variables,
   sorting_method,
   rebalancing_month = NULL,
-  breakpoint_options_main = NULL,
+  breakpoint_options_main,
   breakpoint_options_secondary = NULL,
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
@@ -108,14 +108,14 @@ data <- data.frame(
   size = runif(500, 50, 150)
 )
 compute_portfolio_returns(
-  data, sorting_variables = "size", sorting_method = "univariate",
-  breakpoint_options_main = list(n_portfolios = 5)
+  data, "size", "univariate",
+  breakpoint_options_main = breakpoint_options(n_portfolios = 5)
 )
 
 # Bivariate dependent sorting with annual rebalancing
 compute_portfolio_returns(
-  data, sorting_variables = c("size", "mktcap_lag"), sorting_method = "bivariate-independent",
-  breakpoint_options_main = list(n_portfolios = 5),
-  breakpoint_options_secondary = list(n_portfolios = 3), rebalancing_month = 7
+  data, c("size", "mktcap_lag"), "bivariate-independent", 7,
+  breakpoint_options_main = breakpoint_options(n_portfolios = 5),
+  breakpoint_options_secondary = breakpoint_options(n_portfolios = 3),
 )
 }
