@@ -7,55 +7,36 @@
 assign_portfolio(
   data,
   sorting_variable,
-  n_portfolios = NULL,
-  percentiles = NULL,
-  breakpoint_exchanges = NULL,
-  fix_extremes = TRUE
+  breakpoint_options = NULL,
+  breakpoint_function = compute_breakpoints
 )
 }
 \arguments{
 \item{data}{A data frame containing the dataset for portfolio assignment.}
 
 \item{sorting_variable}{A string specifying the column name in \code{data} to be
-used for sorting and determining portfolio assignments.}
+used for sorting and determining portfolio assignments based on the
+breakpoints.}
 
-\item{n_portfolios}{An optional integer specifying the number of equally
-sized portfolios to create. This parameter is mutually exclusive with
-\code{percentiles}.}
+\item{breakpoint_options}{An optional named list of arguments passed to
+\code{breakpoint_function}.}
 
-\item{percentiles}{An optional numeric vector specifying the percentiles for
-determining the breakpoints of the portfolios. This parameter is mutually
-exclusive with \code{n_portfolios}.}
-
-\item{fix_extremes}{An optional logical parameter specifying if to
-attempt smoothing non-extreme portfolios if the sorting variable bunches on
-the extremes (TRUE, the default), or not (FALSE). In some cases, smoothing
-will not result in equal-sized portfolios off the edges due to multiple
-clusters. If sufficiently large bunching is detected, \code{percentiles} is
-ignored and equally-spaced portfolios are returned for these cases with a
-warning.}
-
-\item{exchanges}{An optional character vector specifying exchange names to
-filter the data before computing breakpoints and assigning portfolios.
-Exchanges must be stored in a column named \code{exchange} in \code{data}. If \code{NULL},
-no filtering is applied.}
+\item{breakpoint_function}{A function to compute breakpoints. The default is
+set to \code{tidyfinance::compute_breakpoints()}.}
 }
 \value{
 A vector of portfolio assignments for each row in the input \code{data}.
 }
 \description{
-This function assigns data points to portfolios based on a specified sorting
-variable. It can optionally filter the data by exchanges before assignment.
-The function requires either the number of portfolios to be created or
-specific percentiles for the breakpoints, but not both. The function also
-handles cases where the sorting variable clusters on the edges, by assigning
-all extreme values to the edge portfolio(s) and attempting to sort the
-remaining values into the equal-sized portfolios (which can be deactivated).
-}
-\note{
-This function will stop and throw an error if both \code{n_portfolios} and
-\code{percentiles} are provided or if neither is provided. Ensure that you only
-use one of these parameters for specifying portfolio breakpoints.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+This function assigns data points to portfolios based on a specified
+sorting variable and the selected function to compute breakpoints. Users
+can specify a function to compute breakpoints. The function must take
+\code{data} and \code{sorting_variable} as the first two arguments. Additional
+arguments are passed with a named list lin \code{breakpoint_options}. The
+function needs to return an ascending vector of breakpoints. By default,
+breakpoints are computed with \code{tidyfinance::compute_breakpoints()}.
 }
 \examples{
 data <- data.frame(
@@ -63,7 +44,10 @@ data <- data.frame(
   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),
   market_cap = 1:100
 )
-assign_portfolio(data, "market_cap", n_portfolios = 5)
-assign_portfolio(data, "market_cap", percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
+assign_portfolio(data, "market_cap", list(n_portfolios = 5))
+assign_portfolio(
+  data, "market_cap",
+  list(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
+)
 
 }

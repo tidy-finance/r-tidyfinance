@@ -28,18 +28,22 @@
 #'   market_cap = 1:100
 #' )
 #' assign_portfolio(data, "market_cap", list(n_portfolios = 5))
-#' assign_portfolio(data, "market_cap", list(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE")))
+#' assign_portfolio(
+#'   data, "market_cap",
+#'   list(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
+#' )
 #'
 #' @export
-assign_portfolio <- function(data,
-                             sorting_variable,
-                             breakpoint_options = NULL,
-                             breakpoint_function = compute_breakpoints
-                             ) {
+assign_portfolio <- function(
+    data,
+    sorting_variable,
+    breakpoint_options = NULL,
+    breakpoint_function = compute_breakpoints
+  ) {
   # Exit condition for identical sorting variables
   if (length(unique(data[[sorting_variable]])) == 1) {
     cli::cli_warn("The sorting variable is constant and only one portfolio is returned.")
-    return(rep(1, nrow(data_breakpoints)))
+    return(rep(1, nrow(data)))
   }
 
   breakpoints <- breakpoint_function(

@@ -44,7 +44,10 @@
 #'   market_cap = 1:100
 #' )
 #' compute_breakpoints(data, "market_cap", list(n_portfolios = 5))
-#' compute_breakpoints(data, "market_cap", list(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE")))
+#' compute_breakpoints(
+#'   data, "market_cap",
+#'   list(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
+#'  )
 #'
 #' @export
 #'

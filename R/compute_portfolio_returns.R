@@ -80,10 +80,17 @@
 #'   ret_excess = rnorm(500),
 #'   size = runif(500, 50, 150)
 #' )
-#' compute_portfolio_returns(data, sorting_variables = "size", sorting_method = "univariate", breakpoint_options_main = list(n_portfolios = 5))
+#' compute_portfolio_returns(
+#'   data, sorting_variables = "size", sorting_method = "univariate",
+#'   breakpoint_options_main = list(n_portfolios = 5)
+#' )
 #'
 #' # Bivariate dependent sorting with annual rebalancing
-#' compute_portfolio_returns(data, sorting_variables = c("size", "mktcap_lag"), sorting_method = "bivariate-independent", breakpoint_options_main = list(n_portfolios = 5), breakpoint_options_secondary = list(n_portfolios = 3), rebalancing_month = 7)
+#' compute_portfolio_returns(
+#'   data, sorting_variables = c("size", "mktcap_lag"), sorting_method = "bivariate-independent",
+#'   breakpoint_options_main = list(n_portfolios = 5),
+#'   breakpoint_options_secondary = list(n_portfolios = 3), rebalancing_month = 7
+#' )
 compute_portfolio_returns <- function(
     sorting_data,
     sorting_variables,
@@ -111,7 +118,7 @@ compute_portfolio_returns <- function(
   required_columns <- c(sorting_variables, "ret_excess")
   missing_columns <- setdiff(required_columns, colnames(sorting_data))
   if (length(missing_columns) > 0) {
-    cli::cli_abort(glue::glue("The 'sorting_data' is missing the following required columns: {paste(missing_columns, collapse = ', ')}."))
+    cli::cli_abort("The 'sorting_data' is missing the following required columns: {paste(missing_columns, collapse = ', ')}.")
   }
 
   mktcap_lag_missing <- !"mktcap_lag" %in% colnames(sorting_data)
