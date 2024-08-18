@@ -450,6 +450,19 @@ list_supported_types_stocks <- function() {
   )
 }
 
+#' List Supported Other Data Types
+#'
+#' Returns a tibble listing the supported other data types and their corresponding dataset names.
+#'
+#' @returns A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
+list_supported_types_other <- function() {
+  tibble(
+    "type" = c("constituents", "fred"),
+    "dataset_name" = c("various", "various"),
+    "domain" = c("Index Constituents", "FRED")
+  )
+}
+
 #' List All Supported Dataset Types
 #'
 #' This function aggregates and returns a comprehensive tibble of all supported
@@ -483,7 +496,8 @@ list_supported_types <- function(domain = NULL, as_vector = FALSE) {
     list_supported_types_ff(),
     list_supported_types_macro_predictors(),
     list_supported_types_wrds(),
-    list_supported_types_stocks()
+    list_supported_types_stocks(),
+    list_supported_types_other()
   )
   if (!is.null(domain)) {
     filter_domains <- domain

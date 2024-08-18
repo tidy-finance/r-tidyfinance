@@ -14,6 +14,8 @@
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, the full dataset or a subset is returned,
 #'   depending on the dataset type.
+#' @param ... Additional arguments passed to specific download functions depending on the `type`.
+#'   For instance, if `type` is "constituents", this might include parameters specific to `download_data_constituents`.
 #'
 #' @returns A tibble with processed data, including dates and the relevant
 #'   financial metrics, filtered by the specified date range.
@@ -23,8 +25,10 @@
 #' \donttest{
 #'   download_data("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
 #'   download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
+#'   download_data("constituents", index = "DAX")
+#'   download_data("fred", series = "GDP")
 #' }
-download_data <- function(type, start_date = NULL, end_date = NULL) {
+download_data <- function(type, start_date = NULL, end_date = NULL, ...) {
 
   check_supported_type(type)
 
@@ -34,6 +38,10 @@ download_data <- function(type, start_date = NULL, end_date = NULL) {
     processed_data <- download_data_macro_predictors(type, start_date, end_date)
   } else if (grepl("wrds", type, fixed = TRUE)) {
     processed_data <- download_data_wrds(type, start_date, end_date)
+  } else if (grepl("constituents", type, fixed = TRUE)) {
+    processed_data <- download_data_constituents(...)
+  } else if (grepl("fred", type, fixed = TRUE)) {
+    processed_data <- download_data_fred(..., start_date, end_date)
   }
   processed_data
 }
