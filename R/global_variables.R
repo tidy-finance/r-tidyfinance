@@ -35,5 +35,8 @@ utils::globalVariables(
     "standard_error", "t_statistic", "value",
     "Anlageklasse", "Emittententicker", "Name", "Asset.Class", "Ticker", "symbol",
     "VALUE"
+    "bottom", "closest", "long_short_return", "lower_bound", "mktcap_lag",
+    "portfolio", "portfolio_main", "portfolio_secondary", "ret_excess_ew",
+    "ret_excess_vw", "ret_measure", "top", "upper_bound"
   )
 )

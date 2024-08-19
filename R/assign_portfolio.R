@@ -1,83 +1,67 @@
 #' Assign Portfolios Based on Sorting Variable
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`
+#' @description `r lifecycle::badge('experimental')`
 #'
-#' This function assigns data points to portfolios based on a specified sorting
-#' variable. It can optionally filter the data by exchanges before assignment.
-#' The function requires either the number of portfolios to be created or
-#' specific percentiles for the breakpoints, but not both.
+#'   This function assigns data points to portfolios based on a specified
+#'   sorting variable and the selected function to compute breakpoints. Users
+#'   can specify a function to compute breakpoints. The function must take
+#'   `data` and `sorting_variable` as the first two arguments. Additional
+#'   arguments are passed with a named list lin `breakpoint_options`. The
+#'   function needs to return an ascending vector of breakpoints. By default,
+#'   breakpoints are computed with `tidyfinance::compute_breakpoints()`.
 #'
 #' @param data A data frame containing the dataset for portfolio assignment.
 #' @param sorting_variable A string specifying the column name in `data` to be
-#'   used for sorting and determining portfolio assignments.
-#' @param n_portfolios An optional integer specifying the number of equally
-#'   sized portfolios to create. This parameter is mutually exclusive with
-#'   `percentiles`.
-#' @param percentiles An optional numeric vector specifying the percentiles for
-#'   determining the breakpoints of the portfolios. This parameter is mutually
-#'   exclusive with `n_portfolios`.
-#' @param exchanges An optional character vector specifying exchange names to
-#'   filter the data before computing breakpoints and assigning portfolios.
-#'   Exchanges must be stored in a column named `exchange` in `data`. If `NULL`,
-#'   no filtering is applied.
+#'   used for sorting and determining portfolio assignments based on the
+#'   breakpoints.
+#' @param breakpoint_options An optional named list of arguments passed to
+#'   `breakpoint_function`.
+#' @param breakpoint_function A function to compute breakpoints. The default is
+#'   set to `tidyfinance::compute_breakpoints()`.
 #'
-#' @returns A vector of portfolio assignments for each row in the input `data`.
+#' @return A vector of portfolio assignments for each row in the input `data`.
 #'
-#' @note This function will stop and throw an error if both `n_portfolios` and
-#'   `percentiles` are provided or if neither is provided. Ensure that you only
-#'   use one of these parameters for specifying portfolio breakpoints.
-#'
-#' @export
 #' @examples
 #' data <- data.frame(
 #'   id = 1:100,
 #'   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),
-#'   market_cap = runif(100, 1e6, 1e9)
+#'   market_cap = 1:100
 #' )
-#' assign_portfolio(data, "market_cap", n_portfolios = 5)
-#' assign_portfolio(data, "market_cap", percentiles = c(0.2, 0.4, 0.6, 0.8), exchanges = "NYSE")
-assign_portfolio <- function(data,
-                             sorting_variable,
-                             n_portfolios = NULL,
-                             percentiles = NULL,
-                             exchanges = NULL) {
-
-  if (!is.null(n_portfolios) && !is.null(percentiles)) {
-    cli::cli_abort(
-      "Please provide either {.arg n_portfolios} or {.arg percentiles}, not both."
-    )
-  }
-  if (is.null(n_portfolios) && is.null(percentiles)) {
-    cli::cli_abort(
-      "You must provide either {.arg n_portfolios} or {.arg percentiles}."
-    )
-  }
-
-  if (!is.null(exchanges)) {
-    if (!("exchange" %in% colnames(data))) {
-      cli::cli_abort("Please provide the column exchange when filtering.")
-    }
-    data_breakpoints <- data[data$exchange %in% exchanges, ]
-  } else {
-    data_breakpoints <- data
+#' assign_portfolio(data, "market_cap", list(n_portfolios = 5))
+#' assign_portfolio(
+#'   data, "market_cap",
+#'   list(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
+#' )
+#'
+#' @export
+assign_portfolio <- function(
+    data,
+    sorting_variable,
+    breakpoint_options = NULL,
+    breakpoint_function = compute_breakpoints
+  ) {
+  # Exit condition for identical sorting variables
+  if (length(unique(data[[sorting_variable]])) == 1) {
+    cli::cli_warn("The sorting variable is constant and only one portfolio is returned.")
+    return(rep(1, nrow(data)))
   }
 
-  if (!is.null(n_portfolios)) {
-    probs <- seq(0, 1, length.out = n_portfolios + 1)
-  } else {
-    probs <- c(0, percentiles, 1)
-  }
-
-  sorting_values <- data_breakpoints[[sorting_variable]]
-  breakpoints <- quantile(
-    sorting_values, probs = probs, na.rm = TRUE, names = FALSE
+  breakpoints <- breakpoint_function(
+    data,
+    sorting_variable,
+    breakpoint_options
   )
 
-  sorting_values_all <- data[[sorting_variable]]
+  # Assign portfolios
   portfolio_indices <- findInterval(
-    sorting_values_all, breakpoints, all.inside = TRUE
+    data[[sorting_variable]], breakpoints, all.inside = TRUE
   )
 
-  portfolio_indices
+
+
+  if (length(unique(na.omit(portfolio_indices)) )!= (length(breakpoints) - 1)) {
+    cli::cli_warn("The number of portfolios differs from the specified parameter due to clusters in the sorting variable.")
+  }
+
+  return(portfolio_indices)
 }
