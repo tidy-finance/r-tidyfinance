@@ -59,12 +59,12 @@ download_data_constituents <- function(index) {
   if (grepl(column_names, "Anlageklasse")) {
     constituents_processed <- constituents_raw |>
       filter(Anlageklasse == "Aktien") |>
-      select(symbol = Emittententicker, name = Name, location = Standort, exchange = `Börse`)
+      select(symbol = "Emittententicker", name = "Name", location = "Standort", exchange = "B\u00f6rse")
   }
   if (grepl(column_names, "Asset.Class")) {
     constituents_processed <- constituents_raw |>
       filter(Asset.Class == "Equity") |>
-      select(symbol = Ticker, name = Name, location = Location, exchange = Exchange)
+      select(symbol = "Ticker", name = "Name", location = "Location", exchange = "Exchange")
   }
 
   constituents_processed <- constituents_processed |>

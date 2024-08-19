@@ -31,7 +31,8 @@ to download the data in CSV format, and processes it to a tidy tibble format. Th
 includes the date, value, and the series ID.
 
 This approach is inspired by \code{quantmod::getSymbolsFRED()} which uses a different wrapper around
-the same FRED download data site.
+the same FRED download data site. If you want to systematically download FRED data via API,
+please consider using \code{fredr} package.
 }
 \examples{
 \dontrun{
