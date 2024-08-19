@@ -42,6 +42,8 @@ download_data <- function(type, start_date = NULL, end_date = NULL, ...) {
     processed_data <- download_data_constituents(...)
   } else if (grepl("fred", type, fixed = TRUE)) {
     processed_data <- download_data_fred(..., start_date, end_date)
+  } else if (grepl("stocks", type, fixed = TRUE)) {
+    processed_data <- download_data_stocks(type, ..., start_date, end_date)
   }
   processed_data
 }
