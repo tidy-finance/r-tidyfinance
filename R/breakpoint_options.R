@@ -4,7 +4,7 @@
 #' It includes parameters for the number of portfolios, percentile thresholds, exchange-specific breakpoints,
 #' and smooth bunching, along with additional optional parameters.
 #'
-#' @param n_portfolio Integer, optional. The number of portfolios to create. Must be a positive integer.
+#' @param n_portfolios Integer, optional. The number of portfolios to create. Must be a positive integer.
 #' If not provided, defaults to \code{NULL}.
 #' @param percentiles Numeric vector, optional. A vector of percentile thresholds for defining breakpoints.
 #' Each value should be between 0 and 1. If not provided, defaults to \code{NULL}.
@@ -21,7 +21,7 @@
 #' @examples
 #' # Example usage
 #' options <- breakpoint_options(
-#'   n_portfolio = 5,
+#'   n_portfolios = 5,
 #'   percentiles = c(0.2, 0.4, 0.6, 0.8),
 #'   breakpoint_exchanges = "NYSE",
 #'   smooth_bunching = TRUE,
@@ -31,16 +31,16 @@
 #' print(options)
 #'
 breakpoint_options <- function(
-    n_portfolio = NULL,
+    n_portfolios = NULL,
     percentiles = NULL,
     breakpoint_exchanges = NULL,
     smooth_bunching = FALSE,
     ...
 ) {
 
-  # Error handling for n_portfolio
-  if (!is.null(n_portfolio) && (!is.numeric(n_portfolio) || n_portfolio <= 0 || n_portfolio %% 1 != 0)) {
-    cli::cli_abort("{.arg n_portfolio} must be a positive integer.")
+  # Error handling for n_portfolios
+  if (!is.null(n_portfolios) && (!is.numeric(n_portfolios) || n_portfolios <= 0 || n_portfolios %% 1 != 0)) {
+    cli::cli_abort("{.arg n_portfolios} must be a positive integer.")
   }
 
   # Error handling for percentiles
@@ -61,7 +61,7 @@ breakpoint_options <- function(
   # Create the list structure with class attribute
   structure(
     list(
-      "n_portfolio" = n_portfolio,
+      "n_portfolios" = n_portfolios,
       "percentiles" = percentiles,
       "breakpoint_exchanges" = breakpoint_exchanges,
       "smooth_bunching" = smooth_bunching,
