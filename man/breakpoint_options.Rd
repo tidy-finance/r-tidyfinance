@@ -5,7 +5,7 @@
 \title{Create Breakpoint Options for Portfolio Sorting}
 \usage{
 breakpoint_options(
-  n_portfolio = NULL,
+  n_portfolios = NULL,
   percentiles = NULL,
   breakpoint_exchanges = NULL,
   smooth_bunching = FALSE,
@@ -13,7 +13,7 @@ breakpoint_options(
 )
 }
 \arguments{
-\item{n_portfolio}{Integer, optional. The number of portfolios to create. Must be a positive integer.
+\item{n_portfolios}{Integer, optional. The number of portfolios to create. Must be a positive integer.
 If not provided, defaults to \code{NULL}.}
 
 \item{percentiles}{Numeric vector, optional. A vector of percentile thresholds for defining breakpoints.
@@ -38,7 +38,7 @@ and smooth bunching, along with additional optional parameters.
 \examples{
 # Example usage
 options <- breakpoint_options(
-  n_portfolio = 5,
+  n_portfolios = 5,
   percentiles = c(0.2, 0.4, 0.6, 0.8),
   breakpoint_exchanges = "NYSE",
   smooth_bunching = TRUE,
