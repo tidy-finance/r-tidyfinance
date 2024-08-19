@@ -154,7 +154,7 @@ data <- tibble(
 data |>
   mutate(
     portfolio = assign_portfolio(
-      pick(everything()), "market_cap", n_portfolios = 5, exchanges = "NYSE")
+      pick(everything()), "market_cap", list(n_portfolios = 5, breakpoint_exchanges = "NYSE"))
   )
 ```
 
