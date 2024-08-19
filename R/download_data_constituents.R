@@ -10,16 +10,16 @@
 #' \describe{
 #'   \item{symbol}{The ticker symbol of the equity constituent.}
 #'   \item{name}{The name of the equity constituent.}
+#'   \item{location}{The location where the company is based.}
+#'   \item{exchange}{The exchange where the equity is traded.}
 #' }
 #' The tibble is filtered to exclude non-equity entries, blacklisted symbols, empty names, and any entries containing the index name or "CASH".
 #'
-#' @details The function performs the following steps:
-#' \enumerate{
-#'   \item Retrieves the URL of the CSV file for the specified index using the `list_supported_indexes()` function.
-#'   \item Sends an HTTP GET request to download the CSV file.
-#'   \item Reads and processes the CSV file to extract equity constituents.
-#'   \item Filters out blacklisted symbols and other irrelevant data.
-#' }
+#' @details
+#' The function retrieves the URL of the CSV file for the specified index from ETF sites, then sends
+#' an HTTP GET request to download the CSV file, and processes the CSV file to extract equity constituents.
+#'
+#' The approach is inspired by `tidyquant::tq_index()`, which uses a different wrapper around other ETFs.
 #'
 #' @export
 #'
@@ -59,12 +59,12 @@ download_data_constituents <- function(index) {
   if (grepl(column_names, "Anlageklasse")) {
     constituents_processed <- constituents_raw |>
       filter(Anlageklasse == "Aktien") |>
-      select(symbol = Emittententicker, name = Name)
+      select(symbol = Emittententicker, name = Name, location = Standort, exchange = `Börse`)
   }
   if (grepl(column_names, "Asset.Class")) {
     constituents_processed <- constituents_raw |>
       filter(Asset.Class == "Equity") |>
-      select(symbol = Ticker, name = Name)
+      select(symbol = Ticker, name = Name, location = Location, exchange = Exchange)
   }
 
   constituents_processed <- constituents_processed |>

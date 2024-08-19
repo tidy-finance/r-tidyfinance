@@ -29,6 +29,9 @@ processes the data, and returns it as a tibble.
 This function constructs the URL based on the provided FRED series ID, performs an HTTP GET request
 to download the data in CSV format, and processes it to a tidy tibble format. The resulting tibble
 includes the date, value, and the series ID.
+
+This approach is inspired by \code{quantmod::getSymbolsFRED()} which uses a different wrapper around
+the same FRED download data site.
 }
 \examples{
 \dontrun{
