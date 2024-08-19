@@ -4,7 +4,7 @@
 \alias{download_data}
 \title{Download and Process Data Based on Type}
 \usage{
-download_data(type, start_date = NULL, end_date = NULL)
+download_data(type, start_date = NULL, end_date = NULL, ...)
 }
 \arguments{
 \item{type}{The type of dataset to download, indicating either factor data or
@@ -17,6 +17,9 @@ dependening on the dataset type.}
 \item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
 specifying the end date for the data. If not provided, the full dataset or a subset is returned,
 depending on the dataset type.}
+
+\item{...}{Additional arguments passed to specific download functions depending on the \code{type}.
+For instance, if \code{type} is "constituents", this might include parameters specific to \code{download_data_constituents}.}
 }
 \value{
 A tibble with processed data, including dates and the relevant
@@ -32,5 +35,7 @@ appropriate function for downloading and processing the data.
 \donttest{
   download_data("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
   download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
+  download_data("constituents", index = "DAX")
+  download_data("fred", series = c("GDP", "CPIAUCNS"))
 }
 }
