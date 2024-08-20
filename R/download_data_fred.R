@@ -54,8 +54,11 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
 
     url <- paste0("https://fred.stlouisfed.org/series/", series[j], "/downloaddata/", series[j], ".csv")
 
+    user_agent <- get_random_user_agent()
+
     response <- httr2::request(url) |>
       httr2::req_error(is_error = \(resp) FALSE) |>
+      httr2::req_user_agent(user_agent) |>
       httr2::req_perform()
 
     if (response$status_code == 200) {

@@ -70,6 +70,7 @@ download_data_stocks_yf <- function(symbols, start_date = NULL, end_date = NULL)
       "Using the range {start_date} to {end_date} to avoid downloading large amounts of data."
     ))
   }
+
   start_timestamp <- as.integer(as.POSIXct(start_date, tz = "UTC"))
   end_timestamp <- as.integer(as.POSIXct(end_date, tz = "UTC"))
 
@@ -86,8 +87,11 @@ download_data_stocks_yf <- function(symbols, start_date = NULL, end_date = NULL)
       "&interval=1d"
     )
 
+    user_agent <- get_random_user_agent()
+
     response <- httr2::request(url) |>
       httr2::req_error(is_error = \(resp) FALSE) |>
+      httr2::req_user_agent(user_agent) |>
       httr2::req_perform()
 
     if (response$status_code == 200) {
