@@ -13,7 +13,7 @@
 #' @param data A data frame containing the dataset for breakpoint computation.
 #' @param sorting_variable A string specifying the column name in `data` to be
 #'   used for determining breakpoints.
-#' @param breakpoint_options A named list of arguments for the breakpoints. The
+#' @param breakpoint_options A named list of \link{breakpoint_options} for the breakpoints. The
 #'   arguments include
 #'   \itemize{
 #'     \item `n_portfolios` An optional integer specifying the number of equally
@@ -43,10 +43,10 @@
 #'   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),
 #'   market_cap = 1:100
 #' )
-#' compute_breakpoints(data, "market_cap", list(n_portfolios = 5))
+#' compute_breakpoints(data, "market_cap", breakpoint_options(n_portfolios = 5))
 #' compute_breakpoints(
 #'   data, "market_cap",
-#'   list(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
+#'   breakpoint_options(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
 #'  )
 #'
 #' @export

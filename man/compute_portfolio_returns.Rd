@@ -49,18 +49,17 @@ setting it to \code{7} creates portfolios in July that are held constant until
 June of the following year. The default \code{NULL} corresponds to periodic
 rebalancing.}
 
-\item{breakpoint_options_main}{An optional named list of arguments passed to
+\item{breakpoint_options_main}{A named list of \link{breakpoint_options} passed to
 \code{breakpoint_function} for the main sorting variable.}
 
-\item{breakpoint_options_secondary}{An optional named list of arguments
+\item{breakpoint_options_secondary}{An optional named list of \link{breakpoint_options}
 passed to \code{breakpoint_function} for the secondary sorting variable.}
 
 \item{breakpoint_function_main}{A function to compute the main sorting
-variable. The default is set to \code{tidyfinance::compute_breakpoints()}.}
+variable. The default is set to \link{compute_breakpoints}.}
 
 \item{breakpoint_function_secondary}{A function to compute the secondary
-sorting variable. The default is set to
-\code{tidyfinance::compute_breakpoints()}.}
+sorting variable. The default is set to \link{compute_breakpoints}.}
 
 \item{min_portfolio_size}{An integer specifying the minimum number of
 portfolio constituents (default is set to \code{0}, effectively deactivating the
