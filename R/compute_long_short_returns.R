@@ -36,8 +36,10 @@ compute_long_short_returns <- function(
     direction = "top_minus_bottom"
 ) {
   portfolio_returns |>
+    group_by(date) |>
     filter(portfolio %in% c(min(portfolio), max(portfolio))) |>
     mutate(portfolio = if_else(portfolio == min(portfolio), "bottom", "top")) |>
+    ungroup() |>
     tidyr::pivot_longer(contains("ret_"), names_to = "ret_measure", values_to = "ret")|>
     tidyr::pivot_wider(names_from = portfolio, values_from = ret) |>
     mutate(long_short_return = (top - bottom) * if_else(direction == "bottom_minus_top", -1, 1)) |>
