@@ -43,15 +43,14 @@
 #'   setting it to `7` creates portfolios in July that are held constant until
 #'   June of the following year. The default `NULL` corresponds to periodic
 #'   rebalancing.
-#' @param breakpoint_options_main An optional named list of arguments passed to
+#' @param breakpoint_options_main A named list of \link{breakpoint_options} passed to
 #'   `breakpoint_function` for the main sorting variable.
 #' @param breakpoint_function_main A function to compute the main sorting
-#'   variable. The default is set to `tidyfinance::compute_breakpoints()`.
-#' @param breakpoint_options_secondary An optional named list of arguments
+#'   variable. The default is set to \link{compute_breakpoints}.
+#' @param breakpoint_options_secondary An optional named list of \link{breakpoint_options}
 #'   passed to `breakpoint_function` for the secondary sorting variable.
 #' @param breakpoint_function_secondary A function to compute the secondary
-#'   sorting variable. The default is set to
-#'   `tidyfinance::compute_breakpoints()`.
+#'   sorting variable. The default is set to \link{compute_breakpoints}.
 #' @param min_portfolio_size An integer specifying the minimum number of
 #'   portfolio constituents (default is set to `0`, effectively deactivating the
 #'   check). Small portfolios' returns are set to zero.

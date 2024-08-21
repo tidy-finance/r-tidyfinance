@@ -457,9 +457,9 @@ list_supported_types_stocks <- function() {
 #' @returns A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
 list_supported_types_other <- function() {
   tibble(
-    "type" = c("constituents", "fred"),
-    "dataset_name" = c("various", "various"),
-    "domain" = c("Index Constituents", "FRED")
+    "type" = c("constituents", "fred", "osap", "symbols"),
+    "dataset_name" = c("various", "various", "Open Source Asset Pricing", "Nasdaq Stock Screener"),
+    "domain" = c("Index Constituents", "FRED", "Open Source Asset Pricing", "Stock Symbols")
   )
 }
 

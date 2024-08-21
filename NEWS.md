@@ -5,7 +5,7 @@
 * Added `list_supported_indexes()` and `download_data_constituents()` to download index constituents.
 * Added `estimate_betas()` to estimate risk factor betas.
 * Added `estimate_fama_macbeth()` to estimate Fama-MacBeth models.
-* 
+* Added `download_data_osap()` to download data from [Open Source Asset Pricing](https://www.openassetpricing.com/data/).
 
 ## Bug fixes
 
