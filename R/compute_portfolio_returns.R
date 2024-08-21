@@ -243,7 +243,7 @@ compute_portfolio_returns <- function(
         .groups = "drop"
       ) |>
       group_by(portfolio = portfolio_main, date) |>
-      summarize(across(c(ret_excess_vw, ret_excess_ew), mean),
+      summarize(across(c(ret_excess_vw, ret_excess_ew), \(x) mean(x, na.rm = TRUE)),
                 .groups = "drop")
   }
 
@@ -306,7 +306,7 @@ compute_portfolio_returns <- function(
         .groups = "drop"
       ) |>
       group_by(portfolio = portfolio_main, date) |>
-      summarize(across(c(ret_excess_vw, ret_excess_ew), mean),
+      summarize(across(c(ret_excess_vw, ret_excess_ew),  \(x) mean(x, na.rm = TRUE)),
                 .groups = "drop")
   }
 
