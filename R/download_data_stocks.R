@@ -99,15 +99,22 @@ download_data_stocks_yf <- function(symbols, start_date = NULL, end_date = NULL)
 
       ohlcv <- unlist(raw_data[[1]]$indicators$quote, recursive = FALSE)
 
+      ohlcv <- lapply(ohlcv, function(sublist) {
+        lapply(sublist, function(x) ifelse(is.null(x), NA, x))
+      })
+
+      indicators <- raw_data[[1]]$indicators$adjclose[[1]]
+      indicators <- lapply(indicators, function(x) ifelse(is.null(x), NA, x))
+
       processed_data_symbol <- tibble(
         "symbol" = symbols[j],
         "date" = as.Date(as.POSIXct(as.numeric(raw_data[[1]]$timestamp), origin = "1970-01-01")),
-        "volume" = as.numeric(ohlcv$volume),
-        "open" = as.numeric(ohlcv$open),
-        "low" = as.numeric(ohlcv$low),
-        "high" = as.numeric(ohlcv$high),
-        "close" = as.numeric(ohlcv$close),
-        "adjusted_close" = as.numeric(unlist(raw_data[[1]]$indicators$adjclose))
+        "volume" = as.numeric(unlist(ohlcv$volume)),
+        "open" = as.numeric(unlist(ohlcv$open)),
+        "low" = as.numeric(unlist(ohlcv$low)),
+        "high" = as.numeric(unlist(ohlcv$high)),
+        "close" = as.numeric(unlist(ohlcv$close)),
+        "adjusted_close" = as.numeric(unlist(indicators$adjclose))
       )
 
       processed_data[[j]] <- processed_data_symbol
