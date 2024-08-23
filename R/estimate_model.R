@@ -20,7 +20,9 @@
 #'   column names corresponding to the independent variables.
 #'
 #' @seealso [stats::lm()] for details on the underlying linear model fitting used.
+#'
 #' @export
+#'
 #' @examples
 #' data <- data.frame(
 #'   ret_excess = rnorm(100),
@@ -28,6 +30,7 @@
 #'   smb = rnorm(100),
 #'   hml = rnorm(100)
 #' )
+#'
 #' # Estimate model with a single independent variable
 #' estimate_model(data, "ret_excess ~ mkt_excess")
 #'

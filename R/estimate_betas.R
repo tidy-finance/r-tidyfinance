@@ -10,7 +10,8 @@
 #'  Defaults to 80% of `lookback`.
 #' @param use_furrr A logical indicating whether to use the `furrr` package and its paralellization capabilities.
 #'  Defaults to FALSE.
-#' @param data_options A named list of \link{data_options} with characters, indicating the column names required to run this function. The required column names identify dates and the stocks. Defaults to `date=date` and `id=permno`.
+#' @param data_options A named list of \link{data_options} with characters, indicating the column names required to run this function.
+#'  The required column names identify dates and the stocks. Defaults to `date = date` and `id = permno`.
 #' @return A tibble with the estimated betas for each time period.
 #'
 #' @export
@@ -103,11 +104,11 @@ estimate_betas <- function(
 
   roll_model_estimation <- function(df, model, lookback, period, min_obs, data_options) {
     df <- df |>
-      arrange(data_options[["date"]])
+      arrange(data_options$date)
 
     betas <- slider::slide_period_dfr(
       .x = df,
-      .i = df |> pull(data_options[["date"]]),
+      .i = df |> pull(data_options$date),
       .period = period,
       .f = ~ estimate_model(., model, min_obs),
       .before = lookback - 1,
@@ -115,7 +116,7 @@ estimate_betas <- function(
     )
 
     bind_cols(
-      tibble("{data_options[['date']]}" := unique(df |> pull(data_options[["date"]]))),
+      tibble("{data_options$date}" := unique(df |> pull(data_options$date))),
       betas
     )
   }
@@ -124,13 +125,13 @@ estimate_betas <- function(
     rlang::check_installed("furrr", reason = "To use furrr::future_map in estimate_betas()")
 
     betas <- data |>
-      tidyr::nest(data = -all_of(data_options[["id"]])) |>
+      tidyr::nest(data = -all_of(data_options$id)) |>
       mutate(
         beta = furrr::future_map(data, ~ roll_model_estimation(., model, lookback, period, min_obs, data_options))
       )
   } else {
     betas <- data |>
-      tidyr::nest(data = -all_of(data_options[["id"]])) |>
+      tidyr::nest(data = -all_of(data_options$id)) |>
       mutate(
         beta = purrr::map(data, ~ roll_model_estimation(., model, lookback, period, min_obs, data_options))
       )
@@ -139,5 +140,5 @@ estimate_betas <- function(
   betas |>
     tidyr::unnest(beta, names_sep = "_") |>
     select(-data) |>
-    rename("{data_options[['date']]}" := beta_date)
+    rename("{data_options$date}" := beta_date)
 }

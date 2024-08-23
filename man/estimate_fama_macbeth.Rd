@@ -47,7 +47,7 @@ data |>
   dplyr::rename(month = date) |>
   estimate_fama_macbeth(
     "ret_excess ~ beta + bm + log_mktcap",
-   data_options = data_options(date = "month")
+    data_options = data_options(date = "month")
  )
 
 }

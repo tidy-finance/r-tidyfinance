@@ -13,7 +13,8 @@ compute_portfolio_returns(
   breakpoint_options_secondary = NULL,
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
-  min_portfolio_size = 0
+  min_portfolio_size = 0,
+  data_options = NULL
 )
 }
 \arguments{
@@ -64,6 +65,8 @@ sorting variable. The default is set to \link{compute_breakpoints}.}
 \item{min_portfolio_size}{An integer specifying the minimum number of
 portfolio constituents (default is set to \code{0}, effectively deactivating the
 check). Small portfolios' returns are set to zero.}
+
+\item{data_options}{A named list of \link{data_options} with characters, indicating the column names required to run this function.  The required column names identify dates, the stocks, and returns. Defaults to \code{date=date}, \code{id=permno}, and \code{ret_excess = ret_excess}.}
 }
 \value{
 A data frame with computed portfolio returns, containing the
@@ -106,6 +109,7 @@ data <- data.frame(
   ret_excess = rnorm(500),
   size = runif(500, 50, 150)
 )
+
 compute_portfolio_returns(
   data, "size", "univariate",
   breakpoint_options_main = breakpoint_options(n_portfolios = 5)
@@ -117,4 +121,5 @@ compute_portfolio_returns(
   breakpoint_options_main = breakpoint_options(n_portfolios = 5),
   breakpoint_options_secondary = breakpoint_options(n_portfolios = 3),
 )
+
 }

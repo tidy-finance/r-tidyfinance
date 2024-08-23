@@ -80,6 +80,7 @@
 #'   ret_excess = rnorm(500),
 #'   size = runif(500, 50, 150)
 #' )
+#'
 #' compute_portfolio_returns(
 #'   data, "size", "univariate",
 #'   breakpoint_options_main = breakpoint_options(n_portfolios = 5)
@@ -91,6 +92,7 @@
 #'   breakpoint_options_main = breakpoint_options(n_portfolios = 5),
 #'   breakpoint_options_secondary = breakpoint_options(n_portfolios = 3),
 #' )
+#'
 compute_portfolio_returns <- function(
     sorting_data,
     sorting_variables,
@@ -105,7 +107,7 @@ compute_portfolio_returns <- function(
 ) {
 
   if (is.null(data_options)) {
-    data_options <- data_options(exchange="exchange", mktcap_lag="mktcap_lag", ret_excess="ret_excess")
+    data_options <- data_options()
   }
 
   if (is.null(sorting_variables) || length(sorting_variables) == 0) {
@@ -120,7 +122,7 @@ compute_portfolio_returns <- function(
     cli::cli_warn("No 'breakpoint_options_secondary' specified in bivariate sort.")
   }
 
-  required_columns <- c(sorting_variables, data_options[["date"]], data_options[["id"]], data_options[["ret_excess"]])
+  required_columns <- c(sorting_variables, data_options$date, data_options$id, data_options$ret_excess)
   missing_columns <- setdiff(required_columns, colnames(sorting_data))
   if (length(missing_columns) > 0) {
     cli::cli_abort("The 'sorting_data' is missing the following required columns: {paste(missing_columns, collapse = ', ')}.")
@@ -143,7 +145,7 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
-        group_by(.data[[data_options[["date"]]]]) |>
+        group_by(.data[[data_options$date]]) |>
         mutate(
           portfolio = assign_portfolio(
             data = pick(everything()),
@@ -154,8 +156,8 @@ compute_portfolio_returns <- function(
         )
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(.data[[data_options[["date"]]]]) == rebalancing_month) |>
-        group_by(.data[[data_options[["date"]]]]) |>
+        filter(month(.data[[data_options$date]]) == rebalancing_month) |>
+        group_by(.data[[data_options$date]]) |>
         mutate(
           portfolio = assign_portfolio(
             data = pick(everything()),
@@ -164,22 +166,22 @@ compute_portfolio_returns <- function(
             breakpoint_function = breakpoint_function_main
           )) |>
         ungroup() |>
-        select(all_of(c(data_options[["id"]], data_options[["date"]], "portfolio")))
+        select(all_of(c(data_options$id, data_options$date, "portfolio")))
 
       portfolio_returns <- sorting_data |>
         left_join(portfolio_data |>
                     mutate(lower_bound = .data[[data_options$date]],
                            upper_bound = .data[[data_options$date]] + months(12)) |>
-                    select(-all_of(data_options[["date"]])),
-                  join_by(data_options[["id"]], closest(date >= lower_bound), date < upper_bound),
+                    select(-all_of(data_options$date)),
+                  join_by(data_options$id, closest(date >= lower_bound), date < upper_bound),
                   relationship = "many-to-one")
     }
 
     portfolio_returns <- portfolio_returns |>
-      group_by(portfolio, .data[[data_options[["date"]]]]) |>
+      group_by(portfolio, .data[[data_options$date]]) |>
       summarize(
-        ret_excess_vw = if_else(n() < min_portfolio_size, NA_real_, stats::weighted.mean(.data[[data_options[["ret_excess"]]]], .data[[data_options[["mktcap_lag"]]]])),
-        ret_excess_ew = if_else(n() < min_portfolio_size, NA_real_, mean(.data[[data_options[["ret_excess"]]]])),
+        ret_excess_vw = if_else(n() < min_portfolio_size, NA_real_, stats::weighted.mean(.data[[data_options$ret_excess]], .data[[data_options$mktcap_lag]])),
+        ret_excess_ew = if_else(n() < min_portfolio_size, NA_real_, mean(.data[[data_options$ret_excess]])),
         .groups = "drop"
       )
   }

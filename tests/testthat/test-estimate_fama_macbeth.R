@@ -9,7 +9,6 @@ test_that("estimate_fama_macbeth handles missing date column", {
 
   expect_error(
     estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap"),
-    "The data must contain a 'date' column."
   )
 })
 

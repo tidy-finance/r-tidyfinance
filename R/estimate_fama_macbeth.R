@@ -10,8 +10,9 @@
 #' @param vcov A character string indicating the type of standard errors to compute. Options are `"iid"`
 #'   for independent and identically distributed errors or `"newey-west"` for Newey-West standard errors.
 #'   Default is `"newey-west"`.
-#' @param data_options A named list of \link{data_options} with characters, indicating the column names required to run this function. The required column names identify dates. Defaults to `date=date`.
-
+#' @param data_options A named list of \link{data_options} with characters, indicating the column names
+#'  required to run this function. The required column names identify dates. Defaults to `date = date`.
+#'
 #' @return A data frame with the estimated risk premiums, the number of observations, standard errors,
 #'   and t-statistics for each factor in the model.
 #'
@@ -37,7 +38,7 @@
 #'   dplyr::rename(month = date) |>
 #'   estimate_fama_macbeth(
 #'     "ret_excess ~ beta + bm + log_mktcap",
-#'    data_options = data_options(date = "month")
+#'     data_options = data_options(date = "month")
 #'  )
 #'
 estimate_fama_macbeth <- function(
@@ -54,13 +55,13 @@ estimate_fama_macbeth <- function(
   }
 
   # Check that the data has a date column
-  if (!data_options[["date"]] %in% colnames(data)) {
-    cli::cli_abort("The data must contain a {data_options[['date'']]} column.")
+  if (!data_options$date %in% colnames(data)) {
+    cli::cli_abort("The data must contain a {data_options$date} column.")
   }
 
   # Cross-sectional regressions
   cross_sections <- data |>
-    tidyr::nest(data = -all_of(data_options[["date"]])) |>
+    tidyr::nest(data = -all_of(data_options$date)) |>
     mutate(
       row_check = purrr::map_lgl(data, ~ nrow(.) > length(all.vars(as.formula(model))))
     )
@@ -78,7 +79,7 @@ estimate_fama_macbeth <- function(
     mutate(estimates = purrr::map(data, ~ estimate_model(., model))) |>
     tidyr::unnest(estimates) |>
     select(-data) |>
-    tidyr::pivot_longer(-all_of(data_options[["date"]]))
+    tidyr::pivot_longer(-all_of(data_options$date))
 
   # Function to compute the standard error based on the specified vcov
   compute_standard_error <- function(model, vcov) {
@@ -94,7 +95,7 @@ estimate_fama_macbeth <- function(
 
   # Time-series aggregations
   aggregations <- cross_sections |>
-    tidyr::nest(data = c(all_of(data_options[["date"]]), value)) |>
+    tidyr::nest(data = c(all_of(data_options$date), value)) |>
     mutate(model = purrr::map(data, ~ lm("value ~ 1", data = .)),
            risk_premium = purrr::map_dbl(model, ~ .$coefficients),
            n = purrr::map_dbl(data, nrow),

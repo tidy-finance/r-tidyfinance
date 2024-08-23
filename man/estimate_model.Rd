@@ -37,6 +37,7 @@ data <- data.frame(
   smb = rnorm(100),
   hml = rnorm(100)
 )
+
 # Estimate model with a single independent variable
 estimate_model(data, "ret_excess ~ mkt_excess")
 

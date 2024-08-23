@@ -4,24 +4,36 @@
 \alias{data_options}
 \title{Create Data Options}
 \usage{
-data_options(date = "date", id = "permno", ...)
+data_options(
+  id = "permno",
+  date = "date",
+  exchange = "exchange",
+  mktcap_lag = "mktcap_lag",
+  ret_excess = "ret_excess",
+  ...
+)
 }
 \arguments{
-\item{date}{Integer, optional. The number of portfolios to create. Must be a positive integer.
-If not provided, defaults to \code{NULL}.}
+\item{id}{A character string representing the identifier variable (e.g., "permno").}
 
-\item{id}{Numeric vector, optional. A vector of percentile thresholds for defining breakpoints.
-Each value should be between 0 and 1. If not provided, defaults to \code{NULL}.}
+\item{date}{A character string representing the date variable (e.g., "date").}
 
-\item{...}{Additional optional arguments. These will be captured in the resulting structure as a list.}
+\item{exchange}{A character string representing the exchange variable (e.g., "exchange").}
+
+\item{mktcap_lag}{A character string representing the market capitalization lag variable (e.g., "mktcap_lag").}
+
+\item{ret_excess}{A character string representing the excess return variable (e.g., "ret_excess").}
+
+\item{...}{Additional arguments to be included in the data options list.}
 }
 \value{
-A list of class \code{"tidyfinance_data_options"} containing the provided column names,
-including any additional arguments passed via \code{...}.
+A list of class \code{tidyfinance_data_options} containing the specified data options.
 }
 \description{
-This function generates a structured list of options for defining column names which contain required information.
-Examples include dates or firm identifiers along with additional optional parameters.
+This function creates a list of data options used in financial data analysis,
+specifically for TidyFinance-related functions. It allows users to specify
+key parameters such as \code{id}, \code{date}, \code{exchange}, \code{mktcap_lag}, and \code{ret_excess}
+along with other additional options passed through \code{...}.
 }
 \examples{
 # Example usage
