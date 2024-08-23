@@ -16,7 +16,8 @@ representing the time periods (defaults to \code{date}) and the variables specif
 for independent and identically distributed errors or \code{"newey-west"} for Newey-West standard errors.
 Default is \code{"newey-west"}.}
 
-\item{data_options}{A named list of \link{data_options} with characters, indicating the column names required to run this function. The required column names identify dates. Defaults to \code{date=date}.}
+\item{data_options}{A named list of \link{data_options} with characters, indicating the column names
+required to run this function. The required column names identify dates. Defaults to \code{date = date}.}
 }
 \value{
 A data frame with the estimated risk premiums, the number of observations, standard errors,

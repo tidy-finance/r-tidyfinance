@@ -4,7 +4,12 @@
 \alias{compute_breakpoints}
 \title{Compute Breakpoints Based on Sorting Variable}
 \usage{
-compute_breakpoints(data, sorting_variable, breakpoint_options)
+compute_breakpoints(
+  data,
+  sorting_variable,
+  breakpoint_options,
+  data_options = NULL
+)
 }
 \arguments{
 \item{data}{A data frame containing the dataset for breakpoint computation.}
@@ -32,7 +37,9 @@ will not result in equal-sized portfolios off the edges due to multiple
 clusters. If sufficiently large bunching is detected, \code{percentiles} is
 ignored and equally-spaced portfolios are returned for these cases with a
 warning.
-}}
+}
+@param data_options A named list of \link{data_options} with characters, indicating the column names
+required to run this function. The required column names identify dates. Defaults to \code{exchange = exchange}.}
 }
 \value{
 A vector of breakpoints of the desired length.
@@ -59,6 +66,7 @@ data <- data.frame(
   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),
   market_cap = 1:100
 )
+
 compute_breakpoints(data, "market_cap", breakpoint_options(n_portfolios = 5))
 compute_breakpoints(
   data, "market_cap",
