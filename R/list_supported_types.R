@@ -438,18 +438,6 @@ list_supported_types_wrds <- function() {
     mutate(domain = "WRDS")
 }
 
-#' List Supported Stock Data Types
-#'
-#' Returns a tibble listing the supported stock data types and their corresponding dataset names.
-#'
-#' @returns A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
-list_supported_types_stocks <- function() {
-  tibble(
-    "type" = "stocks_yf",
-    "dataset_name" = "Yahoo Finance"
-  )
-}
-
 #' List Supported Other Data Types
 #'
 #' Returns a tibble listing the supported other data types and their corresponding dataset names.
@@ -457,9 +445,9 @@ list_supported_types_stocks <- function() {
 #' @returns A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
 list_supported_types_other <- function() {
   tibble(
-    "type" = c("constituents", "fred", "osap", "symbols"),
-    "dataset_name" = c("various", "various", "Open Source Asset Pricing", "Nasdaq Stock Screener"),
-    "domain" = c("Index Constituents", "FRED", "Open Source Asset Pricing", "Stock Symbols")
+    "type" = c("stock_prices", "constituents", "fred", "osap", "symbols"),
+    "dataset_name" = c("YahooFinance", "various", "various", "Open Source Asset Pricing", "Nasdaq Stock Screener"),
+    "domain" = c("Stock Prices", "Index Constituents", "FRED", "Open Source Asset Pricing", "Stock Symbols")
   )
 }
 
@@ -496,7 +484,6 @@ list_supported_types <- function(domain = NULL, as_vector = FALSE) {
     list_supported_types_ff(),
     list_supported_types_macro_predictors(),
     list_supported_types_wrds(),
-    list_supported_types_stocks(),
     list_supported_types_other()
   )
   if (!is.null(domain)) {
