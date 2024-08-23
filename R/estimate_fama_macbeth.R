@@ -10,8 +10,8 @@
 #' @param vcov A character string indicating the type of standard errors to compute. Options are `"iid"`
 #'   for independent and identically distributed errors or `"newey-west"` for Newey-West standard errors.
 #'   Default is `"newey-west"`.
-#' @param data_options A named list with characters, indicating the column names required to run this function. The required column names identify dates. Defaults to `date=date`.
-#'
+#' @param data_options A named list of \link{data_options} with characters, indicating the column names required to run this function. The required column names identify dates. Defaults to `date=date`.
+
 #' @return A data frame with the estimated risk premiums, the number of observations, standard errors,
 #'   and t-statistics for each factor in the model.
 #'
@@ -34,9 +34,9 @@
 #' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", vcov = "iid")
 #'
 #' data <- data |> dplyr::rename(month = date)
-#' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", data_options=list(date="month"))
+#' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", data_options=data_options(date="month"))
 #'
-estimate_fama_macbeth <- function(data, model, vcov = "newey-west", data_options = list(date ="date")) {
+estimate_fama_macbeth <- function(data, model, vcov = "newey-west", data_options = data_options()) {
 
   # Check that vcov is one of the allowed options
   if (!vcov %in% c("iid", "newey-west")) {
