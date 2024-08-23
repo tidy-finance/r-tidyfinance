@@ -37,8 +37,9 @@ will not result in equal-sized portfolios off the edges due to multiple
 clusters. If sufficiently large bunching is detected, \code{percentiles} is
 ignored and equally-spaced portfolios are returned for these cases with a
 warning.
-}
-@param data_options A named list of \link{data_options} with characters, indicating the column names
+}}
+
+\item{data_options}{A named list of \link{data_options} with characters, indicating the column names
 required to run this function. The required column names identify dates. Defaults to \code{exchange = exchange}.}
 }
 \value{
