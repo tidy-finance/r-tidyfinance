@@ -10,7 +10,7 @@ estimate_betas(
   lookback,
   min_obs = NULL,
   use_furrr = FALSE,
-  data_options = list(id = "permno", date = "date")
+  data_options = NULL
 )
 }
 \arguments{
@@ -26,7 +26,7 @@ Defaults to 80\% of \code{lookback}.}
 \item{use_furrr}{A logical indicating whether to use the \code{furrr} package and its paralellization capabilities.
 Defaults to FALSE.}
 
-\item{data_options}{A named list with characters, indicating the column names required to run this function. The required column names identify dates and the stocks. Defaults to \code{date=date} and \code{id=permno}.}
+\item{data_options}{A named list of \link{data_options} with characters, indicating the column names required to run this function. The required column names identify dates and the stocks. Defaults to \code{date=date} and \code{id=permno}.}
 }
 \value{
 A tibble with the estimated betas for each time period.
@@ -51,7 +51,10 @@ data_monthly <- tibble::tibble(
 estimate_betas(data_monthly,  "ret_excess ~ mkt_excess", months(3))
 estimate_betas(data_monthly,  "ret_excess ~ mkt_excess + smb + hml", months(6))
 
-estimate_betas(data_monthly|>dplyr::rename(id=permno),  "ret_excess ~ mkt_excess", months(3), data_options=list(id="id"))
+data_monthly |>
+  dplyr::rename(id = permno) |>
+  estimate_betas("ret_excess ~ mkt_excess", months(3),
+                 data_options = data_options(id = "id"))
 
 # Estimate monthly betas using daily return data and parallelization
 data_daily <- tibble::tibble(

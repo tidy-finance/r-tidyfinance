@@ -16,7 +16,7 @@
 #'
 #' @examples
 #' # Example usage
-#' options <- data(
+#' options <- data_options(
 #'   id = "permno",
 #'   date = "date",
 #'   exchange = "exchange"
@@ -28,15 +28,14 @@ data_options <- function(
     id = "permno",
     ...
 ) {
-
   # Error handling for date
   if (!is.character(date) || length(date) != 1) {
-    cli::cli_abort("{.arg date} must be a character")
+    cli::cli_abort("{.arg date} must be a single character")
   }
 
   # Error handling for id
-  if (!is.character(date) || length(date) != 1) {
-    cli::cli_abort("{.arg percentiles} must be a numeric vector with values between 0 and 1.")
+  if (!is.character(id) || length(id) != 1) {  # Corrected this to check the 'id' argument, not 'date'
+    cli::cli_abort("{.arg id} must be a single character.")
   }
 
   # Create the list structure with class attribute

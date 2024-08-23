@@ -4,12 +4,7 @@
 \alias{estimate_fama_macbeth}
 \title{Estimate Fama-MacBeth Regressions}
 \usage{
-estimate_fama_macbeth(
-  data,
-  model,
-  vcov = "newey-west",
-  data_options = list(date = "date")
-)
+estimate_fama_macbeth(data, model, vcov = "newey-west", data_options = NULL)
 }
 \arguments{
 \item{data}{A data frame containing the data for the regression. It must include a column
@@ -21,7 +16,7 @@ representing the time periods (defaults to \code{date}) and the variables specif
 for independent and identically distributed errors or \code{"newey-west"} for Newey-West standard errors.
 Default is \code{"newey-west"}.}
 
-\item{data_options}{A named list with characters, indicating the column names required to run this function. The required column names identify dates. Defaults to \code{date=date}.}
+\item{data_options}{A named list of \link{data_options} with characters, indicating the column names required to run this function. The required column names identify dates. Defaults to \code{date=date}.}
 }
 \value{
 A data frame with the estimated risk premiums, the number of observations, standard errors,
@@ -48,7 +43,11 @@ data <- tibble::tibble(
 estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap")
 estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", vcov = "iid")
 
-data <- data |> dplyr::rename(month = date)
-estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", data_options=list(date="month"))
+data |>
+  dplyr::rename(month = date) |>
+  estimate_fama_macbeth(
+    "ret_excess ~ beta + bm + log_mktcap",
+   data_options = data_options(date = "month")
+ )
 
 }

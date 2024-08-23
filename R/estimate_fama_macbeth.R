@@ -33,10 +33,20 @@
 #' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap")
 #' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", vcov = "iid")
 #'
-#' data <- data |> dplyr::rename(month = date)
-#' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", data_options=data_options(date="month"))
+#' data |>
+#'   dplyr::rename(month = date) |>
+#'   estimate_fama_macbeth(
+#'     "ret_excess ~ beta + bm + log_mktcap",
+#'    data_options = data_options(date = "month")
+#'  )
 #'
-estimate_fama_macbeth <- function(data, model, vcov = "newey-west", data_options = data_options()) {
+estimate_fama_macbeth <- function(
+    data, model, vcov = "newey-west", data_options = NULL
+) {
+
+  if (is.null(data_options)) {
+    data_options <- data_options()
+  }
 
   # Check that vcov is one of the allowed options
   if (!vcov %in% c("iid", "newey-west")) {
@@ -44,13 +54,13 @@ estimate_fama_macbeth <- function(data, model, vcov = "newey-west", data_options
   }
 
   # Check that the data has a date column
-  if (!data_options$date %in% colnames(data)) {
-    cli::cli_abort("The data must contain a {data_options$date} column.")
+  if (!data_options[["date"]] %in% colnames(data)) {
+    cli::cli_abort("The data must contain a {data_options[['date'']]} column.")
   }
 
   # Cross-sectional regressions
   cross_sections <- data |>
-    tidyr::nest(data = -all_of(data_options$date)) |>
+    tidyr::nest(data = -all_of(data_options[["date"]])) |>
     mutate(
       row_check = purrr::map_lgl(data, ~ nrow(.) > length(all.vars(as.formula(model))))
     )
@@ -68,7 +78,7 @@ estimate_fama_macbeth <- function(data, model, vcov = "newey-west", data_options
     mutate(estimates = purrr::map(data, ~ estimate_model(., model))) |>
     tidyr::unnest(estimates) |>
     select(-data) |>
-    tidyr::pivot_longer(-all_of(data_options$date))
+    tidyr::pivot_longer(-all_of(data_options[["date"]]))
 
   # Function to compute the standard error based on the specified vcov
   compute_standard_error <- function(model, vcov) {
@@ -84,7 +94,7 @@ estimate_fama_macbeth <- function(data, model, vcov = "newey-west", data_options
 
   # Time-series aggregations
   aggregations <- cross_sections |>
-    tidyr::nest(data = c(all_of(data_options$date), value)) |>
+    tidyr::nest(data = c(all_of(data_options[["date"]]), value)) |>
     mutate(model = purrr::map(data, ~ lm("value ~ 1", data = .)),
            risk_premium = purrr::map_dbl(model, ~ .$coefficients),
            n = purrr::map_dbl(data, nrow),
@@ -97,5 +107,4 @@ estimate_fama_macbeth <- function(data, model, vcov = "newey-west", data_options
     select(factor = name, risk_premium, n, standard_error, t_statistic)
 
   aggregations
-
 }
