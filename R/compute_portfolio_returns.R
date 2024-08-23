@@ -54,6 +54,7 @@
 #' @param min_portfolio_size An integer specifying the minimum number of
 #'   portfolio constituents (default is set to `0`, effectively deactivating the
 #'   check). Small portfolios' returns are set to zero.
+#' @param data_options A named list of \link{data_options} with characters, indicating the column names required to run this function.  The required column names identify dates, the stocks, and returns. Defaults to `date=date`, `id=permno`, and `ret_excess = ret_excess`.
 #'
 #' @return A data frame with computed portfolio returns, containing the
 #'   following columns:
@@ -99,8 +100,13 @@ compute_portfolio_returns <- function(
     breakpoint_options_secondary = NULL,
     breakpoint_function_main = compute_breakpoints,
     breakpoint_function_secondary = compute_breakpoints,
-    min_portfolio_size = 0
+    min_portfolio_size = 0,
+    data_options = NULL
 ) {
+
+  if (is.null(data_options)) {
+    data_options <- data_options(exchange="exchange", mktcap_lag="mktcap_lag", ret_excess="ret_excess")
+  }
 
   if (is.null(sorting_variables) || length(sorting_variables) == 0) {
     cli::cli_abort("You must provide at least one sorting variable.")
@@ -114,13 +120,13 @@ compute_portfolio_returns <- function(
     cli::cli_warn("No 'breakpoint_options_secondary' specified in bivariate sort.")
   }
 
-  required_columns <- c(sorting_variables, "ret_excess")
+  required_columns <- c(sorting_variables, data_options[["date"]], data_options[["id"]], data_options[["ret_excess"]])
   missing_columns <- setdiff(required_columns, colnames(sorting_data))
   if (length(missing_columns) > 0) {
     cli::cli_abort("The 'sorting_data' is missing the following required columns: {paste(missing_columns, collapse = ', ')}.")
   }
 
-  mktcap_lag_missing <- !"mktcap_lag" %in% colnames(sorting_data)
+  mktcap_lag_missing <- !(data_options$mktcap_lag %in% colnames(sorting_data))
 
   if (mktcap_lag_missing) {
     sorting_data$mktcap_lag <- 1
@@ -137,7 +143,7 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
-        group_by(date) |>
+        group_by(.data[[data_options[["date"]]]]) |>
         mutate(
           portfolio = assign_portfolio(
             data = pick(everything()),
@@ -148,8 +154,8 @@ compute_portfolio_returns <- function(
         )
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(date) == rebalancing_month) |>
-        group_by(date) |>
+        filter(month(.data[[data_options[["date"]]]]) == rebalancing_month) |>
+        group_by(.data[[data_options[["date"]]]]) |>
         mutate(
           portfolio = assign_portfolio(
             data = pick(everything()),
@@ -158,22 +164,22 @@ compute_portfolio_returns <- function(
             breakpoint_function = breakpoint_function_main
           )) |>
         ungroup() |>
-        select(permno, date, portfolio)
+        select(all_of(c(data_options[["id"]], data_options[["date"]], "portfolio")))
 
       portfolio_returns <- sorting_data |>
         left_join(portfolio_data |>
-                    mutate(lower_bound = date,
-                           upper_bound = date + months(12)) |>
-                    select(-date),
-                  join_by(permno, closest(date >= lower_bound), date < upper_bound),
+                    mutate(lower_bound = .data[[data_options$date]],
+                           upper_bound = .data[[data_options$date]] + months(12)) |>
+                    select(-all_of(data_options[["date"]])),
+                  join_by(data_options[["id"]], closest(date >= lower_bound), date < upper_bound),
                   relationship = "many-to-one")
     }
 
     portfolio_returns <- portfolio_returns |>
-      group_by(portfolio, date) |>
+      group_by(portfolio, .data[[data_options[["date"]]]]) |>
       summarize(
-        ret_excess_vw = if_else(n() < min_portfolio_size, NA_real_, stats::weighted.mean(ret_excess, mktcap_lag)),
-        ret_excess_ew = if_else(n() < min_portfolio_size, NA_real_, mean(ret_excess)),
+        ret_excess_vw = if_else(n() < min_portfolio_size, NA_real_, stats::weighted.mean(.data[[data_options[["ret_excess"]]]], .data[[data_options[["mktcap_lag"]]]])),
+        ret_excess_ew = if_else(n() < min_portfolio_size, NA_real_, mean(.data[[data_options[["ret_excess"]]]])),
         .groups = "drop"
       )
   }
