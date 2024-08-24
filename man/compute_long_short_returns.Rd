@@ -4,17 +4,24 @@
 \alias{compute_long_short_returns}
 \title{Compute Long-Short Returns}
 \usage{
-compute_long_short_returns(portfolio_returns, direction = "top_minus_bottom")
+compute_long_short_returns(
+  data,
+  direction = "top_minus_bottom",
+  data_options = NULL
+)
 }
 \arguments{
-\item{portfolio_returns}{A data frame containing portfolio returns. The data frame must include
+\item{data}{A data frame containing portfolio returns. The data frame must include
 columns for the portfolio identifier, date, and return measurements. The portfolio column should
 indicate different portfolios, and there should be columns for return measurements prefixed with
-"ret_".}
+"ret_excess".}
 
 \item{direction}{A character string specifying the direction of the long-short return calculation.
 It can be either "top_minus_bottom" or "bottom_minus_top". Default is "top_minus_bottom". If set
 to "bottom_minus_top", the return will be computed as (bottom - top).}
+
+\item{data_options}{A named list of \link{data_options} with characters, indicating the column names
+required to run this function. The required column names identify dates. Defaults to \code{date = date}.}
 }
 \value{
 A data frame with columns for date, return measurement types (from the "ret_measure"
@@ -33,10 +40,12 @@ data <- data.frame(
   ret_excess = rnorm(100),
   size = runif(100, 50, 150)
 )
+
 portfolio_returns <- compute_portfolio_returns(
   data, "size", "univariate",
   breakpoint_options_main = breakpoint_options(n_portfolios = 5)
 )
+
 compute_long_short_returns(portfolio_returns)
 
 }
