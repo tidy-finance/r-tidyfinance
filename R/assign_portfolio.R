@@ -18,6 +18,7 @@
 #'   `breakpoint_function`.
 #' @param breakpoint_function A function to compute breakpoints. The default is
 #'   set to `tidyfinance::compute_breakpoints()`.
+#' @param data_options A named list of \link{data_options} with characters, indicating the column names required to run this function.  The required column names identify dates, the stocks, and returns. Defaults to `date=date`, `id=permno`.
 #'
 #' @return A vector of portfolio assignments for each row in the input `data`.
 #'
