@@ -38,7 +38,8 @@ assign_portfolio <- function(
     data,
     sorting_variable,
     breakpoint_options = NULL,
-    breakpoint_function = compute_breakpoints
+    breakpoint_function = compute_breakpoints,
+    data_options = NULL
   ) {
   # Exit condition for identical sorting variables
   if (length(unique(data[[sorting_variable]])) == 1) {
@@ -49,7 +50,8 @@ assign_portfolio <- function(
   breakpoints <- breakpoint_function(
     data,
     sorting_variable,
-    breakpoint_options
+    breakpoint_options,
+    data_options
   )
 
   # Assign portfolios

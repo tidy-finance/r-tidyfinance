@@ -151,7 +151,8 @@ compute_portfolio_returns <- function(
             data = pick(everything()),
             sorting_variable = sorting_variables,
             breakpoint_options = breakpoint_options_main,
-            breakpoint_function = breakpoint_function_main
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
           )
         )
     } else {
@@ -163,18 +164,24 @@ compute_portfolio_returns <- function(
             data = pick(everything()),
             sorting_variable = sorting_variables,
             breakpoint_options = breakpoint_options_main,
-            breakpoint_function = breakpoint_function_main
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
           )) |>
         ungroup() |>
         select(all_of(c(data_options$id, data_options$date, "portfolio")))
 
       portfolio_returns <- sorting_data |>
+        rename("..date" = all_of(data_options$date),
+               "..id" := all_of(data_options$id)) |>
         left_join(portfolio_data |>
+                    rename("..id" = all_of(data_options$id)) |>
                     mutate(lower_bound = .data[[data_options$date]],
                            upper_bound = .data[[data_options$date]] + months(12)) |>
                     select(-all_of(data_options$date)),
-                  join_by(data_options$id, closest(date >= lower_bound), date < upper_bound),
-                  relationship = "many-to-one")
+                  join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+                  relationship = "many-to-one") |>
+        rename("{data_options$date}" := "..date",
+               "{data_options$id}" := "..id")
     }
 
     portfolio_returns <- portfolio_returns |>
@@ -193,64 +200,74 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
-        group_by(date) |>
+        group_by(.data[[data_options$date]]) |>
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
             sorting_variable = sorting_variables[2],
             breakpoint_options = breakpoint_options_secondary,
-            breakpoint_function = breakpoint_function_secondary
+            breakpoint_function = breakpoint_function_secondary,
+            data_options = data_options
           )) |>
         ungroup() |>
-        group_by(date, portfolio_secondary) |>
+        group_by(.data[[data_options$date]], portfolio_secondary) |>
         mutate(
           portfolio_main = assign_portfolio(
             pick(everything()),
             sorting_variable = sorting_variables[1],
             breakpoint_options = breakpoint_options_main,
-            breakpoint_function = breakpoint_function_main
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
           )) |>
         ungroup()
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(date) == rebalancing_month) |>
-        group_by(date) |>
+        filter(month(.data[[data_options$date]]) == rebalancing_month) |>
+        group_by(.data[[data_options$date]]) |>
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
             sorting_variable = sorting_variables[2],
             breakpoint_options = breakpoint_options_secondary,
-            breakpoint_function = breakpoint_function_secondary
+            breakpoint_function = breakpoint_function_secondary,
+            data_options = data_options
           )) |>
         ungroup() |>
-        group_by(date, portfolio_secondary) |>
+        group_by(.data[[data_options$date]], portfolio_secondary) |>
         mutate(
           portfolio_main = assign_portfolio(
             pick(everything()),
             sorting_variable = sorting_variables[1],
             breakpoint_options = breakpoint_options_main,
-            breakpoint_function = breakpoint_function_main
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
           )) |>
         ungroup() |>
-        select(permno, date, portfolio_main, portfolio_secondary)
+        select(all_of(c(data_options$id, data_options$date, "portfolio_main", "portfolio_secondary")))
 
       portfolio_returns <- sorting_data |>
+        rename("..date" = all_of(data_options$date),
+               "..id" := all_of(data_options$id)) |>
         left_join(portfolio_data |>
+                    rename("..id" = all_of(data_options$id)) |>
                     mutate(lower_bound = date,
                            upper_bound = date + months(12)) |>
-                    select(-date),
-                  join_by(permno, closest(date >= lower_bound), date < upper_bound),
-                  relationship = "many-to-one")
+                    select(-all_of(data_options$date)),
+                  join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+                  relationship = "many-to-one") |>
+        rename("{data_options$date}" := "..date",
+               "{data_options$id}" := "..id")
+
     }
 
     portfolio_returns <- portfolio_returns  |>
-      group_by(portfolio_main, portfolio_secondary, date) |>
+      group_by(portfolio_main, portfolio_secondary, .data[[data_options$date]]) |>
       summarize(
         ret_excess_vw = if_else(n() < min_portfolio_size, NA_real_, stats::weighted.mean(ret_excess, mktcap_lag)),
         ret_excess_ew = if_else(n() < min_portfolio_size, NA_real_, mean(ret_excess)),
         .groups = "drop"
       ) |>
-      group_by(portfolio = portfolio_main, date) |>
+      group_by(portfolio = portfolio_main, .data[[data_options$date]]) |>
       summarize(across(c(ret_excess_vw, ret_excess_ew), \(x) mean(x, na.rm = TRUE)),
                 .groups = "drop")
   }
@@ -262,58 +279,68 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
-        group_by(date) |>
+        group_by(.data[[data_options$date]]) |>
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
             sorting_variable = sorting_variables[2],
             breakpoint_options = breakpoint_options_secondary,
-            breakpoint_function = breakpoint_function_secondary
+            breakpoint_function = breakpoint_function_secondary,
+            data_options = data_options
           ),
           portfolio_main = assign_portfolio(
             pick(everything()),
             sorting_variable = sorting_variables[1],
             breakpoint_options = breakpoint_options_main,
-            breakpoint_function = breakpoint_function_main
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
           )) |>
         ungroup()
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(date) == rebalancing_month) |>
-        group_by(date) |>
+        filter(month(.data[[data_options$date]]) == rebalancing_month) |>
+        group_by(.data[[data_options$date]]) |>
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
             sorting_variable = sorting_variables[2],
             breakpoint_options = breakpoint_options_secondary,
-            breakpoint_function = breakpoint_function_secondary
+            breakpoint_function = breakpoint_function_secondary,
+            data_options = data_options
           ),
           portfolio_main = assign_portfolio(
             pick(everything()),
             sorting_variable = sorting_variables[1],
             breakpoint_options = breakpoint_options_main,
-            breakpoint_function = breakpoint_function_main
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
           )) |>
         ungroup() |>
-        select(permno, date, portfolio_main, portfolio_secondary)
+        select(all_of(c(data_options$id, data_options$date, "portfolio_main", "portfolio_secondary")))
 
       portfolio_returns <- sorting_data |>
+        rename("..date" = all_of(data_options$date),
+               "..id" := all_of(data_options$id)) |>
         left_join(portfolio_data |>
-                    mutate(lower_bound = date,
-                           upper_bound = date + months(12)) |>
-                    select(-date),
-                  join_by(permno, closest(date >= lower_bound), date < upper_bound),
-                  relationship = "many-to-one")
+                    rename("..id" = all_of(data_options$id)) |>
+                    mutate(lower_bound = .data[[data_options$date]],
+                           upper_bound = .data[[data_options$date]] + months(12)) |>
+                    select(-all_of(data_options$date)),
+                  join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+                  relationship = "many-to-one") |>
+        rename("{data_options$date}" := "..date",
+               "{data_options$id}" := "..id")
+
     }
 
     portfolio_returns <- portfolio_returns |>
-      group_by(portfolio_main, portfolio_secondary, date) |>
+      group_by(portfolio_main, portfolio_secondary, .data[[data_options$date]]) |>
       summarize(
         ret_excess_vw = if_else(n() < min_portfolio_size, NA_real_, stats::weighted.mean(ret_excess, mktcap_lag)),
         ret_excess_ew = if_else(n() < min_portfolio_size, NA_real_, mean(ret_excess)),
         .groups = "drop"
       ) |>
-      group_by(portfolio = portfolio_main, date) |>
+      group_by(portfolio = portfolio_main, .data[[data_options$date]]) |>
       summarize(across(c(ret_excess_vw, ret_excess_ew),  \(x) mean(x, na.rm = TRUE)),
                 .groups = "drop")
   }

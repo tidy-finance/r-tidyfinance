@@ -8,7 +8,8 @@ assign_portfolio(
   data,
   sorting_variable,
   breakpoint_options = NULL,
-  breakpoint_function = compute_breakpoints
+  breakpoint_function = compute_breakpoints,
+  data_options = NULL
 )
 }
 \arguments{
