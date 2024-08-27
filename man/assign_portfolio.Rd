@@ -27,7 +27,7 @@ set to \link{compute_breakpoints}.}
 
 \item{data_options}{A named list of \link{data_options} with characters,
 indicating the column names required to run this function. The required
-column names identify dates. Defaults to \code{exchange = exchange}.}
+column names identify dates.  Defaults to \code{date = date} and \code{id = permno}.}
 }
 \value{
 A vector of portfolio assignments for each row in the input \code{data}.

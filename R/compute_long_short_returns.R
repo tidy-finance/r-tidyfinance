@@ -12,8 +12,9 @@
 #' @param direction A character string specifying the direction of the long-short return calculation.
 #'  It can be either "top_minus_bottom" or "bottom_minus_top". Default is "top_minus_bottom". If set
 #'  to "bottom_minus_top", the return will be computed as (bottom - top).
-#' @param data_options A named list of \link{data_options} with characters, indicating the column names
-#'  required to run this function. The required column names identify dates. Defaults to `date = date`, `portfolio=portfolio` and `ret_excess = ret_excess`
+#' @param data_options A named list of \link{data_options} with characters, indicating the column
+#'  names required to run this function. The required column names identify dates. Defaults to
+#'  `date = date`, `portfolio = portfolio` and `ret_excess = ret_excess`.
 #'
 #' @return A data frame with columns for date, return measurement types (from the "ret_measure"
 #'  column), and the computed long-short returns. The data frame is arranged by date and pivoted to
