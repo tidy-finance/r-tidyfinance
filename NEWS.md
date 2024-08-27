@@ -1,14 +1,14 @@
-# tidyfinance (development version)
+# tidyfinance 0.4.0
 
 ## New features
 
 * Added `list_supported_indexes()` and `download_data_constituents()` to download index constituents.
 * Added `estimate_betas()` to estimate risk factor betas.
 * Added `estimate_fama_macbeth()` to estimate Fama-MacBeth models.
-* Added `download_data_osap()` to download data from [Open Source Asset Pricing](https://www.openassetpricing.com/data/).
-* Added `download_data_fred()` to download data from [Federal Reserve Economic Data](https://fred.stlouisfed.org/).
-* Added `download_data_stock_prices()` to download data from [Yahoo Finance](https://finance.yahoo.com/).
-* Added `download_data_symbols()` to download data from [Nasdaq Stock Screener](https://www.nasdaq.com/market-activity/stocks/screener).
+* Added `download_data_osap()` to download data from Open Source Asset Pricing.
+* Added `download_data_fred()` to download data from Federal Reserve Economic Data].
+* Added `download_data_stock_prices()` to download data from Yahoo Finance.
+* Added `download_data_symbols()` to download data from Nasdaq Stock Screener.
 * Added `compute_portfolio_returns()` to implement different portfolio sorting approaches.
 * Added `compute_long_short_returns()` to quickly compute long-short portfolio returns.
 * Added `compute_breakpoints()` to make `assign_portfolio()` more flexible. 

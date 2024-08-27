@@ -20,10 +20,12 @@
 #'   and including financial metrics.
 #'
 #' @export
+#'
 #' @examples
 #' \donttest{
 #'   macro_predictors_monthly <- download_data_macro_predictors("macro_predictors_monthly")
 #' }
+#'
 download_data_macro_predictors <- function(
     type, start_date = NULL, end_date = NULL, sheet_id = "1bM7vCWd3WOt95Sf9qjLPZjoiafgF_8EG"
   ) {
