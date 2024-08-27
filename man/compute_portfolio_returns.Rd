@@ -36,7 +36,8 @@ variable.}
 Possible values are:
 \itemize{
 \item \code{"univariate"}: For a single sorting variable.
-\item \code{"bivariate-dependent"}: For two sorting variables, where the main sort is dependent on the secondary variable.
+\item \code{"bivariate-dependent"}: For two sorting variables, where the main
+sort depends on the secondary variable.
 \item \code{"bivariate-independent"}: For two independent sorting variables.
 }
 For bivariate sorts, the portfolio returns are averaged over the
@@ -66,7 +67,9 @@ sorting variable. The default is set to \link{compute_breakpoints}.}
 portfolio constituents (default is set to \code{0}, effectively deactivating the
 check). Small portfolios' returns are set to zero.}
 
-\item{data_options}{A named list of \link{data_options} with characters, indicating the column names required to run this function.  The required column names identify dates, the stocks, and returns. Defaults to \code{date=date}, \code{id=permno}, and \code{ret_excess = ret_excess}.}
+\item{data_options}{A named list of \link{data_options} with characters, indicating
+the column names required to run this function.  The required column names identify dates,
+the stocks, and returns. Defaults to \code{date=date}, \code{id=permno}, and \code{ret_excess = ret_excess}.}
 }
 \value{
 A data frame with computed portfolio returns, containing the
@@ -74,7 +77,8 @@ following columns:
 \itemize{
 \item \code{portfolio}: The portfolio identifier.
 \item \code{date}: The date of the portfolio return.
-\item \code{ret_excess_vw}: The value-weighted excess return of the portfolio (only computed if the \code{sorting_data} contains \code{mktcap_lag})
+\item \code{ret_excess_vw}: The value-weighted excess return of the portfolio
+(only computed if the \code{sorting_data} contains \code{mktcap_lag})
 \item \code{ret_excess_ew}: The equal-weighted excess return of the portfolio.
 }
 }

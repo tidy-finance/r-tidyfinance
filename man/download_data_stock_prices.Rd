@@ -24,8 +24,8 @@ date, volume, open, low, high, close, and adjusted_close.
 Downloads historical stock data from Yahoo Finance for given symbols and date range.
 }
 \examples{
-\dontrun{
-download_data_stock_prices(c("AAPL", "MSFT"))
-download_data_stock_prices("GOOGL", "2021-01-01", "2022-01-01" )
+\donttest{
+  download_data_stock_prices(c("AAPL", "MSFT"))
+  download_data_stock_prices("GOOGL", "2021-01-01", "2022-01-01" )
 }
 }

@@ -13,10 +13,11 @@
 #'   date, volume, open, low, high, close, and adjusted_close.
 #'
 #' @export
+#'
 #' @examples
-#' \dontrun{
-#' download_data_stock_prices(c("AAPL", "MSFT"))
-#' download_data_stock_prices("GOOGL", "2021-01-01", "2022-01-01" )
+#' \donttest{
+#'   download_data_stock_prices(c("AAPL", "MSFT"))
+#'   download_data_stock_prices("GOOGL", "2021-01-01", "2022-01-01" )
 #' }
 download_data_stock_prices <- function(
     symbols, start_date = NULL, end_date = NULL

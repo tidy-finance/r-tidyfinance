@@ -12,7 +12,7 @@
 #' @param data A data frame containing the dependent variable and one or more
 #'   independent variables.
 #' @param model A character that describes the model to estimate (e.g.
-#'   "ret_excess ~ mkt_excess + hmb + sml").
+#'   `"ret_excess ~ mkt_excess + hmb + sml"`).
 #' @param min_obs The minimum number of observations required to estimate the
 #'   model. Defaults to 1.
 #'

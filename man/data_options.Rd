@@ -20,9 +20,11 @@ data_options(
 
 \item{exchange}{A character string representing the exchange variable (e.g., "exchange").}
 
-\item{mktcap_lag}{A character string representing the market capitalization lag variable (e.g., "mktcap_lag").}
+\item{mktcap_lag}{A character string representing the market capitalization lag variable
+(e.g., "mktcap_lag").}
 
-\item{ret_excess}{A character string representing the excess return variable (e.g., "ret_excess").}
+\item{ret_excess}{A character string representing the excess return variable
+(e.g., "ret_excess").}
 
 \item{...}{Additional arguments to be included in the data options list.}
 }
@@ -36,12 +38,10 @@ key parameters such as \code{id}, \code{date}, \code{exchange}, \code{mktcap_lag
 along with other additional options passed through \code{...}.
 }
 \examples{
-# Example usage
-options <- data_options(
+data_options(
   id = "permno",
   date = "date",
   exchange = "exchange"
 )
-print(options)
 
 }

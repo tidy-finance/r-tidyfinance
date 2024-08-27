@@ -4,13 +4,15 @@
 #' ability to specify a range of lags. It also allows for the optional removal of `NA` values.
 #'
 #' @param column A numeric vector or column to be lagged.
-#' @param date A vector representing dates corresponding to the `column`. This should be in a date or datetime format.
+#' @param date A vector representing dates corresponding to the `column`. This should be in a
+#'  date or datetime format.
 #' @param lag An integer specifying the minimum lag (in days, hours, etc.) to apply to `column`.
 #' @param max_lag An integer specifying the maximum lag (in days, hours, etc.) to apply to `column`.
-#' @param drop_na A logical value indicating whether to drop `NA` values from the resulting lagged column. Defaults to `TRUE`.
+#' @param drop_na A logical value indicating whether to drop `NA` values from the resulting lagged
+#'  column. Defaults to `TRUE`.
 #'
 #' @return A vector of the same length as `column`, containing the lagged values.
-#' If no matching dates are found within the lag window, `NA` is returned for that position.
+#'  If no matching dates are found within the lag window, `NA` is returned for that position.
 #'
 #' @export
 #'
@@ -35,6 +37,7 @@
 #'            \(x) lag_column(x, date, months(3), months(6), drop_na = TRUE))
 #'   ) |>
 #' dplyr::ungroup()
+#'
 lag_column <- function(
     column,
     date,

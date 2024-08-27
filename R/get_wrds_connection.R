@@ -18,6 +18,7 @@
 #' @seealso \code{\link[RPostgres]{Postgres}}, \code{\link[DBI]{dbDisconnect}} for more
 #'          information on managing database connections.
 #' @export
+#'
 #' @examples
 #' \donttest{
 #'   # Before using this function, set your WRDS credentials:

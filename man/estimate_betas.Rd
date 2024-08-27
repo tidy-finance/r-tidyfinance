@@ -14,20 +14,24 @@ estimate_betas(
 )
 }
 \arguments{
-\item{data}{A tibble containing the data with a date identifier (defaults to \code{date}), a stock identifier (defaults to \code{permno}), and other variables used in the model.}
+\item{data}{A tibble containing the data with a date identifier (defaults to \code{date}), a stock
+identifier (defaults to \code{permno}), and other variables used in the model.}
 
-\item{model}{A formula representing the model to be estimated (e.g., \code{ret_excess ~ mkt_excess + smb + hml}).}
+\item{model}{A formula representing the model to be estimated (e.g.,
+\code{ret_excess ~ mkt_excess + smb + hml}).}
 
-\item{lookback}{A Period object specifying the number of months, days, hours, minutes, or seconds to look back when estimating the rolling model.}
+\item{lookback}{A Period object specifying the number of months, days, hours, minutes, or
+seconds to look back when estimating the rolling model.}
 
-\item{min_obs}{An integer specifying the minimum number of observations required to estimate the model.
-Defaults to 80\% of \code{lookback}.}
+\item{min_obs}{An integer specifying the minimum number of observations required to estimate
+the model. Defaults to 80\% of \code{lookback}.}
 
-\item{use_furrr}{A logical indicating whether to use the \code{furrr} package and its paralellization capabilities.
-Defaults to FALSE.}
+\item{use_furrr}{A logical indicating whether to use the \code{furrr} package and its paralellization
+capabilities. Defaults to FALSE.}
 
-\item{data_options}{A named list of \link{data_options} with characters, indicating the column names required to run this function.
-The required column names identify dates and the stocks. Defaults to \code{date = date} and \code{id = permno}.}
+\item{data_options}{A named list of \link{data_options} with characters, indicating the column
+names required to run this function. The required column names identify dates and the stocks.
+Defaults to \code{date = date} and \code{id = permno}.}
 }
 \value{
 A tibble with the estimated betas for each time period.

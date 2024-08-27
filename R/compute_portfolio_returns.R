@@ -31,7 +31,8 @@
 #'   Possible values are:
 #'   \itemize{
 #'     \item `"univariate"`: For a single sorting variable.
-#'     \item `"bivariate-dependent"`: For two sorting variables, where the main sort is dependent on the secondary variable.
+#'     \item `"bivariate-dependent"`: For two sorting variables, where the main
+#'      sort depends on the secondary variable.
 #'     \item `"bivariate-independent"`: For two independent sorting variables.
 #'   }
 #'   For bivariate sorts, the portfolio returns are averaged over the
@@ -54,14 +55,17 @@
 #' @param min_portfolio_size An integer specifying the minimum number of
 #'   portfolio constituents (default is set to `0`, effectively deactivating the
 #'   check). Small portfolios' returns are set to zero.
-#' @param data_options A named list of \link{data_options} with characters, indicating the column names required to run this function.  The required column names identify dates, the stocks, and returns. Defaults to `date=date`, `id=permno`, and `ret_excess = ret_excess`.
+#' @param data_options A named list of \link{data_options} with characters, indicating
+#'   the column names required to run this function.  The required column names identify dates,
+#'   the stocks, and returns. Defaults to `date=date`, `id=permno`, and `ret_excess = ret_excess`.
 #'
 #' @return A data frame with computed portfolio returns, containing the
 #'   following columns:
 #'   \itemize{
 #'     \item `portfolio`: The portfolio identifier.
 #'     \item `date`: The date of the portfolio return.
-#'     \item `ret_excess_vw`: The value-weighted excess return of the portfolio (only computed if the `sorting_data` contains `mktcap_lag`)
+#'     \item `ret_excess_vw`: The value-weighted excess return of the portfolio
+#'      (only computed if the `sorting_data` contains `mktcap_lag`)
 #'     \item `ret_excess_ew`: The equal-weighted excess return of the portfolio.
 #'   }
 #'

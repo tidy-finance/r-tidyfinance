@@ -1,26 +1,29 @@
 #' Create Breakpoint Options for Portfolio Sorting
 #'
-#' This function generates a structured list of options for defining breakpoints in portfolio sorting.
-#' It includes parameters for the number of portfolios, percentile thresholds, exchange-specific breakpoints,
-#' and smooth bunching, along with additional optional parameters.
+#' This function generates a structured list of options for defining breakpoints in
+#' portfolio sorting. It includes parameters for the number of portfolios, percentile
+#' thresholds, exchange-specific breakpoints, and smooth bunching, along with additional
+#' optional parameters.
 #'
-#' @param n_portfolios Integer, optional. The number of portfolios to create. Must be a positive integer.
-#' If not provided, defaults to \code{NULL}.
-#' @param percentiles Numeric vector, optional. A vector of percentile thresholds for defining breakpoints.
-#' Each value should be between 0 and 1. If not provided, defaults to \code{NULL}.
-#' @param breakpoint_exchanges Character, optional. A non-empty string specifying the exchange for which the breakpoints apply.
-#' If not provided, defaults to \code{NULL}.
-#' @param smooth_bunching Logical, optional. Indicates whether smooth bunching should be applied. Defaults to \code{FALSE}.
-#' @param ... Additional optional arguments. These will be captured in the resulting structure as a list.
+#' @param n_portfolios Integer, optional. The number of portfolios to create. Must be a
+#'  positive integer. If not provided, defaults to \code{NULL}.
+#' @param percentiles Numeric vector, optional. A vector of percentile thresholds for
+#'  defining breakpoints. Each value should be between 0 and 1. If not provided, defaults
+#'  to \code{NULL}.
+#' @param breakpoint_exchanges Character, optional. A non-empty string specifying the
+#'  exchange for which the breakpoints apply. If not provided, defaults to \code{NULL}.
+#' @param smooth_bunching Logical, optional. Indicates whether smooth bunching should
+#'  be applied. Defaults to \code{FALSE}.
+#' @param ... Additional optional arguments. These will be captured in the resulting
+#'  structure as a list.
 #'
-#' @return A list of class \code{"tidyfinance_breakpoint_options"} containing the provided breakpoint options,
-#' including any additional arguments passed via \code{...}.
+#' @return A list of class \code{"tidyfinance_breakpoint_options"} containing the provided
+#' breakpoint options, including any additional arguments passed via \code{...}.
 #'
 #' @export
 #'
 #' @examples
-#' # Example usage
-#' options <- breakpoint_options(
+#' breakpoint_options(
 #'   n_portfolios = 5,
 #'   percentiles = c(0.2, 0.4, 0.6, 0.8),
 #'   breakpoint_exchanges = "NYSE",
@@ -28,7 +31,6 @@
 #'   custom_threshold = 0.5,
 #'   another_option = "example"
 #' )
-#' print(options)
 #'
 breakpoint_options <- function(
     n_portfolios = NULL,

@@ -7,8 +7,9 @@
 download_data_constituents(index)
 }
 \arguments{
-\item{index}{A character string specifying the name of the financial index for which to download constituent data.
-The index must be one of the supported indexes listed by the \code{list_supported_indexes()} function.}
+\item{index}{A character string specifying the name of the financial index for which to download
+constituent data. The index must be one of the supported indexes listed by
+\link{list_supported_indexes}.}
 }
 \value{
 A tibble with two columns:
@@ -18,21 +19,25 @@ A tibble with two columns:
 \item{location}{The location where the company is based.}
 \item{exchange}{The exchange where the equity is traded.}
 }
-The tibble is filtered to exclude non-equity entries, blacklisted symbols, empty names, and any entries containing the index name or "CASH".
+The tibble is filtered to exclude non-equity entries, blacklisted symbols, empty names, and any
+entries containing the index name or "CASH".
 }
 \description{
 This function downloads and processes the constituent data for a specified financial index.
-The data is fetched from a remote CSV file, filtered, and cleaned to provide relevant information about constituents.
+The data is fetched from a remote CSV file, filtered, and cleaned to provide relevant information
+about constituents.
 }
 \details{
 The function retrieves the URL of the CSV file for the specified index from ETF sites, then sends
-an HTTP GET request to download the CSV file, and processes the CSV file to extract equity constituents.
+an HTTP GET request to download the CSV file, and processes the CSV file to extract equity
+constituents.
 
-The approach is inspired by \code{tidyquant::tq_index()}, which uses a different wrapper around other ETFs.
+The approach is inspired by \code{tidyquant::tq_index()}, which uses a different wrapper around o
+ther ETFs.
 }
 \examples{
-\dontrun{
-download_data_constituents("DAX")
+\donttest{
+  download_data_constituents("DAX")
 }
 
 }

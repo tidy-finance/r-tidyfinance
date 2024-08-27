@@ -1,8 +1,8 @@
 #' Download and Process Open Source Asset Pricing Data
 #'
 #' This function downloads the data from [Open Source Asset Pricing](https://www.openassetpricing.com/data/)
-#' from Google Sheets using a specified sheet ID, processes the data by converting column names to snake_case,
-#' and optionally filters the data based on a provided date range.
+#' from Google Sheets using a specified sheet ID, processes the data by converting column names to
+#' snake_case, and optionally filters the data based on a provided date range.
 #'
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the start date for the data. If not provided, the full dataset is returned.
@@ -17,9 +17,8 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Download data filtered by a specific date range
-#' osap_monthly <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
+#' \donttest{
+#'   osap_monthly <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
 #' }
 download_data_osap <- function(
     start_date = NULL, end_date = NULL, sheet_id = "1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"

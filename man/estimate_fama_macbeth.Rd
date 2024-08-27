@@ -12,16 +12,17 @@ representing the time periods (defaults to \code{date}) and the variables specif
 
 \item{model}{A formula representing the regression model to be estimated in each cross-section.}
 
-\item{vcov}{A character string indicating the type of standard errors to compute. Options are \code{"iid"}
-for independent and identically distributed errors or \code{"newey-west"} for Newey-West standard errors.
-Default is \code{"newey-west"}.}
+\item{vcov}{A character string indicating the type of standard errors to compute. Options are
+\code{"iid"} for independent and identically distributed errors or \code{"newey-west"} for Newey-West
+standard errors. Default is \code{"newey-west"}.}
 
-\item{data_options}{A named list of \link{data_options} with characters, indicating the column names
-required to run this function. The required column names identify dates. Defaults to \code{date = date}.}
+\item{data_options}{A named list of \link{data_options} with characters, indicating the column
+names required to run this function. The required column names identify dates. Defaults to
+\code{date = date}.}
 }
 \value{
-A data frame with the estimated risk premiums, the number of observations, standard errors,
-and t-statistics for each factor in the model.
+A data frame with the estimated risk premiums, the number of observations, standard
+errors, and t-statistics for each factor in the model.
 }
 \description{
 This function estimates Fama-MacBeth regressions by first running cross-sectional regressions
@@ -44,6 +45,7 @@ data <- tibble::tibble(
 estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap")
 estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", vcov = "iid")
 
+# Use different column name for date
 data |>
   dplyr::rename(month = date) |>
   estimate_fama_macbeth(

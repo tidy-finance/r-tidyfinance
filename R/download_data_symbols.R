@@ -1,17 +1,19 @@
 #' Download Stock Symbols from an Exchange
 #'
-#' This function downloads a list of stock symbols from a specified exchange (NYSE, AMEX, or NASDAQ).
-#' The data includes details such as symbol, company name, country, IPO year, industry, and sector.
+#' This function downloads a list of stock symbols from a specified exchange (NYSE, AMEX, or
+#' NASDAQ). The data includes details such as symbol, company name, country, IPO year, industry,
+#' and sector.
 #'
 #' @param exchange A character string specifying the exchange to download data from.
 #'                 Must be one of "NYSE", "AMEX", or "NASDAQ".
 #'
-#' @return A data frame containing the stock symbols and related information from the specified exchange.
+#' @return A data frame containing the stock symbols and related information from the specified
+#'  exchange.
 #'
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Download stock symbols from NYSE
 #' symbols_nyse <- download_data_symbols("NYSE")
 #'

@@ -13,10 +13,12 @@
 #' @returns A numeric vector with the extreme values removed.
 #'
 #' @export
+#'
 #' @examples
 #' set.seed(123)
 #' data <- rnorm(100)
 #' trimmed_data <- trim(x = data, cut = 0.05)
+#'
 trim <- function(x, cut) {
   if (cut < 0 || cut > 0.5) {
     cli::cli_abort("{.arg cut} must be inside [0, 0.5].")

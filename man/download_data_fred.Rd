@@ -22,22 +22,22 @@ A tibble containing the processed data with three columns:
 }
 }
 \description{
-This function downloads a specified data series from the Federal Reserve Economic Data (FRED) website,
-processes the data, and returns it as a tibble.
+This function downloads a specified data series from the Federal Reserve Economic Data (FRED)
+website, processes the data, and returns it as a tibble.
 }
 \details{
-This function constructs the URL based on the provided FRED series ID, performs an HTTP GET request
-to download the data in CSV format, and processes it to a tidy tibble format. The resulting tibble
-includes the date, value, and the series ID.
+This function constructs the URL based on the provided FRED series ID, performs an HTTP GET
+request to download the data in CSV format, and processes it to a tidy tibble format. The
+resulting tibble includes the date, value, and the series ID.
 
 This approach is inspired by \code{quantmod::getSymbolsFRED()} which uses a different wrapper around
 the same FRED download data site. If you want to systematically download FRED data via API,
 please consider using \code{fredr} package.
 }
 \examples{
-\dontrun{
-download_data_fred("CPIAUCNS")
-download_data_fred(c("GDP", "CPIAUCNS"), "2010-01-01", "2010-12-31")
+\donttest{
+  download_data_fred("CPIAUCNS")
+  download_data_fred(c("GDP", "CPIAUCNS"), "2010-01-01", "2010-12-31")
 }
 
 }

@@ -1,7 +1,9 @@
 #' Compute Long-Short Returns
 #'
 #' This function calculates long-short returns based on the returns of portfolios. The long-short
-#' return is computed as the difference between the returns of the "top" and "bottom" portfolios. The direction of the calculation can be adjusted based on whether the return from the "bottom" portfolio is subtracted from or added to the return from the "top" portfolio.
+#' return is computed as the difference between the returns of the "top" and "bottom" portfolios.
+#' The direction of the calculation can be adjusted based on whether the return from the "bottom"
+#' portfolio is subtracted from or added to the return from the "top" portfolio.
 #'
 #' @param data A data frame containing portfolio returns. The data frame must include
 #'  columns for the portfolio identifier, date, and return measurements. The portfolio column should
