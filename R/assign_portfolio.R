@@ -21,9 +21,11 @@
 #'   set to \link{compute_breakpoints}.
 #' @param data_options A named list of \link{data_options} with characters,
 #'  indicating the column names required to run this function. The required
-#'  column names identify dates. Defaults to `exchange = exchange`.
+#'  column names identify dates.  Defaults to `date = date` and `id = permno`.
 #'
 #' @return A vector of portfolio assignments for each row in the input `data`.
+#'
+#' @export
 #'
 #' @examples
 #' data <- data.frame(
@@ -39,7 +41,6 @@
 #'   breakpoint_options(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
 #' )
 #'
-#' @export
 assign_portfolio <- function(
     data,
     sorting_variable,

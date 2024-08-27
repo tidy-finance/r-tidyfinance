@@ -13,7 +13,7 @@
 #'  It can be either "top_minus_bottom" or "bottom_minus_top". Default is "top_minus_bottom". If set
 #'  to "bottom_minus_top", the return will be computed as (bottom - top).
 #' @param data_options A named list of \link{data_options} with characters, indicating the column names
-#'  required to run this function. The required column names identify dates. Defaults to `date = date`.
+#'  required to run this function. The required column names identify dates. Defaults to `date = date`, `portfolio=portfolio` and `ret_excess = ret_excess`
 #'
 #' @return A data frame with columns for date, return measurement types (from the "ret_measure"
 #'  column), and the computed long-short returns. The data frame is arranged by date and pivoted to
@@ -44,17 +44,17 @@ compute_long_short_returns <- function(
 ) {
 
   if (is.null(data_options)) {
-    data_options <- data_options()
+    data_options <- data_options(portfolio="portfolio", ret_excess = "ret_excess")
   }
 
   data$..date <- data[[data_options$date]]
 
   data |>
     group_by(..date) |>
-    filter(portfolio %in% c(min(portfolio), max(portfolio))) |>
-    mutate(portfolio = if_else(portfolio == min(portfolio), "bottom", "top")) |>
+    filter(.data[[data_options$portfolio]] %in% c(min(.data[[data_options$portfolio]]), max(.data[[data_options$portfolio]]))) |>
+    mutate("{data_options$portfolio}" := if_else(.data[[data_options$portfolio]] == min(.data[[data_options$portfolio]]), "bottom", "top")) |>
     ungroup() |>
-    tidyr::pivot_longer(contains("ret_excess"), names_to = "ret_measure", values_to = "ret")|>
+    tidyr::pivot_longer(contains(data_options$ret_excess), names_to = "ret_measure", values_to = "ret")|>
     tidyr::pivot_wider(names_from = portfolio, values_from = ret) |>
     mutate(long_short_return = (top - bottom) * if_else(direction == "bottom_minus_top", -1, 1)) |>
     arrange(..date) |>
