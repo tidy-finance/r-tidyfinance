@@ -71,7 +71,7 @@ download_data_macro_predictors <- function(
 
   processed_data <- processed_data |>
     mutate(
-      across(where(is.character), as.numeric),
+      across(where(is.character), ~ as.numeric(gsub("\\,", "", .))),
       IndexDiv = Index + D12,
       logret = log(IndexDiv) - log(lag(IndexDiv)),
       rp_div = lead(logret - Rfree, 1),

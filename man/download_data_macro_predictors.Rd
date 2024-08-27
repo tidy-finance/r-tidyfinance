@@ -40,4 +40,5 @@ financial metrics and filtering by the specified date range.
 \donttest{
   macro_predictors_monthly <- download_data_macro_predictors("macro_predictors_monthly")
 }
+
 }
