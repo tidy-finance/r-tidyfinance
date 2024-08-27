@@ -11,14 +11,16 @@ download_data_symbols(exchange)
 Must be one of "NYSE", "AMEX", or "NASDAQ".}
 }
 \value{
-A data frame containing the stock symbols and related information from the specified exchange.
+A data frame containing the stock symbols and related information from the specified
+exchange.
 }
 \description{
-This function downloads a list of stock symbols from a specified exchange (NYSE, AMEX, or NASDAQ).
-The data includes details such as symbol, company name, country, IPO year, industry, and sector.
+This function downloads a list of stock symbols from a specified exchange (NYSE, AMEX, or
+NASDAQ). The data includes details such as symbol, company name, country, IPO year, industry,
+and sector.
 }
 \examples{
-\dontrun{
+\donttest{
 # Download stock symbols from NYSE
 symbols_nyse <- download_data_symbols("NYSE")
 

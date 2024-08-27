@@ -12,7 +12,7 @@
 #' @param data A data frame containing the dependent variable and one or more
 #'   independent variables.
 #' @param model A character that describes the model to estimate (e.g.
-#'   "ret_excess ~ mkt_excess + hmb + sml").
+#'   `"ret_excess ~ mkt_excess + hmb + sml"`).
 #' @param min_obs The minimum number of observations required to estimate the
 #'   model. Defaults to 1.
 #'
@@ -20,7 +20,9 @@
 #'   column names corresponding to the independent variables.
 #'
 #' @seealso [stats::lm()] for details on the underlying linear model fitting used.
+#'
 #' @export
+#'
 #' @examples
 #' data <- data.frame(
 #'   ret_excess = rnorm(100),
@@ -28,6 +30,7 @@
 #'   smb = rnorm(100),
 #'   hml = rnorm(100)
 #' )
+#'
 #' # Estimate model with a single independent variable
 #' estimate_model(data, "ret_excess ~ mkt_excess")
 #'

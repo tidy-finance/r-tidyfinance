@@ -26,4 +26,5 @@ constructs the URL to access the chapter directly.
 \examples{
 open_tidy_finance_website()
 open_tidy_finance_website("beta-estimation")
+
 }

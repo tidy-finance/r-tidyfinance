@@ -9,8 +9,10 @@
 #'   chapters in Tidy Finance with R.
 #'
 #' @export
+#'
 #' @examples
 #' list_tidy_finance_chapters()
+#'
 list_tidy_finance_chapters <- function() {
   c(
     "setting-up-your-environment",

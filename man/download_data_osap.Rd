@@ -26,12 +26,11 @@ and the data is filtered by the specified date range if \code{start_date} and \c
 }
 \description{
 This function downloads the data from \href{https://www.openassetpricing.com/data/}{Open Source Asset Pricing}
-from Google Sheets using a specified sheet ID, processes the data by converting column names to snake_case,
-and optionally filters the data based on a provided date range.
+from Google Sheets using a specified sheet ID, processes the data by converting column names to
+snake_case, and optionally filters the data based on a provided date range.
 }
 \examples{
-\dontrun{
-# Download data filtered by a specific date range
-osap_monthly <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
+\donttest{
+  osap_monthly <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
 }
 }

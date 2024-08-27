@@ -18,4 +18,5 @@ various topics covered.
 }
 \examples{
 list_tidy_finance_chapters()
+
 }

@@ -8,7 +8,8 @@ assign_portfolio(
   data,
   sorting_variable,
   breakpoint_options = NULL,
-  breakpoint_function = compute_breakpoints
+  breakpoint_function = compute_breakpoints,
+  data_options = NULL
 )
 }
 \arguments{
@@ -22,7 +23,11 @@ breakpoints.}
 \code{breakpoint_function}.}
 
 \item{breakpoint_function}{A function to compute breakpoints. The default is
-set to \code{tidyfinance::compute_breakpoints()}.}
+set to \link{compute_breakpoints}.}
+
+\item{data_options}{A named list of \link{data_options} with characters,
+indicating the column names required to run this function. The required
+column names identify dates.  Defaults to \code{date = date} and \code{id = permno}.}
 }
 \value{
 A vector of portfolio assignments for each row in the input \code{data}.
@@ -34,9 +39,10 @@ This function assigns data points to portfolios based on a specified
 sorting variable and the selected function to compute breakpoints. Users
 can specify a function to compute breakpoints. The function must take
 \code{data} and \code{sorting_variable} as the first two arguments. Additional
-arguments are passed with a named list lin \code{breakpoint_options}. The
+arguments are passed with a named list \link{breakpoint_options}. The
 function needs to return an ascending vector of breakpoints. By default,
-breakpoints are computed with \code{tidyfinance::compute_breakpoints()}.
+breakpoints are computed with \link{compute_breakpoints}. The default
+column names can be modified using \link{data_options}.
 }
 \examples{
 data <- data.frame(
@@ -44,10 +50,12 @@ data <- data.frame(
   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),
   market_cap = 1:100
 )
-assign_portfolio(data, "market_cap", list(n_portfolios = 5))
+
+assign_portfolio(data, "market_cap", breakpoint_options(n_portfolios = 5))
+
 assign_portfolio(
   data, "market_cap",
-  list(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
+  breakpoint_options(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
 )
 
 }

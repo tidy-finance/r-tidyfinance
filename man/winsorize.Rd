@@ -26,4 +26,5 @@ tails of the distribution based on the \code{cut} parameter.
 set.seed(123)
 data <- rnorm(100)
 winsorized_data <- winsorize(data, 0.05)
+
 }

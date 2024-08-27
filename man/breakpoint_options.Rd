@@ -13,31 +13,34 @@ breakpoint_options(
 )
 }
 \arguments{
-\item{n_portfolios}{Integer, optional. The number of portfolios to create. Must be a positive integer.
-If not provided, defaults to \code{NULL}.}
+\item{n_portfolios}{Integer, optional. The number of portfolios to create. Must be a
+positive integer. If not provided, defaults to \code{NULL}.}
 
-\item{percentiles}{Numeric vector, optional. A vector of percentile thresholds for defining breakpoints.
-Each value should be between 0 and 1. If not provided, defaults to \code{NULL}.}
+\item{percentiles}{Numeric vector, optional. A vector of percentile thresholds for
+defining breakpoints. Each value should be between 0 and 1. If not provided, defaults
+to \code{NULL}.}
 
-\item{breakpoint_exchanges}{Character, optional. A non-empty string specifying the exchange for which the breakpoints apply.
-If not provided, defaults to \code{NULL}.}
+\item{breakpoint_exchanges}{Character, optional. A non-empty string specifying the
+exchange for which the breakpoints apply. If not provided, defaults to \code{NULL}.}
 
-\item{smooth_bunching}{Logical, optional. Indicates whether smooth bunching should be applied. Defaults to \code{FALSE}.}
+\item{smooth_bunching}{Logical, optional. Indicates whether smooth bunching should
+be applied. Defaults to \code{FALSE}.}
 
-\item{...}{Additional optional arguments. These will be captured in the resulting structure as a list.}
+\item{...}{Additional optional arguments. These will be captured in the resulting
+structure as a list.}
 }
 \value{
-A list of class \code{"tidyfinance_breakpoint_options"} containing the provided breakpoint options,
-including any additional arguments passed via \code{...}.
+A list of class \code{"tidyfinance_breakpoint_options"} containing the provided
+breakpoint options, including any additional arguments passed via \code{...}.
 }
 \description{
-This function generates a structured list of options for defining breakpoints in portfolio sorting.
-It includes parameters for the number of portfolios, percentile thresholds, exchange-specific breakpoints,
-and smooth bunching, along with additional optional parameters.
+This function generates a structured list of options for defining breakpoints in
+portfolio sorting. It includes parameters for the number of portfolios, percentile
+thresholds, exchange-specific breakpoints, and smooth bunching, along with additional
+optional parameters.
 }
 \examples{
-# Example usage
-options <- breakpoint_options(
+breakpoint_options(
   n_portfolios = 5,
   percentiles = c(0.2, 0.4, 0.6, 0.8),
   breakpoint_exchanges = "NYSE",
@@ -45,6 +48,5 @@ options <- breakpoint_options(
   custom_threshold = 0.5,
   another_option = "example"
 )
-print(options)
 
 }

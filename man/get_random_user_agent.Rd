@@ -10,7 +10,7 @@ get_random_user_agent()
 A character string representing a randomly selected user agent.
 }
 \description{
-This function selects and returns a random user agent string from a predefined list.
+This internal function selects and returns a random user agent string from a predefined list.
 The list contains user agents for various operating systems and browsers, including
 Windows, macOS, Linux, Android, iPhone, Chrome, Safari, Firefox, and Edge.
 }

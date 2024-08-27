@@ -34,8 +34,16 @@
 #'   ignored and equally-spaced portfolios are returned for these cases with a
 #'   warning.
 #'   }
+#' @param data_options A named list of \link{data_options} with characters, indicating the column names
+#'  required to run this function. The required column names identify dates. Defaults to `exchange = exchange`.
 #'
 #' @return A vector of breakpoints of the desired length.
+#'
+#' @note This function will stop and throw an error if both `n_portfolios` and
+#'   `percentiles` are provided or if neither is provided. Ensure that you only
+#'   use one of these parameters.
+#'
+#' @export
 #'
 #' @examples
 #' data <- data.frame(
@@ -43,31 +51,32 @@
 #'   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),
 #'   market_cap = 1:100
 #' )
+#'
 #' compute_breakpoints(data, "market_cap", breakpoint_options(n_portfolios = 5))
 #' compute_breakpoints(
 #'   data, "market_cap",
 #'   breakpoint_options(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
 #'  )
 #'
-#' @export
-#'
-#' @note This function will stop and throw an error if both `n_portfolios` and
-#'   `percentiles` are provided or if neither is provided. Ensure that you only
-#'   use one of these parameters.
 compute_breakpoints <- function(
     data,
     sorting_variable,
-    breakpoint_options
+    breakpoint_options,
+    data_options = NULL
   ) {
 
   if (!is.list(breakpoint_options)) {
     cli::cli_abort("Please provide a named list with breakpoint options.")
   }
 
-  n_portfolios <- breakpoint_options[["n_portfolios"]]
-  percentiles <- breakpoint_options[["percentiles"]]
-  breakpoint_exchanges <- breakpoint_options[["breakpoint_exchanges"]]
-  smooth_bunching <- breakpoint_options[["smooth_bunching"]]
+  n_portfolios <- breakpoint_options$n_portfolios
+  percentiles <- breakpoint_options$percentiles
+  breakpoint_exchanges <- breakpoint_options$breakpoint_exchanges
+  smooth_bunching <- breakpoint_options$smooth_bunching
+
+  if (is.null(data_options)) {
+    data_options <- data_options()
+  }
 
   if (!is.null(n_portfolios) && !is.null(percentiles)) {
     cli::cli_abort("Please provide either {.arg n_portfolios} or {.arg percentiles}, not both.")
@@ -76,11 +85,11 @@ compute_breakpoints <- function(
   }
 
   if (!is.null(breakpoint_exchanges)) {
-    if (!("exchange" %in% colnames(data))) {
-      cli::cli_abort("Please provide the column 'exchange' when filtering using {.arg breakpoint_exchanges}.")
+    if (!(data_options$exchange %in% colnames(data))) {
+      cli::cli_abort("Please provide the column {data_options$exchange} when filtering using {.arg breakpoint_exchanges}.")
     }
     data <- data |>
-      filter(exchange %in% breakpoint_exchanges)
+      filter(.data[[data_options$exchange]] %in% breakpoint_exchanges)
   }
 
   if (!is.null(n_portfolios)) {

@@ -38,6 +38,7 @@ utils::globalVariables(
     "portfolio", "portfolio_main", "portfolio_secondary", "ret_excess_ew",
     "ret_excess_vw", "ret_measure", "top", "upper_bound",
     "Anlageklasse", "Asset.Class", "symbol",
-    "country", "industry", "ipoyear", "sector"
+    "country", "industry", "ipoyear", "sector",
+    "..date", "..id"
   )
 )

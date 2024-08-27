@@ -9,13 +9,15 @@ lag_column(column, date, lag, max_lag, drop_na = TRUE)
 \arguments{
 \item{column}{A numeric vector or column to be lagged.}
 
-\item{date}{A vector representing dates corresponding to the \code{column}. This should be in a date or datetime format.}
+\item{date}{A vector representing dates corresponding to the \code{column}. This should be in a
+date or datetime format.}
 
 \item{lag}{An integer specifying the minimum lag (in days, hours, etc.) to apply to \code{column}.}
 
 \item{max_lag}{An integer specifying the maximum lag (in days, hours, etc.) to apply to \code{column}.}
 
-\item{drop_na}{A logical value indicating whether to drop \code{NA} values from the resulting lagged column. Defaults to \code{TRUE}.}
+\item{drop_na}{A logical value indicating whether to drop \code{NA} values from the resulting lagged
+column. Defaults to \code{TRUE}.}
 }
 \value{
 A vector of the same length as \code{column}, containing the lagged values.
@@ -46,4 +48,5 @@ data |>
            \(x) lag_column(x, date, months(3), months(6), drop_na = TRUE))
   ) |>
 dplyr::ungroup()
+
 }

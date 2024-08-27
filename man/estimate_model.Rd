@@ -11,7 +11,7 @@ estimate_model(data, model, min_obs = 1)
 independent variables.}
 
 \item{model}{A character that describes the model to estimate (e.g.
-"ret_excess ~ mkt_excess + hmb + sml").}
+\code{"ret_excess ~ mkt_excess + hmb + sml"}).}
 
 \item{min_obs}{The minimum number of observations required to estimate the
 model. Defaults to 1.}
@@ -37,6 +37,7 @@ data <- data.frame(
   smb = rnorm(100),
   hml = rnorm(100)
 )
+
 # Estimate model with a single independent variable
 estimate_model(data, "ret_excess ~ mkt_excess")
 
