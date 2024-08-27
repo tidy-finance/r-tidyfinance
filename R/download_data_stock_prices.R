@@ -74,7 +74,7 @@ download_data_stock_prices <- function(
         lapply(sublist, function(x) ifelse(is.null(x), NA, x))
       })
 
-      indicators <- raw_data[[1]]$indicators$adjclose[[1]]
+      indicators <- raw_data[[1]]$indicators$adjclose
       indicators <- lapply(indicators, function(x) ifelse(is.null(x), NA, x))
 
       processed_data_symbol <- tibble(
@@ -85,7 +85,7 @@ download_data_stock_prices <- function(
         "low" = as.numeric(unlist(ohlcv$low)),
         "high" = as.numeric(unlist(ohlcv$high)),
         "close" = as.numeric(unlist(ohlcv$close)),
-        "adjusted_close" = as.numeric(unlist(indicators$adjclose))
+        "adjusted_close" = as.numeric(unlist(indicators))
       )
 
       processed_data[[j]] <- processed_data_symbol
