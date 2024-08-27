@@ -6,6 +6,13 @@
 * Added `estimate_betas()` to estimate risk factor betas.
 * Added `estimate_fama_macbeth()` to estimate Fama-MacBeth models.
 * Added `download_data_osap()` to download data from [Open Source Asset Pricing](https://www.openassetpricing.com/data/).
+* Added `download_data_fred()` to download data from [Federal Reserve Economic Data](https://fred.stlouisfed.org/).
+* Added `download_data_stock_prices()` to download data from [Yahoo Finance](https://finance.yahoo.com/).
+* Added `download_data_symbols()` to download data from [Nasdaq Stock Screener](https://www.nasdaq.com/market-activity/stocks/screener).
+* Added `compute_portfolio_returns()` to implement different portfolio sorting approaches.
+* Added `compute_long_short_returns()` to quickly compute long-short portfolio returns.
+* Added `compute_breakpoints()` to make `assign_portfolio()` more flexible. 
+* Added `breakpoint_options()` and `data_options()` to provide more flexibility with respect to column names.
 
 ## Bug fixes
 
@@ -15,10 +22,12 @@
 
 * Migrated to `cli` for error messages and warnings.
 + Aligned documentation across functions. 
-* Switched to NULL for optional default values. 
+* Switched to `NULL` for optional default values. 
 + Removed dependency from named placeholder that is only available from R 4.2 on.
 * Removed `readxl` dependency from `download_data_macro_predictors()`.
 * Removed redundant `check_if_package_installed()` function. 
+* Updated `estimate_model()` to support both `estimate_betas()` and `estimate_fama_macbeth()`.
+* Updated `assign_portfolio()` to support `compute_portfolio_returns()`.
 
 # tidyfinance 0.3.0
 
