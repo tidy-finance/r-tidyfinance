@@ -15,6 +15,6 @@ dataset belongs, always "Global Q").
 This function returns a tibble with the supported Global Q dataset types,
 including their names and frequencies (daily, weekly, weekly week-to-week,
 monthly, quarterly, annual). Each dataset type is associated with the Global
-Q model, specifically the q5 factors model for the year 2022. Additionally,
+Q model, specifically the q5 factors model for the year 2023. Additionally,
 it annotates each dataset with the domain "Global Q".
 }
