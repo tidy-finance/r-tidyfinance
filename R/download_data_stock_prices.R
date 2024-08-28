@@ -68,14 +68,21 @@ download_data_stock_prices <- function(
     if (response$status_code == 200) {
       raw_data <- httr2::resp_body_json(response)$chart$result
 
-      ohlcv <- unlist(raw_data[[1]]$indicators$quote, recursive = FALSE)
+      replace_null_with_na <- function(x) {
+        if (is.list(x)) {
+          lapply(x, replace_null_with_na)
+        } else if (is.null(x)) {
+          NA
+        } else {
+          x
+        }
+      }
 
-      ohlcv <- lapply(ohlcv, function(sublist) {
-        lapply(sublist, function(x) ifelse(is.null(x), NA, x))
-      })
+      ohlcv <- unlist(raw_data[[1]]$indicators$quote, recursive = FALSE)
+      ohlcv <- replace_null_with_na(ohlcv)
 
       indicators <- raw_data[[1]]$indicators$adjclose
-      indicators <- lapply(indicators, function(x) ifelse(is.null(x), NA, x))
+      indicators <- replace_null_with_na(indicators)
 
       processed_data_symbol <- tibble(
         "symbol" = symbols[j],
