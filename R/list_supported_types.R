@@ -445,9 +445,9 @@ list_supported_types_wrds <- function() {
 #' @returns A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
 list_supported_types_other <- function() {
   tibble(
-    "type" = c("stock_prices", "constituents", "fred", "osap", "symbols"),
-    "dataset_name" = c("YahooFinance", "various", "various", "Open Source Asset Pricing", "Nasdaq Stock Screener"),
-    "domain" = c("Stock Prices", "Index Constituents", "FRED", "Open Source Asset Pricing", "Stock Symbols")
+    "type" = c("stock_prices", "constituents", "fred", "osap"),
+    "dataset_name" = c("YahooFinance", "various", "various", "Open Source Asset Pricing"),
+    "domain" = c("Stock Prices", "Index Constituents", "FRED", "Open Source Asset Pricing")
   )
 }
 

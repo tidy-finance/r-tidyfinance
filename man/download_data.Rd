@@ -37,7 +37,6 @@ appropriate function for downloading and processing the data.
   download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
   download_data("constituents", index = "DAX")
   download_data("fred", series = c("GDP", "CPIAUCNS"))
-  download_data("symbols", exchange = "AMEX")
   download_data("stock_prices", symbols = c("AAPL", "MSFT"))
 }
 }
