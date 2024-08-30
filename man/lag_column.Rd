@@ -4,7 +4,7 @@
 \alias{lag_column}
 \title{Lag a Column Based on Date and Time Range}
 \usage{
-lag_column(column, date, lag, max_lag, drop_na = TRUE)
+lag_column(column, date, lag, max_lag = lag, drop_na = TRUE)
 }
 \arguments{
 \item{column}{A numeric vector or column to be lagged.}
@@ -14,7 +14,8 @@ date or datetime format.}
 
 \item{lag}{An integer specifying the minimum lag (in days, hours, etc.) to apply to \code{column}.}
 
-\item{max_lag}{An integer specifying the maximum lag (in days, hours, etc.) to apply to \code{column}.}
+\item{max_lag}{An integer specifying the maximum lag (in days, hours, etc.) to apply to \code{column}.
+Defaults to \code{lag}.}
 
 \item{drop_na}{A logical value indicating whether to drop \code{NA} values from the resulting lagged
 column. Defaults to \code{TRUE}.}
