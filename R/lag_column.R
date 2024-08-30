@@ -8,6 +8,7 @@
 #'  date or datetime format.
 #' @param lag An integer specifying the minimum lag (in days, hours, etc.) to apply to `column`.
 #' @param max_lag An integer specifying the maximum lag (in days, hours, etc.) to apply to `column`.
+#'  Defaults to `lag`.
 #' @param drop_na A logical value indicating whether to drop `NA` values from the resulting lagged
 #'  column. Defaults to `TRUE`.
 #'
@@ -42,7 +43,7 @@ lag_column <- function(
     column,
     date,
     lag,
-    max_lag,
+    max_lag = lag,
     drop_na = TRUE
   ) {
 

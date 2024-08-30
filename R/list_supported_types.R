@@ -376,7 +376,7 @@ list_supported_types_ff_legacy <- function() {
 #' This function returns a tibble with the supported Global Q dataset types,
 #' including their names and frequencies (daily, weekly, weekly week-to-week,
 #' monthly, quarterly, annual). Each dataset type is associated with the Global
-#' Q model, specifically the q5 factors model for the year 2022. Additionally,
+#' Q model, specifically the q5 factors model for the year 2023. Additionally,
 #' it annotates each dataset with the domain "Global Q".
 #'
 #' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
@@ -385,12 +385,12 @@ list_supported_types_ff_legacy <- function() {
 list_supported_types_q <- function() {
   tribble(
     ~type, ~dataset_name,
-    "factors_q5_daily", "q5_factors_daily_2022.csv",
-    "factors_q5_weekly", "q5_factors_weekly_2022.csv",
-    "factors_q5_weekly_w2w", "q5_factors_weekly_w2w_2022.csv",
-    "factors_q5_monthly", "q5_factors_monthly_2022.csv",
-    "factors_q5_quarterly", "q5_factors_quarterly_2022.csv",
-    "factors_q5_annual", "q5_factors_annual_2022.csv"
+    "factors_q5_daily", "q5_factors_daily_2023.csv",
+    "factors_q5_weekly", "q5_factors_weekly_2023.csv",
+    "factors_q5_weekly_w2w", "q5_factors_weekly_w2w_2023.csv",
+    "factors_q5_monthly", "q5_factors_monthly_2023.csv",
+    "factors_q5_quarterly", "q5_factors_quarterly_2023.csv",
+    "factors_q5_annual", "q5_factors_annual_2023.csv"
   ) |>
     mutate(domain = "Global Q")
 }
@@ -445,9 +445,9 @@ list_supported_types_wrds <- function() {
 #' @returns A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
 list_supported_types_other <- function() {
   tibble(
-    "type" = c("stock_prices", "constituents", "fred", "osap", "symbols"),
-    "dataset_name" = c("YahooFinance", "various", "various", "Open Source Asset Pricing", "Nasdaq Stock Screener"),
-    "domain" = c("Stock Prices", "Index Constituents", "FRED", "Open Source Asset Pricing", "Stock Symbols")
+    "type" = c("stock_prices", "constituents", "fred", "osap"),
+    "dataset_name" = c("YahooFinance", "various", "various", "Open Source Asset Pricing"),
+    "domain" = c("Stock Prices", "Index Constituents", "FRED", "Open Source Asset Pricing")
   )
 }
 

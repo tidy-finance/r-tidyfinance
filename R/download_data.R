@@ -27,7 +27,6 @@
 #'   download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
 #'   download_data("constituents", index = "DAX")
 #'   download_data("fred", series = c("GDP", "CPIAUCNS"))
-#'   download_data("symbols", exchange = "AMEX")
 #'   download_data("stock_prices", symbols = c("AAPL", "MSFT"))
 #' }
 download_data <- function(type, start_date = NULL, end_date = NULL, ...) {
@@ -48,8 +47,6 @@ download_data <- function(type, start_date = NULL, end_date = NULL, ...) {
     processed_data <- download_data_stock_prices(..., start_date, end_date)
   } else if (grepl("osap", type, fixed = TRUE)) {
     processed_data <- download_data_osap(start_date, end_date)
-  } else if (grepl("symbols", type, fixed = TRUE)) {
-    processed_data <- download_data_symbols(...)
   }
   processed_data
 }

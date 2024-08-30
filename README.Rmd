@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# tidyfinance
+# tidyfinance 
 
 <!-- badges: start -->
 `r badger::badge_cran_release()`
@@ -27,7 +27,7 @@ This repository contains an R package that collects helper functions for develop
 
 ## Installation
 
-You can install the released version of `tidyfinance` [from CRAN](https://cran.r-project.org/web/packages/tidyfinance/index.html) via:
+You can install the released version of `tidyfinance` [from CRAN](https://cran.r-project.org/package=tidyfinance) via:
 
 ``` r
 install.packages("tidyfinance")
