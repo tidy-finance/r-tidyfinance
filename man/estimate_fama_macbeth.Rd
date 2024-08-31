@@ -4,7 +4,13 @@
 \alias{estimate_fama_macbeth}
 \title{Estimate Fama-MacBeth Regressions}
 \usage{
-estimate_fama_macbeth(data, model, vcov = "newey-west", data_options = NULL)
+estimate_fama_macbeth(
+  data,
+  model,
+  vcov = "newey-west",
+  vcov_options = NULL,
+  data_options = NULL
+)
 }
 \arguments{
 \item{data}{A data frame containing the data for the regression. It must include a column
@@ -15,6 +21,12 @@ representing the time periods (defaults to \code{date}) and the variables specif
 \item{vcov}{A character string indicating the type of standard errors to compute. Options are
 \code{"iid"} for independent and identically distributed errors or \code{"newey-west"} for Newey-West
 standard errors. Default is \code{"newey-west"}.}
+
+\item{vcov_options}{A list of additional arguments to be passed to the
+\code{NeweyWest()} function when \code{vcov = "newey-west"}. These can include options
+such as \code{lag}, which specifies the number of lags to use in the Newey-West
+covariance matrix estimation, and \code{prewhite}, which indicates whether to
+apply a prewhitening transformation. Default is an empty list.}
 
 \item{data_options}{A named list of \link{data_options} with characters, indicating the column
 names required to run this function. The required column names identify dates. Defaults to
@@ -44,6 +56,8 @@ data <- tibble::tibble(
 
 estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap")
 estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", vcov = "iid")
+estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap",
+                      vcov = "newey-west", vcov_options = list(lag = 6, prewhite = FALSE))
 
 # Use different column name for date
 data |>

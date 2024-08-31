@@ -10,6 +10,7 @@
 ## Improvements
 
 * Renamed `download_data_wrds_clean_trace()` to `download_data_wrds_trace_enhanced()` for improved consistency.
+* Added `vcov_options` parameter to `estimate_fama_macbeth()`
 
 # tidyfinance 0.4.0
 

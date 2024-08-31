@@ -10,6 +10,11 @@
 #' @param vcov A character string indicating the type of standard errors to compute. Options are
 #'  `"iid"` for independent and identically distributed errors or `"newey-west"` for Newey-West
 #'   standard errors. Default is `"newey-west"`.
+#' @param vcov_options A list of additional arguments to be passed to the
+#'   `NeweyWest()` function when `vcov = "newey-west"`. These can include options
+#'   such as `lag`, which specifies the number of lags to use in the Newey-West
+#'   covariance matrix estimation, and `prewhite`, which indicates whether to
+#'   apply a prewhitening transformation. Default is an empty list.
 #' @param data_options A named list of \link{data_options} with characters, indicating the column
 #'  names required to run this function. The required column names identify dates. Defaults to
 #'  `date = date`.
@@ -34,6 +39,8 @@
 #'
 #' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap")
 #' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", vcov = "iid")
+#' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap",
+#'                       vcov = "newey-west", vcov_options = list(lag = 6, prewhite = FALSE))
 #'
 #' # Use different column name for date
 #' data |>
@@ -44,7 +51,7 @@
 #'  )
 #'
 estimate_fama_macbeth <- function(
-    data, model, vcov = "newey-west", data_options = NULL
+    data, model, vcov = "newey-west", vcov_options = NULL, data_options = NULL
 ) {
 
   if (is.null(data_options)) {
@@ -84,14 +91,14 @@ estimate_fama_macbeth <- function(
     tidyr::pivot_longer(-all_of(data_options$date))
 
   # Function to compute the standard error based on the specified vcov
-  compute_standard_error <- function(model, vcov) {
+  compute_standard_error <- function(model, vcov, vcov_options = NULL) {
     if (vcov == "iid") {
       sqrt(stats::vcov(model)[1, 1])
     } else if (vcov == "newey-west") {
       rlang::check_installed(
         "sandwich", reason = "to use `vcov = newey-west` in `estimate_fama_macbeth()`."
       )
-      sqrt(sandwich::NeweyWest(model))
+      sqrt(do.call(sandwich::NeweyWest, c(list(model), vcov_options)))
     }
   }
 
@@ -101,7 +108,7 @@ estimate_fama_macbeth <- function(
     mutate(model = purrr::map(data, ~ lm("value ~ 1", data = .)),
            risk_premium = purrr::map_dbl(model, ~ .$coefficients),
            n = purrr::map_dbl(data, nrow),
-           standard_error = purrr::map_dbl(model, ~ compute_standard_error(., vcov))
+           standard_error = purrr::map_dbl(model, ~ compute_standard_error(., vcov, vcov_options))
     ) |>
     mutate(t_statistic = case_when(
       vcov == "iid" ~ risk_premium / standard_error * sqrt(n),
