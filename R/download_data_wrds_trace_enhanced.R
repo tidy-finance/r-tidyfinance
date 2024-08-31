@@ -1,4 +1,4 @@
-#' Download Cleaned TRACE Data from WRDS
+#' Download Enhanced TRACE Data from WRDS
 #'
 #' Establishes a connection to the WRDS database to download the specified
 #' CUSIPs trade messages from the Trade Reporting and Compliance Engine (TRACE).
@@ -18,9 +18,9 @@
 #' @export
 #' @examples
 #' \donttest{
-#'   clean_trace <- download_data_wrds_clean_trace("00101JAH9", "2019-01-01", "2021-12-31")
+#'   trace_enhanced <- download_data_wrds_trace_enhanced("00101JAH9", "2019-01-01", "2021-12-31")
 #' }
-download_data_wrds_clean_trace <- function(
+download_data_wrds_trace_enhanced <- function(
     cusips, start_date = NULL, end_date = NULL
   ) {
 

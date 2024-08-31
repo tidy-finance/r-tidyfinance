@@ -433,7 +433,7 @@ list_supported_types_wrds <- function() {
     "wrds_compustat_quarterly", "comp.fundq",
     "wrds_ccm_links", "crsp.ccmxpf_linktable",
     "wrds_fisd", "fisd.fisd_mergedissue, fisd.fisd_mergedissuer",
-    "wrds_trace", "trace.trace_enhanced"
+    "wrds_trace_enhanced", "trace.trace_enhanced"
   ) |>
     mutate(domain = "WRDS")
 }
