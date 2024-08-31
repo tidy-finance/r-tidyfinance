@@ -44,6 +44,9 @@ estimate_model(data, "ret_excess ~ mkt_excess")
 # Estimate model with multiple independent variables
 estimate_model(data, "ret_excess ~ mkt_excess + smb + hml")
 
+# Estimate model without intercept
+estimate_model(data, "ret_excess ~ mkt_excess - 1")
+
 }
 \seealso{
 \code{\link[stats:lm]{stats::lm()}} for details on the underlying linear model fitting used.

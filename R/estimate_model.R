@@ -37,11 +37,21 @@
 #' # Estimate model with multiple independent variables
 #' estimate_model(data, "ret_excess ~ mkt_excess + smb + hml")
 #'
+#' # Estimate model without intercept
+#' estimate_model(data, "ret_excess ~ mkt_excess - 1")
+#'
 estimate_model <- function(data, model, min_obs = 1) {
   model_parts <- strsplit(model, "~", fixed = TRUE)[[1]]
   response_var <- trimws(model_parts[1])
   independent_vars <- strsplit(trimws(model_parts[2]), "[ +]")[[1]]
   independent_vars <- independent_vars[nzchar(independent_vars)]
+  independent_vars <- independent_vars[!independent_vars %in% c("-", "1")]
+
+  if ("intercept" %in% independent_vars) {
+    cli::cli_abort(
+      "None of the columns in {.arg model} may be called 'intercept'. Please rename the column and try again."
+    )
+  }
 
   if (nrow(data) < min_obs || nrow(data) <= length(independent_vars)) {
     if (length(independent_vars) == 0) {
@@ -60,7 +70,10 @@ estimate_model <- function(data, model, min_obs = 1) {
 
   fit <- stats::lm(stats::as.formula(model), data = data)
   beta <- stats::coef(fit)
-  beta <- beta[names(beta) %in% independent_vars]
+
+  if ("(Intercept)" %in% names(beta)) {
+    names(beta)[names(beta) == "(Intercept)"] <- "intercept"
+  }
 
   as_tibble(t(beta))
 }
