@@ -1,5 +1,15 @@
 # tidyfinance (development version)
 
+## New features
+
+## Bug fixes
+
+* Added missing support of "wrds_trace_enhanced" and "wrds_fisd" support to `download_data_wrds()`
+
+## Improvements
+
+* Renamed `download_data_wrds_clean_trace()` to `download_data_wrds_trace_enhanced()` for improved consistency.
+
 # tidyfinance 0.4.0
 
 ## New features
