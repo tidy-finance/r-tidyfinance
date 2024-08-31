@@ -4,7 +4,8 @@
 
 ## Bug fixes
 
-* Added missing support of "wrds_trace_enhanced" and "wrds_fisd" support to `download_data_wrds()`
+* Added missing support of "wrds_trace_enhanced" and "wrds_fisd" support to `download_data_wrds()`.
+* Added intercept to `estimate_model()`, `estimate_betas()`, and `estimate_fama_macbeth()`.
 
 ## Improvements
 

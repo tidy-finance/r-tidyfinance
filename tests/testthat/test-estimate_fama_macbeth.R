@@ -72,7 +72,7 @@ test_that("estimate_fama_macbeth computes correct number of rows", {
 
   result <- estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap")
 
-  expect_equal(nrow(result), 3)
+  expect_equal(nrow(result), 4)
 })
 
 test_that("estimate_fama_macbeth handles edge cases", {

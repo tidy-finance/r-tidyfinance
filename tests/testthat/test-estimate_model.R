@@ -17,7 +17,7 @@ test_that("Single independent variable with sufficient observations", {
 test_that("Multiple independent variables with sufficient observations", {
   result <- estimate_model(data, "ret_excess ~ mkt_excess + smb + hml", min_obs = 1)
   expect_type(result, "list")
-  expect_equal(ncol(result), 3)
+  expect_equal(ncol(result), 4)
 })
 
 # Test for the presence of specified independent variables in the dataset
