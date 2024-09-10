@@ -1,5 +1,6 @@
 library(dplyr)
 library(rlang)
+library(lubridate)
 library(tidyr)
 
 # TODO: add date column as parameter - or data_options?
@@ -13,19 +14,11 @@ add_lag_column <- function(data, cols, by = NULL, lag, max_lag = lag, drop_na = 
   by <- enquo(by)
   cols <- enquos(cols)
 
-  if (!quo_is_null(by)) {
-    main_data <- data |>
-      mutate(..lower_bound = date + lag,
-             ..upper_bound = date + max_lag) |>
-      select(!!by, ..lower_bound, ..upper_bound, !!!cols)
-  } else {
-    main_data <- data |>
-      mutate(..lower_bound = date + lag,
-             ..upper_bound = date + max_lag) |>
-      select(..lower_bound, ..upper_bound, !!!cols)
-  }
+  main_data <- data |>
+    mutate(..lower_bound = date + lag,
+           ..upper_bound = date + max_lag)
 
-  results <- data
+  result <- data
   for (col in cols) {
 
     if (!quo_is_null(by)) {
@@ -42,12 +35,12 @@ add_lag_column <- function(data, cols, by = NULL, lag, max_lag = lag, drop_na = 
     }
 
     if (!quo_is_null(by)) {
-      result <- data |>
+      result <- result |>
         left_join(tmp_data,
                   join_by(!!by, closest(date >= ..lower_bound), date <= ..upper_bound),
                   suffix = c("", "_lag"))
     } else {
-      result <- data |>
+      result <- result |>
         left_join(tmp_data,
                   join_by(closest(date >= ..lower_bound), date <= ..upper_bound),
                   suffix = c("", "_lag"))
@@ -72,5 +65,12 @@ data |>
 data |>
   add_lag_column(c("bm", "size"), lag = months(3))
 
+# Introduce some NAs into the data
+data$bm[c(3, 5, 7, 15, 18)] <- NA
+data$size[c(2, 4, 8, 13)] <- NA
+
+# Apply the lag function
+data |>
+  add_lag_column(c(bm, size), lag = months(3), by = permno)
 
 
