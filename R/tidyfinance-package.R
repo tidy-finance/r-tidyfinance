@@ -10,6 +10,6 @@
 #' @importFrom stats quantile setNames weighted.mean as.formula na.omit
 #' @importFrom utils read.csv
 #' @importFrom tidyr pivot_longer unnest nest
-#' @importFrom rlang :=
+#' @importFrom rlang := enquo syms quo_is_null
 ## usethis namespace: end
 NULL

@@ -10,6 +10,7 @@ data_options(
   exchange = "exchange",
   mktcap_lag = "mktcap_lag",
   ret_excess = "ret_excess",
+  portfolio = "portfolio",
   ...
 )
 }
@@ -25,6 +26,8 @@ data_options(
 
 \item{ret_excess}{A character string representing the excess return variable
 (e.g., "ret_excess").}
+
+\item{portfolio}{A character string representing the portfolio variable (e.g., "portfolio").}
 
 \item{...}{Additional arguments to be included in the data options list.}
 }
