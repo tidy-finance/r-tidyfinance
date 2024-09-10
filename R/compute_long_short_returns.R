@@ -45,7 +45,7 @@ compute_long_short_returns <- function(
 ) {
 
   if (is.null(data_options)) {
-    data_options <- data_options(portfolio="portfolio", ret_excess = "ret_excess")
+    data_options <- data_options()
   }
 
   data$..date <- data[[data_options$date]]

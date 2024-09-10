@@ -12,6 +12,7 @@
 #'  (e.g., "mktcap_lag").
 #' @param ret_excess A character string representing the excess return variable
 #'  (e.g., "ret_excess").
+#' @param portfolio A character string representing the portfolio variable (e.g., "portfolio").
 #' @param ... Additional arguments to be included in the data options list.
 #'
 #' @return A list of class `tidyfinance_data_options` containing the specified data options.
@@ -31,6 +32,7 @@ data_options <- function(
     exchange = "exchange",
     mktcap_lag = "mktcap_lag",
     ret_excess = "ret_excess",
+    portfolio = "portfolio",
     ...
 ) {
   # Error handling for id

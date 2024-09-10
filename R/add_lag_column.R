@@ -1,27 +1,30 @@
+library(tidyfinance)
 library(dplyr)
-library(rlang)
-library(lubridate)
-library(tidyr)
 
-# TODO: add date column as parameter - or data_options?
-
-add_lag_column <- function(data, cols, by = NULL, lag, max_lag = lag, drop_na = TRUE) {
+add_lag_column <- function(data, cols, by = NULL, lag, max_lag = lag, drop_na = TRUE, data_options = NULL) {
 
   if (lag < 0 || max_lag < lag) {
     cli::cli_abort("{.arg lag} and {.arg max_lag} must be non-negative and {.arg max_lag} must be greater than or equal to {.arg lag}")
   }
 
-  by <- enquo(by)
-  cols <- enquos(cols)
+  if (is.null(data_options)) {
+    data_options <- data_options()
+  }
+
+  date_col <- data_options$date
+
+  by <- rlang::enquo(by)
+  cols <- rlang::syms(cols)
 
   main_data <- data |>
+    rename(date = date_col) |>
     mutate(..lower_bound = date + lag,
            ..upper_bound = date + max_lag)
 
   result <- data
   for (col in cols) {
 
-    if (!quo_is_null(by)) {
+    if (!rlang::quo_is_null(by)) {
       tmp_data <- main_data |>
         select(!!by, ..lower_bound, ..upper_bound, !!col)
     } else {
@@ -34,21 +37,23 @@ add_lag_column <- function(data, cols, by = NULL, lag, max_lag = lag, drop_na = 
         tidyr::drop_na(!!col)
     }
 
-    if (!quo_is_null(by)) {
+    if (!rlang::quo_is_null(by)) {
       result <- result |>
         left_join(tmp_data,
                   join_by(!!by, closest(date >= ..lower_bound), date <= ..upper_bound),
-                  suffix = c("", "_lag"))
+                  suffix = c("", "_lag")) |>
+        select(-..lower_bound, -..upper_bound)
     } else {
       result <- result |>
         left_join(tmp_data,
                   join_by(closest(date >= ..lower_bound), date <= ..upper_bound),
-                  suffix = c("", "_lag"))
+                  suffix = c("", "_lag")) |>
+        select(-..lower_bound, -..upper_bound)
     }
   }
 
   result |>
-    select(-..lower_bound, -..upper_bound)
+    rename(date_col := date)
 }
 
 # Example usage
@@ -60,10 +65,7 @@ data <- tibble::tibble(
 )
 
 data |>
-  add_lag_column(c(bm, size), lag = months(3), by = permno)
-
-data |>
-  add_lag_column(c("bm", "size"), lag = months(3))
+  add_lag_column(c("bm", "size"), lag = months(3), by = "permno")
 
 # Introduce some NAs into the data
 data$bm[c(3, 5, 7, 15, 18)] <- NA
@@ -71,6 +73,5 @@ data$size[c(2, 4, 8, 13)] <- NA
 
 # Apply the lag function
 data |>
-  add_lag_column(c(bm, size), lag = months(3), by = permno)
-
+  add_lag_column(c("bm", "size"), lag = months(3), by = permno)
 
