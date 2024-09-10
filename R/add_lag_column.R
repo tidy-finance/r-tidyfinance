@@ -11,36 +11,47 @@ add_lag_column <- function(data, cols, by = NULL, lag, max_lag = lag, drop_na = 
   }
 
   by <- enquo(by)
-  cols <- enquo(cols)
+  cols <- enquos(cols)
 
   if (!quo_is_null(by)) {
-
-    tmp_data <- data |>
+    main_data <- data |>
       mutate(..lower_bound = date + lag,
              ..upper_bound = date + max_lag) |>
-      select(!!by, ..lower_bound, ..upper_bound, !!cols)
+      select(!!by, ..lower_bound, ..upper_bound, !!!cols)
   } else {
-    tmp_data <- data |>
+    main_data <- data |>
       mutate(..lower_bound = date + lag,
              ..upper_bound = date + max_lag) |>
-      select(..lower_bound, ..upper_bound, !!cols)
+      select(..lower_bound, ..upper_bound, !!!cols)
   }
 
-  if (drop_na) {
-    tmp_data <- tmp_data |>
-      tidyr::drop_na(!!cols)
-  }
+  results <- data
+  for (col in cols) {
 
-  if (!quo_is_null(by)) {
-    result <- data |>
-      left_join(tmp_data,
-                join_by(!!by, closest(date >= ..lower_bound), date <= ..upper_bound),
-                suffix = c("", "_lag"))
-  } else {
-    result <- data |>
-      left_join(tmp_data,
-                join_by(closest(date >= ..lower_bound), date <= ..upper_bound),
-                suffix = c("", "_lag"))
+    if (!quo_is_null(by)) {
+      tmp_data <- main_data |>
+        select(!!by, ..lower_bound, ..upper_bound, !!col)
+    } else {
+      tmp_data <- main_data |>
+        select(..lower_bound, ..upper_bound, !!col)
+    }
+
+    if (drop_na) {
+      tmp_data <- tmp_data |>
+        tidyr::drop_na(!!col)
+    }
+
+    if (!quo_is_null(by)) {
+      result <- data |>
+        left_join(tmp_data,
+                  join_by(!!by, closest(date >= ..lower_bound), date <= ..upper_bound),
+                  suffix = c("", "_lag"))
+    } else {
+      result <- data |>
+        left_join(tmp_data,
+                  join_by(closest(date >= ..lower_bound), date <= ..upper_bound),
+                  suffix = c("", "_lag"))
+    }
   }
 
   result |>
