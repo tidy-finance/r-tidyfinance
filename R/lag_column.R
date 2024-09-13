@@ -1,5 +1,7 @@
 #' Lag a Column Based on Date and Time Range
 #'
+#' @description `r lifecycle::badge('experimental')`
+#'
 #' This function generates a lagged version of a given column based on a date variable, with the
 #' ability to specify a range of lags. It also allows for the optional removal of `NA` values.
 #'
