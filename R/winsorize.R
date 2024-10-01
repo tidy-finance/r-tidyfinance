@@ -24,9 +24,10 @@ winsorize <- function(x, cut) {
     cli::cli_abort("{.arg cut} must be inside [0, 0.5].")
   }
 
-  lb <- quantile(x, cut, na.rm = TRUE)
-  up <- quantile(x, 1 - cut, na.rm = TRUE)
-  x <- replace(x, x > up, up)
+  quantiles <- quantile(x, probs = c(cut, 1 - cut), na.rm = TRUE)
+  lb <- quantiles[1]
+  ub <- quantiles[2]
+  x <- replace(x, x > ub, ub)
   x <- replace(x, x < lb, lb)
   x
 }
