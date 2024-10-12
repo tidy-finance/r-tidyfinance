@@ -29,13 +29,13 @@ This repository contains an R package that collects helper functions for develop
 
 You can install the released version of `tidyfinance` [from CRAN](https://cran.r-project.org/package=tidyfinance) via:
 
-``` r
+```r
 install.packages("tidyfinance")
 ```
 
 You can install the development version of `tidyfinance` from [GitHub](https://github.com/tidy-finance/r-tidyfinance) via:
 
-``` r
+```r
 # install.packages("pak")
 pak::pak("tidy-finance/r-tidyfinance")
 ```
@@ -46,7 +46,7 @@ pak::pak("tidy-finance/r-tidyfinance")
 
 The main functionality of the `tidyfinance` package centers around data download. You can download most of the data that we used in [Tidy Finance with R](https://www.tidy-finance.org/r/index.html) using the `download_data()` function or its children. For instance, both functions give the same result:
 
-``` r
+```r
 download_data(
   type = "factors_ff_3_monthly", 
   start_date = "2000-01-01", 
@@ -77,7 +77,7 @@ download_data_wrds_compustat(
   type = "wrds_compustat_annual",  
   start_date = "2000-01-01", 
   end_date = "2020-12-31",
-  acoxar, amc, aldo
+  additional_columns = c("acoxar", "amc", "aldo")
 )
 ```
 
@@ -104,8 +104,14 @@ We also include (experimental) functions that can be used for different applicat
 
 ```r
 # For portfolio sorts
-assign_portfolio()
+?assign_portfolio()
+
+# For model estimation
+?estimate_model()
 
 # For beta estimation
-estimate_model()
+?estimate_betas()
+
+# For beta estimation
+?estimate_fama_macbeth()
 ```

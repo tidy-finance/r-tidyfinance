@@ -10,7 +10,7 @@
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![](https://img.shields.io/badge/devel%20version-0.4.1-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
+[![](https://img.shields.io/badge/devel%20version-0.4.1.9002-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
 [![R-CMD-check](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -83,7 +83,7 @@ download_data_wrds_compustat(
   type = "wrds_compustat_annual",  
   start_date = "2000-01-01", 
   end_date = "2020-12-31",
-  acoxar, amc, aldo
+  additional_columns = c("acoxar", "amc", "aldo")
 )
 ```
 
@@ -116,8 +116,14 @@ versions as we try to make them more general:
 
 ``` r
 # For portfolio sorts
-assign_portfolio()
+?assign_portfolio()
+
+# For model estimation
+?estimate_model()
 
 # For beta estimation
-estimate_model()
+?estimate_betas()
+
+# For beta estimation
+?estimate_fama_macbeth()
 ```
