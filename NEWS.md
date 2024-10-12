@@ -1,5 +1,9 @@
 # tidyfinance (development version)
 
+## Improvements
+
+* Updated `ccmxpf_linktable` to the new WRDS default `ccmxpf_lnkhist`.
+
 # tidyfinance 0.4.1
 
 ## Bug fixes

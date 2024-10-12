@@ -4,11 +4,7 @@
 \alias{download_data_wrds_ccm_links}
 \title{Download CCM Links from WRDS}
 \usage{
-download_data_wrds_ccm_links(
-  linktype = c("LU", "LC"),
-  linkprim = c("P", "C"),
-  usedflag = 1
-)
+download_data_wrds_ccm_links(linktype = c("LU", "LC"), linkprim = c("P", "C"))
 }
 \arguments{
 \item{linktype}{A character vector indicating the type of link to download.
@@ -18,9 +14,6 @@ for "Link CRSP".}
 \item{linkprim}{A character vector indicating the primacy of the link.
 Default is \code{c("P", "C")}, where "P" indicates primary and "C" indicates
 conditional links.}
-
-\item{usedflag}{An integer indicating whether to use flagged links. The
-default is \code{1}, indicating that only flagged links should be used.}
 }
 \value{
 A data frame with the columns \code{permno}, \code{gvkey}, \code{linkdt}, and
@@ -29,12 +22,12 @@ dates are replaced with today's date.
 }
 \description{
 This function downloads data from the WRDS CRSP/Compustat Merged (CCM) links
-database. It allows users to specify the type of links (\code{linktype}), the
-primacy of the link (\code{linkprim}), and whether to use flagged links
-(\code{usedflag}).
+database. It allows users to specify the type of links (\code{linktype}) and the
+primacy of the link (\code{linkprim}).
 }
 \examples{
 \donttest{
-  ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P", usedflag = 1)
+  ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P")
 }
+
 }

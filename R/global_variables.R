@@ -39,6 +39,6 @@ utils::globalVariables(
     "ret_excess_vw", "ret_measure", "top", "upper_bound",
     "Anlageklasse", "Asset.Class", "symbol",
     "country", "industry", "ipoyear", "sector",
-    "..date", "..id"
+    "..date", "..id", "..lower_bound", "..upper_bound"
   )
 )
