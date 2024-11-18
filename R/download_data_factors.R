@@ -154,6 +154,7 @@ download_data_factors_ff <- function(
 #' @examples
 #' \donttest{
 #'   download_data_factors_q("factors_q5_daily", "2020-01-01", "2020-12-31")
+#'   download_data_factors_q("factors_q5_annual")
 #' }
 download_data_factors_q <- function(
     type, start_date = NULL, end_date = NULL, url = "https://global-q.org/uploads/1/2/2/6/122679606/"
@@ -181,6 +182,9 @@ download_data_factors_q <- function(
   } else if (grepl("daily", type, fixed = TRUE)) {
     processed_data <- raw_data |>
       mutate(DATE = ymd(DATE))
+  } else if (grepl("annual", type, fixed = TRUE)) {
+    processed_data <- raw_data |>
+      mutate(date = year)
   }
 
   processed_data <- processed_data |>

@@ -3,6 +3,7 @@
 ## Improvements
 
 * Updated `ccmxpf_linktable` to the new WRDS default `ccmxpf_lnkhist`.
+* Added support for "factors_q5_annual" in `download_factors_q()`
 
 # tidyfinance 0.4.1
 
