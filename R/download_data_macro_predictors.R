@@ -23,7 +23,7 @@
 #'
 #' @examples
 #' \donttest{
-#'   macro_predictors_monthly <- download_data_macro_predictors("macro_predictors_monthly")
+#'  download_data_macro_predictors("macro_predictors_monthly")
 #' }
 #'
 download_data_macro_predictors <- function(
@@ -49,12 +49,36 @@ download_data_macro_predictors <- function(
   }
 
   if (grepl("monthly", type, fixed = TRUE)) {
-    raw_data <- as_tibble(read.csv(build_macro_predictors_url("Monthly")))
+
+    raw_data <- handle_download_error(
+      function() suppressWarnings(
+        as_tibble(read.csv(build_macro_predictors_url("Monthly")))
+      ),
+      fallback = tibble()
+    )
+
+    if (nrow(raw_data) == 0) {
+      cli::cli_inform("Returning an empty data set due to download failure.")
+      return(raw_data)
+    }
+
     processed_data <- raw_data |>
       mutate(date = ym(yyyymm))
   }
   if (grepl("quarterly", type, fixed = TRUE)) {
-    raw_data <- as_tibble(read.csv(build_macro_predictors_url("Quarterly")))
+
+    raw_data <- handle_download_error(
+      function() suppressWarnings(
+        as_tibble(read.csv(build_macro_predictors_url("Quarterly")))
+      ),
+      fallback = tibble()
+    )
+
+    if (nrow(raw_data) == 0) {
+      cli::cli_inform("Returning an empty data set due to download failure.")
+      return(raw_data)
+    }
+
     processed_data <- raw_data |>
       mutate(
         year = substr(yyyyq, 1, 4),

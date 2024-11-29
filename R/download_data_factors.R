@@ -91,7 +91,16 @@ download_data_factors_ff <- function(
   factors_ff_types <- list_supported_types_ff()
   dataset <- factors_ff_types$dataset_name[factors_ff_types$type == type]
 
-  raw_data <- suppressMessages(frenchdata::download_french_data(dataset))
+  raw_data <- handle_download_error(
+    function() suppressMessages(frenchdata::download_french_data(dataset)),
+    fallback = tibble()
+  )
+
+  if (class(raw_data) != "french_dataset") {
+    cli::cli_inform("Returning an empty data set due to download failure.")
+    return(raw_data)
+  }
+
   raw_data <- raw_data$subsets$data[[1]]
 
   if (grepl("monthly", type, fixed = TRUE)) {
@@ -173,7 +182,19 @@ download_data_factors_q <- function(
 
   factors_q_types <- list_supported_types_q()
   dataset <- factors_q_types$dataset_name[factors_q_types$type == type]
-  raw_data <- suppressMessages(utils::read.csv(paste0(url, dataset)) |> as_tibble())
+
+  raw_data <- handle_download_error(
+    function(url) suppressWarnings(
+      suppressMessages(utils::read.csv(url)) |> as_tibble()
+    ),
+    paste0(url, dataset),
+    fallback = tibble()
+  )
+
+  if (nrow(raw_data) == 0) {
+    cli::cli_inform("Returning an empty data set due to download failure.")
+    return(raw_data)
+  }
 
   if (grepl("monthly", type, fixed = TRUE)) {
     processed_data <- raw_data |>

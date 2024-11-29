@@ -1,5 +1,9 @@
 # tidyfinance (development version)
 
+## Bug fixes
+
+* `download_macro_predictors()`, `download_factors()`, and `download_osap()` now fail gracefully with informative messages instead of errors or warnings.
+
 ## Improvements
 
 * Updated `ccmxpf_linktable` to the new WRDS default `ccmxpf_lnkhist`.
