@@ -34,7 +34,18 @@ download_data_osap <- function(
   }
 
   url <- paste0("https://drive.google.com/uc?export=download&id=", sheet_id)
-  raw_data <- as_tibble(read.csv(url))
+
+  raw_data <- handle_download_error(
+    function() suppressWarnings(
+      as_tibble(read.csv(url))
+    ),
+    fallback = tibble()
+  )
+
+  if (nrow(raw_data) == 0) {
+    cli::cli_inform("Returning an empty data set due to download failure.")
+    return(raw_data)
+  }
 
   processed_data <- raw_data |>
     mutate(date = ymd(date))
