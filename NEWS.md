@@ -1,4 +1,8 @@
-# tidyfinance (development version)
+# tidyfinance 0.4.2
+
+## New features
+
+* Added experimental `add_lag_columns()` function that is more efficient than `lag_column()`
 
 ## Bug fixes
 
@@ -8,6 +12,7 @@
 
 * Updated `ccmxpf_linktable` to the new WRDS default `ccmxpf_lnkhist`.
 * Added support for "factors_q5_annual" in `download_factors_q()`
+* Optimized `winsorize()` by reducing quantile recalculations
 
 # tidyfinance 0.4.1
 
