@@ -96,7 +96,7 @@ download_data_factors_ff <- function(
     fallback = tibble()
   )
 
-  if (class(raw_data) != "french_dataset") {
+  if (!inherits(raw_data, "french_dataset")) {
     cli::cli_inform("Returning an empty data set due to download failure.")
     return(raw_data)
   }
