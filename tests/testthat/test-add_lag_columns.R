@@ -29,3 +29,4 @@ test_that("add_lag_columns preserves original column values", {
   expect_equal(result$bm, data$bm)
   expect_equal(result$size, data$size)
 })
+
