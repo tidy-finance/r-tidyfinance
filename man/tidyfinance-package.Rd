@@ -18,7 +18,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Christoph Scheuch \email{christoph.scheuch@gmail.com} (\href{https://orcid.org/0009-0004-0423-6819}{ORCID}) [copyright holder]
+\strong{Maintainer}: Christoph Scheuch \email{christoph@tidy-intelligence.com} (\href{https://orcid.org/0009-0004-0423-6819}{ORCID}) [copyright holder]
 
 Authors:
 \itemize{
