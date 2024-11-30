@@ -43,7 +43,9 @@
 #' data |>
 #'   add_lag_columns(c("bm", "size"), lag = months(3), by = permno)
 #'
-add_lag_columns <- function(data, cols, by = NULL, lag, max_lag = lag, drop_na = TRUE, data_options = NULL) {
+add_lag_columns <- function(
+  data, cols, by = NULL, lag, max_lag = lag, drop_na = TRUE, data_options = NULL
+) {
 
   if (lag < 0 || max_lag < lag) {
     cli::cli_abort("{.arg lag} and {.arg max_lag} must be non-negative and {.arg max_lag} must be greater than or equal to {.arg lag}")
@@ -59,7 +61,7 @@ add_lag_columns <- function(data, cols, by = NULL, lag, max_lag = lag, drop_na =
   cols <- rlang::syms(cols)
 
   main_data <- data |>
-    rename(date = date_col) |>
+    rename(date = all_of(date_col)) |>
     mutate(..lower_bound = date + lag,
            ..upper_bound = date + max_lag)
 
@@ -68,10 +70,10 @@ add_lag_columns <- function(data, cols, by = NULL, lag, max_lag = lag, drop_na =
 
     if (!rlang::quo_is_null(by)) {
       tmp_data <- main_data |>
-        select(!!by, ..lower_bound, ..upper_bound, !!col)
+        select(!!by, ..lower_bound, ..upper_bound, all_of(col))
     } else {
       tmp_data <- main_data |>
-        select(..lower_bound, ..upper_bound, !!col)
+        select(..lower_bound, ..upper_bound, all_of(col))
     }
 
     if (drop_na) {
