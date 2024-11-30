@@ -49,7 +49,7 @@ list_supported_types()
 
 So, for instance, if you want to download monthly Fama-French Three-Factor data, you can call:
 ```{r}
-#| message: false
+#| eval: false
 download_data("factors_ff_3_monthly", "2020-01-01", "2020-12-31")
 ```
 
@@ -58,6 +58,7 @@ Under the hood, the function uses the `frenchdata` package (see its documentatio
 You can also access q-Factor data in this way, by calling:
 
 ```{r}
+#| eval: false
 download_data("factors_q5_daily", "2020-01-01", "2020-12-31")
 ```
 
