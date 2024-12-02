@@ -81,7 +81,7 @@ download_data_wrds_compustat(
 )
 ```
 
-You can get a list of all currently supported types via `list_supported_types()`. Please open an [issue on GitHub](https://github.com/tidy-finance/r-tidyfinance/issues) to request additional supported types. 
+You can get a list of all currently supported types via `list_supported_types()`. Please open an [issue on GitHub](https://github.com/tidy-finance/r-tidyfinance/issues) to request additional supported types.
 
 ### Other Helpers
 

@@ -1,9 +1,9 @@
 Type: Package
 Package: tidyfinance
 Title: Tidy Finance Helper Functions
-Version: 0.4.1.9004
+Version: 0.4.2.9000
 Authors@R: c(
-    person("Christoph", "Scheuch", , "christoph.scheuch@gmail.com", role = c("aut", "cre", "cph"),
+    person("Christoph", "Scheuch", , "christoph@tidy-intelligence.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0009-0004-0423-6819")),
     person("Stefan", "Voigt", , "stefan.voigt@econ.ku.dk", role = c("aut", "cph"),
            comment = c(ORCID = "0000-0001-5619-3161")),
