@@ -1,3 +1,5 @@
+# tidyfinance 0.4.3
+
 # tidyfinance 0.4.3.
 
 ## Bug fixes
