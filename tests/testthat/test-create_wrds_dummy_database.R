@@ -2,7 +2,8 @@ test_that("create_wrds_dummy_database downloads database to the specified path",
   skip_if_offline()
   skip_on_cran()
   temp_path <- tempfile(fileext = ".sqlite")
-  create_wrds_dummy_database(path = temp_path)
+  create_wrds_dummy_database(path = temp_path) |>
+    expect_message("Downloaded WRDS dummy database to")
   expect_true(file.exists(temp_path))
   unlink(temp_path)
 })

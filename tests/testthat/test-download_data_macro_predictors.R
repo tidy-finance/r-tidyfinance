@@ -9,7 +9,8 @@ test_that("download_data_macro_predictors gracefully handles broken url", {
       sheet_id = "test"
     ),
     "Returning an empty data set due to download failure."
-  )
+  ) |>
+    expect_message("The resource may not be available")
 })
 
 test_that("download_data_macro_predictors handles start_date after end_date", {

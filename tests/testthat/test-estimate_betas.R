@@ -65,6 +65,8 @@ test_that("Performance: Single vs multiple workers give the same result", {
     mkt_excess = rnorm(24, 0, 0.1)
   )
 
+  suppressPackageStartupMessages(require(purrr))
+
   result_single <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
   result_multi <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3), use_furrr = TRUE)
 
