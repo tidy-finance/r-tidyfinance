@@ -35,17 +35,9 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
 
   rlang::check_installed("httr2", reason = "to download data from FRED.")
 
-  if (is.null(start_date) || is.null(end_date)) {
-    cli::cli_inform(
-      "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
-    )
-  } else {
-    if (start_date > end_date) {
-      cli::cli_abort("{.arg start_date} cannot be after {.arg end_date}.")
-    }
-    start_date <- as.Date(start_date)
-    end_date <- as.Date(end_date)
-  }
+  dates <- validate_dates(start_date, end_date)
+  start_date <- dates$start_date
+  end_date <- dates$end_date
 
   fred_processed <- list()
 
@@ -56,27 +48,44 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
 
     user_agent <- get_random_user_agent()
 
-    response <- httr2::request(url) |>
-      httr2::req_error(is_error = \(resp) FALSE) |>
-      httr2::req_user_agent(user_agent) |>
-      httr2::req_perform()
+    response <- handle_download_error(
+      function() httr2::request(url) |>
+        httr2::req_error(is_error = \(resp) FALSE) |>
+        httr2::req_user_agent(user_agent) |>
+        httr2::req_perform(),
+      fallback = NULL
+    )
 
-    if (response$status_code == 200) {
-      fred_raw <- suppressWarnings(httr2::resp_body_string(response)) |>
-        textConnection() |>
-        read.csv() |>
-        as_tibble()
+    if (!is.null(response)) {
+      if (response$status_code == 200) {
+        fred_raw <- suppressWarnings(httr2::resp_body_string(response)) |>
+          textConnection() |>
+          read.csv() |>
+          as_tibble()
 
-      fred_processed[[j]] <- fred_raw |>
-        mutate(date = as.Date(DATE),
-               value = as.numeric(VALUE),
-               series = series[j],
-               .keep = "none")
+        fred_processed[[j]] <- fred_raw |>
+          mutate(date = as.Date(DATE),
+                 value = as.numeric(VALUE),
+                 series = series[j],
+                 .keep = "none")
+      } else {
+        cli::cli_warn(
+          "Failed to retrieve data for series {series[j]} with status code {response$status_code}."
+        )
+        fred_processed[[j]] <- tibble(
+          date = Date(),
+          value = numeric(),
+          series = character()
+        )
+      }
     } else {
-      cli::cli_warn(
-        "Failed to retrieve data for series {series[j]} with status code {response$status_code}."
+      fred_processed[[j]] <- tibble(
+        date = Date(),
+        value = numeric(),
+        series = character()
       )
     }
+
     cli::cli_progress_update()
   }
 

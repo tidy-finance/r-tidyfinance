@@ -79,21 +79,18 @@ download_data_factors_ff <- function(
     "frenchdata", reason = paste0("to download type ", type, ".")
   )
 
-  if (is.null(start_date) || is.null(end_date)) {
-    cli::cli_inform(
-      "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
-    )
-  } else {
-    start_date <- as.Date(start_date)
-    end_date <- as.Date(end_date)
-  }
+  dates <- validate_dates(start_date, end_date)
+  start_date <- dates$start_date
+  end_date <- dates$end_date
 
   factors_ff_types <- list_supported_types_ff()
   dataset <- factors_ff_types$dataset_name[factors_ff_types$type == type]
 
   raw_data <- handle_download_error(
     function() suppressMessages(frenchdata::download_french_data(dataset)),
-    fallback = tibble()
+    fallback = tibble(
+      date = Date()
+    )
   )
 
   if (!inherits(raw_data, "french_dataset")) {
@@ -115,7 +112,6 @@ download_data_factors_ff <- function(
     )
   }
 
-  # Transform column values
   processed_data <- processed_data |>
     mutate(
       across(-date, ~na_if(., -99.99)),
@@ -123,7 +119,6 @@ download_data_factors_ff <- function(
       across(-date, ~ . / 100)
     )
 
-  # Clean column names
   colnames_lower <- tolower(colnames(processed_data))
   colnames_clean <- gsub("-rf", "_excess", colnames_lower, fixed = TRUE)
   colnames_clean <- gsub("rf", "risk_free", colnames_clean, fixed = TRUE)
@@ -171,14 +166,9 @@ download_data_factors_q <- function(
 
   check_supported_type(type)
 
-  if (is.null(start_date) || is.null(end_date)) {
-    cli::cli_inform(
-      "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
-    )
-  } else {
-    start_date <- as.Date(start_date)
-    end_date <- as.Date(end_date)
-  }
+  dates <- validate_dates(start_date, end_date)
+  start_date <- dates$start_date
+  end_date <- dates$end_date
 
   factors_q_types <- list_supported_types_q()
   dataset <- factors_q_types$dataset_name[factors_q_types$type == type]
@@ -188,7 +178,9 @@ download_data_factors_q <- function(
       suppressMessages(utils::read.csv(url)) |> as_tibble()
     ),
     paste0(url, dataset),
-    fallback = tibble()
+    fallback = tibble(
+      date = Date()
+    )
   )
 
   if (nrow(raw_data) == 0) {

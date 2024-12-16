@@ -32,14 +32,9 @@ download_data_macro_predictors <- function(
 
   check_supported_type(type)
 
-  if (is.null(start_date) || is.null(end_date)) {
-    cli::cli_inform(
-      "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
-    )
-  } else {
-    start_date <- as.Date(start_date)
-    end_date <- as.Date(end_date)
-  }
+  dates <- validate_dates(start_date, end_date)
+  start_date <- dates$start_date
+  end_date <- dates$end_date
 
   build_macro_predictors_url <- function(sheet_name) {
     paste0(
