@@ -88,7 +88,9 @@ download_data_factors_ff <- function(
 
   raw_data <- handle_download_error(
     function() suppressMessages(frenchdata::download_french_data(dataset)),
-    fallback = tibble()
+    fallback = tibble(
+      date = Date()
+    )
   )
 
   if (!inherits(raw_data, "french_dataset")) {
@@ -110,7 +112,6 @@ download_data_factors_ff <- function(
     )
   }
 
-  # Transform column values
   processed_data <- processed_data |>
     mutate(
       across(-date, ~na_if(., -99.99)),
@@ -118,7 +119,6 @@ download_data_factors_ff <- function(
       across(-date, ~ . / 100)
     )
 
-  # Clean column names
   colnames_lower <- tolower(colnames(processed_data))
   colnames_clean <- gsub("-rf", "_excess", colnames_lower, fixed = TRUE)
   colnames_clean <- gsub("rf", "risk_free", colnames_clean, fixed = TRUE)
@@ -178,7 +178,9 @@ download_data_factors_q <- function(
       suppressMessages(utils::read.csv(url)) |> as_tibble()
     ),
     paste0(url, dataset),
-    fallback = tibble()
+    fallback = tibble(
+      date = Date()
+    )
   )
 
   if (nrow(raw_data) == 0) {
