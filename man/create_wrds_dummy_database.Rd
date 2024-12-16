@@ -4,11 +4,16 @@
 \alias{create_wrds_dummy_database}
 \title{Create WRDS Dummy Database}
 \usage{
-create_wrds_dummy_database(path)
+create_wrds_dummy_database(
+  path,
+  url = paste0("https://github.com/tidy-finance/website/tree/main/blog/",
+    "tidy-finance-dummy-data/data/tidy_finance.sqlite")
+)
 }
 \arguments{
-\item{path}{The file path where the SQLite database should be saved. If not
-provided, the default path is "data/tidy_finance_r.sqlite".}
+\item{path}{The file path where the SQLite database should be saved.}
+
+\item{url}{The URL where the SQLite database is stored.}
 }
 \value{
 Invisible \code{NULL}. Side effect: downloads a file to the specified path.

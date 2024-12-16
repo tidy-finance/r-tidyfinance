@@ -7,7 +7,7 @@ handle_download_error <- function(download_function, ..., fallback = NULL) {
     },
     error = function(e) {
       cli::cli_inform(paste0(
-        "Failed to download or process the dataset. ",
+        "Failed to download or process the resource. ",
         "The resource may not be available, or the URL may have changed. ",
         "Error message: {.message {e$message}}"
       ))

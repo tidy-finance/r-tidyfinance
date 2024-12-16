@@ -1,5 +1,6 @@
 test_that("download_data_macro_predictors gracefully handles broken url", {
   skip_if_offline()
+  skip_on_cran()
   expect_message(
     download_data_macro_predictors(
       "macro_predictors_monthly",

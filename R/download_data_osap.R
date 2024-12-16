@@ -21,8 +21,8 @@
 #'   osap_monthly <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
 #' }
 download_data_osap <- function(
-    start_date = NULL, end_date = NULL, sheet_id = "1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"
-  ) {
+  start_date = NULL, end_date = NULL, sheet_id = "1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"
+) {
 
   dates <- validate_dates(start_date, end_date)
   start_date <- dates$start_date
@@ -45,15 +45,6 @@ download_data_osap <- function(
   processed_data <- raw_data |>
     mutate(date = ymd(date))
 
-  to_snake_case <- function(x) {
-    x <- gsub("([a-z])([A-Z])", "\\1_\\2", x)
-    x <- gsub("[^[:alnum:]_]+", "_", x)
-    x <- tolower(x)
-    x <- gsub("_+", "_", x)
-    x <- gsub("^_|_$", "", x)
-    return(x)
-  }
-
   colnames(processed_data) <- to_snake_case(colnames(processed_data))
 
   if (!is.null(start_date) && !is.null(end_date)) {
@@ -62,4 +53,13 @@ download_data_osap <- function(
   }
 
   return(processed_data)
+}
+
+to_snake_case <- function(x) {
+  x <- gsub("([a-z])([A-Z])", "\\1_\\2", x)
+  x <- gsub("[^[:alnum:]_]+", "_", x)
+  x <- tolower(x)
+  x <- gsub("_+", "_", x)
+  x <- gsub("^_|_$", "", x)
+  return(x)
 }
