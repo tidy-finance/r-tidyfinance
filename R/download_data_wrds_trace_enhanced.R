@@ -34,17 +34,9 @@ download_data_wrds_trace_enhanced <- function(
     )
   }
 
-  if (is.null(start_date) || is.null(end_date)) {
-    start_date <- Sys.Date() %m-% years(2)
-    end_date <- Sys.Date() %m-% years(1)
-    cli::cli_inform(c(
-      "No {.arg start_date} or {.arg end_date} provided.",
-      "Using the range {start_date} to {end_date}, to avoid downloading large amounts of data."
-    ))
-  } else {
-    start_date <- as.Date(start_date)
-    end_date <- as.Date(end_date)
-  }
+  dates <- validate_dates(start_date, end_date, use_default_range = TRUE)
+  start_date <- dates$start_date
+  end_date <- dates$end_date
 
   con <- get_wrds_connection()
 

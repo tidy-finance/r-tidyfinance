@@ -79,14 +79,9 @@ download_data_factors_ff <- function(
     "frenchdata", reason = paste0("to download type ", type, ".")
   )
 
-  if (is.null(start_date) || is.null(end_date)) {
-    cli::cli_inform(
-      "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
-    )
-  } else {
-    start_date <- as.Date(start_date)
-    end_date <- as.Date(end_date)
-  }
+  dates <- validate_dates(start_date, end_date)
+  start_date <- dates$start_date
+  end_date <- dates$end_date
 
   factors_ff_types <- list_supported_types_ff()
   dataset <- factors_ff_types$dataset_name[factors_ff_types$type == type]
@@ -171,14 +166,9 @@ download_data_factors_q <- function(
 
   check_supported_type(type)
 
-  if (is.null(start_date) || is.null(end_date)) {
-    cli::cli_inform(
-      "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
-    )
-  } else {
-    start_date <- as.Date(start_date)
-    end_date <- as.Date(end_date)
-  }
+  dates <- validate_dates(start_date, end_date)
+  start_date <- dates$start_date
+  end_date <- dates$end_date
 
   factors_q_types <- list_supported_types_q()
   dataset <- factors_q_types$dataset_name[factors_q_types$type == type]

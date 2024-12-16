@@ -24,14 +24,9 @@ download_data_osap <- function(
     start_date = NULL, end_date = NULL, sheet_id = "1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"
   ) {
 
-  if (is.null(start_date) || is.null(end_date)) {
-    cli::cli_inform(
-      "No {.arg start_date} or {.arg end_date} provided. Returning the full data set."
-    )
-  } else {
-    start_date <- as.Date(start_date)
-    end_date <- as.Date(end_date)
-  }
+  dates <- validate_dates(start_date, end_date)
+  start_date <- dates$start_date
+  end_date <- dates$end_date
 
   url <- paste0("https://drive.google.com/uc?export=download&id=", sheet_id)
 

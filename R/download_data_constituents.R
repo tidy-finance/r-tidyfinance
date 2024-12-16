@@ -42,7 +42,9 @@ download_data_constituents <- function(index) {
   supported_indexes <- list_supported_indexes()
 
   if (!(index %in% supported_indexes$index)) {
-    cli::cli_abort("The index '{index}' is not supported. Please use one of the supported indexes: {paste(supported_indexes$index, collapse = ', ')}")
+    cli::cli_abort(
+      "The index '{index}' is not supported. Please use one of the supported indexes: {paste(supported_indexes$index, collapse = ', ')}"
+    )
   }
 
   url <- supported_indexes$url[supported_indexes$index == index]
@@ -55,7 +57,9 @@ download_data_constituents <- function(index) {
     httr2::req_perform()
 
   if (response$status_code != 200) {
-    cli::cli_abort("Failed to download data for index {.arg index}. Please check the index name or try again later.")
+    cli::cli_abort(
+      "Failed to download data for index {.arg index}. Please check the index name or try again later."
+    )
   }
 
   constituents_raw <- suppressWarnings(httr2::resp_body_string(response)) |>
@@ -67,12 +71,16 @@ download_data_constituents <- function(index) {
   if (grepl(column_names, "Anlageklasse")) {
     constituents_processed <- constituents_raw |>
       filter(Anlageklasse == "Aktien") |>
-      select(symbol = "Emittententicker", name = "Name", location = "Standort", exchange = "B\u00f6rse")
+      select(
+        symbol = "Emittententicker", name = "Name", location = "Standort", exchange = "B\u00f6rse"
+      )
   }
   if (grepl(column_names, "Asset.Class")) {
     constituents_processed <- constituents_raw |>
       filter(Asset.Class == "Equity") |>
-      select(symbol = "Ticker", name = "Name", location = "Location", exchange = "Exchange")
+      select(
+        symbol = "Ticker", name = "Name", location = "Location", exchange = "Exchange"
+      )
   }
 
   constituents_processed <- constituents_processed |>
@@ -82,9 +90,11 @@ download_data_constituents <- function(index) {
     filter(!grepl("CASH", name)) |>
     filter(!grepl(tolower(gsub("\\s+", "", index)), tolower(name))) |>
     as_tibble() |>
-    mutate(symbol = case_when(name == "NATIONAL BANK OF CANADA" ~ "NA", TRUE ~ symbol),
-           symbol = gsub(" ", "-", symbol),
-           symbol = gsub("/", "-", symbol)) |>
+    mutate(
+      symbol = case_when(name == "NATIONAL BANK OF CANADA" ~ "NA", TRUE ~ symbol),
+      symbol = gsub(" ", "-", symbol),
+      symbol = gsub("/", "-", symbol)
+    ) |>
     mutate(symbol = case_when(
       exchange %in% c("Xetra", "Deutsche B\u00f6rse AG") ~ paste0(symbol, ".DE"),
       exchange == "Boerse Berlin" ~ paste0(symbol, ".BE"),
