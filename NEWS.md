@@ -1,4 +1,14 @@
-# tidyfinance (development version)
+# tidyfinance 0.4.3.
+
+## Bug fixes
+
+* `download_constituents()` and `download_stock_prices()` now also fail gracefully with informative messages instead of errors or warnings.
+* `download_factors()` returns empty data frame with `date` column to ensure vignettes are built even if resources are unavailable.
+
+## Improvements
+
+* Unified `start_date` and `end_date` validation across applications.
+* Updated tests of `download_*()` functions to cover unavailable or broken resources. 
 
 # tidyfinance 0.4.2
 
