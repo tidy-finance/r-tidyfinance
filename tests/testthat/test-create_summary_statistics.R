@@ -29,7 +29,10 @@ test_that("Non-numeric columns are rejected", {
 test_that("Summary statistics by group are computed correctly", {
   result <- create_summary_statistics(test_data, A, by = C)
   expect_true("C" %in% colnames(result))
-  expect_equal(length(unique(result$C)), length(unique(test_data$C[!is.na(test_data$C)])))
+  expect_equal(
+    length(unique(result$C)),
+    length(unique(test_data$C[!is.na(test_data$C)]))
+  )
 })
 
 # Test proper handling of NA values
@@ -37,7 +40,11 @@ test_that("NA values are handled correctly", {
   data <- data.frame(numeric_col = c(1, 2, NA, 4, 5))
 
   result_drop_na <- create_summary_statistics(data, numeric_col, drop_na = TRUE)
-  result_keep_na <- create_summary_statistics(data, numeric_col, drop_na = FALSE)
+  result_keep_na <- create_summary_statistics(
+    data,
+    numeric_col,
+    drop_na = FALSE
+  )
 
   expect_identical(result_drop_na$n, result_keep_na$n)
   expect_identical(result_keep_na$mean, NA_real_)

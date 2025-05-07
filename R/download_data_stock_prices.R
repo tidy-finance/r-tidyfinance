@@ -20,9 +20,10 @@
 #'   download_data_stock_prices("GOOGL", "2021-01-01", "2022-01-01" )
 #' }
 download_data_stock_prices <- function(
-    symbols, start_date = NULL, end_date = NULL
-  ) {
-
+  symbols,
+  start_date = NULL,
+  end_date = NULL
+) {
   if (!is.character(symbols) || anyNA(symbols)) {
     cli::cli_abort(
       "{.arg symbols} must be character vector, not {.obj_type_friendly {symbols}}."
@@ -30,7 +31,8 @@ download_data_stock_prices <- function(
   }
 
   rlang::check_installed(
-    "httr2", reason = "to download 'type stocks_yf'."
+    "httr2",
+    reason = "to download type 'stock_prices'."
   )
 
   dates <- validate_dates(start_date, end_date)
@@ -46,22 +48,25 @@ download_data_stock_prices <- function(
 
   processed_data <- list()
 
-  cli::cli_progress_bar("Downloading symbols", total = length(symbols), clear = TRUE)
+  cli::cli_progress_bar(
+    "Downloading symbols",
+    total = length(symbols),
+    clear = TRUE
+  )
 
   for (j in seq_along(symbols)) {
     url <- paste0(
       "https://query2.finance.yahoo.com/v8/finance/chart/",
       symbols[j],
-      "?period1=", start_timestamp,
-      "&period2=", end_timestamp,
+      "?period1=",
+      start_timestamp,
+      "&period2=",
+      end_timestamp,
       "&interval=1d"
     )
 
-    user_agent <- get_random_user_agent()
-
     response <- httr2::request(url) |>
       httr2::req_error(is_error = \(resp) FALSE) |>
-      httr2::req_user_agent(user_agent) |>
       httr2::req_perform()
 
     if (response$status_code == 200) {
@@ -85,7 +90,10 @@ download_data_stock_prices <- function(
 
       processed_data_symbol <- tibble(
         "symbol" = symbols[j],
-        "date" = as.Date(as.POSIXct(as.numeric(raw_data[[1]]$timestamp), origin = "1970-01-01")),
+        "date" = as.Date(as.POSIXct(
+          as.numeric(raw_data[[1]]$timestamp),
+          origin = "1970-01-01"
+        )),
         "volume" = as.numeric(unlist(ohlcv$volume)),
         "open" = as.numeric(unlist(ohlcv$open)),
         "low" = as.numeric(unlist(ohlcv$low)),

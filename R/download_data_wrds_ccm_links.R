@@ -22,11 +22,12 @@
 #' }
 #'
 download_data_wrds_ccm_links <- function(
-    linktype = c("LU", "LC"), linkprim = c("P", "C")
+  linktype = c("LU", "LC"),
+  linkprim = c("P", "C")
 ) {
-
   rlang::check_installed(
-    "dbplyr", reason = "to download type wrds_ccm_links."
+    "dbplyr",
+    reason = "to download type wrds_ccm_links."
   )
 
   con <- get_wrds_connection()
@@ -35,8 +36,7 @@ download_data_wrds_ccm_links <- function(
 
   ccm_links <- ccm_linking_table_db |>
     filter(
-      linktype %in% c("LU", "LC") &
-        linkprim %in% c("P", "C")
+      linktype %in% c("LU", "LC") & linkprim %in% c("P", "C")
     ) |>
     select(permno = lpermno, gvkey, linkdt, linkenddt) |>
     collect() |>

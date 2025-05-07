@@ -40,18 +40,26 @@
 #'
 #' @export
 create_summary_statistics <- function(
-    data, ..., by = NULL, detail = FALSE, drop_na = FALSE
-  ) {
+  data,
+  ...,
+  by = NULL,
+  detail = FALSE,
+  drop_na = FALSE
+) {
   by <- enquo(by)
   # Check that all variables to summarize are numeric or integer
   col_types <- data |>
     select(...) |>
     sapply(class)
 
-  if (sum(col_types %in% c("numeric", "integer", "logical")) < length(col_types)) {
+  if (
+    sum(col_types %in% c("numeric", "integer", "logical")) < length(col_types)
+  ) {
     cli::cli_abort(sprintf(
       "The following columns are neither numeric nor integer: %s",
-      toString(names(col_types[!col_types %in% c("numeric", "integer", "logical")]))
+      toString(names(col_types[
+        !col_types %in% c("numeric", "integer", "logical")
+      ]))
     ))
   }
 
@@ -59,7 +67,8 @@ create_summary_statistics <- function(
   if (!detail) {
     funs <- list(
       n = function(x) sum(!is.na(x)),
-      mean = mean, sd = stats::sd,
+      mean = mean,
+      sd = stats::sd,
       min = min,
       q50 = partial(quantile_na_handler, probs = 0.50),
       max = max
@@ -67,7 +76,8 @@ create_summary_statistics <- function(
   } else {
     funs <- list(
       n = function(x) sum(!is.na(x)),
-      mean = mean, sd = stats::sd,
+      mean = mean,
+      sd = stats::sd,
       min = min,
       q01 = partial(quantile_na_handler, probs = 0.01),
       q05 = partial(quantile_na_handler, probs = 0.05),
@@ -94,8 +104,7 @@ create_summary_statistics <- function(
 
     data_long |>
       group_by(.data$variable) |>
-      summarize(across(everything(), funs, .names =  "{.fn}"),
-                .groups = "drop")
+      summarize(across(everything(), funs, .names = "{.fn}"), .groups = "drop")
   } else {
     # Summarize by group column if "by" column is specified
     data_long <- data |>
@@ -108,8 +117,7 @@ create_summary_statistics <- function(
 
     data_long |>
       group_by(.data$variable, !!by) |>
-      summarize(across(everything(), funs, .names =  "{.fn}"),
-                .groups = "drop")
+      summarize(across(everything(), funs, .names = "{.fn}"), .groups = "drop")
   }
 }
 

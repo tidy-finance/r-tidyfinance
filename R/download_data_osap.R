@@ -21,9 +21,10 @@
 #'   osap_monthly <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
 #' }
 download_data_osap <- function(
-  start_date = NULL, end_date = NULL, sheet_id = "1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"
+  start_date = NULL,
+  end_date = NULL,
+  sheet_id = "1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"
 ) {
-
   dates <- validate_dates(start_date, end_date)
   start_date <- dates$start_date
   end_date <- dates$end_date
@@ -31,9 +32,10 @@ download_data_osap <- function(
   url <- paste0("https://drive.google.com/uc?export=download&id=", sheet_id)
 
   raw_data <- handle_download_error(
-    function() suppressWarnings(
-      as_tibble(read.csv(url))
-    ),
+    function()
+      suppressWarnings(
+        as_tibble(read.csv(url))
+      ),
     fallback = tibble()
   )
 

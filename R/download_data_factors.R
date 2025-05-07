@@ -24,9 +24,10 @@
 #'   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
 #' }
 download_data_factors <- function(
-    type, start_date = NULL, end_date = NULL
-  ) {
-
+  type,
+  start_date = NULL,
+  end_date = NULL
+) {
   check_supported_type(type)
 
   if (grepl("factors_ff", type, fixed = TRUE)) {
@@ -70,13 +71,15 @@ download_data_factors <- function(
 #'   download_data_factors_ff("factors_ff_10_industry_portfolios_monthly", "2000-01-01", "2020-12-31")
 #' }
 download_data_factors_ff <- function(
-    type, start_date = NULL, end_date = NULL
-  ) {
-
+  type,
+  start_date = NULL,
+  end_date = NULL
+) {
   check_supported_type(type)
 
   rlang::check_installed(
-    "frenchdata", reason = paste0("to download type ", type, ".")
+    "frenchdata",
+    reason = paste0("to download type ", type, ".")
   )
 
   dates <- validate_dates(start_date, end_date)
@@ -114,8 +117,8 @@ download_data_factors_ff <- function(
 
   processed_data <- processed_data |>
     mutate(
-      across(-date, ~na_if(., -99.99)),
-      across(-date, ~na_if(., -999)),
+      across(-date, ~ na_if(., -99.99)),
+      across(-date, ~ na_if(., -999)),
       across(-date, ~ . / 100)
     )
 
@@ -161,9 +164,11 @@ download_data_factors_ff <- function(
 #'   download_data_factors_q("factors_q5_annual")
 #' }
 download_data_factors_q <- function(
-    type, start_date = NULL, end_date = NULL, url = "https://global-q.org/uploads/1/2/2/6/122679606/"
+  type,
+  start_date = NULL,
+  end_date = NULL,
+  url = "https://global-q.org/uploads/1/2/2/6/122679606/"
 ) {
-
   check_supported_type(type)
 
   dates <- validate_dates(start_date, end_date)
@@ -174,9 +179,10 @@ download_data_factors_q <- function(
   dataset <- factors_q_types$dataset_name[factors_q_types$type == type]
 
   raw_data <- handle_download_error(
-    function(url) suppressWarnings(
-      suppressMessages(utils::read.csv(url)) |> as_tibble()
-    ),
+    function(url)
+      suppressWarnings(
+        suppressMessages(utils::read.csv(url)) |> as_tibble()
+      ),
     paste0(url, dataset),
     fallback = tibble(
       date = Date()
@@ -201,9 +207,9 @@ download_data_factors_q <- function(
   }
 
   processed_data <- processed_data |>
-    rename_with(~sub("R_", "", ., fixed = TRUE)) |>
+    rename_with(~ sub("R_", "", ., fixed = TRUE)) |>
     rename_with(tolower) |>
-    mutate(across(-date, ~. / 100)) |>
+    mutate(across(-date, ~ . / 100)) |>
     select(date, risk_free = f, mkt_excess = mkt, everything())
 
   if (!is.null(start_date) && !is.null(end_date)) {

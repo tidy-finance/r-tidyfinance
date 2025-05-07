@@ -30,13 +30,17 @@
 #'   download_data("stock_prices", symbols = c("AAPL", "MSFT"))
 #' }
 download_data <- function(type, start_date = NULL, end_date = NULL, ...) {
-
   check_supported_type(type)
 
   if (grepl("factors", type, fixed = TRUE)) {
     processed_data <- download_data_factors(type, start_date, end_date, ...)
   } else if (grepl("macro_predictors", type, fixed = TRUE)) {
-    processed_data <- download_data_macro_predictors(type, start_date, end_date, ...)
+    processed_data <- download_data_macro_predictors(
+      type,
+      start_date,
+      end_date,
+      ...
+    )
   } else if (grepl("wrds", type, fixed = TRUE)) {
     processed_data <- download_data_wrds(type, start_date, end_date, ...)
   } else if (grepl("constituents", type, fixed = TRUE)) {

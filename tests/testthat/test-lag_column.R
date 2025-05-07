@@ -1,4 +1,3 @@
-
 test_that("lag_column works correctly with basic input", {
   dates <- as.Date('2023-01-01') + 0:9
   values <- 1:10

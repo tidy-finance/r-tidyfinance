@@ -42,16 +42,17 @@
 #' )
 #'
 assign_portfolio <- function(
-    data,
-    sorting_variable,
-    breakpoint_options = NULL,
-    breakpoint_function = compute_breakpoints,
-    data_options = NULL
-  ) {
-
+  data,
+  sorting_variable,
+  breakpoint_options = NULL,
+  breakpoint_function = compute_breakpoints,
+  data_options = NULL
+) {
   # Exit condition for identical sorting variables
   if (length(unique(data[[sorting_variable]])) == 1) {
-    cli::cli_warn("The sorting variable is constant and only one portfolio is returned.")
+    cli::cli_warn(
+      "The sorting variable is constant and only one portfolio is returned."
+    )
     return(rep(1, nrow(data)))
   }
 
@@ -64,11 +65,15 @@ assign_portfolio <- function(
 
   # Assign portfolios
   portfolio_indices <- findInterval(
-    data[[sorting_variable]], breakpoints, all.inside = TRUE
+    data[[sorting_variable]],
+    breakpoints,
+    all.inside = TRUE
   )
 
-  if (length(unique(na.omit(portfolio_indices)) )!= (length(breakpoints) - 1)) {
-    cli::cli_warn("The number of portfolios differs from the specified parameter due to clusters in the sorting variable.")
+  if (length(unique(na.omit(portfolio_indices))) != (length(breakpoints) - 1)) {
+    cli::cli_warn(
+      "The number of portfolios differs from the specified parameter due to clusters in the sorting variable."
+    )
   }
 
   return(portfolio_indices)

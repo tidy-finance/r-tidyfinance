@@ -29,8 +29,14 @@ test_that("winsorize() handles NA values", {
 
   # Check that NA values are still present and other values are adjusted correctly
   expect_true(all(is.na(winsorized_x) == is.na(x)))
-  expect_true(all(winsorized_x[!is.na(winsorized_x)] >= unname(quantile(x, cut, na.rm = TRUE, names = FALSE))))
-  expect_true(all(winsorized_x[!is.na(winsorized_x)] <= unname(quantile(x, 1 - cut, na.rm = TRUE, names = FALSE))))
+  expect_true(all(
+    winsorized_x[!is.na(winsorized_x)] >=
+      unname(quantile(x, cut, na.rm = TRUE, names = FALSE))
+  ))
+  expect_true(all(
+    winsorized_x[!is.na(winsorized_x)] <=
+      unname(quantile(x, 1 - cut, na.rm = TRUE, names = FALSE))
+  ))
 })
 
 # Test edge cases

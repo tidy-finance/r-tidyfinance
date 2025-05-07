@@ -11,7 +11,6 @@ test_that("download_data_constituents works for a supported index", {
 
   expect_true(all(!is.na(constituents_data$symbol)))
   expect_true(all(!is.na(constituents_data$name)))
-
 })
 
 test_that("download_data_constituents handles unavailable resource gracefully", {

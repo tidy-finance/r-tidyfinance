@@ -15,7 +15,11 @@ test_that("Single independent variable with sufficient observations", {
 
 # Test with sufficient observations and multiple independent variables
 test_that("Multiple independent variables with sufficient observations", {
-  result <- estimate_model(data, "ret_excess ~ mkt_excess + smb + hml", min_obs = 1)
+  result <- estimate_model(
+    data,
+    "ret_excess ~ mkt_excess + smb + hml",
+    min_obs = 1
+  )
   expect_type(result, "list")
   expect_equal(ncol(result), 4)
 })
@@ -35,7 +39,11 @@ test_that("Insufficient observations", {
 # Test with exactly the minimum required observations
 test_that("Exactly minimum required observations", {
   min_obs_data <- data[1:10, ]
-  result <- estimate_model(min_obs_data, "ret_excess ~ mkt_excess", min_obs = 10)
+  result <- estimate_model(
+    min_obs_data,
+    "ret_excess ~ mkt_excess",
+    min_obs = 10
+  )
   expect_type(result, "list")
 })
 
@@ -47,7 +55,11 @@ test_that("No independent variables specified", {
 test_that("estimate_model returns tibble with only NAs when insufficient data", {
   set.seed(1234)
   df <- tibble(
-    date = seq.Date(from = as.Date("2020-01-01"), to = as.Date("2020-12-01"), by = "month"),
+    date = seq.Date(
+      from = as.Date("2020-01-01"),
+      to = as.Date("2020-12-01"),
+      by = "month"
+    ),
     ret_excess = rnorm(12, 0, 0.1),
     mkt_excess = rnorm(12, 0, 0.1),
     smb = rnorm(12, 0, 0.1),

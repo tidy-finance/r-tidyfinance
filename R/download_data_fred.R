@@ -32,7 +32,6 @@
 #' }
 #'
 download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
-
   rlang::check_installed("httr2", reason = "to download data from FRED.")
 
   dates <- validate_dates(start_date, end_date)
@@ -41,18 +40,28 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
 
   fred_processed <- list()
 
-  cli::cli_progress_bar("Downloading series", total = length(series), clear = TRUE)
+  cli::cli_progress_bar(
+    "Downloading series",
+    total = length(series),
+    clear = TRUE
+  )
   for (j in seq_along(series)) {
-
-    url <- paste0("https://fred.stlouisfed.org/series/", series[j], "/downloaddata/", series[j], ".csv")
+    url <- paste0(
+      "https://fred.stlouisfed.org/series/",
+      series[j],
+      "/downloaddata/",
+      series[j],
+      ".csv"
+    )
 
     user_agent <- get_random_user_agent()
 
     response <- handle_download_error(
-      function() httr2::request(url) |>
-        httr2::req_error(is_error = \(resp) FALSE) |>
-        httr2::req_user_agent(user_agent) |>
-        httr2::req_perform(),
+      function()
+        httr2::request(url) |>
+          httr2::req_error(is_error = \(resp) FALSE) |>
+          httr2::req_user_agent(user_agent) |>
+          httr2::req_perform(),
       fallback = NULL
     )
 
@@ -64,10 +73,12 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
           as_tibble()
 
         fred_processed[[j]] <- fred_raw |>
-          mutate(date = as.Date(DATE),
-                 value = as.numeric(VALUE),
-                 series = series[j],
-                 .keep = "none")
+          mutate(
+            date = as.Date(DATE),
+            value = as.numeric(VALUE),
+            series = series[j],
+            .keep = "none"
+          )
       } else {
         cli::cli_warn(
           "Failed to retrieve data for series {series[j]} with status code {response$status_code}."
