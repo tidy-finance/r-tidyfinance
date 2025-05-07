@@ -1,4 +1,4 @@
-# tidyfinance (development version)
+# tidyfinance 0.4.4
 
 ## Bug fixes
 
