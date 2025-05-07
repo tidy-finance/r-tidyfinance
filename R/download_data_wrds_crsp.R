@@ -26,7 +26,7 @@
 #'
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #'   crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-11-01", "2020-12-31")
 #'   crsp_daily <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
 #'

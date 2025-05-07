@@ -20,7 +20,7 @@
 #'
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #'   crsp_monthly <- download_data_wrds("wrds_crsp_monthly", "2020-01-01", "2020-12-31")
 #'   compustat_annual <- download_data_wrds("wrds_compustat_annual", "2020-01-01", "2020-12-31")
 #'   ccm_links <- download_data_wrds("wrds_ccm_links", "2020-01-01", "2020-12-31")

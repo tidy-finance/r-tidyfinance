@@ -20,7 +20,7 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #'   # Before using this function, set your WRDS credentials:
 #'   # Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")
 #'
