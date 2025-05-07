@@ -26,7 +26,7 @@ database. It allows users to specify the type of links (\code{linktype}) and the
 primacy of the link (\code{linkprim}).
 }
 \examples{
-\donttest{
+\dontrun{
   ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P")
 }
 

@@ -27,7 +27,7 @@ CUSIPs trade messages from the Trade Reporting and Compliance Engine (TRACE).
 The trade data is cleaned as suggested by Dick-Nielsen (2009, 2014).
 }
 \examples{
-\donttest{
+\dontrun{
   trace_enhanced <- download_data_wrds_trace_enhanced("00101JAH9", "2019-01-01", "2021-12-31")
 }
 }
