@@ -25,9 +25,9 @@
 #'   fisd_extended <- download_data_wrds_fisd(additional_columns = c("asset_backed", "defeased"))
 #' }
 download_data_wrds_fisd <- function(additional_columns = NULL) {
-
   rlang::check_installed(
-    "dbplyr", reason = "to download type fisdmergedissue."
+    "dbplyr",
+    reason = "to download type fisdmergedissue."
   )
 
   con <- get_wrds_connection()
@@ -66,8 +66,16 @@ download_data_wrds_fisd <- function(additional_columns = NULL) {
       preferred_security == "N" | is.na(preferred_security)
     ) |>
     select(
-      complete_cusip, maturity, offering_amt, offering_date, dated_date,
-      interest_frequency, coupon, last_interest_date, issue_id, issuer_id,
+      complete_cusip,
+      maturity,
+      offering_amt,
+      offering_date,
+      dated_date,
+      interest_frequency,
+      coupon,
+      last_interest_date,
+      issue_id,
+      issuer_id,
       all_of(additional_columns)
     ) |>
     collect()

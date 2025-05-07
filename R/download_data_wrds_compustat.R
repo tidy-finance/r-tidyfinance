@@ -29,11 +29,14 @@
 #'   download_data_wrds_compustat("wrds_compustat_annual", additional_columns = c("aodo", "aldo"))
 #' }
 download_data_wrds_compustat <- function(
-    type, start_date = NULL, end_date = NULL, additional_columns = NULL
-  ) {
-
+  type,
+  start_date = NULL,
+  end_date = NULL,
+  additional_columns = NULL
+) {
   rlang::check_installed(
-    "dbplyr", reason = paste0("to download type ", type, ".")
+    "dbplyr",
+    reason = paste0("to download type ", type, ".")
   )
 
   dates <- validate_dates(start_date, end_date, use_default_range = TRUE)
@@ -53,9 +56,24 @@ download_data_wrds_compustat <- function(
           between(datadate, start_date, end_date)
       ) |>
       select(
-        gvkey, datadate, seq, ceq, at, lt, txditc,
-        txdb, itcb, pstkrv, pstkl, pstk, capx, oancf,
-        sale, cogs, xint, xsga,
+        gvkey,
+        datadate,
+        seq,
+        ceq,
+        at,
+        lt,
+        txditc,
+        txdb,
+        itcb,
+        pstkrv,
+        pstkl,
+        pstk,
+        capx,
+        oancf,
+        sale,
+        cogs,
+        xint,
+        xsga,
         all_of(additional_columns)
       ) |>
       collect()
@@ -68,8 +86,11 @@ download_data_wrds_compustat <- function(
           coalesce(txditc, txdb + itcb, 0) -
           coalesce(pstkrv, pstkl, pstk, 0),
         be = if_else(be <= 0, NA, be),
-        op = (sale - coalesce(cogs, 0) -
-                coalesce(xsga, 0) - coalesce(xint, 0)) / be
+        op = (sale -
+          coalesce(cogs, 0) -
+          coalesce(xsga, 0) -
+          coalesce(xint, 0)) /
+          be
       )
 
     compustat <- compustat |>
@@ -104,8 +125,13 @@ download_data_wrds_compustat <- function(
           between(datadate, start_date, end_date)
       ) |>
       select(
-        gvkey, datadate, rdq, fqtr, fyearq,
-        atq, ceqq,
+        gvkey,
+        datadate,
+        rdq,
+        fqtr,
+        fyearq,
+        atq,
+        ceqq,
         all_of(additional_columns)
       ) |>
       collect()
@@ -126,9 +152,7 @@ download_data_wrds_compustat <- function(
       filter(if_else(is.na(rdq), TRUE, date < rdq))
 
     processed_data <- compustat |>
-      select(gvkey, date, datadate, atq, ceqq,
-             all_of(additional_columns))
-
+      select(gvkey, date, datadate, atq, ceqq, all_of(additional_columns))
   }
 
   processed_data

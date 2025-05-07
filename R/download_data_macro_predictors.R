@@ -27,9 +27,11 @@
 #' }
 #'
 download_data_macro_predictors <- function(
-    type, start_date = NULL, end_date = NULL, sheet_id = "1bM7vCWd3WOt95Sf9qjLPZjoiafgF_8EG"
-  ) {
-
+  type,
+  start_date = NULL,
+  end_date = NULL,
+  sheet_id = "1bM7vCWd3WOt95Sf9qjLPZjoiafgF_8EG"
+) {
   check_supported_type(type)
 
   dates <- validate_dates(start_date, end_date)
@@ -38,17 +40,19 @@ download_data_macro_predictors <- function(
 
   build_macro_predictors_url <- function(sheet_name) {
     paste0(
-      "https://docs.google.com/spreadsheets/d/", sheet_id,
-      "/gviz/tq?tqx=out:csv&sheet=", sheet_name
+      "https://docs.google.com/spreadsheets/d/",
+      sheet_id,
+      "/gviz/tq?tqx=out:csv&sheet=",
+      sheet_name
     )
   }
 
   if (grepl("monthly", type, fixed = TRUE)) {
-
     raw_data <- handle_download_error(
-      function() suppressWarnings(
-        as_tibble(read.csv(build_macro_predictors_url("Monthly")))
-      ),
+      function()
+        suppressWarnings(
+          as_tibble(read.csv(build_macro_predictors_url("Monthly")))
+        ),
       fallback = tibble()
     )
 
@@ -61,11 +65,11 @@ download_data_macro_predictors <- function(
       mutate(date = ym(yyyymm))
   }
   if (grepl("quarterly", type, fixed = TRUE)) {
-
     raw_data <- handle_download_error(
-      function() suppressWarnings(
-        as_tibble(read.csv(build_macro_predictors_url("Quarterly")))
-      ),
+      function()
+        suppressWarnings(
+          as_tibble(read.csv(build_macro_predictors_url("Quarterly")))
+        ),
       fallback = tibble()
     )
 
@@ -103,8 +107,22 @@ download_data_macro_predictors <- function(
       tms = lty - tbl,
       dfy = BAA - AAA
     ) |>
-    select(date, rp_div, dp, dy, ep, de, svar, bm = `b.m`, ntis, tbl, lty, ltr,
-           tms, dfy, infl
+    select(
+      date,
+      rp_div,
+      dp,
+      dy,
+      ep,
+      de,
+      svar,
+      bm = `b.m`,
+      ntis,
+      tbl,
+      lty,
+      ltr,
+      tms,
+      dfy,
+      infl
     ) |>
     tidyr::drop_na()
 

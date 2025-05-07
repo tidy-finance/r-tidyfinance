@@ -44,11 +44,18 @@
 #'   add_lag_columns(c("bm", "size"), lag = months(3), by = permno)
 #'
 add_lag_columns <- function(
-  data, cols, by = NULL, lag, max_lag = lag, drop_na = TRUE, data_options = NULL
+  data,
+  cols,
+  by = NULL,
+  lag,
+  max_lag = lag,
+  drop_na = TRUE,
+  data_options = NULL
 ) {
-
   if (lag < 0 || max_lag < lag) {
-    cli::cli_abort("{.arg lag} and {.arg max_lag} must be non-negative and {.arg max_lag} must be greater than or equal to {.arg lag}")
+    cli::cli_abort(
+      "{.arg lag} and {.arg max_lag} must be non-negative and {.arg max_lag} must be greater than or equal to {.arg lag}"
+    )
   }
 
   if (is.null(data_options)) {
@@ -62,12 +69,10 @@ add_lag_columns <- function(
 
   main_data <- data |>
     rename(date = all_of(date_col)) |>
-    mutate(..lower_bound = date + lag,
-           ..upper_bound = date + max_lag)
+    mutate(..lower_bound = date + lag, ..upper_bound = date + max_lag)
 
   result <- data
   for (col in cols) {
-
     if (!rlang::quo_is_null(by)) {
       tmp_data <- main_data |>
         select(!!by, ..lower_bound, ..upper_bound, all_of(col))
@@ -83,15 +88,19 @@ add_lag_columns <- function(
 
     if (!rlang::quo_is_null(by)) {
       result <- result |>
-        left_join(tmp_data,
-                  join_by(!!by, closest(date >= ..lower_bound), date <= ..upper_bound),
-                  suffix = c("", "_lag")) |>
+        left_join(
+          tmp_data,
+          join_by(!!by, closest(date >= ..lower_bound), date <= ..upper_bound),
+          suffix = c("", "_lag")
+        ) |>
         select(-..lower_bound, -..upper_bound)
     } else {
       result <- result |>
-        left_join(tmp_data,
-                  join_by(closest(date >= ..lower_bound), date <= ..upper_bound),
-                  suffix = c("", "_lag")) |>
+        left_join(
+          tmp_data,
+          join_by(closest(date >= ..lower_bound), date <= ..upper_bound),
+          suffix = c("", "_lag")
+        ) |>
         select(-..lower_bound, -..upper_bound)
     }
   }

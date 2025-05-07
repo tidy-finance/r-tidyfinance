@@ -27,16 +27,17 @@
 #' )
 #'
 data_options <- function(
-    id = "permno",
-    date = "date",
-    exchange = "exchange",
-    mktcap_lag = "mktcap_lag",
-    ret_excess = "ret_excess",
-    portfolio = "portfolio",
-    ...
+  id = "permno",
+  date = "date",
+  exchange = "exchange",
+  mktcap_lag = "mktcap_lag",
+  ret_excess = "ret_excess",
+  portfolio = "portfolio",
+  ...
 ) {
   # Error handling for id
-  if (!is.character(id) || length(id) != 1) {  # Corrected this to check the 'id' argument, not 'date'
+  if (!is.character(id) || length(id) != 1) {
+    # Corrected this to check the 'id' argument, not 'date'
     cli::cli_abort("{.arg id} must be a single character.")
   }
 

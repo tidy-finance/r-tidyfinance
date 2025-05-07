@@ -39,11 +39,10 @@
 #' compute_long_short_returns(portfolio_returns)
 #'
 compute_long_short_returns <- function(
-    data,
-    direction = "top_minus_bottom",
-    data_options = NULL
+  data,
+  direction = "top_minus_bottom",
+  data_options = NULL
 ) {
-
   if (is.null(data_options)) {
     data_options <- data_options()
   }
@@ -52,13 +51,35 @@ compute_long_short_returns <- function(
 
   data |>
     group_by(..date) |>
-    filter(.data[[data_options$portfolio]] %in% c(min(.data[[data_options$portfolio]]), max(.data[[data_options$portfolio]]))) |>
-    mutate("{data_options$portfolio}" := if_else(.data[[data_options$portfolio]] == min(.data[[data_options$portfolio]]), "bottom", "top")) |>
+    filter(
+      .data[[data_options$portfolio]] %in%
+        c(
+          min(.data[[data_options$portfolio]]),
+          max(.data[[data_options$portfolio]])
+        )
+    ) |>
+    mutate(
+      "{data_options$portfolio}" := if_else(
+        .data[[data_options$portfolio]] == min(.data[[data_options$portfolio]]),
+        "bottom",
+        "top"
+      )
+    ) |>
     ungroup() |>
-    tidyr::pivot_longer(contains(data_options$ret_excess), names_to = "ret_measure", values_to = "ret")|>
+    tidyr::pivot_longer(
+      contains(data_options$ret_excess),
+      names_to = "ret_measure",
+      values_to = "ret"
+    ) |>
     tidyr::pivot_wider(names_from = portfolio, values_from = ret) |>
-    mutate(long_short_return = (top - bottom) * if_else(direction == "bottom_minus_top", -1, 1)) |>
+    mutate(
+      long_short_return = (top - bottom) *
+        if_else(direction == "bottom_minus_top", -1, 1)
+    ) |>
     arrange(..date) |>
-    select(-c(top, bottom, ..date))|>
-    tidyr::pivot_wider(names_from = ret_measure, values_from = long_short_return)
+    select(-c(top, bottom, ..date)) |>
+    tidyr::pivot_wider(
+      names_from = ret_measure,
+      values_from = long_short_return
+    )
 }

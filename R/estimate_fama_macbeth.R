@@ -51,9 +51,12 @@
 #'  )
 #'
 estimate_fama_macbeth <- function(
-    data, model, vcov = "newey-west", vcov_options = NULL, data_options = NULL
+  data,
+  model,
+  vcov = "newey-west",
+  vcov_options = NULL,
+  data_options = NULL
 ) {
-
   if (is.null(data_options)) {
     data_options <- data_options()
   }
@@ -72,7 +75,10 @@ estimate_fama_macbeth <- function(
   cross_sections <- data |>
     tidyr::nest(data = -all_of(data_options$date)) |>
     mutate(
-      row_check = purrr::map_lgl(data, ~ nrow(.) > length(all.vars(as.formula(model))))
+      row_check = purrr::map_lgl(
+        data,
+        ~ nrow(.) > length(all.vars(as.formula(model)))
+      )
     )
 
   # Check if any date grouping has fewer rows than columns in the model
@@ -96,7 +102,8 @@ estimate_fama_macbeth <- function(
       sqrt(stats::vcov(model)[1, 1])
     } else if (vcov == "newey-west") {
       rlang::check_installed(
-        "sandwich", reason = "to use `vcov = newey-west` in `estimate_fama_macbeth()`."
+        "sandwich",
+        reason = "to use `vcov = newey-west` in `estimate_fama_macbeth()`."
       )
       sqrt(do.call(sandwich::NeweyWest, c(list(model), vcov_options)))
     }
@@ -105,15 +112,21 @@ estimate_fama_macbeth <- function(
   # Time-series aggregations
   aggregations <- cross_sections |>
     tidyr::nest(data = c(all_of(data_options$date), value)) |>
-    mutate(model = purrr::map(data, ~ lm("value ~ 1", data = .)),
-           risk_premium = purrr::map_dbl(model, ~ .$coefficients),
-           n = purrr::map_dbl(data, nrow),
-           standard_error = purrr::map_dbl(model, ~ compute_standard_error(., vcov, vcov_options))
+    mutate(
+      model = purrr::map(data, ~ lm("value ~ 1", data = .)),
+      risk_premium = purrr::map_dbl(model, ~ .$coefficients),
+      n = purrr::map_dbl(data, nrow),
+      standard_error = purrr::map_dbl(
+        model,
+        ~ compute_standard_error(., vcov, vcov_options)
+      )
     ) |>
-    mutate(t_statistic = case_when(
-      vcov == "iid" ~ risk_premium / standard_error * sqrt(n),
-      vcov == "newey-west" ~ risk_premium / standard_error
-    )) |>
+    mutate(
+      t_statistic = case_when(
+        vcov == "iid" ~ risk_premium / standard_error * sqrt(n),
+        vcov == "newey-west" ~ risk_premium / standard_error
+      )
+    ) |>
     select(factor = name, risk_premium, n, standard_error, t_statistic)
 
   aggregations

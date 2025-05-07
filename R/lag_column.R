@@ -42,28 +42,30 @@
 #' dplyr::ungroup()
 #'
 lag_column <- function(
-    column,
-    date,
-    lag,
-    max_lag = lag,
-    drop_na = TRUE
-  ) {
-
+  column,
+  date,
+  lag,
+  max_lag = lag,
+  drop_na = TRUE
+) {
   if (lag < 0 || max_lag < lag) {
-    cli::cli_abort("{.arg lag} and {.arg max_lag} must be non-negative and {.arg max_lag} must be greater than or equal to {.arg lag}")
+    cli::cli_abort(
+      "{.arg lag} and {.arg max_lag} must be non-negative and {.arg max_lag} must be greater than or equal to {.arg lag}"
+    )
   }
 
   tmp_data <- tibble(date = date, value = column) |>
-    mutate(lower_bound = date + lag,
-           upper_bound = date + max_lag) |>
+    mutate(lower_bound = date + lag, upper_bound = date + max_lag) |>
     select(contains("bound"), value)
 
-  if(drop_na) {
+  if (drop_na) {
     tmp_data <- tmp_data[!is.na(tmp_data$value), ]
   }
 
   tibble(date = date) |>
-    left_join(tmp_data,
-              join_by(closest(date >= lower_bound), date <= upper_bound)) |>
+    left_join(
+      tmp_data,
+      join_by(closest(date >= lower_bound), date <= upper_bound)
+    ) |>
     pull(value)
 }

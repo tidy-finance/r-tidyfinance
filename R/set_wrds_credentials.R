@@ -35,7 +35,8 @@ set_wrds_credentials <- function() {
     return(invisible(TRUE))
   }
 
-  env_lines <- if (file.exists(renviron_path)) readLines(renviron_path) else character()
+  env_lines <- if (file.exists(renviron_path)) readLines(renviron_path) else
+    character()
 
   wrds_user_exists <- any(grepl("^WRDS_USER=", env_lines))
   wrds_password_exists <- any(grepl("^WRDS_PASSWORD=", env_lines))
@@ -45,7 +46,9 @@ set_wrds_credentials <- function() {
       prompt = "Credentials already exist. Do you want to overwrite them? Enter 'yes' or 'no': "
     )
     if (tolower(overwrite_choice) != "yes") {
-      cli::cli_inform("Aborted. Credentials already exist and were not overwritten.")
+      cli::cli_inform(
+        "Aborted. Credentials already exist and were not overwritten."
+      )
       return(invisible(TRUE))
     }
   }
@@ -64,7 +67,9 @@ set_wrds_credentials <- function() {
     } else if (tolower(add_gitignore) == "no") {
       cli::cli_inform("{.file .Renviron} NOT added to {.file .gitignore}.")
     } else {
-      cli::cli_inform("Invalid choice. Please start again and enter 'yes' or 'no'.")
+      cli::cli_inform(
+        "Invalid choice. Please start again and enter 'yes' or 'no'."
+      )
       return(invisible(TRUE))
     }
   }
@@ -72,7 +77,11 @@ set_wrds_credentials <- function() {
   env_lines <- env_lines[!grepl("^WRDS_USER=", env_lines)]
   env_lines <- env_lines[!grepl("^WRDS_PASSWORD=", env_lines)]
 
-  env_lines <- c(env_lines, sprintf("WRDS_USER=%s", wrds_user), sprintf("WRDS_PASSWORD=%s", wrds_password))
+  env_lines <- c(
+    env_lines,
+    sprintf("WRDS_USER=%s", wrds_user),
+    sprintf("WRDS_PASSWORD=%s", wrds_password)
+  )
 
   writeLines(env_lines, renviron_path)
 

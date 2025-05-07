@@ -59,14 +59,13 @@
 #' estimate_betas(data_daily, "ret_excess ~ mkt_excess", lubridate::days(90), use_furrr = TRUE)
 #'
 estimate_betas <- function(
-    data,
-    model,
-    lookback,
-    min_obs = NULL,
-    use_furrr = FALSE,
-    data_options = NULL
+  data,
+  model,
+  lookback,
+  min_obs = NULL,
+  use_furrr = FALSE,
+  data_options = NULL
 ) {
-
   if (is.null(data_options)) {
     data_options <- data_options()
   }
@@ -87,7 +86,9 @@ estimate_betas <- function(
     lookback <- lookback@second
     period <- "second"
   } else {
-    cli::cli_abort("{.arg lookback} must contain either a positive month, days, hours, minutes, or seconds")
+    cli::cli_abort(
+      "{.arg lookback} must contain either a positive month, days, hours, minutes, or seconds"
+    )
   }
 
   if (is.null(min_obs)) {
@@ -103,10 +104,19 @@ estimate_betas <- function(
   # Warning if lookback is too low to estimate all model parameters
   num_params <- length(all.vars(as.formula(model))) - 1
   if (lookback < num_params) {
-    cli::cli_warn("{.arg lookback} is too low to estimate all model parameters. Consider increasing it.")
+    cli::cli_warn(
+      "{.arg lookback} is too low to estimate all model parameters. Consider increasing it."
+    )
   }
 
-  roll_model_estimation <- function(df, model, lookback, period, min_obs, data_options) {
+  roll_model_estimation <- function(
+    df,
+    model,
+    lookback,
+    period,
+    min_obs,
+    data_options
+  ) {
     df <- df |>
       arrange(data_options$date)
 
@@ -126,18 +136,41 @@ estimate_betas <- function(
   }
 
   if (use_furrr) {
-    rlang::check_installed("furrr", reason = "To use furrr::future_map in estimate_betas()")
+    rlang::check_installed(
+      "furrr",
+      reason = "To use furrr::future_map in estimate_betas()"
+    )
 
     betas <- data |>
       tidyr::nest(data = -all_of(data_options$id)) |>
       mutate(
-        beta = furrr::future_map(data, ~ roll_model_estimation(., model, lookback, period, min_obs, data_options))
+        beta = furrr::future_map(
+          data,
+          ~ roll_model_estimation(
+            .,
+            model,
+            lookback,
+            period,
+            min_obs,
+            data_options
+          )
+        )
       )
   } else {
     betas <- data |>
       tidyr::nest(data = -all_of(data_options$id)) |>
       mutate(
-        beta = purrr::map(data, ~ roll_model_estimation(., model, lookback, period, min_obs, data_options))
+        beta = purrr::map(
+          data,
+          ~ roll_model_estimation(
+            .,
+            model,
+            lookback,
+            period,
+            min_obs,
+            data_options
+          )
+        )
       )
   }
 

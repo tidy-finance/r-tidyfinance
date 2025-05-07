@@ -33,31 +33,45 @@
 #' )
 #'
 breakpoint_options <- function(
-    n_portfolios = NULL,
-    percentiles = NULL,
-    breakpoint_exchanges = NULL,
-    smooth_bunching = FALSE,
-    ...
+  n_portfolios = NULL,
+  percentiles = NULL,
+  breakpoint_exchanges = NULL,
+  smooth_bunching = FALSE,
+  ...
 ) {
-
   # Error handling for n_portfolios
-  if (!is.null(n_portfolios) && (!is.numeric(n_portfolios) || n_portfolios <= 0 || n_portfolios %% 1 != 0)) {
+  if (
+    !is.null(n_portfolios) &&
+      (!is.numeric(n_portfolios) || n_portfolios <= 0 || n_portfolios %% 1 != 0)
+  ) {
     cli::cli_abort("{.arg n_portfolios} must be a positive integer.")
   }
 
   # Error handling for percentiles
-  if (!is.null(percentiles) && (!is.numeric(percentiles) || any(percentiles < 0 | percentiles > 1))) {
-    cli::cli_abort("{.arg percentiles} must be a numeric vector with values between 0 and 1.")
+  if (
+    !is.null(percentiles) &&
+      (!is.numeric(percentiles) || any(percentiles < 0 | percentiles > 1))
+  ) {
+    cli::cli_abort(
+      "{.arg percentiles} must be a numeric vector with values between 0 and 1."
+    )
   }
 
   # Error handling for breakpoint_exchanges
-  if (!is.null(breakpoint_exchanges) && (!is.character(breakpoint_exchanges) || length(breakpoint_exchanges) == 0)) {
-    cli::cli_abort("{.arg breakpoint_exchanges} must be a non-empty character string.")
+  if (
+    !is.null(breakpoint_exchanges) &&
+      (!is.character(breakpoint_exchanges) || length(breakpoint_exchanges) == 0)
+  ) {
+    cli::cli_abort(
+      "{.arg breakpoint_exchanges} must be a non-empty character string."
+    )
   }
 
   # Error handling for smooth_bunching
   if (!is.logical(smooth_bunching) || length(smooth_bunching) != 1) {
-    cli::cli_abort("{.arg smooth_bunching} must be a single logical value (TRUE or FALSE).")
+    cli::cli_abort(
+      "{.arg smooth_bunching} must be a single logical value (TRUE or FALSE)."
+    )
   }
 
   # Create the list structure with class attribute
