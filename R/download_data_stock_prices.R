@@ -30,7 +30,7 @@ download_data_stock_prices <- function(
   }
 
   rlang::check_installed(
-    "httr2", reason = "to download 'type stocks_yf'."
+    "httr2", reason = "to download type 'stock_prices'."
   )
 
   dates <- validate_dates(start_date, end_date)
@@ -57,11 +57,8 @@ download_data_stock_prices <- function(
       "&interval=1d"
     )
 
-    user_agent <- get_random_user_agent()
-
     response <- httr2::request(url) |>
       httr2::req_error(is_error = \(resp) FALSE) |>
-      httr2::req_user_agent(user_agent) |>
       httr2::req_perform()
 
     if (response$status_code == 200) {
