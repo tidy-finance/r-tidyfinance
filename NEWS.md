@@ -1,5 +1,7 @@
 # tidyfinance (development version)
 
+# tidyfinance 0.4.4
+
 ## Bug fixes
 
 * Removed user agent sampling from `download_stock_prices()`because they were blocked.

@@ -17,7 +17,7 @@
 #'
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #'   trace_enhanced <- download_data_wrds_trace_enhanced("00101JAH9", "2019-01-01", "2021-12-31")
 #' }
 download_data_wrds_trace_enhanced <- function(
