@@ -1,5 +1,9 @@
 # tidyfinance (development version)
 
+## Bug fixes
+
+* Updated download of FRED data due to API changes.
+
 # tidyfinance 0.4.4
 
 ## Bug fixes
