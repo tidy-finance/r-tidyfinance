@@ -47,17 +47,19 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
   )
   for (j in seq_along(series)) {
     url <- paste0(
-      "https://fred.stlouisfed.org/graph/fredgraph.csv?id=", series[j]
+      "https://fred.stlouisfed.org/graph/fredgraph.csv?id=",
+      series[j]
     )
 
     user_agent <- get_random_user_agent()
 
     response <- handle_download_error(
-      function()
+      function() {
         httr2::request(url) |>
           httr2::req_error(is_error = \(resp) FALSE) |>
           httr2::req_user_agent(user_agent) |>
-          httr2::req_perform(),
+          httr2::req_perform()
+      },
       fallback = NULL
     )
 
@@ -70,7 +72,7 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
 
         fred_processed[[j]] <- fred_raw |>
           mutate(
-            date = as.Date(observation_date),
+            date = as.Date(.data$observation_date),
             value = as.numeric(.data[[series[j]]]),
             series = series[j],
             .keep = "none"
