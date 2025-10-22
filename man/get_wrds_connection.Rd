@@ -25,7 +25,7 @@ username and password as environment variables \code{WRDS_USER} and
 \code{WRDS_PASSWORD}, respectively, before using this function.
 }
 \examples{
-\donttest{
+\dontrun{
   # Before using this function, set your WRDS credentials:
   # Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")
 
