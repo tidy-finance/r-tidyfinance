@@ -17,14 +17,13 @@
 #'
 #' @examples
 #' library(dplyr)
-#' library(slider)
 #'
 #' df <- tibble(
 #'   date = seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 24),
 #'   value = rnorm(24)
 #' )
 #'
-#' df |> mutate(rolling_sd = compute_rolling_sd(df, value, period = "quarter", periods = 4, min_obs = 2))
+#' df |> mutate(rolling_sd = compute_rolling_sd(df, value, period = "month", periods = 4, min_obs = 2))
 compute_rolling_sd <- function(
   data,
   column,
