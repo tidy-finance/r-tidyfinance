@@ -6,7 +6,7 @@ data <- tibble::tibble(
 )
 
 test_that("add_lag_columns adds lagged columns", {
-  result <- add_lag_columns(
+  result <- add_lagged_columns(
     data,
     cols = c("bm", "size"),
     lag = months(3),
@@ -17,8 +17,8 @@ test_that("add_lag_columns adds lagged columns", {
 })
 
 test_that("add_lag_columns returns error for negative lag or max_lag", {
-  expect_error(add_lag_columns(data, cols = c("bm", "size"), lag = -1))
-  expect_error(add_lag_columns(
+  expect_error(add_lagged_columns(data, cols = c("bm", "size"), lag = -1))
+  expect_error(add_lagged_columns(
     data,
     cols = c("bm", "size"),
     lag = months(3),
@@ -27,13 +27,21 @@ test_that("add_lag_columns returns error for negative lag or max_lag", {
 })
 
 test_that("add_lag_columns works without grouping", {
-  result <- add_lag_columns(data, cols = c("bm", "size"), lag = months(3))
+  result <- add_lagged_columns(
+    data |> filter(permno == 1),
+    cols = c("bm", "size"),
+    lag = months(3)
+  )
   expect_true("bm_lag" %in% colnames(result))
   expect_true("size_lag" %in% colnames(result))
 })
 
+test_that("add_lag_columns returns error without duplicate dates", {
+  expect_error(add_lagged_columns(data, cols = c("bm", "size"), lag = 1))
+})
+
 test_that("add_lag_columns preserves original column values", {
-  result <- add_lag_columns(
+  result <- add_lagged_columns(
     data,
     cols = c("bm", "size"),
     lag = months(3),
