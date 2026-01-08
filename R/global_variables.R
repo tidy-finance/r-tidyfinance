@@ -198,6 +198,7 @@ utils::globalVariables(
     "..date",
     "..id",
     "..lower_bound",
-    "..upper_bound"
+    "..upper_bound",
+    "observation_date"
   )
 )
