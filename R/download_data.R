@@ -51,6 +51,10 @@ download_data <- function(type, start_date = NULL, end_date = NULL, ...) {
     processed_data <- download_data_stock_prices(..., start_date, end_date)
   } else if (grepl("osap", type, fixed = TRUE)) {
     processed_data <- download_data_osap(start_date, end_date, ...)
+  } else if (grepl("hf", type, fixed = TRUE)) {
+    processed_data <- download_data_hf(start_date, end_date, ...)
+  } else {
+    stop("Unsupported data type: ", type)
   }
   processed_data
 }
