@@ -1,3 +1,4 @@
+utils::globalVariables(c("path", "data", "type", "size"))
 #' List parquet files in a Hugging Face dataset
 #'
 #' Query the Hugging Face Datasets API and return a tibble of files with a
@@ -60,60 +61,15 @@ get_available_hugging_face_files <- function(organization, dataset) {
     )
 }
 
-#' Read parquet files from a Hugging Face dataset for a date range
+#' Download 5-second aggregated orderbook data
+#' for the SPY ETF (S&P 500 tracker) from a Hugging Face dataset.
 #'
 #' Find parquet files in a dataset whose paths include `date=YYYY-MM-DD`,
 #' filter them to the provided date interval, then read and row-bind their
 #' contents using `arrow::read_parquet()`.
 #'
-#' @param start_date Date or character. Start date (inclusive) in `YYYY-MM-DD` format.
-#' @param end_date Date or character. End date (inclusive) in `YYYY-MM-DD` format.
-#' @param organization Character(1). Hugging Face organization or user name.
-#' @param dataset Character(1). Dataset name under the organization.
-#' @return A tibble created by row-binding the parquet files that match the date range.
-#' @details The function expects file paths to contain a substring matching
-#'   `date=YYYY-MM-DD`. It calls `get_available_hugging_face_files()` internally.
-#'   Reading remote parquet files relies on `arrow` supporting the provided URL.
-#' @examples
-#' \dontrun{
-#' request_hf_data("2025-01-01", "2025-01-10", "voigtstefan", "sp500")
-#' }
-#' @importFrom arrow read_parquet
-#' @importFrom stringr str_match
-#' @importFrom purrr map
-#' @importFrom tidyr unnest
-#' @importFrom tibble tibble
-#' @importFrom dplyr inner_join transmute mutate
-#' @export
-request_hf_data <- function(
-  start_date = "2007-06-27",
-  end_date = "2007-07-27",
-  organization = "voigtstefan",
-  dataset = "sp500"
-) {
-  date_pattern <- "date=([0-9]{4}-[0-9]{2}-[0-9]{2})"
-  available_files <- get_available_hugging_face_files(organization, dataset) |>
-    dplyr::mutate(date = as.Date(stringr::str_match(path, date_pattern)[, 2]))
-
-  tibble::tibble(
-    date = seq.Date(as.Date(start_date), as.Date(end_date), by = "day")
-  ) |>
-    dplyr::inner_join(available_files, by = "date") |>
-    dplyr::transmute(
-      data = purrr::map(url, ~ arrow::read_parquet(.x))
-    ) |>
-    tidyr::unnest(data)
-}
-
-#' Download SPY 5-second orderbook data from Hugging Face
-#'
-#' Wrapper around request_hf_data() to download 5-second aggregated orderbook data
-#' for the SPY ETF (S&P 500 tracker) from a Hugging Face dataset.
-#'
 #' @param start_date Date or character. Start date (inclusive) in "YYYY-MM-DD" format. If NULL, the internal default is used.
 #' @param end_date Date or character. End date (inclusive) in "YYYY-MM-DD" format. If NULL, the internal default is used.
-#' @param organization Character(1). Hugging Face organization or user name. Defaults to "voigtstefan".
-#' @param dataset Character(1). Dataset name under the organization. Defaults to "sp500".
 #' @return A tibble of 5-second level observations. Typical columns:
 #'   \itemize{
 #'     \item ts: POSIXct timestamp of the row
@@ -126,17 +82,30 @@ request_hf_data <- function(
 #' @details The function locates parquet files in the specified Hugging Face dataset whose paths include `date=YYYY-MM-DD`,
 #'   filters them to the provided date interval, and reads/row-binds them with arrow::read_parquet().
 #'   The dataset contains 5-second aggregated orderbook snapshots for SPY.
-#' @examples
-#' \dontrun{
-#' download_data_hf("2025-01-01", "2025-01-10")
-#' }
-#' @seealso request_hf_data, get_available_hugging_face_files
+#' @importFrom arrow read_parquet
+#' @importFrom stringr str_match
+#' @importFrom purrr map
+#' @importFrom tidyr unnest
+#' @importFrom tibble tibble
+#' @importFrom dplyr inner_join transmute mutate
 #' @export
-download_data_hf <- function(
-  start_date = NULL,
-  end_date = NULL,
-  organization = "voigtstefan",
-  dataset = "sp500"
+download_hf_high_frequency_data <- function(
+  start_date = "2007-06-27",
+  end_date = "2007-07-27"
 ) {
-  request_hf_data("2025-01-01", "2025-01-10")
+  organization = "voigtstefan"
+  dataset = "sp500"
+
+  date_pattern <- "date=([0-9]{4}-[0-9]{2}-[0-9]{2})"
+  available_files <- get_available_hugging_face_files(organization, dataset) |>
+    dplyr::mutate(date = as.Date(stringr::str_match(path, date_pattern)[, 2]))
+
+  tibble::tibble(
+    date = seq.Date(as.Date(start_date), as.Date(end_date), by = "day")
+  ) |>
+    dplyr::inner_join(available_files, by = "date") |>
+    dplyr::transmute(
+      data = purrr::map(url, ~ arrow::read_parquet(.x))
+    ) |>
+    tidyr::unnest(data)
 }
