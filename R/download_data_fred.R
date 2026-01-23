@@ -32,8 +32,6 @@
 #' }
 #'
 download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
-  rlang::check_installed("httr2", reason = "to download data from FRED.")
-
   dates <- validate_dates(start_date, end_date)
   start_date <- dates$start_date
   end_date <- dates$end_date

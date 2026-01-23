@@ -28,6 +28,7 @@
 #'   download_data("constituents", index = "DAX")
 #'   download_data("fred", series = c("GDP", "CPIAUCNS"))
 #'   download_data("stock_prices", symbols = c("AAPL", "MSFT"))
+#'   download_data("hf_high_frequency_sp500", "2007-07-26", "2007-07-27")
 #' }
 download_data <- function(type, start_date = NULL, end_date = NULL, ...) {
   check_supported_type(type)
@@ -51,6 +52,10 @@ download_data <- function(type, start_date = NULL, end_date = NULL, ...) {
     processed_data <- download_data_stock_prices(..., start_date, end_date)
   } else if (grepl("osap", type, fixed = TRUE)) {
     processed_data <- download_data_osap(start_date, end_date, ...)
+  } else if (grepl("hf", type, fixed = TRUE)) {
+    processed_data <- download_data_hf(type, start_date, end_date)
+  } else {
+    stop("Unsupported data type: ", type)
   }
   processed_data
 }

@@ -24,7 +24,7 @@
 #'   # Before using this function, set your WRDS credentials:
 #'   # Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")
 #'
-#'   con <- get_wrds_connection()
+#'   # con <- get_wrds_connection()
 #'   # Use `con` with DBI-compliant functions to interact with the WRDS database
 #'   # Remember to disconnect after use:
 #'   # disconnect_connection(con)
@@ -37,11 +37,6 @@ get_wrds_connection <- function() {
       "WRDS credentials not found. Please set them using {.fn set_wrds_credentials}."
     )
   }
-
-  rlang::check_installed(
-    "RPostgres",
-    reason = "to download types wrds_*."
-  )
 
   DBI::dbConnect(
     RPostgres::Postgres(),

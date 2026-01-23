@@ -34,8 +34,6 @@
 #' }
 #'
 download_data_constituents <- function(index) {
-  rlang::check_installed("httr2")
-
   symbol_blacklist <- c("", "USD", "GXU4", "EUR", "MARGIN_EUR", "MLIFT")
 
   supported_indexes <- list_supported_indexes()
@@ -51,11 +49,12 @@ download_data_constituents <- function(index) {
   user_agent <- get_random_user_agent()
 
   response <- handle_download_error(
-    function()
+    function() {
       httr2::request(url) |>
         httr2::req_error(is_error = \(resp) FALSE) |>
         httr2::req_user_agent(user_agent) |>
-        httr2::req_perform(),
+        httr2::req_perform()
+    },
     fallback = NULL
   )
 

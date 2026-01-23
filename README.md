@@ -10,7 +10,7 @@
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![](https://img.shields.io/badge/devel%20version-0.4.3.9001-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
+[![](https://img.shields.io/badge/devel%20version-0.4.5.9001-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
 [![R-CMD-check](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -90,6 +90,17 @@ download_data_wrds_compustat(
   start_date = "2000-01-01", 
   end_date = "2020-12-31",
   additional_columns = c("acoxar", "amc", "aldo")
+)
+```
+
+You can also download high-frequency data for the S&P 500 that we host
+on Hugging Face:
+
+``` r
+download_data(
+  type = "hf_high_frequency_sp500",
+  start_date = "2007-07-26", 
+  end_date = "2007-07-27"
 )
 ```
 

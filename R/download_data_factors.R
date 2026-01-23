@@ -77,11 +77,6 @@ download_data_factors_ff <- function(
 ) {
   check_supported_type(type)
 
-  rlang::check_installed(
-    "frenchdata",
-    reason = paste0("to download type ", type, ".")
-  )
-
   dates <- validate_dates(start_date, end_date)
   start_date <- dates$start_date
   end_date <- dates$end_date
@@ -179,10 +174,11 @@ download_data_factors_q <- function(
   dataset <- factors_q_types$dataset_name[factors_q_types$type == type]
 
   raw_data <- handle_download_error(
-    function(url)
+    function(url) {
       suppressWarnings(
         suppressMessages(utils::read.csv(url)) |> as_tibble()
-      ),
+      )
+    },
     paste0(url, dataset),
     fallback = tibble(
       date = Date()

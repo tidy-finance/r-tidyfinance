@@ -202,5 +202,6 @@ utils::globalVariables(
     ".date",
     ".lower",
     ".upper"
+    "observation_date"
   )
 )

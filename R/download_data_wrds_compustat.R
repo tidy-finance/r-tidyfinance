@@ -34,11 +34,6 @@ download_data_wrds_compustat <- function(
   end_date = NULL,
   additional_columns = NULL
 ) {
-  rlang::check_installed(
-    "dbplyr",
-    reason = paste0("to download type ", type, ".")
-  )
-
   dates <- validate_dates(start_date, end_date, use_default_range = TRUE)
   start_date <- dates$start_date
   end_date <- dates$end_date
