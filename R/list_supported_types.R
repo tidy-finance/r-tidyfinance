@@ -630,7 +630,7 @@ list_supported_types_ff <- function() {
     "factors_ff_4_emerging_market_bm_and_inv_2_x_2_monthly"                                                       ,
     "4 Emerging Market Portfolios Formed on Book-to-Market and Investment (2 x 2)"
   ) |>
-    mutate(domain = "Fama-French")
+    dplyr::mutate(domain = "Fama-French")
 }
 
 #' List Supported Legacy Fama-French Dataset Types
@@ -683,7 +683,7 @@ list_supported_types_ff_legacy <- function() {
     "factors_ff_industry_49_daily"        ,
     "49 Industry Portfolios [Daily]"
   ) |>
-    mutate(domain = "Fama-French")
+    dplyr::mutate(domain = "Fama-French")
 }
 
 #' List Supported Global Q Dataset Types
@@ -714,7 +714,7 @@ list_supported_types_q <- function() {
     "factors_q5_annual"              ,
     "q5_factors_annual_2023.csv"
   ) |>
-    mutate(domain = "Global Q")
+    dplyr::mutate(domain = "Global Q")
 }
 
 #' List Supported Macro Predictor Dataset Types
@@ -739,7 +739,7 @@ list_supported_types_macro_predictors <- function() {
     "macro_predictors_annual"    ,
     "PredictorData2022.xlsx"     ,
   ) |>
-    mutate(domain = "Goyal-Welch")
+    dplyr::mutate(domain = "Goyal-Welch")
 }
 
 #' List Supported WRDS Dataset Types
@@ -769,7 +769,7 @@ list_supported_types_wrds <- function() {
     "wrds_trace_enhanced"                           ,
     "trace.trace_enhanced"
   ) |>
-    mutate(domain = "WRDS")
+    dplyr::mutate(domain = "WRDS")
 }
 
 #' List Supported Other Data Types
@@ -779,20 +779,26 @@ list_supported_types_wrds <- function() {
 #' @returns A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
 list_supported_types_other <- function() {
   tibble(
-    "type" = c("stock_prices", "constituents", "fred", "osap", "hf"),
+    "type" = c(
+      "stock_prices",
+      "constituents",
+      "fred",
+      "osap",
+      "hf_high_frequency_sp500"
+    ),
     "dataset_name" = c(
       "YahooFinance",
       "various",
       "various",
       "Open Source Asset Pricing",
-      "sp500"
+      "High Frequency S&P 500"
     ),
     "domain" = c(
       "Stock Prices",
       "Index Constituents",
       "FRED",
       "Open Source Asset Pricing",
-      "sp500"
+      "Hugging Face"
     )
   )
 }

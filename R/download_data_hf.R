@@ -1,4 +1,3 @@
-utils::globalVariables(c("path", "data", "type", "size"))
 #' List parquet files in a Hugging Face dataset
 #'
 #' Query the Hugging Face Datasets API and return a tibble of files with a
@@ -12,13 +11,16 @@ utils::globalVariables(c("path", "data", "type", "size"))
 #'   the dataset to be publicly accessible or accessible with appropriate auth.
 #' @examples
 #' \dontrun{
-#' get_available_hugging_face_files("voigtstefan", "sp500")
+#' get_available_hf_files("voigtstefan", "sp500")
 #' }
-#' @importFrom jsonlite fromJSON
-#' @importFrom stringr str_match
-#' @importFrom arrow read_parquet
+#'
 #' @export
-get_available_hugging_face_files <- function(organization, dataset) {
+get_available_hf_files <- function(organization, dataset) {
+  rlang::check_installed(
+    "httr2",
+    reason = "to download from the domain 'Hugging Face'."
+  )
+
   api_url <- paste0(
     "https://huggingface.co/api/datasets/",
     organization,
@@ -40,11 +42,13 @@ get_available_hugging_face_files <- function(organization, dataset) {
       jsonlite::fromJSON(simplifyDataFrame = TRUE) |>
       tibble::tibble() |>
       dplyr::filter(
-        type == "file" & grepl("\\.parquet$", path, ignore.case = TRUE)
+        .data$type == "file" &
+          grepl("\\.parquet$", .data$path, ignore.case = TRUE)
       ) |>
-      dplyr::select(path, size)
+      dplyr::select("path", "size")
 
-    out <- out |> dplyr::bind_rows(tibble::tibble(data = list(body)))
+    out <- out |>
+      dplyr::bind_rows(tibble::tibble(data = list(body)))
     link <- httr2::resp_headers(resp)$link
     if (is.null(link) || !grepl('rel="next"', link)) {
       break
@@ -53,7 +57,7 @@ get_available_hugging_face_files <- function(organization, dataset) {
   }
 
   out |>
-    tidyr::unnest(data) |>
+    tidyr::unnest(.data$data) |>
     dplyr::mutate(
       url = glue::glue(
         "https://huggingface.co/datasets/{organization}/{dataset}/resolve/main/{path}"
@@ -68,44 +72,45 @@ get_available_hugging_face_files <- function(organization, dataset) {
 #' filter them to the provided date interval, then read and row-bind their
 #' contents using `arrow::read_parquet()`.
 #'
+#' @param type description
 #' @param start_date Date or character. Start date (inclusive) in "YYYY-MM-DD" format. If NULL, the internal default is used.
 #' @param end_date Date or character. End date (inclusive) in "YYYY-MM-DD" format. If NULL, the internal default is used.
-#' @return A tibble of 5-second level observations. Typical columns:
-#'   \itemize{
-#'     \item ts: POSIXct timestamp of the row
-#'     \item midquote: numeric mid price
-#'     \item signed_volume: numeric signed volume
-#'     \item trading_volume: numeric trading volume
-#'     \item depth0_ask, depth0_bid, depth5_ask, depth5_bid: numeric orderbook depth measures
-#'     \item spread: numeric bid–ask spread
-#'   }
+#'
+#' @return A tibble with processed data, including dates and the relevant
+#'   financial metrics, filtered by the specified date range.
+#'
 #' @details The function locates parquet files in the specified Hugging Face dataset whose paths include `date=YYYY-MM-DD`,
 #'   filters them to the provided date interval, and reads/row-binds them with arrow::read_parquet().
-#'   The dataset contains 5-second aggregated orderbook snapshots for SPY.
-#' @importFrom arrow read_parquet
-#' @importFrom stringr str_match
-#' @importFrom purrr map
-#' @importFrom tidyr unnest
-#' @importFrom tibble tibble
-#' @importFrom dplyr inner_join transmute mutate
+#'
+#' @examples
+#' \dontrun{
+#' # Download 5-second aggregated orderbook snapshots for SPY.
+#'   download_data_hf("hf_high_frequency_sp500", "2007-07-26", "2007-07-27")
+#' }
+#'
 #' @export
-download_hf_high_frequency_data <- function(
+download_data_hf <- function(
+  type,
   start_date = "2007-06-27",
   end_date = "2007-07-27"
 ) {
-  organization = "voigtstefan"
-  dataset = "sp500"
+  if (type == "hf_high_frequency_sp500") {
+    organization = "voigtstefan"
+    dataset = "sp500"
 
-  date_pattern <- "date=([0-9]{4}-[0-9]{2}-[0-9]{2})"
-  available_files <- get_available_hugging_face_files(organization, dataset) |>
-    dplyr::mutate(date = as.Date(stringr::str_match(path, date_pattern)[, 2]))
+    date_pattern <- "date=([0-9]{4}-[0-9]{2}-[0-9]{2})"
+    available_files <- get_available_hf_files(organization, dataset) |>
+      dplyr::mutate(
+        date = as.Date(stringr::str_match(.data$path, date_pattern)[, 2])
+      )
 
-  tibble::tibble(
-    date = seq.Date(as.Date(start_date), as.Date(end_date), by = "day")
-  ) |>
-    dplyr::inner_join(available_files, by = "date") |>
-    dplyr::transmute(
-      data = purrr::map(url, ~ arrow::read_parquet(.x))
+    tibble::tibble(
+      date = seq.Date(as.Date(start_date), as.Date(end_date), by = "day")
     ) |>
-    tidyr::unnest(data)
+      dplyr::inner_join(available_files, by = "date") |>
+      dplyr::transmute(
+        data = purrr::map(url, ~ arrow::read_parquet(.x))
+      ) |>
+      tidyr::unnest(.data$data)
+  }
 }
