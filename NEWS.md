@@ -2,12 +2,17 @@
 
 ## New features
 
-* Added `download_data_hf()` and support for `type = `.
+* Added `download_data_hf()` and support for `type = "hf_high_frequency_sp500"`.
 
 ## Improvements
 
 * Removed `renv` due to lack of value. 
 * Moved optional dependencies to imports for improved user experience.
+
+## Bug fixes
+
+* Removed erroneous time zone adjustment in `download_data_wrds_trace_enhanced()` [#133](https://github.com/tidy-finance/r-tidyfinance/issues/133). 
+* Replaced tabs in `list_supported_types_ff()` with underscores [#134](https://github.com/tidy-finance/r-tidyfinance/issues/134).
 
 # tidyfinance 0.4.5
 
