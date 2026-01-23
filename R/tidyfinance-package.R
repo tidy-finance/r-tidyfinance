@@ -11,5 +11,8 @@
 #' @importFrom utils read.csv
 #' @importFrom tidyr pivot_longer unnest nest
 #' @importFrom rlang := enquo syms quo_is_null
+#' @importFrom jsonlite fromJSON
+#' @importFrom stringr str_match
+#' @importFrom arrow read_parquet
 ## usethis namespace: end
 NULL

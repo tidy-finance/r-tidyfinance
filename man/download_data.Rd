@@ -38,5 +38,6 @@ appropriate function for downloading and processing the data.
   download_data("constituents", index = "DAX")
   download_data("fred", series = c("GDP", "CPIAUCNS"))
   download_data("stock_prices", symbols = c("AAPL", "MSFT"))
+  download_data("hf_high_frequency_sp500", "2007-07-26", "2007-07-27")
 }
 }

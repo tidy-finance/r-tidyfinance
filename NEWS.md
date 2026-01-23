@@ -1,5 +1,9 @@
 # tidyfinance (development version)
 
+## New features
+
+* Added `download_data_hf()` and support for `type = `
+
 # tidyfinance 0.4.5
 
 ## Bug fixes

@@ -26,15 +26,19 @@ BugReports: https://github.com/tidy-finance/r-tidyfinance/issues
 Depends: 
     R (>= 4.1)
 Imports:
+    arrow,
     cli,
     dplyr (>= 1.1.4),
+    glue,
+    jsonlite,
     lifecycle,
     lubridate (>= 1.9.3),
     purrr (>= 1.0.2),
     rlang (>= 1.1.3),
     slider (>= 0.3.1),
     stats,
-    tibble, 
+    stringr,
+    tibble,
     tidyr (>= 1.3.1)
 Suggests:
     DBI (>= 1.2.2),
