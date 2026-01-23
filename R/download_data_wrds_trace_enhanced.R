@@ -25,11 +25,6 @@ download_data_wrds_trace_enhanced <- function(
   start_date = NULL,
   end_date = NULL
 ) {
-  rlang::check_installed(
-    "dbplyr",
-    reason = "to download type clean_trace."
-  )
-
   if (!is.character(cusips) || anyNA(cusips) || !all(nchar(cusips) == 9)) {
     cli::cli_abort(
       "{.arg cusip} must be a character vector of 9-digit CUSIPs, not {.obj_type_friendly {cusips}}."
@@ -280,12 +275,6 @@ download_data_wrds_trace_enhanced <- function(
       yld_pt,
       rpt_side_cd,
       cntra_mp_id
-    ) |>
-    mutate(
-      trd_exctn_tm = format(
-        as_datetime(trd_exctn_tm, tz = "America/New_York"),
-        "%H:%M:%S"
-      )
     )
 
   trace_final

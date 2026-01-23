@@ -32,8 +32,6 @@
 #' }
 #'
 download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
-  rlang::check_installed("httr2", reason = "to download data from FRED.")
-
   dates <- validate_dates(start_date, end_date)
   start_date <- dates$start_date
   end_date <- dates$end_date
@@ -47,17 +45,19 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
   )
   for (j in seq_along(series)) {
     url <- paste0(
-      "https://fred.stlouisfed.org/graph/fredgraph.csv?id=", series[j]
+      "https://fred.stlouisfed.org/graph/fredgraph.csv?id=",
+      series[j]
     )
 
     user_agent <- get_random_user_agent()
 
     response <- handle_download_error(
-      function()
+      function() {
         httr2::request(url) |>
           httr2::req_error(is_error = \(resp) FALSE) |>
           httr2::req_user_agent(user_agent) |>
-          httr2::req_perform(),
+          httr2::req_perform()
+      },
       fallback = NULL
     )
 

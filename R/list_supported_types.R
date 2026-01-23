@@ -26,6 +26,7 @@ list_supported_types_ff <- function() {
   #          type = gsub("operating_profitability", "op", type),
   #          type = gsub("ex_dividend", "exdividend", type),
   #          type = gsub("investment", "inv", type),
+  #          type = gsub("\t", "_", type),
   #          type = paste0("factors_ff_", type)) |>
   #   select(type, dataset_name = name)
   #
@@ -99,8 +100,8 @@ list_supported_types_ff <- function() {
     "25 Portfolios Formed on Size and Operating Profitability (5 x 5)"                                            ,
     "factors_ff_25_size_and_op_5_x_5_exdividends_monthly"                                                         ,
     "25 Portfolios Formed on Size and Operating Profitability (5 x 5) [ex. Dividends]"                            ,
-    "factors_ff_25_size_and_op\t5_x_5_daily"                                                                      ,
-    "25 Portfolios Formed on Size and Operating Profitability\t(5 x 5) [Daily]"                                   ,
+    "factors_ff_25_size_and_op_5_x_5_daily"                                                                       ,
+    "25 Portfolios Formed on Size and Operating Profitability_(5 x 5) [Daily]"                                    ,
     "factors_ff_100_size_and_op_10_x_10_monthly"                                                                  ,
     "100 Portfolios Formed on Size and Operating Profitability (10 x 10)"                                         ,
     "factors_ff_100_size_and_op_10_x_10_exdividends_monthly"                                                      ,

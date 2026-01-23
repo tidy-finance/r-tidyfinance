@@ -30,11 +30,6 @@ download_data_stock_prices <- function(
     )
   }
 
-  rlang::check_installed(
-    "httr2",
-    reason = "to download type 'stock_prices'."
-  )
-
   dates <- validate_dates(start_date, end_date)
   start_date <- dates$start_date
   end_date <- dates$end_date

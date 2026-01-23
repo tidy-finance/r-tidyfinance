@@ -38,11 +38,6 @@ get_wrds_connection <- function() {
     )
   }
 
-  rlang::check_installed(
-    "RPostgres",
-    reason = "to download types wrds_*."
-  )
-
   DBI::dbConnect(
     RPostgres::Postgres(),
     host = "wrds-pgdata.wharton.upenn.edu",
