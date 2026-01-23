@@ -25,11 +25,6 @@
 #'   fisd_extended <- download_data_wrds_fisd(additional_columns = c("asset_backed", "defeased"))
 #' }
 download_data_wrds_fisd <- function(additional_columns = NULL) {
-  rlang::check_installed(
-    "dbplyr",
-    reason = "to download type fisdmergedissue."
-  )
-
   con <- get_wrds_connection()
 
   fisd_mergedissue_db <- tbl(con, I("fisd.fisd_mergedissue"))

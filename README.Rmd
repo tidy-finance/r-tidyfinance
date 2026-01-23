@@ -87,6 +87,16 @@ download_data_wrds_compustat(
 )
 ```
 
+You can also download high-frequency data for the S&P 500 that we host on Hugging Face:
+
+```r
+download_data(
+  type = "hf_high_frequency_sp500",
+  start_date = "2007-07-26", 
+  end_date = "2007-07-27"
+)
+```
+
 You can get a list of all currently supported types via `list_supported_types()`. Please open an [issue on GitHub](https://github.com/tidy-finance/r-tidyfinance/issues) to request additional supported types.
 
 ### Other Helpers

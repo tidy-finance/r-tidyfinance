@@ -2,6 +2,8 @@
 #' @import dplyr
 #' @import lubridate
 #' @import tibble
+#' @import DBI
+#' @import httr2
 "_PACKAGE"
 
 ## usethis namespace: start
@@ -13,6 +15,11 @@
 #' @importFrom rlang := enquo syms quo_is_null
 #' @importFrom jsonlite fromJSON
 #' @importFrom stringr str_match
+#' @importFrom frenchdata download_french_data get_french_data_list
 #' @importFrom arrow read_parquet
+#' @importFrom RPostgres Postgres
+#' @importFrom sandwich NeweyWest
+#' @importFrom furrr future_map
+#' @importFrom dbplyr translate_sql
 ## usethis namespace: end
 NULL

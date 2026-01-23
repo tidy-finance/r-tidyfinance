@@ -16,11 +16,6 @@
 #'
 #' @export
 get_available_hf_files <- function(organization, dataset) {
-  rlang::check_installed(
-    "httr2",
-    reason = "to download from the domain 'Hugging Face'."
-  )
-
   api_url <- paste0(
     "https://huggingface.co/api/datasets/",
     organization,

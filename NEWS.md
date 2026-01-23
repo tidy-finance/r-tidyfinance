@@ -2,7 +2,12 @@
 
 ## New features
 
-* Added `download_data_hf()` and support for `type = `
+* Added `download_data_hf()` and support for `type = `.
+
+## Improvements
+
+* Removed `renv` due to lack of value. 
+* Moved optional dependencies to imports for improved user experience.
 
 # tidyfinance 0.4.5
 

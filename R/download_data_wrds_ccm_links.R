@@ -25,11 +25,6 @@ download_data_wrds_ccm_links <- function(
   linktype = c("LU", "LC"),
   linkprim = c("P", "C")
 ) {
-  rlang::check_installed(
-    "dbplyr",
-    reason = "to download type wrds_ccm_links."
-  )
-
   con <- get_wrds_connection()
 
   ccm_linking_table_db <- tbl(con, I("crsp.ccmxpf_lnkhist"))
