@@ -275,12 +275,6 @@ download_data_wrds_trace_enhanced <- function(
       yld_pt,
       rpt_side_cd,
       cntra_mp_id
-    ) |>
-    mutate(
-      trd_exctn_tm = format(
-        as_datetime(trd_exctn_tm, tz = "America/New_York"),
-        "%H:%M:%S"
-      )
     )
 
   trace_final
