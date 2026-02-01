@@ -67,9 +67,10 @@ get_available_hf_files <- function(organization, dataset) {
 #' filter them to the provided date interval, then read and row-bind their
 #' contents using `arrow::read_parquet()`.
 #'
-#' @param type description
+#' @param dataset The dataset to download (e.g., "high_frequency_sp500").
 #' @param start_date Date or character. Start date (inclusive) in "YYYY-MM-DD" format. If NULL, the internal default is used.
 #' @param end_date Date or character. End date (inclusive) in "YYYY-MM-DD" format. If NULL, the internal default is used.
+#' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #'
 #' @return A tibble with processed data, including dates and the relevant
 #'   financial metrics, filtered by the specified date range.
@@ -79,22 +80,52 @@ get_available_hf_files <- function(organization, dataset) {
 #'
 #' @examples
 #' \dontrun{
-#' # Download 5-second aggregated orderbook snapshots for SPY.
-#'   download_data_hf("hf_high_frequency_sp500", "2007-07-26", "2007-07-27")
+#'   # Download 5-second aggregated orderbook snapshots for SPY.
+#'   download_data_hf("high_frequency_sp500", "2007-07-26", "2007-07-27")
 #' }
 #'
 #' @export
 download_data_hf <- function(
-  type,
+  dataset = NULL,
   start_date = "2007-06-27",
-  end_date = "2007-07-27"
+  end_date = "2007-07-27",
+  type = deprecated()
 ) {
-  if (type == "hf_high_frequency_sp500") {
-    organization = "voigtstefan"
-    dataset = "sp500"
+  # Handle explicit type argument
+  if (lifecycle::is_present(type)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.0",
+      what = "download_data_hf(type)",
+      details = "Use the `dataset` argument instead."
+    )
+    dataset <- sub("^hf_", "", type)
+  }
+
+  # Handle legacy type passed as dataset argument
+  if (!is.null(dataset) && is_legacy_type_hf(dataset)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.0",
+      what = "download_data_hf(type)",
+      details = paste0(
+        "The `type` argument is deprecated. ",
+        "Use `dataset` instead (e.g., 'high_frequency_sp500' instead of 'hf_high_frequency_sp500')."
+      )
+    )
+    dataset <- sub("^hf_", "", dataset)
+  }
+
+  if (is.null(dataset)) {
+    cli::cli_abort("Argument {.arg dataset} is required.")
+  }
+
+  check_supported_dataset_hf(dataset)
+
+  if (dataset == "high_frequency_sp500") {
+    organization <- "voigtstefan"
+    dataset_name <- "sp500"
 
     date_pattern <- "date=([0-9]{4}-[0-9]{2}-[0-9]{2})"
-    available_files <- get_available_hf_files(organization, dataset) |>
+    available_files <- get_available_hf_files(organization, dataset_name) |>
       dplyr::mutate(
         date = as.Date(stringr::str_match(.data$path, date_pattern)[, 2])
       )
@@ -107,5 +138,26 @@ download_data_hf <- function(
         data = purrr::map(url, ~ arrow::read_parquet(.x))
       ) |>
       tidyr::unnest(.data$data)
+  } else {
+    cli::cli_abort("Unsupported dataset: {.val {dataset}}")
+  }
+}
+
+#' Check if a string is a legacy Hugging Face type
+#' @noRd
+is_legacy_type_hf <- function(x) {
+  grepl("^hf_", x)
+}
+
+#' Check if Hugging Face dataset is supported
+#' @noRd
+check_supported_dataset_hf <- function(dataset) {
+  supported_datasets <- c("high_frequency_sp500")
+
+  if (!dataset %in% supported_datasets) {
+    cli::cli_abort(c(
+      "Unsupported Hugging Face dataset: {.val {dataset}}",
+      "i" = "Supported datasets: {.val {supported_datasets}}"
+    ))
   }
 }

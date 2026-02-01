@@ -1,18 +1,17 @@
 #' Download and Process Macro Predictor Data
 #'
 #' Downloads and processes macroeconomic predictor data based on the specified
-#' type (monthly, quarterly, or annual), date range, and source URL. The
-#' function first checks if the specified type is supported, then downloads the
-#' data from the provided URL (defaulting to a Google Sheets export link). It
+#' dataset (monthly, quarterly, or annual), date range, and source URL. The
+#' function downloads the data from a Google Sheets export link. It
 #' processes the raw data into a structured format, calculating additional
 #' financial metrics and filtering by the specified date range.
 #'
-#' @param type The type of dataset to download ("macro_predictors_monthly",
-#'   "macro_predictors_quarterly", "macro_predictors_annual").
+#' @param dataset The dataset to download ("monthly", "quarterly", "annual").
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the start date for the data. If not provided, the full dataset is returned.
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, the full dataset is returned.
+#' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #' @param sheet_id The Google Sheets ID from which to download the dataset, with the
 #'   default "1bM7vCWd3WOt95Sf9qjLPZjoiafgF_8EG".
 #'
@@ -23,16 +22,45 @@
 #'
 #' @examples
 #' \donttest{
-#'  download_data_macro_predictors("macro_predictors_monthly")
+#'   download_data_macro_predictors("monthly")
+#'   download_data_macro_predictors("quarterly", "2000-01-01", "2020-12-31")
 #' }
 #'
 download_data_macro_predictors <- function(
-  type,
+  dataset = NULL,
   start_date = NULL,
   end_date = NULL,
+  type = deprecated(),
   sheet_id = "1bM7vCWd3WOt95Sf9qjLPZjoiafgF_8EG"
 ) {
-  check_supported_type(type)
+  # Handle explicit type argument
+  if (lifecycle::is_present(type)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.0",
+      what = "download_data_macro_predictors(type)",
+      details = "Use the `dataset` argument instead."
+    )
+    dataset <- sub("^macro_predictors_", "", type)
+  }
+
+  # Handle legacy type passed as dataset argument
+  if (!is.null(dataset) && is_legacy_type_macro_predictors(dataset)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.0",
+      what = "download_data_macro_predictors(type)",
+      details = paste0(
+        "The `type` argument is deprecated. ",
+        "Use `dataset` instead (e.g., 'monthly' instead of 'macro_predictors_monthly')."
+      )
+    )
+    dataset <- sub("^macro_predictors_", "", dataset)
+  }
+
+  if (is.null(dataset)) {
+    cli::cli_abort("Argument {.arg dataset} is required.")
+  }
+
+  check_supported_dataset_macro_predictors(dataset)
 
   dates <- validate_dates(start_date, end_date)
   start_date <- dates$start_date
@@ -47,12 +75,13 @@ download_data_macro_predictors <- function(
     )
   }
 
-  if (grepl("monthly", type, fixed = TRUE)) {
+  if (dataset == "monthly") {
     raw_data <- handle_download_error(
-      function()
+      function() {
         suppressWarnings(
           as_tibble(read.csv(build_macro_predictors_url("Monthly")))
-        ),
+        )
+      },
       fallback = tibble()
     )
 
@@ -63,13 +92,13 @@ download_data_macro_predictors <- function(
 
     processed_data <- raw_data |>
       mutate(date = ym(yyyymm))
-  }
-  if (grepl("quarterly", type, fixed = TRUE)) {
+  } else if (dataset == "quarterly") {
     raw_data <- handle_download_error(
-      function()
+      function() {
         suppressWarnings(
           as_tibble(read.csv(build_macro_predictors_url("Quarterly")))
-        ),
+        )
+      },
       fallback = tibble()
     )
 
@@ -85,9 +114,21 @@ download_data_macro_predictors <- function(
         month = as.integer(quarter) * 3 - 2,
         date = as.Date(paste0(year, "-", month, "-01"))
       )
-  }
-  if (grepl("annual", type, fixed = TRUE)) {
-    raw_data <- as_tibble(read.csv(build_macro_predictors_url("Annual")))
+  } else if (dataset == "annual") {
+    raw_data <- handle_download_error(
+      function() {
+        suppressWarnings(
+          as_tibble(read.csv(build_macro_predictors_url("Annual")))
+        )
+      },
+      fallback = tibble()
+    )
+
+    if (nrow(raw_data) == 0) {
+      cli::cli_inform("Returning an empty data set due to download failure.")
+      return(raw_data)
+    }
+
     processed_data <- raw_data |>
       mutate(date = as.Date(paste0(yyyy, "-01-01")))
   }
@@ -132,4 +173,23 @@ download_data_macro_predictors <- function(
   }
 
   processed_data
+}
+
+#' Check if a string is a legacy macro predictors type
+#' @noRd
+is_legacy_type_macro_predictors <- function(x) {
+  grepl("^macro_predictors_", x)
+}
+
+#' Check if macro predictors dataset is supported
+#' @noRd
+check_supported_dataset_macro_predictors <- function(dataset) {
+  supported_datasets <- c("monthly", "quarterly", "annual")
+
+  if (!dataset %in% supported_datasets) {
+    cli::cli_abort(c(
+      "Unsupported macro predictors dataset: {.val {dataset}}",
+      "i" = "Supported datasets: {.val {supported_datasets}}"
+    ))
+  }
 }

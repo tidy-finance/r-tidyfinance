@@ -700,20 +700,20 @@ list_supported_types_ff_legacy <- function() {
 #'   dataset belongs, always "Global Q").
 list_supported_types_q <- function() {
   tribble(
-    ~type                            ,
-    ~dataset_name                    ,
-    "factors_q5_daily"               ,
-    "q5_factors_daily_2023.csv"      ,
-    "factors_q5_weekly"              ,
-    "q5_factors_weekly_2023.csv"     ,
-    "factors_q5_weekly_w2w"          ,
-    "q5_factors_weekly_w2w_2023.csv" ,
-    "factors_q5_monthly"             ,
-    "q5_factors_monthly_2023.csv"    ,
-    "factors_q5_quarterly"           ,
-    "q5_factors_quarterly_2023.csv"  ,
-    "factors_q5_annual"              ,
-    "q5_factors_annual_2023.csv"
+    ~type                        ,
+    ~dataset_name                ,
+    "factors_q5_daily"           ,
+    "q5_factors_daily_2023"      ,
+    "factors_q5_weekly"          ,
+    "q5_factors_weekly_2023"     ,
+    "factors_q5_weekly_w2w"      ,
+    "q5_factors_weekly_w2w_2023" ,
+    "factors_q5_monthly"         ,
+    "q5_factors_monthly"         ,
+    "factors_q5_quarterly"       ,
+    "q5_factors_quarterly_2023"  ,
+    "factors_q5_annual"          ,
+    "q5_factors_annual_2023"
   ) |>
     dplyr::mutate(domain = "Global Q")
 }

@@ -2,42 +2,54 @@
 % Please edit documentation in R/download_data.R
 \name{download_data}
 \alias{download_data}
-\title{Download and Process Data Based on Type}
+\title{Download and Process Data Based on Domain and Dataset}
 \usage{
-download_data(type, start_date = NULL, end_date = NULL, ...)
+download_data(
+  domain = NULL,
+  dataset = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  type = deprecated(),
+  ...
+)
 }
 \arguments{
-\item{type}{The type of dataset to download, indicating either factor data or
-macroeconomic predictors.}
+\item{domain}{The domain of the dataset to download (e.g., "famafrench",
+"globalq", "macro_predictors", "wrds", "constituents", "fred",
+"stock_prices", "osap", "hf").}
+
+\item{dataset}{Optional. The specific dataset to download within the domain.}
 
 \item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
 specifying the start date for the data. If not provided, the full dataset or a subset is returned,
-dependening on the dataset type.}
+depending on the dataset type.}
 
 \item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
 specifying the end date for the data. If not provided, the full dataset or a subset is returned,
 depending on the dataset type.}
 
-\item{...}{Additional arguments passed to specific download functions depending on the \code{type}.
-For instance, if \code{type} is "constituents", this might include parameters specific to \code{download_data_constituents}.}
+\item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{domain} and \code{dataset} instead.}
+
+\item{...}{Additional arguments passed to specific download functions depending on the \code{domain}.
+For instance, if \code{domain} is "constituents", this might include parameters specific to \code{download_data_constituents}.}
 }
 \value{
 A tibble with processed data, including dates and the relevant
 financial metrics, filtered by the specified date range.
 }
 \description{
-Downloads and processes data based on the specified type (e.g., Fama-French
-factors, Global Q factors, or macro predictors), and date range. This
-function checks if the specified type is supported and then delegates to the
+Downloads and processes data based on the specified domain (e.g., Fama-French
+factors, Global Q factors, or macro predictors), dataset, and date range. This
+function checks if the specified domain is supported and then delegates to the
 appropriate function for downloading and processing the data.
 }
 \examples{
 \donttest{
-  download_data("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
-  download_data("macro_predictors_monthly", "2000-01-01", "2020-12-31")
+  download_data("famafrench", "F-F_Research_Data_5_Factors_2x3_daily", "2000-01-01", "2020-12-31")
+  download_data("macro_predictors", "monthly", "2000-01-01", "2020-12-31")
   download_data("constituents", index = "DAX")
   download_data("fred", series = c("GDP", "CPIAUCNS"))
   download_data("stock_prices", symbols = c("AAPL", "MSFT"))
-  download_data("hf_high_frequency_sp500", "2007-07-26", "2007-07-27")
+  download_data("hf", "high_frequency_sp500", "2007-07-26", "2007-07-27")
 }
 }

@@ -5,20 +5,23 @@
 \title{Download Data from WRDS Compustat}
 \usage{
 download_data_wrds_compustat(
-  type,
+  dataset = NULL,
   start_date = NULL,
   end_date = NULL,
+  type = deprecated(),
   additional_columns = NULL
 )
 }
 \arguments{
-\item{type}{The type of financial data to download.}
+\item{dataset}{The dataset to download ("compustat_annual" or "compustat_quarterly").}
 
 \item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
 specifying the start date for the data. If not provided, a subset of the dataset is returned.}
 
 \item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
 specifying the end date for the data. If not provided, a subset of the dataset is returned.}
+
+\item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
 
 \item{additional_columns}{Additional columns from the Compustat table
 as a character vector.}
@@ -30,18 +33,18 @@ variables for book equity (be), operating profitability (op), investment
 }
 \description{
 This function downloads financial data from the WRDS Compustat database for a
-given type of financial data, start date, and end date. It filters the data
+given dataset, start date, and end date. It filters the data
 according to industry format, data format, and consolidation level, and
 returns the most current data for each reporting period. Additionally, the
-annual data also includes the calculated calculates book equity (be),
+annual data also includes the calculated book equity (be),
 operating profitability (op), and investment (inv) for each company.
 }
 \examples{
 \dontrun{
-  download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
-  download_data_wrds_compustat("wrds_compustat_quarterly", "2020-01-01", "2020-12-31")
+  download_data_wrds_compustat("compustat_annual", "2020-01-01", "2020-12-31")
+  download_data_wrds_compustat("compustat_quarterly", "2020-01-01", "2020-12-31")
 
   # Add additional columns
-  download_data_wrds_compustat("wrds_compustat_annual", additional_columns = c("aodo", "aldo"))
+  download_data_wrds_compustat("compustat_annual", additional_columns = c("aodo", "aldo"))
 }
 }

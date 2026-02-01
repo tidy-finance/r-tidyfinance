@@ -2,15 +2,16 @@
 #'
 #' This function downloads and processes stock return data from the CRSP
 #' database for a specified period. Users can choose between monthly and daily
-#' data types. The function also adjusts returns for delisting and calculates
+#' datasets. The function also adjusts returns for delisting and calculates
 #' market capitalization and excess returns over the risk-free rate.
 #'
-#' @param type A string specifying the type of CRSP data to download:
+#' @param dataset A string specifying the CRSP dataset to download:
 #'   "crsp_monthly" or "crsp_daily".
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the start date for the data. If not provided, a subset of the dataset is returned.
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, a subset of the dataset is returned.
+#' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #' @param batch_size An optional integer specifying the batch size for
 #'   processing daily data, with a default of 500.
 #' @param version An optional character specifying which CRSP version to use.
@@ -22,26 +23,56 @@
 #' @returns A data frame containing CRSP stock returns, adjusted for delistings,
 #'   along with calculated market capitalization and excess returns over the
 #'   risk-free rate. The structure of the returned data frame depends on the
-#'   selected data type.
+#'   selected dataset.
 #'
 #' @export
 #' @examples
 #' \dontrun{
-#'   crsp_monthly <- download_data_wrds_crsp("wrds_crsp_monthly", "2020-11-01", "2020-12-31")
-#'   crsp_daily <- download_data_wrds_crsp("wrds_crsp_daily", "2020-12-01", "2020-12-31")
+#'   crsp_monthly <- download_data_wrds_crsp("crsp_monthly", "2020-11-01", "2020-12-31")
+#'   crsp_daily <- download_data_wrds_crsp("crsp_daily", "2020-12-01", "2020-12-31")
 #'
 #'   # Add additional columns
-#'   download_data_wrds_crsp("wrds_crsp_monthly", "2020-11-01", "2020-12-31",
+#'   download_data_wrds_crsp("crsp_monthly", "2020-11-01", "2020-12-31",
 #'                           additional_columns = c("mthvol", "mthvolflg"))
 #' }
 download_data_wrds_crsp <- function(
-  type,
+  dataset = NULL,
   start_date = NULL,
   end_date = NULL,
+  type = deprecated(),
   batch_size = 500,
   version = "v2",
   additional_columns = NULL
 ) {
+  # Handle explicit type argument
+  if (lifecycle::is_present(type)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.0",
+      what = "download_data_wrds_crsp(type)",
+      details = "Use the `dataset` argument instead."
+    )
+    dataset <- sub("^wrds_", "", type)
+  }
+
+  # Handle legacy type passed as dataset argument
+  if (!is.null(dataset) && is_legacy_type_wrds(dataset)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.0",
+      what = "download_data_wrds_crsp(type)",
+      details = paste0(
+        "The `type` argument is deprecated. ",
+        "Use `dataset` instead (e.g., 'crsp_monthly' instead of 'wrds_crsp_monthly')."
+      )
+    )
+    dataset <- sub("^wrds_", "", dataset)
+  }
+
+  if (is.null(dataset)) {
+    cli::cli_abort("Argument {.arg dataset} is required.")
+  }
+
+  check_supported_dataset_wrds_crsp(dataset)
+
   batch_size <- as.integer(batch_size)
   if (batch_size <= 0) {
     cli::cli_abort("{.arg batch_size} must be an integer larger than 0.")
@@ -59,7 +90,7 @@ download_data_wrds_crsp <- function(
 
   con <- get_wrds_connection()
 
-  if (grepl("crsp_monthly", type, fixed = TRUE)) {
+  if (dataset == "crsp_monthly") {
     if (version == "v1") {
       msf_db <- tbl(con, I("crsp.msf"))
       msenames_db <- tbl(con, I("crsp.msenames"))
@@ -164,9 +195,9 @@ download_data_wrds_crsp <- function(
         select(-c(dlret, dlstcd))
 
       factors_ff_3_monthly <- download_data_factors_ff(
-        "factors_ff_3_monthly",
-        start_date,
-        end_date
+        dataset = "Fama/French 3 Factors",
+        start_date = start_date,
+        end_date = end_date
       )
 
       crsp_monthly <- crsp_monthly |>
@@ -270,9 +301,9 @@ download_data_wrds_crsp <- function(
         )
 
       factors_ff_3_monthly <- download_data_factors_ff(
-        "factors_ff_3_monthly",
-        start_date,
-        end_date
+        dataset = "Fama/French 3 Factors",
+        start_date = start_date,
+        end_date = end_date
       )
 
       crsp_monthly <- crsp_monthly |>
@@ -286,9 +317,7 @@ download_data_wrds_crsp <- function(
       processed_data <- crsp_monthly |>
         tidyr::drop_na(ret_excess, mktcap)
     }
-  }
-
-  if (grepl("crsp_daily", type, fixed = TRUE)) {
+  } else if (dataset == "crsp_daily") {
     if (version == "v1") {
       dsf_db <- tbl(con, I("crsp.dsf")) |>
         filter(between(date, start_date, end_date))
@@ -305,9 +334,9 @@ download_data_wrds_crsp <- function(
         pull()
 
       factors_ff_3_daily <- download_data_factors_ff(
-        "factors_ff_3_daily",
-        start_date,
-        end_date
+        dataset = "Fama/French 3 Factors [Daily]",
+        start_date = start_date,
+        end_date = end_date
       )
 
       batches <- ceiling(length(permnos) / batch_size)
@@ -400,9 +429,9 @@ download_data_wrds_crsp <- function(
         pull()
 
       factors_ff_3_daily <- download_data_factors_ff(
-        "factors_ff_3_daily",
-        start_date,
-        end_date
+        dataset = "Fama/French 3 Factors [Daily]",
+        start_date = start_date,
+        end_date = end_date
       )
 
       batches <- ceiling(length(permnos) / batch_size)
@@ -467,7 +496,22 @@ download_data_wrds_crsp <- function(
 
       processed_data <- bind_rows(crsp_daily_list)
     }
+  } else {
+    cli::cli_abort("Unsupported CRSP dataset: {.val {dataset}}")
   }
 
   processed_data
+}
+
+#' Check if WRDS CRSP dataset is supported
+#' @noRd
+check_supported_dataset_wrds_crsp <- function(dataset) {
+  supported_datasets <- c("crsp_monthly", "crsp_daily")
+
+  if (!dataset %in% supported_datasets) {
+    cli::cli_abort(c(
+      "Unsupported CRSP dataset: {.val {dataset}}",
+      "i" = "Supported datasets: {.val {supported_datasets}}"
+    ))
+  }
 }
