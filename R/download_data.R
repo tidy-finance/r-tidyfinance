@@ -26,7 +26,7 @@
 #' @export
 #' @examples
 #' \donttest{
-#'   download_data("famafrench", "F-F_Research_Data_5_Factors_2x3_daily", "2000-01-01", "2020-12-31")
+#'   download_data("famafrench", "Fama/French 5 Factors (2x3) [Daily]", "2000-01-01", "2020-12-31")
 #'   download_data("macro_predictors", "monthly", "2000-01-01", "2020-12-31")
 #'   download_data("constituents", index = "DAX")
 #'   download_data("fred", series = c("GDP", "CPIAUCNS"))
@@ -147,7 +147,7 @@ is_legacy_type <- function(x) {
   macro_types <- list_supported_types_macro_predictors()
   wrds_types <- list_supported_types_wrds()
   other_types <- list_supported_types_other() |>
-    dplyr::filter(type != "osap")
+    dplyr::filter(.data$type != "osap")
 
   all_types <- dplyr::bind_rows(
     ff_types,

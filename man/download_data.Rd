@@ -45,7 +45,7 @@ appropriate function for downloading and processing the data.
 }
 \examples{
 \donttest{
-  download_data("famafrench", "F-F_Research_Data_5_Factors_2x3_daily", "2000-01-01", "2020-12-31")
+  download_data("famafrench", "Fama/French 5 Factors (2x3) [Daily]", "2000-01-01", "2020-12-31")
   download_data("macro_predictors", "monthly", "2000-01-01", "2020-12-31")
   download_data("constituents", index = "DAX")
   download_data("fred", series = c("GDP", "CPIAUCNS"))
