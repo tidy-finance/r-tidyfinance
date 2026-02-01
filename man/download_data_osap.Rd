@@ -31,6 +31,6 @@ snake_case, and optionally filters the data based on a provided date range.
 }
 \examples{
 \donttest{
-  osap_monthly <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
+  osap <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
 }
 }

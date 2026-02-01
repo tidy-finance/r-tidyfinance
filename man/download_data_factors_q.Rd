@@ -39,7 +39,7 @@ the specified date range.
 }
 \examples{
 \donttest{
-  download_data_factors_q("q5_factors_daily_2023.csv", "2020-01-01", "2020-12-31")
-  download_data_factors_q("q5_factors_annual_2023.csv")
+  download_data_factors_q("q5_factors_daily_2023", "2020-01-01", "2020-12-31")
+  download_data_factors_q("q5_factors_annual_2023")
 }
 }

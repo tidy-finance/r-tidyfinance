@@ -18,7 +18,7 @@
 #'
 #' @examples
 #' \donttest{
-#'   osap<- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
+#'   osap <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
 #' }
 download_data_osap <- function(
   start_date = NULL,
