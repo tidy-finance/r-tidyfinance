@@ -1,49 +1,7 @@
-#' Download and Process Factor Data
-#'
-#' Downloads and processes factor data based on the specified type (Fama-French
-#' or Global Q), and date range. This function delegates to specific functions
-#' based on the type of factors requested: Fama-French or Global Q. It checks if
-#' the specified type is supported before proceeding with the download and
-#' processing.
-#'
-#' @param type The type of dataset to download, indicating the factor model and
-#'   frequency.
-#' @param start_date The start date for filtering the data, in "YYYY-MM-DD"
-#'   format.
-#' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
-#'
-#' @returns A tibble with processed factor data, including dates, risk-free
-#'   rates, market excess returns, and other factors, filtered by the specified
-#'   date range.
-#'
-#' @export
-#' @examples
-#' \donttest{
-#'   download_data_factors("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
-#'   download_data_factors("factors_ff_3_daily")
-#'   download_data_factors("factors_q5_daily", "2020-01-01", "2020-12-31")
-#' }
-download_data_factors <- function(
-  type,
-  start_date = NULL,
-  end_date = NULL
-) {
-  check_supported_type(type)
-
-  if (grepl("factors_ff", type, fixed = TRUE)) {
-    processed_data <- download_data_factors_ff(type, start_date, end_date)
-  } else if (grepl("factors_q", type, fixed = TRUE)) {
-    processed_data <- download_data_factors_q(type, start_date, end_date)
-  }
-
-  processed_data
-}
-
 #' Download and Process Fama-French Factor Data
 #'
-#' Downloads and processes Fama-French factor data based on the specified type
-#' (e.g., "factors_ff_3_monthly"), and date range. The function first checks if
-#' the specified type is supported and requires the 'frenchdata' package to
+#' Downloads and processes Fama-French factor data based on the specified dataset
+#' name and date range. The function requires the 'frenchdata' package to
 #' download the data. It processes the raw data into a structured format,
 #' including date conversion, scaling factor values, and filtering by the
 #' specified date range.
@@ -53,12 +11,13 @@ download_data_factors <- function(
 #' because these are the most popular. Please use the `frenchdata` package
 #' directly if you need less commonly used tables.
 #'
-#' @param type The type of dataset to download, corresponding to the specific
-#'   Fama-French model and frequency.
+#' @param dataset The name of the Fama-French dataset to download
+#'   (e.g., "Fama/French 3 Factors").
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the start date for the data. If not provided, the full dataset is returned.
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, the full dataset is returned.
+#' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #'
 #' @returns A tibble with processed factor data, including the date, risk-free
 #'   rate, market excess return, and other factors, filtered by the specified
@@ -67,22 +26,50 @@ download_data_factors <- function(
 #' @export
 #' @examples
 #' \donttest{
-#'   download_data_factors_ff("factors_ff_3_monthly", "2000-01-01", "2020-12-31")
-#'   download_data_factors_ff("factors_ff_10_industry_portfolios_monthly", "2000-01-01", "2020-12-31")
+#'   download_data_factors_ff("Fama/French 3 Factors", "2000-01-01", "2020-12-31")
+#'   download_data_factors_ff("10 Industry Portfolios", "2000-01-01", "2020-12-31")
 #' }
 download_data_factors_ff <- function(
-  type,
+  dataset = NULL,
   start_date = NULL,
-  end_date = NULL
+  end_date = NULL,
+  type = deprecated()
 ) {
-  check_supported_type(type)
+  # Handle explicit type argument
+  if (lifecycle::is_present(type)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.0",
+      what = "download_data_factors_ff(type)",
+      with = "download_data_factors_ff(dataset)"
+    )
+    parsed <- parse_type_to_domain_dataset(type)
+    dataset <- parsed$dataset
+  }
+
+  # Handle legacy type passed as dataset argument
+  if (!is.null(dataset) && is_legacy_type_ff(dataset)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.0",
+      what = "download_data_factors_ff(type)",
+      with = "download_data_factors_ff(dataset)",
+      details = paste0(
+        "Column type should be replaced with dataset name. ",
+        "Use `list_supported_types(domain = 'Fama-French')` to see the mapping."
+      )
+    )
+    parsed <- parse_type_to_domain_dataset(dataset)
+    dataset <- parsed$dataset
+  }
+
+  if (is.null(dataset)) {
+    cli::cli_abort("Argument {.arg dataset} is required.")
+  }
+
+  check_supported_dataset_ff(dataset)
 
   dates <- validate_dates(start_date, end_date)
   start_date <- dates$start_date
   end_date <- dates$end_date
-
-  factors_ff_types <- list_supported_types_ff()
-  dataset <- factors_ff_types$dataset_name[factors_ff_types$type == type]
 
   raw_data <- handle_download_error(
     function() suppressMessages(frenchdata::download_french_data(dataset)),
@@ -98,15 +85,17 @@ download_data_factors_ff <- function(
 
   raw_data <- raw_data$subsets$data[[1]]
 
-  if (grepl("monthly", type, fixed = TRUE)) {
+  frequency <- determine_frequency_ff(dataset)
+
+  if (frequency == "monthly") {
     processed_data <- raw_data |>
       mutate(date = floor_date(ymd(paste0(date, "01")), "month"))
-  } else if (grepl("daily|weekly", type)) {
+  } else if (frequency %in% c("daily", "weekly")) {
     processed_data <- raw_data |>
       mutate(date = ymd(date))
   } else {
     cli::cli_abort(
-      "This data type has neither daily, weekly, nor monthly frequency."
+      "This dataset has neither daily, weekly, nor monthly frequency."
     )
   }
 
@@ -132,21 +121,19 @@ download_data_factors_ff <- function(
 
 #' Download and Process Global Q Factor Data
 #'
-#' Downloads and processes Global Q factor data based on the specified type
-#' (daily, monthly, etc.), date range, and source URL. The function first checks
-#' if the specified type is supported, identifies the dataset name from the
-#' supported types, then downloads and processes the data from the provided URL.
-#' The processing includes date conversion, renaming variables to a standardized
-#' format, scaling factor values, and filtering by the specified date range.
+#' Downloads and processes Global Q factor data based on the specified dataset,
+#' date range, and source URL. The processing includes date conversion, renaming
+#' variables to a standardized format, scaling factor values, and filtering by
+#' the specified date range.
 #'
-#' @param type The type of dataset to download (e.g., "factors_q5_daily",
-#'   "factors_q5_monthly").
+#' @param dataset The name of the dataset to download
+#'   (e.g., "q5_factors_daily_2023.csv", "q5_factors_monthly_2023.csv").
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the start date for the data. If not provided, the full dataset is returned.
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, the full dataset is returned.
-#' @param url The base URL from which to download the dataset files, with a
-#'   specific path for Global Q datasets.
+#' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
+#' @param url The base URL from which to download the dataset files.
 #'
 #' @returns A tibble with processed factor data, including the date, risk-free
 #'   rate, market excess return, and other factors, filtered by the specified
@@ -155,23 +142,51 @@ download_data_factors_ff <- function(
 #' @export
 #' @examples
 #' \donttest{
-#'   download_data_factors_q("factors_q5_daily", "2020-01-01", "2020-12-31")
-#'   download_data_factors_q("factors_q5_annual")
+#'   download_data_factors_q("q5_factors_daily_2024", "2020-01-01", "2020-12-31")
+#'   download_data_factors_q("q5_factors_annual_2024")
 #' }
 download_data_factors_q <- function(
-  type,
+  dataset = NULL,
   start_date = NULL,
   end_date = NULL,
+  type = deprecated(),
   url = "https://global-q.org/uploads/1/2/2/6/122679606/"
 ) {
-  check_supported_type(type)
+  # Handle explicit type argument
+  if (lifecycle::is_present(type)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.0",
+      what = "download_data_factors_q(type)",
+      with = "download_data_factors_q(dataset)"
+    )
+    parsed <- parse_type_to_domain_dataset(type)
+    dataset <- parsed$dataset
+  }
+
+  # Handle legacy type passed as dataset argument
+  if (!is.null(dataset) && is_legacy_type_q(dataset)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.0",
+      what = "download_data_factors_q(type)",
+      with = "download_data_factors_q(dataset)",
+      details = paste0(
+        "Column type should be replaced with dataset name. ",
+        "Use `list_supported_types(domain = 'Global Q')` to see the mapping."
+      )
+    )
+    parsed <- parse_type_to_domain_dataset(dataset)
+    dataset <- parsed$dataset
+  }
+
+  if (is.null(dataset)) {
+    cli::cli_abort("Argument {.arg dataset} is required.")
+  }
+
+  check_supported_dataset_q(dataset)
 
   dates <- validate_dates(start_date, end_date)
   start_date <- dates$start_date
   end_date <- dates$end_date
-
-  factors_q_types <- list_supported_types_q()
-  dataset <- factors_q_types$dataset_name[factors_q_types$type == type]
 
   raw_data <- handle_download_error(
     function(url) {
@@ -179,7 +194,7 @@ download_data_factors_q <- function(
         suppressMessages(utils::read.csv(url)) |> as_tibble()
       )
     },
-    paste0(url, dataset),
+    paste0(url, dataset, ".csv"),
     fallback = tibble(
       date = Date()
     )
@@ -190,16 +205,22 @@ download_data_factors_q <- function(
     return(raw_data)
   }
 
-  if (grepl("monthly", type, fixed = TRUE)) {
+  frequency <- determine_frequency_q(dataset)
+
+  if (frequency == "monthly") {
     processed_data <- raw_data |>
       mutate(date = ymd(paste(year, month, "01", sep = "-"))) |>
       select(-c(year, month))
-  } else if (grepl("daily", type, fixed = TRUE)) {
+  } else if (frequency == "daily") {
     processed_data <- raw_data |>
       mutate(DATE = ymd(DATE))
-  } else if (grepl("annual", type, fixed = TRUE)) {
+  } else if (frequency == "annual") {
     processed_data <- raw_data |>
       mutate(date = year)
+  } else if (frequency %in% c("weekly", "quarterly")) {
+    processed_data <- raw_data |>
+      mutate(date = ymd(paste(year, month, day, sep = "-"))) |>
+      select(-c(year, month, day))
   }
 
   processed_data <- processed_data |>
@@ -214,4 +235,84 @@ download_data_factors_q <- function(
   }
 
   processed_data
+}
+
+# Helper functions --------------------------------------------------------
+
+#' Check if a string is a legacy Fama-French type
+#' @noRd
+is_legacy_type_ff <- function(x) {
+  ff_types <- dplyr::bind_rows(
+    list_supported_types_ff(),
+    list_supported_types_ff_legacy()
+  )
+  x %in% ff_types$type
+}
+
+#' Check if a string is a legacy Global Q type
+#' @noRd
+is_legacy_type_q <- function(x) {
+  q_types <- list_supported_types_q()
+  x %in% q_types$type
+}
+
+#' Determine frequency from Fama-French dataset name
+#' @noRd
+determine_frequency_ff <- function(dataset) {
+  if (grepl("\\[Daily\\]", dataset)) {
+    return("daily")
+  } else if (grepl("\\[Weekly\\]", dataset)) {
+    return("weekly")
+  } else {
+    return("monthly")
+  }
+}
+
+#' Determine frequency from Global Q dataset name
+#' @noRd
+determine_frequency_q <- function(dataset) {
+  if (grepl("daily", dataset, ignore.case = TRUE)) {
+    return("daily")
+  } else if (grepl("weekly", dataset, ignore.case = TRUE)) {
+    return("weekly")
+  } else if (grepl("monthly", dataset, ignore.case = TRUE)) {
+    return("monthly")
+  } else if (grepl("quarterly", dataset, ignore.case = TRUE)) {
+    return("quarterly")
+  } else if (grepl("annual", dataset, ignore.case = TRUE)) {
+    return("annual")
+  } else {
+    cli::cli_abort(
+      "Cannot determine frequency from dataset name: {.val {dataset}}"
+    )
+  }
+}
+
+#' Check if Fama-French dataset is supported
+#' @noRd
+check_supported_dataset_ff <- function(dataset) {
+  ff_types <- dplyr::bind_rows(
+    list_supported_types_ff(),
+    list_supported_types_ff_legacy()
+  )
+
+  if (!dataset %in% ff_types$dataset_name) {
+    cli::cli_abort(c(
+      "Unsupported Fama-French dataset: {.val {dataset}}",
+      "i" = "Use {.fn list_supported_types} with {.arg domain = 'Fama-French'} to see available datasets."
+    ))
+  }
+}
+
+#' Check if Global Q dataset is supported
+#' @noRd
+check_supported_dataset_q <- function(dataset) {
+  q_types <- list_supported_types_q()
+
+  if (!dataset %in% q_types$dataset_name) {
+    cli::cli_abort(c(
+      "Unsupported Global Q dataset: {.val {dataset}}",
+      "i" = "Use {.fn list_supported_types} with {.arg domain = 'Global Q'} to see available datasets."
+    ))
+  }
 }

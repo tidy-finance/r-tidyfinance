@@ -35,7 +35,7 @@ install.packages("tidyfinance")
 
 You can install the development version of `tidyfinance` from [GitHub](https://github.com/tidy-finance/r-tidyfinance) via:
 
-```r
+```
 # install.packages("pak")
 pak::pak("tidy-finance/r-tidyfinance")
 ```
@@ -44,60 +44,138 @@ pak::pak("tidy-finance/r-tidyfinance")
 
 Load the package:
 
-```r
+```{r}
 library(tidyfinance)
 ```
 
-### Download Data
+## Download Open Source Data
 
-The main functionality of the `tidyfinance` package centers around data download. You can download most of the data that we used in [Tidy Finance with R](https://www.tidy-finance.org/r/index.html) using the `download_data()` function or its children. For instance, both functions give the same result:
+The main functionality of the `tidyfinance` package centers around data download. You can download most of the data that we used in [Tidy Finance with R](https://www.tidy-finance.org/r/index.html) using the `download_data()` function or its children. 
 
-```r
+The function always requires a `domain` argument and depending on the domain typically also a `dataset`. For instance, to download monthly Fama-French factors, you have to provide the dataset name according to [Ken French's Data Library](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html):
+
+```{r}
 download_data(
-  type = "factors_ff_3_monthly", 
-  start_date = "2000-01-01", 
-  end_date = "2020-12-31"
-)
-
-download_data_factors_ff(
-  type = "factors_ff_3_monthly", 
-  start_date = "2000-01-01", 
+  domain = "factors_ff",
+  dataset = "Fama/French 5 Factors (2x3) [Daily]",
+  start_date = "2000-01-01",
   end_date = "2020-12-31"
 )
 ```
 
-You can also download data directly from [WRDS](https://www.tidy-finance.org/r/wrds-crsp-and-compustat.html) (if you have set your credentials via `Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")`), e.g.,
+For [q factors](https://global-q.org/index.html), you provide the relevant file name:
 
-```r
+```{r}
 download_data(
-  type = "wrds_compustat_annual", 
-  start_date = "2000-01-01", 
+  domain = "factors_q",
+  dataset = "q5_factors_monthly_2024",
+  start_date = "2000-01-01",
   end_date = "2020-12-31"
 )
 ```
 
-If you want to fetch additional columns that are not included in our default selection, then pass them as additional arguments in the corresponding child function:
+To download the Welch and Goyal (2008) macroeconomic predictors for monthly, quarterly, or annual frequency:
 
-```r
-download_data_wrds_compustat(
-  type = "wrds_compustat_annual",  
-  start_date = "2000-01-01", 
-  end_date = "2020-12-31",
-  additional_columns = c("acoxar", "amc", "aldo")
+```{r}
+download_data(
+  domain = "macro_predictors",
+  dataset = "monthly",
+  start_date = "2000-01-01",
+  end_date = "2020-12-31"
+)
+```
+
+To download data from [Open Source Asset Pricing](https://www.openassetpricing.com/) (OSAP):
+
+```{r}
+download_data(
+  domain = "osap",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+```
+
+To download multiple series from the Federal Reserve Economic Data (FRED):
+
+```{r}
+download_data(
+  domain = "fred",
+  series = c("GDP", "CPIAUCNS"),
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+```
+
+To download stock prices from Yahoo Finance:
+
+```{r}
+download_data(
+  domain = "stock_prices",
+  symbols = c("AAPL", "MSFT"),
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
 )
 ```
 
 You can also download high-frequency data for the S&P 500 that we host on Hugging Face:
 
-```r
+```{r}
 download_data(
-  type = "hf_high_frequency_sp500",
-  start_date = "2007-07-26", 
+  domain = "hf",
+  dataset = "high_frequency_sp500",
+  start_date = "2007-07-26",
   end_date = "2007-07-27"
 )
 ```
 
-You can get a list of all currently supported types via `list_supported_types()`. Please open an [issue on GitHub](https://github.com/tidy-finance/r-tidyfinance/issues) to request additional supported types.
+## Download WRDS Data
+
+You can also download data directly from [WRDS](https://www.tidy-finance.org/r/wrds-crsp-and-compustat.html) if you have access to the underlying data and set your credentials via `Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")` or the `set_wrds_credentials()` helper function. 
+
+To download monthly CRSP data:
+
+```{r}
+download_data(
+  domain = "wrds",
+  dataset = "crsp_monthly",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+```
+
+To download annual (or quaterly) Compustat data:
+
+```{r}
+download_data(
+  domain = "wrds",
+  dataset = "compustat_annual",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+```
+
+To download the CRSP-Compustat linking table:
+
+```{r}
+download_data(
+  domain = "wrds",
+  dataset = "compustat_annual",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+```
+
+To download Enhanced TRACE data for selected bonds:
+
+```{r}
+download_data(
+  domain = "wrds",
+  dataset = "trace_enhanced",
+  cusips = c("00101JAH9"),
+  start_date = "2019-01-01",
+  end_date = "2021-12-31"
+)
+```
 
 ### Other Helpers
 

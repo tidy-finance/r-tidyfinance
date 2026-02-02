@@ -18,7 +18,7 @@
 #'
 #' @examples
 #' \donttest{
-#'   osap_monthly <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
+#'   osap <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
 #' }
 download_data_osap <- function(
   start_date = NULL,
@@ -32,10 +32,11 @@ download_data_osap <- function(
   url <- paste0("https://drive.google.com/uc?export=download&id=", sheet_id)
 
   raw_data <- handle_download_error(
-    function()
+    function() {
       suppressWarnings(
         as_tibble(read.csv(url))
-      ),
+      )
+    },
     fallback = tibble()
   )
 
