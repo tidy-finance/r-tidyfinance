@@ -8,7 +8,7 @@
 ## Improvements
 
 * Removed `renv` due to lack of value. 
-* Moved optional dependencies to imports for improved user experience.
+* Moved optional dependencies to imports for improved user experience (except for `furrr`).
 
 ## Bug fixes
 
