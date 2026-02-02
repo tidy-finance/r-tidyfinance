@@ -142,8 +142,8 @@ download_data_factors_ff <- function(
 #' @export
 #' @examples
 #' \donttest{
-#'   download_data_factors_q("q5_factors_daily_2023", "2020-01-01", "2020-12-31")
-#'   download_data_factors_q("q5_factors_annual_2023")
+#'   download_data_factors_q("q5_factors_daily_2024", "2020-01-01", "2020-12-31")
+#'   download_data_factors_q("q5_factors_annual_2024")
 #' }
 download_data_factors_q <- function(
   dataset = NULL,
@@ -194,7 +194,7 @@ download_data_factors_q <- function(
         suppressMessages(utils::read.csv(url)) |> as_tibble()
       )
     },
-    paste0(url, dataset),
+    paste0(url, dataset, ".csv"),
     fallback = tibble(
       date = Date()
     )

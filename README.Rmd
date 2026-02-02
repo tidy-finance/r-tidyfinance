@@ -66,12 +66,12 @@ download_data(
 For [q factors](https://global-q.org/index.html), you provide the relevant file name:
 
 ```{r}
-# download_data(
-#   domain = "factors_q",
-#   dataset = "q5_factors_monthly",
-#   start_date = "2000-01-01",
-#   end_date = "2020-12-31"
-# )
+download_data(
+  domain = "factors_q",
+  dataset = "q5_factors_monthly_2024",
+  start_date = "2000-01-01",
+  end_date = "2020-12-31"
+)
 ```
 
 To download the Welch and Goyal (2008) macroeconomic predictors for monthly, quarterly, or annual frequency:

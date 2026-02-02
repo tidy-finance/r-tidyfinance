@@ -703,17 +703,17 @@ list_supported_types_q <- function() {
     ~type                        ,
     ~dataset_name                ,
     "factors_q5_daily"           ,
-    "q5_factors_daily_2023"      ,
+    "q5_factors_daily_2024"      ,
     "factors_q5_weekly"          ,
-    "q5_factors_weekly_2023"     ,
+    "q5_factors_weekly_2024"     ,
     "factors_q5_weekly_w2w"      ,
-    "q5_factors_weekly_w2w_2023" ,
+    "q5_factors_weekly_w2w_2024" ,
     "factors_q5_monthly"         ,
-    "q5_factors_monthly"         ,
+    "q5_factors_monthly_2024"    ,
     "factors_q5_quarterly"       ,
-    "q5_factors_quarterly_2023"  ,
+    "q5_factors_quarterly_2024"  ,
     "factors_q5_annual"          ,
-    "q5_factors_annual_2023"
+    "q5_factors_annual_2024"
   ) |>
     dplyr::mutate(domain = "Global Q")
 }
