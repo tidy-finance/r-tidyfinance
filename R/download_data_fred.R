@@ -70,7 +70,7 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
 
         fred_processed[[j]] <- fred_raw |>
           mutate(
-            date = as.Date(observation_date),
+            date = as.Date(.data$observation_date),
             value = as.numeric(.data[[series[j]]]),
             series = series[j],
             .keep = "none"

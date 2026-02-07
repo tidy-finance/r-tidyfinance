@@ -4,21 +4,30 @@
 \alias{lag_column}
 \title{Lag a Column Based on Date and Time Range}
 \usage{
-lag_column(column, date, lag, max_lag = lag, drop_na = TRUE)
+lag_column(
+  column,
+  date,
+  lag,
+  max_lag = lag,
+  drop_na = FALSE,
+  ff_adjustment = FALSE
+)
 }
 \arguments{
 \item{column}{A numeric vector or column to be lagged.}
 
-\item{date}{A vector representing dates corresponding to the \code{column}. This should be in a
+\item{date}{A vector representing dates corresponding to the \code{column}. The column should be in a
 date or datetime format.}
 
-\item{lag}{An integer specifying the minimum lag (in days, hours, etc.) to apply to \code{column}.}
+\item{lag}{An integer or an \code{lubridate::periods()} object, e.g., \code{month(1)}, specifying the minimum lag (in days, hours, etc.) to apply to \code{column}.}
 
-\item{max_lag}{An integer specifying the maximum lag (in days, hours, etc.) to apply to \code{column}.
+\item{max_lag}{An integer or an \code{lubridate::periods()} object specifying the maximum lag (in days, hours, etc.) to apply to \code{column}.
 Defaults to \code{lag}.}
 
 \item{drop_na}{A logical value indicating whether to drop \code{NA} values from the resulting lagged
 column. Defaults to \code{TRUE}.}
+
+\item{ff_adjustment}{A logical value indicating whether to lag monthly data based on Fama-French conventions. Here, the values are lagged based on the last observation within the year is taken. Defaults to \code{FALSE}.}
 }
 \value{
 A vector of the same length as \code{column}, containing the lagged values.
@@ -45,11 +54,12 @@ data <- tibble::tibble(
 )
 
 data |>
-  dplyr::group_by(permno) |>
-  dplyr::mutate(
-    across(c(size, bm),
-           \(x) lag_column(x, date, months(3), months(6), drop_na = TRUE))
-  ) |>
-dplyr::ungroup()
+ dplyr::group_by(permno) |>
+ dplyr::mutate(
+   across(c(size, bm), \(x) {
+     lag_column(x, date, months(3), months(6), drop_na = TRUE)
+   })
+ ) |>
+ dplyr::ungroup()
 
 }

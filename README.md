@@ -10,7 +10,7 @@
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![](https://img.shields.io/badge/devel%20version-0.4.5.9002-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
+[![](https://img.shields.io/badge/devel%20version-0.4.5.9003-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
 [![R-CMD-check](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -271,12 +271,12 @@ download_data(
   start_date = "2020-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 43,341 × 13
+#> # A tibble: 43,329 × 13
 #>    permno date       calculation_date      ret   shrout    prc primaryexch siccd
 #>     <int> <date>     <date>              <dbl>    <dbl>  <dbl> <chr>       <int>
 #>  1  10026 2020-01-01 2020-01-31       -0.100     1.89e7 166.   Q            2052
 #>  2  10028 2020-01-01 2020-01-31        0.607     2.69e7   2.17 A            5094
-#>  3  10032 2020-01-01 2020-01-31       -0.0756    2.92e7  71.1  Q            3670
+#>  3  10032 2020-01-01 2020-01-31       -0.0756    2.92e7  71.1  Q            3672
 #>  4  10044 2020-01-01 2020-01-31       -0.0986    6   e6   8.32 Q            2060
 #>  5  10051 2020-01-01 2020-01-31       -0.115     3.73e7  24.4  N            8093
 #>  6  10104 2020-01-01 2020-01-31       -0.00561   3.21e9  52.4  N            7372
@@ -284,7 +284,7 @@ download_data(
 #>  8  10138 2020-01-01 2020-01-31        0.0959    2.35e8 134.   Q            6211
 #>  9  10145 2020-01-01 2020-01-31       -0.0214    7.15e8 173.   N            5099
 #> 10  10158 2020-01-01 2020-01-31        0.0966    2.90e7  19.2  N            8711
-#> # ℹ 43,331 more rows
+#> # ℹ 43,319 more rows
 #> # ℹ 5 more variables: mktcap <dbl>, mktcap_lag <dbl>, exchange <chr>,
 #> #   industry <chr>, ret_excess <dbl>
 ```
@@ -322,27 +322,22 @@ To download the CRSP-Compustat linking table:
 ``` r
 download_data(
   domain = "wrds",
-  dataset = "compustat_annual",
-  start_date = "2020-01-01",
-  end_date = "2020-12-31"
+  dataset = "ccm_links"
 )
-#> # A tibble: 11,988 × 23
-#>    gvkey  date       datadate        seq     ceq      at      lt  txditc    txdb
-#>    <chr>  <date>     <date>        <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
-#>  1 001004 2020-05-01 2020-05-31   903.    9.03e2 2.08e+3 1.18e+3 0       0      
-#>  2 001019 2020-12-01 2020-12-31    13.5   1.35e1 4.06e+1 2.71e+1 3.61e-1 3.61e-1
-#>  3 001045 2020-12-01 2020-12-31 -6867    -6.87e3 6.20e+4 6.89e+4 9   e+0 9   e+0
-#>  4 001050 2020-12-01 2020-12-31   203.    2.03e2 4.19e+2 2.16e+2 6.97e+0 6.97e+0
-#>  5 001062 2020-11-01 2020-11-30   464.    4.64e2 4.65e+2 8.04e-1 0       0      
-#>  6 001075 2020-12-01 2020-12-31  5634.    5.63e3 2.00e+4 1.43e+4 2.33e+3 2.14e+3
-#>  7 001076 2020-12-01 2020-12-31   986.    9.86e2 1.32e+3 3.31e+2 1.27e+2 1.27e+2
-#>  8 001078 2020-12-01 2020-12-31 32784     3.28e4 7.25e+4 3.95e+4 1.41e+3 1.41e+3
-#>  9 001084 2020-12-01 2020-12-31    -2.67 -2.67e0 6.92e-1 3.36e+0 0       0      
-#> 10 001096 2020-12-01 2020-12-31  3372.    3.37e3 1.11e+4 6.69e+3 6.48e+2 6.48e+2
-#> # ℹ 11,978 more rows
-#> # ℹ 14 more variables: itcb <dbl>, pstkrv <dbl>, pstkl <dbl>, pstk <dbl>,
-#> #   capx <dbl>, oancf <dbl>, sale <dbl>, cogs <dbl>, xint <dbl>, xsga <dbl>,
-#> #   be <dbl>, op <dbl>, at_lag <dbl>, inv <dbl>
+#> # A tibble: 33,324 × 4
+#>    permno gvkey  linkdt     linkenddt 
+#>     <dbl> <chr>  <date>     <date>    
+#>  1  25881 001000 1970-11-13 1978-06-30
+#>  2  10015 001001 1983-09-20 1986-07-31
+#>  3  10023 001002 1972-12-14 1973-06-05
+#>  4  10031 001003 1983-12-07 1989-08-16
+#>  5  54594 001004 1972-04-24 2026-02-07
+#>  6  61903 001005 1973-01-31 1983-01-31
+#>  7  10058 001007 1973-10-01 1979-01-30
+#>  8  10058 001007 1979-01-31 1984-09-28
+#>  9  10066 001008 1983-08-25 1987-02-26
+#> 10  10074 001009 1982-01-18 1996-03-13
+#> # ℹ 33,314 more rows
 ```
 
 To download Enhanced TRACE data for selected bonds:
