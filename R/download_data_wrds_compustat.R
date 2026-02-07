@@ -1,17 +1,18 @@
 #' Download Data from WRDS Compustat
 #'
 #' This function downloads financial data from the WRDS Compustat database for a
-#' given type of financial data, start date, and end date. It filters the data
+#' given dataset, start date, and end date. It filters the data
 #' according to industry format, data format, and consolidation level, and
 #' returns the most current data for each reporting period. Additionally, the
-#' annual data also includes the calculated calculates book equity (be),
+#' annual data also includes the calculated book equity (be),
 #' operating profitability (op), and investment (inv) for each company.
 #'
-#' @param type The type of financial data to download.
+#' @param dataset The dataset to download ("compustat_annual" or "compustat_quarterly").
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the start date for the data. If not provided, a subset of the dataset is returned.
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the end date for the data. If not provided, a subset of the dataset is returned.
+#' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #' @param additional_columns Additional columns from the Compustat table
 #'   as a character vector.
 #'
@@ -22,25 +23,55 @@
 #' @export
 #' @examples
 #' \dontrun{
-#'   download_data_wrds_compustat("wrds_compustat_annual", "2020-01-01", "2020-12-31")
-#'   download_data_wrds_compustat("wrds_compustat_quarterly", "2020-01-01", "2020-12-31")
+#'   download_data_wrds_compustat("compustat_annual", "2020-01-01", "2020-12-31")
+#'   download_data_wrds_compustat("compustat_quarterly", "2020-01-01", "2020-12-31")
 #'
 #'   # Add additional columns
-#'   download_data_wrds_compustat("wrds_compustat_annual", additional_columns = c("aodo", "aldo"))
+#'   download_data_wrds_compustat("compustat_annual", additional_columns = c("aodo", "aldo"))
 #' }
 download_data_wrds_compustat <- function(
-  type,
+  dataset = NULL,
   start_date = NULL,
   end_date = NULL,
+  type = deprecated(),
   additional_columns = NULL
 ) {
+  # Handle explicit type argument
+  if (lifecycle::is_present(type)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.0",
+      what = "download_data_wrds_compustat(type)",
+      details = "Use the `dataset` argument instead."
+    )
+    dataset <- sub("^wrds_", "", type)
+  }
+
+  # Handle legacy type passed as dataset argument
+  if (!is.null(dataset) && is_legacy_type_wrds(dataset)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.0",
+      what = "download_data_wrds_compustat(type)",
+      details = paste0(
+        "The `type` argument is deprecated. ",
+        "Use `dataset` instead (e.g., 'compustat_annual' instead of 'wrds_compustat_annual')."
+      )
+    )
+    dataset <- sub("^wrds_", "", dataset)
+  }
+
+  if (is.null(dataset)) {
+    cli::cli_abort("Argument {.arg dataset} is required.")
+  }
+
+  check_supported_dataset_wrds_compustat(dataset)
+
   dates <- validate_dates(start_date, end_date, use_default_range = TRUE)
   start_date <- dates$start_date
   end_date <- dates$end_date
 
   con <- get_wrds_connection()
 
-  if (grepl("compustat_annual", type, fixed = TRUE)) {
+  if (dataset == "compustat_annual") {
     funda_db <- tbl(con, I("comp.funda"))
 
     compustat <- funda_db |>
@@ -107,9 +138,7 @@ download_data_wrds_compustat <- function(
         inv = if_else(at_lag <= 0, NA, inv)
       ) |>
       select(gvkey, date, datadate, everything(), -year)
-  }
-
-  if (grepl("compustat_quarterly", type, fixed = TRUE)) {
+  } else if (dataset == "compustat_quarterly") {
     fundq_db <- tbl(con, I("comp.fundq"))
 
     compustat <- fundq_db |>
@@ -148,7 +177,22 @@ download_data_wrds_compustat <- function(
 
     processed_data <- compustat |>
       select(gvkey, date, datadate, atq, ceqq, all_of(additional_columns))
+  } else {
+    cli::cli_abort("Unsupported Compustat dataset: {.val {dataset}}")
   }
 
   processed_data
+}
+
+#' Check if WRDS Compustat dataset is supported
+#' @noRd
+check_supported_dataset_wrds_compustat <- function(dataset) {
+  supported_datasets <- c("compustat_annual", "compustat_quarterly")
+
+  if (!dataset %in% supported_datasets) {
+    cli::cli_abort(c(
+      "Unsupported Compustat dataset: {.val {dataset}}",
+      "i" = "Supported datasets: {.val {supported_datasets}}"
+    ))
+  }
 }

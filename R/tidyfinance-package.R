@@ -19,7 +19,6 @@
 #' @importFrom arrow read_parquet
 #' @importFrom RPostgres Postgres
 #' @importFrom sandwich NeweyWest
-#' @importFrom furrr future_map
 #' @importFrom dbplyr translate_sql
 ## usethis namespace: end
 NULL

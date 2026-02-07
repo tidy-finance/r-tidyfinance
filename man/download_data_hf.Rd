@@ -5,14 +5,21 @@
 \title{Download 5-second aggregated orderbook data
 for the SPY ETF (S&P 500 tracker) from a Hugging Face dataset.}
 \usage{
-download_data_hf(type, start_date = "2007-06-27", end_date = "2007-07-27")
+download_data_hf(
+  dataset = NULL,
+  start_date = "2007-06-27",
+  end_date = "2007-07-27",
+  type = deprecated()
+)
 }
 \arguments{
-\item{type}{description}
+\item{dataset}{The dataset to download (e.g., "high_frequency_sp500").}
 
 \item{start_date}{Date or character. Start date (inclusive) in "YYYY-MM-DD" format. If NULL, the internal default is used.}
 
 \item{end_date}{Date or character. End date (inclusive) in "YYYY-MM-DD" format. If NULL, the internal default is used.}
+
+\item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
 }
 \value{
 A tibble with processed data, including dates and the relevant
@@ -29,8 +36,8 @@ filters them to the provided date interval, and reads/row-binds them with arrow:
 }
 \examples{
 \dontrun{
-# Download 5-second aggregated orderbook snapshots for SPY.
-  download_data_hf("hf_high_frequency_sp500", "2007-07-26", "2007-07-27")
+  # Download 5-second aggregated orderbook snapshots for SPY.
+  download_data_hf("high_frequency_sp500", "2007-07-26", "2007-07-27")
 }
 
 }
