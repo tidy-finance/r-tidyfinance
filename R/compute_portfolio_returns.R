@@ -219,21 +219,11 @@ compute_portfolio_returns <- function(
     }
 
     portfolio_returns <- portfolio_returns |>
-      summarize(
-        ret_excess_vw = if_else(
-          dplyr::n() < min_portfolio_size,
-          NA_real_,
-          stats::weighted.mean(
-            .data[[ret_col]],
-            .data[[w_col]]
-          )
-        ),
-        ret_excess_ew = if_else(
-          dplyr::n() < min_portfolio_size,
-          NA_real_,
-          mean(.data[[ret_col]])
-        ),
-        .by = c(portfolio, all_of(date_col))
+      aggregate_portfolio_returns(
+        min_portfolio_size = min_portfolio_size,
+        by = c("portfolio", date_col),
+        ret_col = ret_col,
+        w_col = w_col
       )
   }
 
@@ -314,22 +304,15 @@ compute_portfolio_returns <- function(
     }
 
     portfolio_returns <- portfolio_returns |>
-      summarize(
-        ret_excess_vw = if_else(
-          dplyr::n() < min_portfolio_size,
-          NA_real_,
-          stats::weighted.mean(.data[[ret_col]], .data[[w_col]])
+      aggregate_portfolio_returns(
+        min_portfolio_size = min_portfolio_size,
+        by = c(
+          "portfolio_main",
+          "portfolio_secondary",
+          date_col
         ),
-        ret_excess_ew = if_else(
-          dplyr::n() < min_portfolio_size,
-          NA_real_,
-          mean(.data[[ret_col]])
-        ),
-        .by = c(
-          portfolio_main,
-          portfolio_secondary,
-          all_of(date_col)
-        )
+        ret_col = ret_col,
+        w_col = w_col
       ) |>
       rename(portfolio = portfolio_main) |>
       summarize(
@@ -410,22 +393,15 @@ compute_portfolio_returns <- function(
     }
 
     portfolio_returns <- portfolio_returns |>
-      summarize(
-        ret_excess_vw = if_else(
-          dplyr::n() < min_portfolio_size,
-          NA_real_,
-          stats::weighted.mean(.data[[ret_col]], .data[[w_col]])
+      aggregate_portfolio_returns(
+        min_portfolio_size = min_portfolio_size,
+        by = c(
+          "portfolio_main",
+          "portfolio_secondary",
+          date_col
         ),
-        ret_excess_ew = if_else(
-          dplyr::n() < min_portfolio_size,
-          NA_real_,
-          mean(.data[[ret_col]])
-        ),
-        .by = c(
-          portfolio_main,
-          portfolio_secondary,
-          all_of(date_col)
-        )
+        ret_col = ret_col,
+        w_col = w_col
       ) |>
       rename(portfolio = portfolio_main) |>
       summarize(
@@ -440,4 +416,32 @@ compute_portfolio_returns <- function(
   }
 
   portfolio_returns[!is.na(portfolio_returns$portfolio), ]
+}
+
+#' @keywords internal
+#' @noRd
+aggregate_portfolio_returns <- function(
+  df,
+  min_portfolio_size,
+  by,
+  ret_col,
+  w_col
+) {
+  df |>
+    summarize(
+      ret_excess_vw = if_else(
+        dplyr::n() < min_portfolio_size,
+        NA_real_,
+        stats::weighted.mean(
+          .data[[ret_col]],
+          .data[[w_col]]
+        )
+      ),
+      ret_excess_ew = if_else(
+        dplyr::n() < min_portfolio_size,
+        NA_real_,
+        mean(.data[[ret_col]])
+      ),
+      .by = all_of(by)
+    )
 }
