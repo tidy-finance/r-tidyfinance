@@ -49,12 +49,14 @@ assign_portfolio <- function(
   data_options = NULL
 ) {
   x <- data[[sorting_variable]]
+  n <- length(x)
 
-  if (length(x) <= 1L || all(x == x[1L])) {
+  ux <- unique(x[!is.na(x)])
+  if (length(ux) <= 1L) {
     cli::cli_warn(
       "The sorting variable is constant and only one portfolio is returned."
     )
-    return(rep(1, nrow(data)))
+    return(rep.int(1L, n))
   }
 
   breakpoints <- breakpoint_function(
@@ -67,7 +69,7 @@ assign_portfolio <- function(
   portfolio_indices <- findInterval(x, breakpoints, all.inside = TRUE)
 
   n_expected <- length(breakpoints) - 1L
-  n_actual <- sum(tabulate(portfolio_indices, nbins = n_expected) > 0L)
+  n_actual <- length(unique(na.omit(portfolio_indices)))
   if (n_actual != n_expected) {
     cli::cli_warn(
       "The number of portfolios differs from the specified parameter due to clusters in the sorting variable."
