@@ -87,28 +87,29 @@ compute_breakpoints <- function(
     )
   }
 
+  # Extract only the sorting column, filter as a vector
+  sorting_values <- data[[sorting_variable]]
+
   if (!is.null(breakpoint_exchanges)) {
-    if (!(data_options$exchange %in% colnames(data))) {
+    exchange_col <- data_options$exchange
+    if (!(exchange_col %in% colnames(data))) {
       cli::cli_abort(
-        "Please provide the column {data_options$exchange} when filtering using {.arg breakpoint_exchanges}."
+        "Please provide the column {exchange_col} when filtering using {.arg breakpoint_exchanges}."
       )
     }
-    data <- data |>
-      filter(.data[[data_options$exchange]] %in% breakpoint_exchanges)
+    keep <- data[[exchange_col]] %in% breakpoint_exchanges
+    sorting_values <- sorting_values[keep]
   }
 
   if (!is.null(n_portfolios)) {
-    if (n_portfolios <= 1) {
+    if (n_portfolios <= 1L) {
       cli::cli_abort("{.arg n_portfolios} must be larger than 1.")
-    } else {
-      probs <- seq(0, 1, length.out = n_portfolios + 1)
     }
+    probs <- seq(0, 1, length.out = n_portfolios + 1L)
   } else {
     probs <- c(0, percentiles, 1)
-    n_portfolios <- length(probs) - 1
+    n_portfolios <- length(probs) - 1L
   }
-
-  sorting_values <- data[[sorting_variable]]
 
   breakpoints <- quantile(
     sorting_values,
@@ -117,94 +118,72 @@ compute_breakpoints <- function(
     names = FALSE
   )
 
-  if (!is.null(smooth_bunching) && smooth_bunching == TRUE) {
-    # Portfolio 1 and n are overpopulated
-    if (
-      breakpoints[1] == breakpoints[2] &&
-        breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]
-    ) {
+  if (isTRUE(smooth_bunching)) {
+    both_edges <- breakpoints[1] == breakpoints[2] &&
+      breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]
+    lower_edge <- breakpoints[1] == breakpoints[2]
+    upper_edge <- breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]
+
+    if (both_edges) {
       if (!is.null(percentiles)) {
         cli::cli_warn(
           "{.arg smooth_bunching} is TRUE and equally-spaced portfolios are returned for non-edge portfolios."
         )
       }
-
-      sorting_values_new <- sorting_values[which(
-        sorting_values > breakpoints[1] &
-          sorting_values < breakpoints[n_portfolios + 1]
-      )]
-
-      probs_new <- seq(0, 1, length.out = n_portfolios - 1)
-
+      mask <- sorting_values > breakpoints[1] &
+        sorting_values < breakpoints[n_portfolios + 1]
+      sorting_values_new <- sorting_values[mask]
+      probs_new <- seq(0, 1, length.out = n_portfolios - 1L)
       breakpoints_new <- quantile(
         sorting_values_new,
         probs = probs_new,
         na.rm = TRUE,
         names = FALSE
       )
-
-      breakpoints_new[n_portfolios - 1] <- breakpoints_new[n_portfolios - 1] +
+      breakpoints_new[n_portfolios - 1L] <- breakpoints_new[n_portfolios - 1L] +
         1e-15
-
       breakpoints <- c(
         breakpoints[1],
         breakpoints_new,
         breakpoints[n_portfolios + 1]
       )
-    }
-
-    # Portfolio 1 is overpopulated
-    if (breakpoints[1] == breakpoints[2]) {
+    } else if (lower_edge) {
       if (!is.null(percentiles)) {
         cli::cli_warn(
           "{.arg smooth_bunching} is TRUE and equally-spaced portfolios are returned for non-edge portfolios."
         )
       }
-
-      sorting_values_new <- sorting_values[which(
-        sorting_values > breakpoints[1]
-      )]
-
+      sorting_values_new <- sorting_values[sorting_values > breakpoints[1]]
       probs_new <- seq(0, 1, length.out = n_portfolios)
-
       breakpoints_new <- quantile(
         sorting_values_new,
         probs = probs_new,
         na.rm = TRUE,
         names = FALSE
       )
-
       breakpoints <- c(breakpoints[1], breakpoints_new)
-    }
-
-    # Portfolio n is overpopulated
-    if (breakpoints[n_portfolios] == breakpoints[n_portfolios + 1]) {
+    } else if (upper_edge) {
       if (!is.null(percentiles)) {
         cli::cli_warn(
           "{.arg smooth_bunching} is TRUE and equally-spaced portfolios are returned for non-edge portfolios."
         )
       }
-
-      sorting_values_new <- sorting_values[which(
+      sorting_values_new <- sorting_values[
         sorting_values < breakpoints[n_portfolios]
-      )]
-
+      ]
       probs_new <- seq(0, 1, length.out = n_portfolios)
-
       breakpoints_new <- quantile(
         sorting_values_new,
         probs = probs_new,
         na.rm = TRUE,
         names = FALSE
       )
-
       breakpoints_new[n_portfolios] <- breakpoints_new[n_portfolios] + 1e-15
-
       breakpoints <- c(breakpoints_new, breakpoints[n_portfolios + 1])
     }
   }
 
-  breakpoints[2:(n_portfolios + 1)] <- breakpoints[2:(n_portfolios + 1)] + 1e-20
-
+  breakpoints[2:(n_portfolios + 1L)] <- breakpoints[2:(n_portfolios + 1L)] +
+    1e-20
   breakpoints
 }
