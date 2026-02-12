@@ -148,10 +148,14 @@ compute_portfolio_returns <- function(
     )
   }
 
-  mktcap_lag_missing <- !(data_options$mktcap_lag %in% colnames(sorting_data))
+  date_col <- data_options$date
+  id_col <- data_options$id
+  ret_col <- data_options$ret_excess
+  w_col <- data_options$mktcap_lag
 
+  mktcap_lag_missing <- !(w_col %in% names(sorting_data))
   if (mktcap_lag_missing) {
-    sorting_data$mktcap_lag <- 1
+    sorting_data[[w_col]] <- 1
   }
 
   if (
@@ -178,11 +182,11 @@ compute_portfolio_returns <- function(
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           ),
-          .by = all_of(data_options$date)
+          .by = all_of(date_col)
         )
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(.data[[data_options$date]]) == rebalancing_month) |>
+        filter(month(.data[[date_col]]) == rebalancing_month) |>
         mutate(
           portfolio = assign_portfolio(
             data = pick(everything()),
@@ -191,27 +195,27 @@ compute_portfolio_returns <- function(
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           ),
-          .by = all_of(data_options$date)
+          .by = all_of(date_col)
         ) |>
-        select(all_of(c(data_options$id, data_options$date, "portfolio")))
+        select(all_of(c(id_col, date_col, "portfolio")))
 
       portfolio_returns <- sorting_data |>
         rename(
-          "..date" = all_of(data_options$date),
-          "..id" := all_of(data_options$id)
+          "..date" = all_of(date_col),
+          "..id" := all_of(id_col)
         ) |>
         left_join(
           portfolio_data |>
-            rename("..id" = all_of(data_options$id)) |>
+            rename("..id" = all_of(id_col)) |>
             mutate(
-              lower_bound = .data[[data_options$date]],
-              upper_bound = .data[[data_options$date]] + months(12)
+              lower_bound = .data[[date_col]],
+              upper_bound = .data[[date_col]] + months(12)
             ) |>
-            select(-all_of(data_options$date)),
+            select(-all_of(date_col)),
           join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
           relationship = "many-to-one"
         ) |>
-        rename("{data_options$date}" := "..date", "{data_options$id}" := "..id")
+        rename("{date_col}" := "..date", "{id_col}" := "..id")
     }
 
     portfolio_returns <- portfolio_returns |>
@@ -220,16 +224,16 @@ compute_portfolio_returns <- function(
           dplyr::n() < min_portfolio_size,
           NA_real_,
           stats::weighted.mean(
-            .data[[data_options$ret_excess]],
-            .data[[data_options$mktcap_lag]]
+            .data[[ret_col]],
+            .data[[w_col]]
           )
         ),
         ret_excess_ew = if_else(
           dplyr::n() < min_portfolio_size,
           NA_real_,
-          mean(.data[[data_options$ret_excess]])
+          mean(.data[[ret_col]])
         ),
-        .by = c(portfolio, all_of(data_options$date))
+        .by = c(portfolio, all_of(date_col))
       )
   }
 
@@ -248,7 +252,7 @@ compute_portfolio_returns <- function(
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           ),
-          .by = all_of(data_options$date)
+          .by = all_of(date_col)
         ) |>
         mutate(
           portfolio_main = assign_portfolio(
@@ -258,11 +262,11 @@ compute_portfolio_returns <- function(
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           ),
-          .by = c(all_of(data_options$date), portfolio_secondary)
+          .by = c(all_of(date_col), portfolio_secondary)
         )
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(.data[[data_options$date]]) == rebalancing_month) |>
+        filter(month(.data[[date_col]]) == rebalancing_month) |>
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
@@ -271,7 +275,7 @@ compute_portfolio_returns <- function(
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           ),
-          .by = all_of(data_options$date)
+          .by = all_of(date_col)
         ) |>
         mutate(
           portfolio_main = assign_portfolio(
@@ -281,32 +285,32 @@ compute_portfolio_returns <- function(
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           ),
-          .by = c(all_of(data_options$date), portfolio_secondary)
+          .by = c(all_of(date_col), portfolio_secondary)
         ) |>
         select(all_of(c(
-          data_options$id,
-          data_options$date,
+          id_col,
+          date_col,
           "portfolio_main",
           "portfolio_secondary"
         )))
 
       portfolio_returns <- sorting_data |>
         rename(
-          "..date" = all_of(data_options$date),
-          "..id" := all_of(data_options$id)
+          "..date" = all_of(date_col),
+          "..id" := all_of(id_col)
         ) |>
         left_join(
           portfolio_data |>
-            rename("..id" = all_of(data_options$id)) |>
+            rename("..id" = all_of(id_col)) |>
             mutate(
-              lower_bound = .data[[data_options$date]],
-              upper_bound = .data[[data_options$date]] + months(12)
+              lower_bound = .data[[date_col]],
+              upper_bound = .data[[date_col]] + months(12)
             ) |>
-            select(-all_of(data_options$date)),
+            select(-all_of(date_col)),
           join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
           relationship = "many-to-one"
         ) |>
-        rename("{data_options$date}" := "..date", "{data_options$id}" := "..id")
+        rename("{date_col}" := "..date", "{id_col}" := "..id")
     }
 
     portfolio_returns <- portfolio_returns |>
@@ -314,24 +318,24 @@ compute_portfolio_returns <- function(
         ret_excess_vw = if_else(
           dplyr::n() < min_portfolio_size,
           NA_real_,
-          stats::weighted.mean(ret_excess, mktcap_lag)
+          stats::weighted.mean(.data[[ret_col]], .data[[w_col]])
         ),
         ret_excess_ew = if_else(
           dplyr::n() < min_portfolio_size,
           NA_real_,
-          mean(ret_excess)
+          mean(.data[[ret_col]])
         ),
         .by = c(
           portfolio_main,
           portfolio_secondary,
-          all_of(data_options$date)
+          all_of(date_col)
         )
       ) |>
       rename(portfolio = portfolio_main) |>
       summarize(
         ret_excess_vw = mean(ret_excess_vw, na.rm = TRUE),
         ret_excess_ew = mean(ret_excess_ew, na.rm = TRUE),
-        .by = c(portfolio, all_of(data_options$date))
+        .by = c(portfolio, all_of(date_col))
       )
   }
 
@@ -357,11 +361,11 @@ compute_portfolio_returns <- function(
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           ),
-          .by = all_of(data_options$date)
+          .by = all_of(date_col)
         )
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(.data[[data_options$date]]) == rebalancing_month) |>
+        filter(month(.data[[date_col]]) == rebalancing_month) |>
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
@@ -377,32 +381,32 @@ compute_portfolio_returns <- function(
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           ),
-          .by = all_of(data_options$date)
+          .by = all_of(date_col)
         ) |>
         select(all_of(c(
-          data_options$id,
-          data_options$date,
+          id_col,
+          date_col,
           "portfolio_main",
           "portfolio_secondary"
         )))
 
       portfolio_returns <- sorting_data |>
         rename(
-          "..date" = all_of(data_options$date),
-          "..id" := all_of(data_options$id)
+          "..date" = all_of(date_col),
+          "..id" := all_of(id_col)
         ) |>
         left_join(
           portfolio_data |>
-            rename("..id" = all_of(data_options$id)) |>
+            rename("..id" = all_of(id_col)) |>
             mutate(
-              lower_bound = .data[[data_options$date]],
-              upper_bound = .data[[data_options$date]] + months(12)
+              lower_bound = .data[[date_col]],
+              upper_bound = .data[[date_col]] + months(12)
             ) |>
-            select(-all_of(data_options$date)),
+            select(-all_of(date_col)),
           join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
           relationship = "many-to-one"
         ) |>
-        rename("{data_options$date}" := "..date", "{data_options$id}" := "..id")
+        rename("{date_col}" := "..date", "{id_col}" := "..id")
     }
 
     portfolio_returns <- portfolio_returns |>
@@ -410,24 +414,24 @@ compute_portfolio_returns <- function(
         ret_excess_vw = if_else(
           dplyr::n() < min_portfolio_size,
           NA_real_,
-          stats::weighted.mean(ret_excess, mktcap_lag)
+          stats::weighted.mean(.data[[ret_col]], .data[[w_col]])
         ),
         ret_excess_ew = if_else(
           dplyr::n() < min_portfolio_size,
           NA_real_,
-          mean(ret_excess)
+          mean(.data[[ret_col]])
         ),
         .by = c(
           portfolio_main,
           portfolio_secondary,
-          all_of(data_options$date)
+          all_of(date_col)
         )
       ) |>
       rename(portfolio = portfolio_main) |>
       summarize(
         ret_excess_vw = mean(ret_excess_vw, na.rm = TRUE),
         ret_excess_ew = mean(ret_excess_ew, na.rm = TRUE),
-        .by = c(portfolio, all_of(data_options$date))
+        .by = c(portfolio, all_of(date_col))
       )
   }
 
