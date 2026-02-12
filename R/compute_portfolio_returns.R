@@ -109,6 +109,8 @@ compute_portfolio_returns <- function(
   min_portfolio_size = 0,
   data_options = NULL
 ) {
+  # Validation -------------------------------------------------------------
+
   if (is.null(data_options)) {
     data_options <- data_options()
   }
@@ -126,25 +128,11 @@ compute_portfolio_returns <- function(
     )
   }
 
-  if (
-    (sorting_method %in% c("bivariate-dependent", "bivariate-independent")) &&
-      is.null(breakpoint_options_secondary)
-  ) {
+  is_bivariate <- sorting_method != "univariate"
+
+  if (is_bivariate && is.null(breakpoint_options_secondary)) {
     cli::cli_warn(
       "No 'breakpoint_options_secondary' specified in bivariate sort."
-    )
-  }
-
-  required_columns <- c(
-    sorting_variables,
-    data_options$date,
-    data_options$id,
-    data_options$ret_excess
-  )
-  missing_columns <- setdiff(required_columns, colnames(sorting_data))
-  if (length(missing_columns) > 0) {
-    cli::cli_abort(
-      "The 'sorting_data' is missing the following required columns: {paste(missing_columns, collapse = ', ')}."
     )
   }
 
@@ -152,6 +140,14 @@ compute_portfolio_returns <- function(
   id_col <- data_options$id
   ret_col <- data_options$ret_excess
   w_col <- data_options$mktcap_lag
+
+  required_columns <- c(sorting_variables, date_col, id_col, ret_col)
+  missing_columns <- setdiff(required_columns, colnames(sorting_data))
+  if (length(missing_columns) > 0) {
+    cli::cli_abort(
+      "The 'sorting_data' is missing the following required columns: {paste(missing_columns, collapse = ', ')}."
+    )
+  }
 
   mktcap_lag_missing <- !(w_col %in% names(sorting_data))
   if (mktcap_lag_missing) {
@@ -165,6 +161,18 @@ compute_portfolio_returns <- function(
     cli::cli_abort(
       "The 'rebalancing_month' must be NULL (periodic rebalancing) or an integer between 1 and 12 (annual rebalancing)."
     )
+  }
+
+  if (!is_bivariate && length(sorting_variables) > 1) {
+    cli::cli_abort("Only provide one sorting variable for univariate sorts.")
+  }
+  if (is_bivariate && length(sorting_variables) != 2) {
+    cli::cli_abort("Provide two sorting variables for bivariate sorts.")
+  }
+
+  assign_cols_main <- unique(c(id_col, date_col, sorting_variables[1], w_col))
+  assign_cols_sec <- if (is_bivariate) {
+    unique(c(id_col, date_col, sorting_variables[2], w_col))
   }
 
   if (sorting_method == "univariate") {
