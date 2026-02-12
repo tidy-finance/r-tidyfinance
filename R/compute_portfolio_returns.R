@@ -175,28 +175,198 @@ compute_portfolio_returns <- function(
     unique(c(id_col, date_col, sorting_variables[2], w_col))
   }
 
-  # Univariate sorts -------------------------------------------------------
+  if (sorting_method == "univariate") {
+    if (length(sorting_variables) > 1) {
+      cli::cli_abort("Only provide one sorting variable for univariate sorts.")
+    }
 
-  if (!is_bivariate) {
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
         mutate(
           portfolio = assign_portfolio(
             data = pick(everything()),
-            sorting_variable = sorting_variables[1],
+            sorting_variable = sorting_variables,
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           ),
           .by = all_of(date_col)
-        ) |>
-        filter(!is.na(portfolio))
+        )
     } else {
       portfolio_data <- sorting_data |>
         filter(month(.data[[date_col]]) == rebalancing_month) |>
         mutate(
           portfolio = assign_portfolio(
             data = pick(everything()),
+            sorting_variable = sorting_variables,
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
+          ),
+          .by = all_of(date_col)
+        ) |>
+        select(all_of(c(id_col, date_col, "portfolio")))
+
+      portfolio_returns <- sorting_data |>
+        rename(
+          "..date" = all_of(date_col),
+          "..id" := all_of(id_col)
+        ) |>
+        left_join(
+          portfolio_data |>
+            rename("..id" = all_of(id_col)) |>
+            mutate(
+              lower_bound = .data[[date_col]],
+              upper_bound = .data[[date_col]] + months(12)
+            ) |>
+            select(-all_of(date_col)),
+          join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+          relationship = "many-to-one"
+        ) |>
+        rename("{date_col}" := "..date", "{id_col}" := "..id")
+    }
+
+    portfolio_returns <- portfolio_returns |>
+      aggregate_portfolio_returns(
+        min_portfolio_size = min_portfolio_size,
+        by = c("portfolio", date_col),
+        ret_col = ret_col,
+        w_col = w_col
+      )
+  }
+
+  if (sorting_method == "bivariate-dependent") {
+    if (length(sorting_variables) != 2) {
+      cli::cli_abort("Provide two sorting variables for bivariate sorts.")
+    }
+
+    if (is.null(rebalancing_month)) {
+      portfolio_returns <- sorting_data |>
+        mutate(
+          portfolio_secondary = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[2],
+            breakpoint_options = breakpoint_options_secondary,
+            breakpoint_function = breakpoint_function_secondary,
+            data_options = data_options
+          ),
+          .by = all_of(date_col)
+        ) |>
+        mutate(
+          portfolio_main = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[1],
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
+          ),
+          .by = c(all_of(date_col), portfolio_secondary)
+        )
+    } else {
+      portfolio_data <- sorting_data |>
+        filter(month(.data[[date_col]]) == rebalancing_month) |>
+        mutate(
+          portfolio_secondary = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[2],
+            breakpoint_options = breakpoint_options_secondary,
+            breakpoint_function = breakpoint_function_secondary,
+            data_options = data_options
+          ),
+          .by = all_of(date_col)
+        ) |>
+        mutate(
+          portfolio_main = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[1],
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
+          ),
+          .by = c(all_of(date_col), portfolio_secondary)
+        ) |>
+        select(all_of(c(
+          id_col,
+          date_col,
+          "portfolio_main",
+          "portfolio_secondary"
+        )))
+
+      portfolio_returns <- sorting_data |>
+        rename(
+          "..date" = all_of(date_col),
+          "..id" := all_of(id_col)
+        ) |>
+        left_join(
+          portfolio_data |>
+            rename("..id" = all_of(id_col)) |>
+            mutate(
+              lower_bound = .data[[date_col]],
+              upper_bound = .data[[date_col]] + months(12)
+            ) |>
+            select(-all_of(date_col)),
+          join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+          relationship = "many-to-one"
+        ) |>
+        rename("{date_col}" := "..date", "{id_col}" := "..id")
+    }
+
+    portfolio_returns <- portfolio_returns |>
+      aggregate_portfolio_returns(
+        min_portfolio_size = min_portfolio_size,
+        by = c(
+          "portfolio_main",
+          "portfolio_secondary",
+          date_col
+        ),
+        ret_col = ret_col,
+        w_col = w_col
+      ) |>
+      rename(portfolio = portfolio_main) |>
+      summarize(
+        ret_excess_vw = mean(ret_excess_vw, na.rm = TRUE),
+        ret_excess_ew = mean(ret_excess_ew, na.rm = TRUE),
+        .by = c(portfolio, all_of(date_col))
+      )
+  }
+
+  if (sorting_method == "bivariate-independent") {
+    if (length(sorting_variables) != 2) {
+      cli::cli_abort("Provide two sorting variables for bivariate sorts.")
+    }
+
+    if (is.null(rebalancing_month)) {
+      portfolio_returns <- sorting_data |>
+        mutate(
+          portfolio_secondary = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[2],
+            breakpoint_options = breakpoint_options_secondary,
+            breakpoint_function = breakpoint_function_secondary,
+            data_options = data_options
+          ),
+          portfolio_main = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[1],
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
+          ),
+          .by = all_of(date_col)
+        )
+    } else {
+      portfolio_data <- sorting_data |>
+        filter(month(.data[[date_col]]) == rebalancing_month) |>
+        mutate(
+          portfolio_secondary = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[2],
+            breakpoint_options = breakpoint_options_secondary,
+            breakpoint_function = breakpoint_function_secondary,
+            data_options = data_options
+          ),
+          portfolio_main = assign_portfolio(
+            pick(everything()),
             sorting_variable = sorting_variables[1],
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
@@ -204,176 +374,42 @@ compute_portfolio_returns <- function(
           ),
           .by = all_of(date_col)
         ) |>
-        filter(!is.na(portfolio)) |>
-        mutate(
-          ..rebal_year = compute_rebal_year(
-            .data[[date_col]],
-            rebalancing_month
-          )
-        ) |>
-        select(all_of(c(id_col)), ..rebal_year, portfolio)
+        select(all_of(c(
+          id_col,
+          date_col,
+          "portfolio_main",
+          "portfolio_secondary"
+        )))
 
       portfolio_returns <- sorting_data |>
-        mutate(
-          ..rebal_year = compute_rebal_year(
-            .data[[date_col]],
-            rebalancing_month
-          )
+        rename(
+          "..date" = all_of(date_col),
+          "..id" := all_of(id_col)
         ) |>
-        inner_join(
-          portfolio_data,
-          by = c(
-            setNames("..rebal_year", "..rebal_year"),
-            setNames(id_col, id_col)
-          )
+        left_join(
+          portfolio_data |>
+            rename("..id" = all_of(id_col)) |>
+            mutate(
+              lower_bound = .data[[date_col]],
+              upper_bound = .data[[date_col]] + months(12)
+            ) |>
+            select(-all_of(date_col)),
+          join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+          relationship = "many-to-one"
         ) |>
-        select(-..rebal_year)
+        rename("{date_col}" := "..date", "{id_col}" := "..id")
     }
 
     portfolio_returns <- portfolio_returns |>
       aggregate_portfolio_returns(
-        min_portfolio_size,
-        c("portfolio", date_col),
-        ret_col,
-        w_col
-      )
-  }
-
-  # Bivariate sorts --------------------------------------------------------
-
-  if (is_bivariate) {
-    is_dependent <- sorting_method == "bivariate-dependent"
-
-    if (is.null(rebalancing_month)) {
-      if (is_dependent) {
-        portfolio_returns <- sorting_data |>
-          mutate(
-            portfolio_secondary = assign_portfolio(
-              data = pick(everything()),
-              sorting_variable = sorting_variables[2],
-              breakpoint_options = breakpoint_options_secondary,
-              breakpoint_function = breakpoint_function_secondary,
-              data_options = data_options
-            ),
-            .by = all_of(date_col)
-          ) |>
-          mutate(
-            portfolio_main = assign_portfolio(
-              data = pick(everything()),
-              sorting_variable = sorting_variables[1],
-              breakpoint_options = breakpoint_options_main,
-              breakpoint_function = breakpoint_function_main,
-              data_options = data_options
-            ),
-            .by = c(all_of(date_col), portfolio_secondary)
-          ) |>
-          filter(!is.na(portfolio_main), !is.na(portfolio_secondary))
-      } else {
-        portfolio_returns <- sorting_data |>
-          mutate(
-            portfolio_secondary = assign_portfolio(
-              data = pick(everything()),
-              sorting_variable = sorting_variables[2],
-              breakpoint_options = breakpoint_options_secondary,
-              breakpoint_function = breakpoint_function_secondary,
-              data_options = data_options
-            ),
-            portfolio_main = assign_portfolio(
-              data = pick(everything()),
-              sorting_variable = sorting_variables[1],
-              breakpoint_options = breakpoint_options_main,
-              breakpoint_function = breakpoint_function_main,
-              data_options = data_options
-            ),
-            .by = all_of(date_col)
-          ) |>
-          filter(!is.na(portfolio_main), !is.na(portfolio_secondary))
-      }
-    } else {
-      src <- sorting_data |>
-        filter(month(.data[[date_col]]) == rebalancing_month)
-
-      if (is_dependent) {
-        portfolio_data <- src |>
-          mutate(
-            portfolio_secondary = assign_portfolio(
-              data = pick(everything()),
-              sorting_variable = sorting_variables[2],
-              breakpoint_options = breakpoint_options_secondary,
-              breakpoint_function = breakpoint_function_secondary,
-              data_options = data_options
-            ),
-            .by = all_of(date_col)
-          ) |>
-          mutate(
-            portfolio_main = assign_portfolio(
-              data = pick(everything()),
-              sorting_variable = sorting_variables[1],
-              breakpoint_options = breakpoint_options_main,
-              breakpoint_function = breakpoint_function_main,
-              data_options = data_options
-            ),
-            .by = c(all_of(date_col), portfolio_secondary)
-          )
-      } else {
-        portfolio_data <- src |>
-          mutate(
-            portfolio_secondary = assign_portfolio(
-              data = pick(everything()),
-              sorting_variable = sorting_variables[2],
-              breakpoint_options = breakpoint_options_secondary,
-              breakpoint_function = breakpoint_function_secondary,
-              data_options = data_options
-            ),
-            portfolio_main = assign_portfolio(
-              data = pick(everything()),
-              sorting_variable = sorting_variables[1],
-              breakpoint_options = breakpoint_options_main,
-              breakpoint_function = breakpoint_function_main,
-              data_options = data_options
-            ),
-            .by = all_of(date_col)
-          )
-      }
-
-      portfolio_data <- portfolio_data |>
-        filter(!is.na(portfolio_main), !is.na(portfolio_secondary)) |>
-        mutate(
-          ..rebal_year = compute_rebal_year(
-            .data[[date_col]],
-            rebalancing_month
-          )
-        ) |>
-        select(
-          all_of(id_col),
-          ..rebal_year,
-          portfolio_main,
-          portfolio_secondary
-        )
-
-      portfolio_returns <- sorting_data |>
-        mutate(
-          ..rebal_year = compute_rebal_year(
-            .data[[date_col]],
-            rebalancing_month
-          )
-        ) |>
-        inner_join(
-          portfolio_data,
-          by = c(
-            setNames("..rebal_year", "..rebal_year"),
-            setNames(id_col, id_col)
-          )
-        ) |>
-        select(-..rebal_year)
-    }
-
-    portfolio_returns <- portfolio_returns |>
-      aggregate_portfolio_returns(
-        min_portfolio_size,
-        c("portfolio_main", "portfolio_secondary", date_col),
-        ret_col,
-        w_col
+        min_portfolio_size = min_portfolio_size,
+        by = c(
+          "portfolio_main",
+          "portfolio_secondary",
+          date_col
+        ),
+        ret_col = ret_col,
+        w_col = w_col
       ) |>
       rename(portfolio = portfolio_main) |>
       summarize(
@@ -416,12 +452,4 @@ aggregate_portfolio_returns <- function(
       ),
       .by = all_of(by)
     )
-}
-
-#' @keywords internal
-#' @noRd
-compute_rebal_year <- function(dates, rebal_month) {
-  yr <- as.integer(format(dates, "%Y"))
-  mo <- as.integer(format(dates, "%m"))
-  ifelse(mo >= rebal_month, yr, yr - 1L)
 }
