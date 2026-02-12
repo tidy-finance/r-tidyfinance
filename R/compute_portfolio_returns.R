@@ -421,13 +421,13 @@ compute_portfolio_returns <- function(
 #' @keywords internal
 #' @noRd
 aggregate_portfolio_returns <- function(
-  df,
+  portfolio_returns,
   min_portfolio_size,
   by,
   ret_col,
   w_col
 ) {
-  df |>
+  portfolio_returns |>
     summarize(
       ret_excess_vw = if_else(
         dplyr::n() < min_portfolio_size,
