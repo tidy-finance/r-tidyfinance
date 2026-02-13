@@ -62,7 +62,7 @@ test_that("error if required columns are missing", {
       "univariate",
       breakpoint_options_main = breakpoint_options(n_portfolios = 5)
     ),
-    "missing"
+    "Missing"
   )
 })
 
@@ -75,7 +75,7 @@ test_that("error if sorting variable column is missing", {
       "univariate",
       breakpoint_options_main = breakpoint_options(n_portfolios = 5)
     ),
-    "missing"
+    "Missing"
   )
 })
 
