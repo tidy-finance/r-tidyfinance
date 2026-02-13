@@ -109,8 +109,6 @@ compute_portfolio_returns <- function(
   min_portfolio_size = 0,
   data_options = NULL
 ) {
-  # Validation -------------------------------------------------------------
-
   if (is.null(data_options)) {
     data_options <- data_options()
   }
@@ -123,14 +121,13 @@ compute_portfolio_returns <- function(
     !sorting_method %in%
       c("univariate", "bivariate-dependent", "bivariate-independent")
   ) {
-    cli::cli_abort(
-      "Invalid sorting method. Choose 'univariate', 'bivariate-dependent', or 'bivariate-independent'."
-    )
+    cli::cli_abort("Invalid sorting method.")
   }
 
-  is_bivariate <- sorting_method != "univariate"
-
-  if (is_bivariate && is.null(breakpoint_options_secondary)) {
+  if (
+    (sorting_method %in% c("bivariate-dependent", "bivariate-independent")) &&
+      is.null(breakpoint_options_secondary)
+  ) {
     cli::cli_warn(
       "No 'breakpoint_options_secondary' specified in bivariate sort."
     )
@@ -142,44 +139,34 @@ compute_portfolio_returns <- function(
   w_col <- data_options$mktcap_lag
 
   required_columns <- c(sorting_variables, date_col, id_col, ret_col)
+
   missing_columns <- setdiff(required_columns, colnames(sorting_data))
   if (length(missing_columns) > 0) {
     cli::cli_abort(
-      "The 'sorting_data' is missing the following required columns: {paste(missing_columns, collapse = ', ')}."
+      "Missing columns: {paste(missing_columns, collapse = ', ')}."
     )
   }
 
-  mktcap_lag_missing <- !(w_col %in% names(sorting_data))
+  mktcap_lag_missing <- !(data_options$mktcap_lag %in% colnames(sorting_data))
   if (mktcap_lag_missing) {
-    sorting_data[[w_col]] <- 1
+    sorting_data$mktcap_lag <- 1
   }
 
   if (
     !is.null(rebalancing_month) &&
       (rebalancing_month > 12 || rebalancing_month < 1)
   ) {
-    cli::cli_abort(
-      "The 'rebalancing_month' must be NULL (periodic rebalancing) or an integer between 1 and 12 (annual rebalancing)."
-    )
+    cli::cli_abort("Invalid rebalancing_month.")
   }
 
-  if (!is_bivariate && length(sorting_variables) > 1) {
-    cli::cli_abort("Only provide one sorting variable for univariate sorts.")
-  }
-  if (is_bivariate && length(sorting_variables) != 2) {
-    cli::cli_abort("Provide two sorting variables for bivariate sorts.")
-  }
+  if (sorting_method == "univariate") {
+    if (length(sorting_variables) > 1) {
+      cli::cli_abort("Only provide one sorting variable for univariate sorts.")
+    }
 
-  assign_cols_main <- unique(c(id_col, date_col, sorting_variables[1], w_col))
-  assign_cols_sec <- if (is_bivariate) {
-    unique(c(id_col, date_col, sorting_variables[2], w_col))
-  }
-
-  # Univariate sorts -------------------------------------------------------
-
-  if (isFALSE(is_bivariate)) {
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
+        group_by(.data[[data_options$date]]) |>
         mutate(
           portfolio = assign_portfolio(
             data = pick(everything()),
@@ -187,12 +174,12 @@ compute_portfolio_returns <- function(
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
-          ),
-          .by = all_of(date_col)
+          )
         )
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(.data[[date_col]]) == rebalancing_month) |>
+        filter(month(.data[[data_options$date]]) == rebalancing_month) |>
+        group_by(.data[[data_options$date]]) |>
         mutate(
           portfolio = assign_portfolio(
             data = pick(everything()),
@@ -200,249 +187,253 @@ compute_portfolio_returns <- function(
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
-          ),
-          .by = all_of(date_col)
+          )
         ) |>
-        select(all_of(c(id_col, date_col, "portfolio")))
+        ungroup() |>
+        select(all_of(c(data_options$id, data_options$date, "portfolio")))
 
       portfolio_returns <- sorting_data |>
         rename(
-          "..date" = all_of(date_col),
-          "..id" := all_of(id_col)
+          "..date" = all_of(data_options$date),
+          "..id" := all_of(data_options$id)
         ) |>
         left_join(
           portfolio_data |>
-            rename("..id" = all_of(id_col)) |>
+            rename("..id" = all_of(data_options$id)) |>
             mutate(
-              lower_bound = .data[[date_col]],
-              upper_bound = .data[[date_col]] + months(12)
+              lower_bound = .data[[data_options$date]],
+              upper_bound = .data[[data_options$date]] + months(12)
             ) |>
-            select(-all_of(date_col)),
+            select(-all_of(data_options$date)),
           join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
           relationship = "many-to-one"
         ) |>
-        rename("{date_col}" := "..date", "{id_col}" := "..id")
+        rename("{data_options$date}" := "..date", "{data_options$id}" := "..id")
     }
 
     portfolio_returns <- portfolio_returns |>
-      aggregate_portfolio_returns(
-        min_portfolio_size = min_portfolio_size,
-        by = c("portfolio", date_col),
-        ret_col = ret_col,
-        w_col = w_col
+      group_by(portfolio, .data[[data_options$date]]) |>
+      summarize(
+        ret_excess_vw = if_else(
+          n() < min_portfolio_size,
+          NA_real_,
+          stats::weighted.mean(
+            .data[[data_options$ret_excess]],
+            .data[[data_options$mktcap_lag]]
+          )
+        ),
+        ret_excess_ew = if_else(
+          n() < min_portfolio_size,
+          NA_real_,
+          mean(.data[[data_options$ret_excess]])
+        ),
+        .groups = "drop"
       )
   }
 
-  # Bivariate sorts --------------------------------------------------------
-
-  if (is_bivariate) {
-    is_dependent <- sorting_method == "bivariate-dependent"
-    if (isFALSE(is_dependent)) {
-      if (is.null(rebalancing_month)) {
-        portfolio_returns <- sorting_data |>
-          mutate(
-            portfolio_secondary = assign_portfolio(
-              pick(everything()),
-              sorting_variable = sorting_variables[2],
-              breakpoint_options = breakpoint_options_secondary,
-              breakpoint_function = breakpoint_function_secondary,
-              data_options = data_options
-            ),
-            portfolio_main = assign_portfolio(
-              pick(everything()),
-              sorting_variable = sorting_variables[1],
-              breakpoint_options = breakpoint_options_main,
-              breakpoint_function = breakpoint_function_main,
-              data_options = data_options
-            ),
-            .by = all_of(date_col)
-          )
-      } else {
-        portfolio_data <- sorting_data |>
-          filter(month(.data[[date_col]]) == rebalancing_month) |>
-          mutate(
-            portfolio_secondary = assign_portfolio(
-              pick(everything()),
-              sorting_variable = sorting_variables[2],
-              breakpoint_options = breakpoint_options_secondary,
-              breakpoint_function = breakpoint_function_secondary,
-              data_options = data_options
-            ),
-            portfolio_main = assign_portfolio(
-              pick(everything()),
-              sorting_variable = sorting_variables[1],
-              breakpoint_options = breakpoint_options_main,
-              breakpoint_function = breakpoint_function_main,
-              data_options = data_options
-            ),
-            .by = all_of(date_col)
-          ) |>
-          select(all_of(c(
-            id_col,
-            date_col,
-            "portfolio_main",
-            "portfolio_secondary"
-          )))
-
-        portfolio_returns <- sorting_data |>
-          rename(
-            "..date" = all_of(date_col),
-            "..id" := all_of(id_col)
-          ) |>
-          left_join(
-            portfolio_data |>
-              rename("..id" = all_of(id_col)) |>
-              mutate(
-                lower_bound = .data[[date_col]],
-                upper_bound = .data[[date_col]] + months(12)
-              ) |>
-              select(-all_of(date_col)),
-            join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
-            relationship = "many-to-one"
-          ) |>
-          rename("{date_col}" := "..date", "{id_col}" := "..id")
-      }
-
-      portfolio_returns <- portfolio_returns |>
-        aggregate_portfolio_returns(
-          min_portfolio_size = min_portfolio_size,
-          by = c(
-            "portfolio_main",
-            "portfolio_secondary",
-            date_col
-          ),
-          ret_col = ret_col,
-          w_col = w_col
-        ) |>
-        rename(portfolio = portfolio_main) |>
-        summarize(
-          ret_excess_vw = mean(ret_excess_vw, na.rm = TRUE),
-          ret_excess_ew = mean(ret_excess_ew, na.rm = TRUE),
-          .by = c(portfolio, all_of(date_col))
-        )
-    } else {
-      if (is.null(rebalancing_month)) {
-        portfolio_returns <- sorting_data |>
-          mutate(
-            portfolio_secondary = assign_portfolio(
-              pick(everything()),
-              sorting_variable = sorting_variables[2],
-              breakpoint_options = breakpoint_options_secondary,
-              breakpoint_function = breakpoint_function_secondary,
-              data_options = data_options
-            ),
-            .by = all_of(date_col)
-          ) |>
-          mutate(
-            portfolio_main = assign_portfolio(
-              pick(everything()),
-              sorting_variable = sorting_variables[1],
-              breakpoint_options = breakpoint_options_main,
-              breakpoint_function = breakpoint_function_main,
-              data_options = data_options
-            ),
-            .by = c(all_of(date_col), portfolio_secondary)
-          )
-      } else {
-        portfolio_data <- sorting_data |>
-          filter(month(.data[[date_col]]) == rebalancing_month) |>
-          mutate(
-            portfolio_secondary = assign_portfolio(
-              pick(everything()),
-              sorting_variable = sorting_variables[2],
-              breakpoint_options = breakpoint_options_secondary,
-              breakpoint_function = breakpoint_function_secondary,
-              data_options = data_options
-            ),
-            .by = all_of(date_col)
-          ) |>
-          mutate(
-            portfolio_main = assign_portfolio(
-              pick(everything()),
-              sorting_variable = sorting_variables[1],
-              breakpoint_options = breakpoint_options_main,
-              breakpoint_function = breakpoint_function_main,
-              data_options = data_options
-            ),
-            .by = c(all_of(date_col), portfolio_secondary)
-          ) |>
-          select(all_of(c(
-            id_col,
-            date_col,
-            "portfolio_main",
-            "portfolio_secondary"
-          )))
-
-        portfolio_returns <- sorting_data |>
-          rename(
-            "..date" = all_of(date_col),
-            "..id" := all_of(id_col)
-          ) |>
-          left_join(
-            portfolio_data |>
-              rename("..id" = all_of(id_col)) |>
-              mutate(
-                lower_bound = .data[[date_col]],
-                upper_bound = .data[[date_col]] + months(12)
-              ) |>
-              select(-all_of(date_col)),
-            join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
-            relationship = "many-to-one"
-          ) |>
-          rename("{date_col}" := "..date", "{id_col}" := "..id")
-      }
-
-      portfolio_returns <- portfolio_returns |>
-        aggregate_portfolio_returns(
-          min_portfolio_size = min_portfolio_size,
-          by = c(
-            "portfolio_main",
-            "portfolio_secondary",
-            date_col
-          ),
-          ret_col = ret_col,
-          w_col = w_col
-        ) |>
-        rename(portfolio = portfolio_main) |>
-        summarize(
-          ret_excess_vw = mean(ret_excess_vw, na.rm = TRUE),
-          ret_excess_ew = mean(ret_excess_ew, na.rm = TRUE),
-          .by = c(portfolio, all_of(date_col))
-        )
+  if (sorting_method == "bivariate-dependent") {
+    if (length(sorting_variables) != 2) {
+      cli::cli_abort("Provide two sorting variables for bivariate sorts.")
     }
+
+    if (is.null(rebalancing_month)) {
+      portfolio_returns <- sorting_data |>
+        group_by(.data[[data_options$date]]) |>
+        mutate(
+          portfolio_secondary = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[2],
+            breakpoint_options = breakpoint_options_secondary,
+            breakpoint_function = breakpoint_function_secondary,
+            data_options = data_options
+          )
+        ) |>
+        ungroup() |>
+        group_by(.data[[data_options$date]], portfolio_secondary) |>
+        mutate(
+          portfolio_main = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[1],
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
+          )
+        ) |>
+        ungroup()
+    } else {
+      portfolio_data <- sorting_data |>
+        filter(month(.data[[data_options$date]]) == rebalancing_month) |>
+        group_by(.data[[data_options$date]]) |>
+        mutate(
+          portfolio_secondary = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[2],
+            breakpoint_options = breakpoint_options_secondary,
+            breakpoint_function = breakpoint_function_secondary,
+            data_options = data_options
+          )
+        ) |>
+        ungroup() |>
+        group_by(.data[[data_options$date]], portfolio_secondary) |>
+        mutate(
+          portfolio_main = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[1],
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
+          )
+        ) |>
+        ungroup() |>
+        select(all_of(c(
+          data_options$id,
+          data_options$date,
+          "portfolio_main",
+          "portfolio_secondary"
+        )))
+
+      portfolio_returns <- sorting_data |>
+        rename(
+          "..date" = all_of(data_options$date),
+          "..id" := all_of(data_options$id)
+        ) |>
+        left_join(
+          portfolio_data |>
+            rename("..id" = all_of(data_options$id)) |>
+            mutate(lower_bound = date, upper_bound = date + months(12)) |>
+            select(-all_of(data_options$date)),
+          join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+          relationship = "many-to-one"
+        ) |>
+        rename("{data_options$date}" := "..date", "{data_options$id}" := "..id")
+    }
+
+    portfolio_returns <- portfolio_returns |>
+      group_by(
+        portfolio_main,
+        portfolio_secondary,
+        .data[[data_options$date]]
+      ) |>
+      summarize(
+        ret_excess_vw = if_else(
+          n() < min_portfolio_size,
+          NA_real_,
+          stats::weighted.mean(ret_excess, mktcap_lag)
+        ),
+        ret_excess_ew = if_else(
+          n() < min_portfolio_size,
+          NA_real_,
+          mean(ret_excess)
+        ),
+        .groups = "drop"
+      ) |>
+      group_by(portfolio = portfolio_main, .data[[data_options$date]]) |>
+      summarize(
+        across(c(ret_excess_vw, ret_excess_ew), \(x) mean(x, na.rm = TRUE)),
+        .groups = "drop"
+      )
+  }
+
+  if (sorting_method == "bivariate-independent") {
+    if (length(sorting_variables) != 2) {
+      cli::cli_abort("Provide two sorting variables for bivariate sorts.")
+    }
+
+    if (is.null(rebalancing_month)) {
+      portfolio_returns <- sorting_data |>
+        group_by(.data[[data_options$date]]) |>
+        mutate(
+          portfolio_secondary = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[2],
+            breakpoint_options = breakpoint_options_secondary,
+            breakpoint_function = breakpoint_function_secondary,
+            data_options = data_options
+          ),
+          portfolio_main = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[1],
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
+          )
+        ) |>
+        ungroup()
+    } else {
+      portfolio_data <- sorting_data |>
+        filter(month(.data[[data_options$date]]) == rebalancing_month) |>
+        group_by(.data[[data_options$date]]) |>
+        mutate(
+          portfolio_secondary = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[2],
+            breakpoint_options = breakpoint_options_secondary,
+            breakpoint_function = breakpoint_function_secondary,
+            data_options = data_options
+          ),
+          portfolio_main = assign_portfolio(
+            pick(everything()),
+            sorting_variable = sorting_variables[1],
+            breakpoint_options = breakpoint_options_main,
+            breakpoint_function = breakpoint_function_main,
+            data_options = data_options
+          )
+        ) |>
+        ungroup() |>
+        select(all_of(c(
+          data_options$id,
+          data_options$date,
+          "portfolio_main",
+          "portfolio_secondary"
+        )))
+
+      portfolio_returns <- sorting_data |>
+        rename(
+          "..date" = all_of(data_options$date),
+          "..id" := all_of(data_options$id)
+        ) |>
+        left_join(
+          portfolio_data |>
+            rename("..id" = all_of(data_options$id)) |>
+            mutate(
+              lower_bound = .data[[data_options$date]],
+              upper_bound = .data[[data_options$date]] + months(12)
+            ) |>
+            select(-all_of(data_options$date)),
+          join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+          relationship = "many-to-one"
+        ) |>
+        rename("{data_options$date}" := "..date", "{data_options$id}" := "..id")
+    }
+
+    portfolio_returns <- portfolio_returns |>
+      group_by(
+        portfolio_main,
+        portfolio_secondary,
+        .data[[data_options$date]]
+      ) |>
+      summarize(
+        ret_excess_vw = if_else(
+          n() < min_portfolio_size,
+          NA_real_,
+          stats::weighted.mean(ret_excess, mktcap_lag)
+        ),
+        ret_excess_ew = if_else(
+          n() < min_portfolio_size,
+          NA_real_,
+          mean(ret_excess)
+        ),
+        .groups = "drop"
+      ) |>
+      group_by(portfolio = portfolio_main, .data[[data_options$date]]) |>
+      summarize(
+        across(c(ret_excess_vw, ret_excess_ew), \(x) mean(x, na.rm = TRUE)),
+        .groups = "drop"
+      )
   }
 
   if (mktcap_lag_missing) {
     portfolio_returns <- portfolio_returns |> select(-ret_excess_vw)
   }
-
   portfolio_returns[!is.na(portfolio_returns$portfolio), ]
-}
-
-#' @keywords internal
-#' @noRd
-aggregate_portfolio_returns <- function(
-  portfolio_returns,
-  min_portfolio_size,
-  by,
-  ret_col,
-  w_col
-) {
-  portfolio_returns |>
-    summarize(
-      ret_excess_vw = if_else(
-        dplyr::n() < min_portfolio_size,
-        NA_real_,
-        stats::weighted.mean(
-          .data[[ret_col]],
-          .data[[w_col]]
-        )
-      ),
-      ret_excess_ew = if_else(
-        dplyr::n() < min_portfolio_size,
-        NA_real_,
-        mean(.data[[ret_col]])
-      ),
-      .by = all_of(by)
-    )
 }
