@@ -501,178 +501,124 @@ cat("\n")
 # =============================================================================
 # BENCHMARK 1: Univariate periodic — varying panel size
 # =============================================================================
-cat(
-  "=== Benchmark 1: Univariate periodic (5 portfolios) — varying panel size ===\n"
-)
-cat("    (Extra columns included to stress-test pick() overhead)\n")
-cat(sprintf(
-  "%-16s %-8s %-20s %-20s %-10s\n",
-  "Stocks×Months",
-  "Rows",
-  "Original (median)",
-  "Optimized (median)",
-  "Speedup"
-))
-cat(paste(rep("-", 78), collapse = ""), "\n")
+# cat(
+#   "=== Benchmark 1: Univariate periodic (5 portfolios) — varying panel size ===\n"
+# )
+# cat("    (Extra columns included to stress-test pick() overhead)\n")
+# cat(sprintf(
+#   "%-16s %-8s %-20s %-20s %-10s\n",
+#   "Stocks×Months",
+#   "Rows",
+#   "Original (median)",
+#   "Optimized (median)",
+#   "Speedup"
+# ))
+# cat(paste(rep("-", 78), collapse = ""), "\n")
 
-configs <- list(
-  list(n_stocks = 100, n_months = 240),
-  list(n_stocks = 200, n_months = 600),
-  list(n_stocks = 500, n_months = 600),
-  list(n_stocks = 500, n_months = 1200),
-  list(n_stocks = 1000, n_months = 2400)
-)
+# configs <- list(
+#   list(n_stocks = 100, n_months = 240),
+#   list(n_stocks = 200, n_months = 600),
+#   list(n_stocks = 500, n_months = 600),
+#   list(n_stocks = 500, n_months = 1200),
+#   list(n_stocks = 1000, n_months = 2400)
+# )
 
-for (cfg in configs) {
-  df <- make_panel(n_stocks = cfg$n_stocks, n_months = cfg$n_months, seed = 1)
-  n_rows <- nrow(df)
-  label <- sprintf("%d × %d", cfg$n_stocks, cfg$n_months)
-  iters <- max(10L, as.integer(200000 / n_rows))
+# for (cfg in configs) {
+#   df <- make_panel(n_stocks = cfg$n_stocks, n_months = cfg$n_months, seed = 1)
+#   n_rows <- nrow(df)
+#   label <- sprintf("%d × %d", cfg$n_stocks, cfg$n_months)
+#   iters <- max(10L, as.integer(200000 / n_rows))
 
-  bm <- bench::mark(
-    original = suppressWarnings(compute_portfolio_returns_original(
-      df,
-      "size",
-      "univariate",
-      breakpoint_options_main = bp_main
-    )),
-    optimized = suppressWarnings(compute_portfolio_returns(
-      df,
-      "size",
-      "univariate",
-      breakpoint_options_main = bp_main
-    )),
-    iterations = iters,
-    check = FALSE,
-    filter_gc = FALSE
-  )
+#   bm <- bench::mark(
+#     original = suppressWarnings(compute_portfolio_returns_original(
+#       df,
+#       "size",
+#       "univariate",
+#       breakpoint_options_main = bp_main
+#     )),
+#     optimized = suppressWarnings(compute_portfolio_returns(
+#       df,
+#       "size",
+#       "univariate",
+#       breakpoint_options_main = bp_main
+#     )),
+#     iterations = iters,
+#     check = FALSE,
+#     filter_gc = FALSE
+#   )
 
-  t_orig <- as.numeric(bm$median[1], units = "ms")
-  t_optim <- as.numeric(bm$median[2], units = "ms")
-  speedup <- t_orig / t_optim
+#   t_orig <- as.numeric(bm$median[1], units = "ms")
+#   t_optim <- as.numeric(bm$median[2], units = "ms")
+#   speedup <- t_orig / t_optim
 
-  cat(sprintf(
-    "%-16s %-8s %-20s %-20s %-10s\n",
-    label,
-    format(n_rows, big.mark = ","),
-    sprintf("%.1f ms", t_orig),
-    sprintf("%.1f ms", t_optim),
-    sprintf("%.2fx", speedup)
-  ))
-}
+#   cat(sprintf(
+#     "%-16s %-8s %-20s %-20s %-10s\n",
+#     label,
+#     format(n_rows, big.mark = ","),
+#     sprintf("%.1f ms", t_orig),
+#     sprintf("%.1f ms", t_optim),
+#     sprintf("%.2fx", speedup)
+#   ))
+# }
 
 # =============================================================================
 # BENCHMARK 2: Univariate annual rebalancing
 # =============================================================================
-cat(
-  "\n=== Benchmark 2: Univariate annual rebalancing (July, 5 portfolios) ===\n"
-)
-cat(sprintf(
-  "%-16s %-8s %-20s %-20s %-10s\n",
-  "Stocks x Months",
-  "Rows",
-  "Original (median)",
-  "Optimized (median)",
-  "Speedup"
-))
-cat(paste(rep("-", 78), collapse = ""), "\n")
+# cat(
+#   "\n=== Benchmark 2: Univariate annual rebalancing (July, 5 portfolios) ===\n"
+# )
+# cat(sprintf(
+#   "%-16s %-8s %-20s %-20s %-10s\n",
+#   "Stocks x Months",
+#   "Rows",
+#   "Original (median)",
+#   "Optimized (median)",
+#   "Speedup"
+# ))
+# cat(paste(rep("-", 78), collapse = ""), "\n")
 
-for (cfg in configs[1:3]) {
-  df <- make_panel(n_stocks = cfg$n_stocks, n_months = cfg$n_months, seed = 1)
-  n_rows <- nrow(df)
-  label <- sprintf("%d × %d", cfg$n_stocks, cfg$n_months)
-  iters <- max(3L, as.integer(100000 / n_rows))
+# for (cfg in configs[1:3]) {
+#   df <- make_panel(n_stocks = cfg$n_stocks, n_months = cfg$n_months, seed = 1)
+#   n_rows <- nrow(df)
+#   label <- sprintf("%d × %d", cfg$n_stocks, cfg$n_months)
+#   iters <- max(3L, as.integer(100000 / n_rows))
 
-  bm <- bench::mark(
-    original = suppressWarnings(compute_portfolio_returns_original(
-      df,
-      "size",
-      "univariate",
-      rebalancing_month = 7,
-      breakpoint_options_main = bp_main
-    )),
-    optimized = suppressWarnings(compute_portfolio_returns(
-      df,
-      "size",
-      "univariate",
-      rebalancing_month = 7,
-      breakpoint_options_main = bp_main
-    )),
-    iterations = iters,
-    check = FALSE,
-    filter_gc = FALSE
-  )
+#   bm <- bench::mark(
+#     original = suppressWarnings(compute_portfolio_returns_original(
+#       df,
+#       "size",
+#       "univariate",
+#       rebalancing_month = 7,
+#       breakpoint_options_main = bp_main
+#     )),
+#     optimized = suppressWarnings(compute_portfolio_returns(
+#       df,
+#       "size",
+#       "univariate",
+#       rebalancing_month = 7,
+#       breakpoint_options_main = bp_main
+#     )),
+#     iterations = iters,
+#     check = FALSE,
+#     filter_gc = FALSE
+#   )
 
-  t_orig <- as.numeric(bm$median[1], units = "ms")
-  t_optim <- as.numeric(bm$median[2], units = "ms")
-  speedup <- t_orig / t_optim
+#   t_orig <- as.numeric(bm$median[1], units = "ms")
+#   t_optim <- as.numeric(bm$median[2], units = "ms")
+#   speedup <- t_orig / t_optim
 
-  cat(sprintf(
-    "%-16s %-8s %-20s %-20s %-10s\n",
-    label,
-    format(n_rows, big.mark = ","),
-    sprintf("%.1f ms", t_orig),
-    sprintf("%.1f ms", t_optim),
-    sprintf("%.2fx", speedup)
-  ))
-}
-
-# =============================================================================
-# BENCHMARK 3: Bivariate independent — the most expensive path
-# =============================================================================
-cat("\n=== Benchmark 3: Bivariate independent periodic (5x3 portfolios) ===\n")
-cat(sprintf(
-  "%-16s %-8s %-20s %-20s %-10s\n",
-  "Stocks x Months",
-  "Rows",
-  "Original (median)",
-  "Optimized (median)",
-  "Speedup"
-))
-cat(paste(rep("-", 78), collapse = ""), "\n")
-
-for (cfg in configs[1:3]) {
-  df <- make_panel(n_stocks = cfg$n_stocks, n_months = cfg$n_months, seed = 1)
-  n_rows <- nrow(df)
-  label <- sprintf("%d × %d", cfg$n_stocks, cfg$n_months)
-  iters <- max(3L, as.integer(100000 / n_rows))
-
-  bm <- bench::mark(
-    original = suppressWarnings(compute_portfolio_returns_original(
-      df,
-      c("size", "bm"),
-      "bivariate-independent",
-      breakpoint_options_main = bp_main,
-      breakpoint_options_secondary = bp_sec
-    )),
-    optimized = suppressWarnings(compute_portfolio_returns(
-      df,
-      c("size", "bm"),
-      "bivariate-independent",
-      breakpoint_options_main = bp_main,
-      breakpoint_options_secondary = bp_sec
-    )),
-    iterations = iters,
-    check = FALSE,
-    filter_gc = FALSE
-  )
-
-  t_orig <- as.numeric(bm$median[1], units = "ms")
-  t_optim <- as.numeric(bm$median[2], units = "ms")
-  speedup <- t_orig / t_optim
-
-  cat(sprintf(
-    "%-16s %-8s %-20s %-20s %-10s\n",
-    label,
-    format(n_rows, big.mark = ","),
-    sprintf("%.1f ms", t_orig),
-    sprintf("%.1f ms", t_optim),
-    sprintf("%.2fx", speedup)
-  ))
-}
+#   cat(sprintf(
+#     "%-16s %-8s %-20s %-20s %-10s\n",
+#     label,
+#     format(n_rows, big.mark = ","),
+#     sprintf("%.1f ms", t_orig),
+#     sprintf("%.1f ms", t_optim),
+#     sprintf("%.2fx", speedup)
+#   ))
+# }
 
 # =============================================================================
-# BENCHMARK 4: Memory comparison (univariate periodic, large panel)
+# BENCHMARK 3: Memory comparison (univariate periodic, large panel)
 # =============================================================================
 cat(
   "\n=== Memory comparison: Univariate periodic (5000 stocks × 1200 months) ===\n"
