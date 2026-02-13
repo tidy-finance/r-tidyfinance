@@ -118,9 +118,10 @@ estimate_fama_macbeth <- function(
       )
     ) |>
     mutate(
-      t_statistic = case_when(
-        vcov == "iid" ~ risk_premium / standard_error * sqrt(n),
-        vcov == "newey-west" ~ risk_premium / standard_error
+      t_statistic = ifelse(
+        vcov == "iid",
+        risk_premium / standard_error * sqrt(n),
+        risk_premium / standard_error
       )
     ) |>
     select(factor = name, risk_premium, n, standard_error, t_statistic)
