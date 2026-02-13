@@ -159,9 +159,7 @@ To download the CRSP-Compustat linking table:
 ```{r}
 download_data(
   domain = "wrds",
-  dataset = "compustat_annual",
-  start_date = "2020-01-01",
-  end_date = "2020-12-31"
+  dataset = "ccm_links"
 )
 ```
 
