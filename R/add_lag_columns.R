@@ -106,5 +106,5 @@ add_lag_columns <- function(
   }
 
   result |>
-    rename(date_col := date)
+    rename(!!date_col := date)
 }
