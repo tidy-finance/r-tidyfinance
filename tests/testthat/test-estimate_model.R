@@ -1,84 +1,200 @@
-# Sample dataset
-data <- data.frame(
+set.seed(42)
+test_data <- data.frame(
   ret_excess = rnorm(100),
   mkt_excess = rnorm(100),
   smb = rnorm(100),
   hml = rnorm(100)
 )
 
-# Test with sufficient observations and a single independent variable
-test_that("Single independent variable with sufficient observations", {
-  result <- estimate_model(data, "ret_excess ~ mkt_excess", min_obs = 1)
-  expect_type(result, "list")
-  expect_length(ncol(result), 1)
+test_data_with_na <- test_data
+test_data_with_na$ret_excess[1:5] <- NA
+test_data_with_na$mkt_excess[6:10] <- NA
+
+small_data <- data.frame(
+  ret_excess = rnorm(3),
+  mkt_excess = rnorm(3),
+  smb = rnorm(3)
+)
+
+test_that("invalid output values raise an error", {
+  expect_error(
+    estimate_model(test_data, "ret_excess ~ mkt_excess", output = "invalid"),
+    "output"
+  )
+  expect_error(
+    estimate_model(
+      test_data,
+      "ret_excess ~ mkt_excess",
+      output = c("coefficients", "bogus")
+    ),
+    "output"
+  )
 })
 
-# Test with sufficient observations and multiple independent variables
-test_that("Multiple independent variables with sufficient observations", {
+test_that("missing independent variables raise an error", {
+  expect_error(
+    estimate_model(test_data, "ret_excess ~ nonexistent_var"),
+    "missing"
+  )
+  expect_error(
+    estimate_model(test_data, "ret_excess ~ mkt_excess + nonexistent_var"),
+    "nonexistent_var"
+  )
+})
+
+test_that("column named 'intercept' raises an error", {
+  bad_data <- test_data
+  bad_data$intercept <- rnorm(100)
+  expect_error(
+    estimate_model(bad_data, "ret_excess ~ intercept"),
+    "intercept"
+  )
+})
+
+test_that("default output returns a tibble of coefficients", {
+  result <- estimate_model(test_data, "ret_excess ~ mkt_excess")
+  expect_s3_class(result, "tbl_df")
+  expect_true("intercept" %in% names(result))
+  expect_true("mkt_excess" %in% names(result))
+  expect_equal(ncol(result), 2)
+})
+
+test_that("coefficients match lm() output", {
+  result <- estimate_model(test_data, "ret_excess ~ mkt_excess + smb + hml")
+  fit <- lm(ret_excess ~ mkt_excess + smb + hml, data = test_data)
+  coefs <- coef(fit)
+  expect_equal(result$intercept, unname(coefs["(Intercept)"]))
+  expect_equal(result$mkt_excess, unname(coefs["mkt_excess"]))
+  expect_equal(result$smb, unname(coefs["smb"]))
+  expect_equal(result$hml, unname(coefs["hml"]))
+})
+
+test_that("model without intercept omits intercept column", {
+  result <- estimate_model(test_data, "ret_excess ~ mkt_excess - 1")
+  expect_false("intercept" %in% names(result))
+  expect_true("mkt_excess" %in% names(result))
+})
+
+test_that("tstats output returns t-statistics as tibble", {
   result <- estimate_model(
-    data,
-    "ret_excess ~ mkt_excess + smb + hml",
-    min_obs = 1
+    test_data,
+    "ret_excess ~ mkt_excess + smb",
+    output = "tstats"
+  )
+  expect_s3_class(result, "tbl_df")
+  expect_true("intercept" %in% names(result))
+  expect_true("mkt_excess" %in% names(result))
+  expect_true("smb" %in% names(result))
+
+  fit <- lm(ret_excess ~ mkt_excess + smb, data = test_data)
+  tvals <- summary(fit)$coefficients[, "t value"]
+  expect_equal(result$mkt_excess, unname(tvals["mkt_excess"]))
+})
+
+test_that("residuals output returns numeric vector of correct length", {
+  result <- estimate_model(
+    test_data,
+    "ret_excess ~ mkt_excess",
+    output = "residuals"
+  )
+  expect_type(result, "double")
+  expect_length(result, nrow(test_data))
+})
+
+test_that("residuals match lm() residuals", {
+  result <- estimate_model(
+    test_data,
+    "ret_excess ~ mkt_excess + smb",
+    output = "residuals"
+  )
+  fit <- lm(ret_excess ~ mkt_excess + smb, data = test_data)
+  expect_equal(result, unname(fit$residuals))
+})
+
+test_that("residuals are NA where data has missing values", {
+  result <- estimate_model(
+    test_data_with_na,
+    "ret_excess ~ mkt_excess",
+    output = "residuals"
+  )
+  expect_length(result, nrow(test_data_with_na))
+  expect_true(all(is.na(result[1:10])))
+  expect_true(all(!is.na(result[11:100])))
+})
+
+test_that("multiple outputs return a named list", {
+  result <- estimate_model(
+    test_data,
+    "ret_excess ~ mkt_excess",
+    output = c("coefficients", "tstats", "residuals")
   )
   expect_type(result, "list")
-  expect_equal(ncol(result), 4)
+  expect_named(result, c("coefficients", "tstats", "residuals"))
+  expect_s3_class(result$coefficients, "tbl_df")
+  expect_s3_class(result$tstats, "tbl_df")
+  expect_type(result$residuals, "double")
 })
 
-# Test for the presence of specified independent variables in the dataset
-test_that("Independent variables are present in the dataset", {
-  expect_error(estimate_model(data, "ret_excess ~ fake_var"))
+test_that("two outputs return a named list with two elements", {
+  result <- estimate_model(
+    test_data,
+    "ret_excess ~ mkt_excess",
+    output = c("coefficients", "residuals")
+  )
+  expect_type(result, "list")
+  expect_length(result, 2)
+  expect_named(result, c("coefficients", "residuals"))
 })
 
-# Test with insufficient observations
-test_that("Insufficient observations", {
-  small_data <- data[1:5, ]
-  result <- estimate_model(small_data, "ret_excess ~ mkt_excess", min_obs = 10)
+test_that("insufficient observations return NA coefficients", {
+  result <- estimate_model(small_data, "ret_excess ~ mkt_excess", min_obs = 100)
+  expect_s3_class(result, "tbl_df")
   expect_true(all(is.na(result)))
 })
 
-# Test with exactly the minimum required observations
-test_that("Exactly minimum required observations", {
-  min_obs_data <- data[1:10, ]
+test_that("insufficient observations return NA residuals", {
   result <- estimate_model(
-    min_obs_data,
+    small_data,
     "ret_excess ~ mkt_excess",
-    min_obs = 10
+    min_obs = 100,
+    output = "residuals"
   )
-  expect_type(result, "list")
+  expect_type(result, "double")
+  expect_length(result, nrow(small_data))
+  expect_true(all(is.na(result)))
 })
 
-# Test with no independent variables specified
-test_that("No independent variables specified", {
-  expect_error(estimate_model(data, min_obs = 1))
+test_that("insufficient observations return NA tstats", {
+  result <- estimate_model(
+    small_data,
+    "ret_excess ~ mkt_excess",
+    min_obs = 100,
+    output = "tstats"
+  )
+  expect_s3_class(result, "tbl_df")
+  expect_true(all(is.na(result)))
 })
 
-test_that("estimate_model returns tibble with only NAs when insufficient data", {
-  set.seed(1234)
-  df <- tibble(
-    date = seq.Date(
-      from = as.Date("2020-01-01"),
-      to = as.Date("2020-12-01"),
-      by = "month"
-    ),
-    ret_excess = rnorm(12, 0, 0.1),
-    mkt_excess = rnorm(12, 0, 0.1),
-    smb = rnorm(12, 0, 0.1),
-    hml = rnorm(12, 0, 0.1)
+test_that("model with multiple independent variables works", {
+  result <- estimate_model(test_data, "ret_excess ~ mkt_excess + smb + hml")
+  expect_s3_class(result, "tbl_df")
+  expect_equal(ncol(result), 4) # intercept + 3 vars
+})
+
+test_that("min_obs = 1 works with minimal data", {
+  tiny <- data.frame(ret_excess = 1:2, mkt_excess = 1:2)
+  result <- estimate_model(tiny, "ret_excess ~ mkt_excess", min_obs = 1)
+  expect_s3_class(result, "tbl_df")
+})
+
+test_that("residuals are NA when too few complete cases after NA removal", {
+  almost_all_na <- test_data
+  almost_all_na$ret_excess[1:99] <- NA
+  result <- estimate_model(
+    almost_all_na,
+    "ret_excess ~ mkt_excess + smb",
+    min_obs = 5,
+    output = "residuals"
   )
-
-  model <- "ret_excess ~ mkt_excess + smb + hml"
-
-  betas <- slider::slide_period_dfr(
-    .x = df,
-    .i = df$date,
-    .period = "month",
-    .f = ~ estimate_model(., model, min_obs = 2),
-    .before = 3 - 1,
-    .complete = FALSE
-  )
-
-  # Check if all values in the tibble are NA
-  expect_true(all(is.na(betas)))
-  # Check if the output is a tibble
-  expect_s3_class(betas, "tbl_df")
+  expect_true(all(is.na(result)))
 })
