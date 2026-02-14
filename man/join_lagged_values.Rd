@@ -33,6 +33,8 @@ join_lagged_values(
 A data frame with lagged columns from \code{new_data} joined to \code{original_data}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Joins lagged values of selected variables from one dataset (\code{new_data})
 into another (\code{original_data}), based on date ranges defined by \code{min_lag}
 and \code{max_lag}. Optionally applies a Fama–French style year-based adjustment.
