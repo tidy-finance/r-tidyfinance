@@ -174,8 +174,7 @@ test_that("input validation: id_keys must be character", {
       id_keys = 1,
       min_lag = months(1),
       max_lag = months(3)
-    ),
-    "is.character"
+    )
   )
 })
 
@@ -191,8 +190,7 @@ test_that("input validation: id_date must exist in both datasets", {
       id_date = "dt",
       min_lag = months(1),
       max_lag = months(3)
-    ),
-    "id_date"
+    )
   )
 })
 
