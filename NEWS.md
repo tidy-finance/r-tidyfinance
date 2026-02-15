@@ -2,6 +2,7 @@
 
 ## New features
 
+- Add `compute_rolling_value()`.
 - Add `output` parameter to `estimate_model()` to also return t-stats or residuals.
 - Add `join_lagged_values()`.
 - Added more indexes to `list_supported_indexes()`.

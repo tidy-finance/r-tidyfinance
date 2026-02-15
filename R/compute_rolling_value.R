@@ -87,9 +87,19 @@ compute_rolling_value <- function(
   periods = 12,
   min_obs = periods
 ) {
-  stopifnot("date" %in% names(data))
-  stopifnot(inherits(data$date, "Date"))
-  stopifnot(is.character(period), length(period) == 1)
+  if (!"date" %in% names(data)) {
+    cli::cli_abort("{.arg data} must contain a {.field date} column.")
+  }
+  if (!inherits(data$date, "Date")) {
+    cli::cli_abort(
+      "The {.field date} column must be of class {.cls Date}, not {.cls {class(data$date)}}."
+    )
+  }
+  if (!is.character(period) || length(period) != 1) {
+    cli::cli_abort(
+      "{.arg period} must be a single string, not {.obj_type_friendly {period}}."
+    )
+  }
 
   .f <- rlang::as_function(.f)
 

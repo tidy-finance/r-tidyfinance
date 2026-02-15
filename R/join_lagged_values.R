@@ -45,9 +45,21 @@ join_lagged_values <- function(
   max_lag,
   ff_adjustment = FALSE
 ) {
-  stopifnot(is.character(id_keys))
-  stopifnot(id_date %in% names(original_data))
-  stopifnot(id_date %in% names(new_data))
+  if (!is.character(id_keys)) {
+    cli::cli_abort(
+      "{.arg id_keys} must be a character vector, not {.obj_type_friendly {id_keys}}."
+    )
+  }
+  if (!id_date %in% names(original_data)) {
+    cli::cli_abort(
+      "{.arg original_data} must contain the column {.field {id_date}}."
+    )
+  }
+  if (!id_date %in% names(new_data)) {
+    cli::cli_abort(
+      "{.arg new_data} must contain the column {.field {id_date}}."
+    )
+  }
 
   new_column_names <- new_data |>
     dplyr::select(-dplyr::all_of(c(id_keys, id_date))) |>
