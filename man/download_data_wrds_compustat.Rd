@@ -9,7 +9,8 @@ download_data_wrds_compustat(
   start_date = NULL,
   end_date = NULL,
   type = deprecated(),
-  additional_columns = NULL
+  additional_columns = NULL,
+  only_us = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,9 @@ specifying the end date for the data. If not provided, a subset of the dataset i
 
 \item{additional_columns}{Additional columns from the Compustat table
 as a character vector.}
+
+\item{only_us}{A logical indicating whether only US firms should be returned
+(i.e., excluding Canadian firms).}
 }
 \value{
 A data frame with financial data for the specified period, including
