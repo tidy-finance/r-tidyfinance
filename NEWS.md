@@ -2,6 +2,7 @@
 
 ## New features
 
+- Add helper functions for common data manipulation when working with CRSP and Compustat data (`crsp_adjust_prices`, `volume_adjustment_gao_ritter`, `add_ccm_link_to_crsp`)
 - Add `compute_rolling_value()`.
 - Add `output` parameter to `estimate_model()` to also return t-stats or residuals.
 - Add `join_lagged_values()`.
