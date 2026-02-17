@@ -19,6 +19,8 @@
 #'   downloads the legacy version of CRSP.
 #' @param additional_columns Additional columns from the CRSP monthly or
 #'   daily data as a character vector.
+#' @param add_ccm_links A logical indicating whether CRSP-Compustat links should be
+#'   added automtically using [download_data_wrds_ccm_links()].
 #'
 #' @returns A data frame containing CRSP stock returns, adjusted for delistings,
 #'   along with calculated market capitalization and excess returns over the
@@ -42,7 +44,8 @@ download_data_wrds_crsp <- function(
   type = deprecated(),
   batch_size = 500,
   version = "v2",
-  additional_columns = NULL
+  additional_columns = NULL,
+  add_ccm_links = FALSE
 ) {
   # Handle explicit type argument
   if (lifecycle::is_present(type)) {
@@ -505,6 +508,23 @@ download_data_wrds_crsp <- function(
     }
   } else {
     cli::cli_abort("Unsupported CRSP dataset: {.val {dataset}}")
+  }
+
+  if (isTRUE(add_ccm_links)) {
+    ccm_links <- download_data_wrds_ccm_links()
+
+    valid_links <- processed_data |>
+      inner_join(
+        ccm_links,
+        join_by(permno),
+        relationship = "many-to-many",
+        multiple = "all"
+      ) |>
+      filter(!is.na(gvkey) & (date >= linkdt & date <= linkenddt)) |>
+      select(permno, gvkey, date)
+
+    processed_data <- processed_data |>
+      left_join(valid_links, join_by(permno, date))
   }
 
   processed_data
