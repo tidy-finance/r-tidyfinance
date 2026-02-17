@@ -337,6 +337,14 @@ download_data_wrds_crsp <- function(
     }
   } else if (dataset == "crsp_daily") {
     if (version == "v1") {
+      if (isTRUE(adjust_volume)) {
+        if (!all(c("prc", "vol", "cfacpr", "exchcd") %in% additional_columns)) {
+          cli::cli_abort(
+            "{.val prc}, {.val vol}, {.val exchcd}, and {.val cfacpr} must be contained in {.arg additional_columns} for {.arg adjust_volume = TRUE}."
+          )
+        }
+      }
+
       dsf_db <- tbl(con, I("crsp.dsf")) |>
         filter(between(date, start_date, end_date))
       msenames_db <- tbl(con, I("crsp.msenames"))
@@ -432,12 +440,6 @@ download_data_wrds_crsp <- function(
       processed_data <- bind_rows(crsp_daily_list)
 
       if (isTRUE(adjust_volume)) {
-        if (!all(c("prc", "vol") %in% additional_columns)) {
-          cli::cli_abort(
-            "{.val prc} and {.val vol} must be contained in {.arg additional_columns} for {.arg adjust_volume = TRUE}."
-          )
-        }
-
         # Gao and Ritter (2010) volume adjustment for NASDAQ trading volume
         gr_date_1 <- as.Date("2001-02-01")
         gr_date_2 <- as.Date("2002-01-01")
