@@ -15,6 +15,8 @@
 #' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #' @param additional_columns Additional columns from the Compustat table
 #'   as a character vector.
+#' @param only_us A logical indicating whether only US firms should be returned
+#'   (i.e., excluding Canadian firms).
 #'
 #' @returns A data frame with financial data for the specified period, including
 #'   variables for book equity (be), operating profitability (op), investment
@@ -34,7 +36,8 @@ download_data_wrds_compustat <- function(
   start_date = NULL,
   end_date = NULL,
   type = deprecated(),
-  additional_columns = NULL
+  additional_columns = NULL,
+  only_us = FALSE
 ) {
   # Handle explicit type argument
   if (lifecycle::is_present(type)) {
@@ -100,6 +103,7 @@ download_data_wrds_compustat <- function(
         cogs,
         xint,
         xsga,
+        curcd,
         all_of(additional_columns)
       ) |>
       collect()
@@ -125,6 +129,11 @@ download_data_wrds_compustat <- function(
       filter(datadate == max(datadate)) |>
       ungroup() |>
       mutate(date = floor_date(datadate, "month"))
+
+    if (isTRUE(only_us)) {
+      compustat <- compustat |>
+        filter(.data$curcd == "USD")
+    }
 
     processed_data <- compustat |>
       left_join(
@@ -156,6 +165,7 @@ download_data_wrds_compustat <- function(
         fyearq,
         atq,
         ceqq,
+        curcdq,
         all_of(additional_columns)
       ) |>
       collect()
@@ -174,6 +184,11 @@ download_data_wrds_compustat <- function(
       slice_head(n = 1) |>
       ungroup() |>
       filter(if_else(is.na(rdq), TRUE, date < rdq))
+
+    if (isTRUE(only_us)) {
+      compustat <- compustat |>
+        filter(.data$curcdq == "USD")
+    }
 
     processed_data <- compustat |>
       select(gvkey, date, datadate, atq, ceqq, all_of(additional_columns))

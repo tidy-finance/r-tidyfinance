@@ -2,16 +2,19 @@
 
 ## New features
 
-- Add `compute_rolling_value()`.
-- Add `output` parameter to `estimate_model()` to also return t-stats or residuals.
-- Add `join_lagged_values()`.
+- Added only_us paramter to download_data_wrds_compustat()
+- Added new parameters for common CRSP transformation tasks (`add_ccm_links`, `adjust_volume`) to `download_data_wrds_crsp()`.
+- Added `prc_adj` to `"crsp_monthly"` version `"v1"`.
+- Added `compute_rolling_value()`.
+- Added `output` parameter to `estimate_model()` to also return t-stats or residuals.
+- Added `join_lagged_values()`.
 - Added more indexes to `list_supported_indexes()`.
 - Added `download_data_hf()` and support for `type = "hf_high_frequency_sp500"`.
 - Deprecated `type` parameter in favor of `domain` and `dataset`.
 
 ## Improvements
 
-- Removed `renv` due to lack of value. 
+- Removed `renv` due to lack of benefits. 
 - Moved optional dependencies to imports for improved user experience (except for `furrr`).
 
 ## Bug fixes
