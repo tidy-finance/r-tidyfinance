@@ -2,7 +2,8 @@
 
 ## New features
 
-- Add helper functions for common data manipulation when working with CRSP and Compustat data (`crsp_adjust_prices`, `volume_adjustment_gao_ritter`, `add_ccm_link_to_crsp`)
+- Add new parameters for common CRSP transformation tasks (`add_ccm_links`, `adjust_volume`) to `download_data_wrds_crsp()`.
+- Add `prc_adj` to `"crsp_monthly"` version `"v1"`.
 - Add `compute_rolling_value()`.
 - Add `output` parameter to `estimate_model()` to also return t-stats or residuals.
 - Add `join_lagged_values()`.
@@ -12,7 +13,7 @@
 
 ## Improvements
 
-- Removed `renv` due to lack of value. 
+- Removed `renv` due to lack of benefits. 
 - Moved optional dependencies to imports for improved user experience (except for `furrr`).
 
 ## Bug fixes
