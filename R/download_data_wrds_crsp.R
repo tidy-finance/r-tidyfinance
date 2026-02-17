@@ -124,6 +124,7 @@ download_data_wrds_crsp <- function(
           ret,
           shrout,
           altprc,
+          cfacpr,
           exchcd,
           siccd,
           dlret,
@@ -193,6 +194,12 @@ download_data_wrds_crsp <- function(
           )
         ) |>
         select(-c(dlret, dlstcd))
+
+      crsp_monthly <- crsp_monthly |>
+        mutate(
+          prc_adj = abs(na_if(altprc, 0)) / cfacpr,
+          prc_adj = if_else(is.infinite(prc_adj), NA_real_, prc_adj)
+        )
 
       factors_ff_3_monthly <- download_data_factors_ff(
         dataset = "Fama/French 3 Factors",
