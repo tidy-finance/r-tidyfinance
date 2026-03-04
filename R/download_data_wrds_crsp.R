@@ -540,7 +540,7 @@ download_data_wrds_crsp <- function(
           tidyr::drop_na(permno, date, ret)
 
         if (nrow(crsp_daily_sub) > 0) {
-          crsp_daily_list[[j]] <- crsp_daily_sub |>
+          crsp_daily_sub <- crsp_daily_sub |>
             left_join(
               factors_ff_3_daily |>
                 select(date, risk_free),
@@ -551,6 +551,18 @@ download_data_wrds_crsp <- function(
               ret_excess = pmax(ret_excess, -1)
             ) |>
             select(-risk_free)
+
+          if (isTRUE(adjust_volume)) {
+            crsp_daily_sub <- crsp_daily_sub |>
+              group_by(permno) |>
+              arrange(date) |>
+              mutate(
+                cfacpr = cumprod(dlyfacprc)
+              ) |>
+              ungroup()
+          }
+
+          crsp_daily_list[[j]] <- crsp_daily_sub
         }
         cli::cli_progress_update()
       }
@@ -560,14 +572,6 @@ download_data_wrds_crsp <- function(
       processed_data <- bind_rows(crsp_daily_list)
 
       if (isTRUE(adjust_volume)) {
-        processed_data <- processed_data |>
-          group_by(permno) |>
-          arrange(date) |>
-          mutate(
-            cfacpr = cumprod(dlyfacprc)
-          ) |>
-          ungroup()
-
         # Gao and Ritter (2010) volume adjustment for NASDAQ trading volume
         gr_date_1 <- as.Date("2001-02-01")
         gr_date_2 <- as.Date("2002-01-01")
