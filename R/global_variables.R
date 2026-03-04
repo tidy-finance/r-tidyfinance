@@ -206,6 +206,11 @@ utils::globalVariables(
     ".date",
     ".lower",
     ".upper",
-    "observation_date"
+    "observation_date",
+    "curcd",
+    "curcdq",
+    "dlyfacprc",
+    "dlyprc",
+    "dlyvol"
   )
 )
