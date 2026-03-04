@@ -5,6 +5,7 @@
 - Added only_us paramter to download_data_wrds_compustat()
 - Added new parameters for common CRSP transformation tasks (`add_ccm_links`, `adjust_volume`) to `download_data_wrds_crsp()`.
 - Added `prc_adj` to `"crsp_monthly"` version `"v1"`.
+- Added `adjust_volume` parameter for `"crsp_daily"` version `"v1"` and `"v2"`.
 - Added `compute_rolling_value()`.
 - Added `output` parameter to `estimate_model()` to also return t-stats or residuals.
 - Added `join_lagged_values()`.

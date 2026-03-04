@@ -463,6 +463,19 @@ download_data_wrds_crsp <- function(
           )
       }
     } else {
+      if (isTRUE(adjust_volume)) {
+        if (
+          !all(
+            c("dlyprc", "dlyvol", "dlyfacprc", "primaryexch") %in%
+              additional_columns
+          )
+        ) {
+          cli::cli_abort(
+            "{.val dlyprc}, {.val dlyvol}, {.val primaryexch}, and {.val dlyfacprc} must be contained in {.arg additional_columns} for {.arg adjust_volume = TRUE}."
+          )
+        }
+      }
+
       dsf_db <- tbl(con, I("crsp.dsf_v2")) |>
         filter(between(dlycaldt, start_date, end_date))
       stksecurityinfohist_db <- tbl(con, I("crsp.stksecurityinfohist"))
@@ -545,6 +558,41 @@ download_data_wrds_crsp <- function(
       disconnection_connection(con)
 
       processed_data <- bind_rows(crsp_daily_list)
+
+      if (isTRUE(adjust_volume)) {
+        processed_data <- processed_data |>
+          group_by(permno) |>
+          arrange(date) |>
+          mutate(
+            cfacpr = cumprod(dlyfacprc)
+          ) |>
+          ungroup()
+
+        # Gao and Ritter (2010) volume adjustment for NASDAQ trading volume
+        gr_date_1 <- as.Date("2001-02-01")
+        gr_date_2 <- as.Date("2002-01-01")
+        gr_date_3 <- as.Date("2004-01-01")
+
+        processed_data <- processed_data |>
+          mutate(
+            vol = na_if(dlyvol, -99),
+            prc = na_if(dlyprc, 0),
+            prc_adj = abs(prc) / cfacpr,
+            prc_adj = if_else(is.infinite(prc_adj), NA_real_, prc_adj)
+          ) |>
+          mutate(
+            vol_adj = case_when(
+              primaryexch == "Q" & date < gr_date_1 ~ vol / 2.0,
+              primaryexch == "Q" & date >= gr_date_1 & date < gr_date_2 ~ vol /
+                1.8,
+              primaryexch == "Q" & date >= gr_date_2 & date < gr_date_3 ~ vol /
+                1.6,
+              primaryexch == "Q" & date >= gr_date_3 ~ vol / 1.0,
+              .default = vol
+            )
+          ) |>
+          select(-c(dlyvol, dlyprc, dlyfacprc))
+      }
     }
   } else {
     cli::cli_abort("Unsupported CRSP dataset: {.val {dataset}}")
