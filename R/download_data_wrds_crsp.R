@@ -420,7 +420,7 @@ download_data_wrds_crsp <- function(
             filter(date <= dlstdt) |>
             select(-dlstdt)
 
-          crsp_daily_list[[j]] <- crsp_daily_sub |>
+          crsp_daily_sub <- crsp_daily_sub |>
             left_join(
               factors_ff_3_daily |>
                 select(date, risk_free),
@@ -431,6 +431,34 @@ download_data_wrds_crsp <- function(
               ret_excess = pmax(ret_excess, -1)
             ) |>
             select(-risk_free)
+
+          if (isTRUE(adjust_volume)) {
+            # Gao and Ritter (2010) volume adjustment for NASDAQ trading volume
+            gr_date_1 <- as.Date("2001-02-01")
+            gr_date_2 <- as.Date("2002-01-01")
+            gr_date_3 <- as.Date("2004-01-01")
+
+            crsp_daily_sub <- crsp_daily_sub |>
+              mutate(
+                vol = na_if(vol, -99),
+                prc = na_if(prc, 0),
+                prc_adj = abs(prc) / cfacpr,
+                prc_adj = if_else(is.infinite(prc_adj), NA_real_, prc_adj)
+              ) |>
+              mutate(
+                vol_adj = case_when(
+                  exchcd == 3 & date < gr_date_1 ~ vol / 2.0,
+                  exchcd == 3 & date >= gr_date_1 & date < gr_date_2 ~ vol /
+                    1.8,
+                  exchcd == 3 & date >= gr_date_2 & date < gr_date_3 ~ vol /
+                    1.6,
+                  exchcd == 3 & date >= gr_date_3 ~ vol / 1.0,
+                  .default = vol
+                )
+              )
+          }
+
+          crsp_daily_list[[j]] <- crsp_daily_sub
         }
         cli::cli_progress_update()
       }
@@ -438,30 +466,6 @@ download_data_wrds_crsp <- function(
       disconnection_connection(con)
 
       processed_data <- bind_rows(crsp_daily_list)
-
-      if (isTRUE(adjust_volume)) {
-        # Gao and Ritter (2010) volume adjustment for NASDAQ trading volume
-        gr_date_1 <- as.Date("2001-02-01")
-        gr_date_2 <- as.Date("2002-01-01")
-        gr_date_3 <- as.Date("2004-01-01")
-
-        processed_data <- processed_data |>
-          mutate(
-            vol = na_if(vol, -99),
-            prc = na_if(prc, 0),
-            prc_adj = abs(prc) / cfacpr,
-            prc_adj = if_else(is.infinite(prc_adj), NA_real_, prc_adj)
-          ) |>
-          mutate(
-            vol_adj = case_when(
-              exchcd == 3 & date < gr_date_1 ~ vol / 2.0,
-              exchcd == 3 & date >= gr_date_1 & date < gr_date_2 ~ vol / 1.8,
-              exchcd == 3 & date >= gr_date_2 & date < gr_date_3 ~ vol / 1.6,
-              exchcd == 3 & date >= gr_date_3 ~ vol / 1.0,
-              .default = vol
-            )
-          )
-      }
     } else {
       if (isTRUE(adjust_volume)) {
         if (
@@ -560,6 +564,34 @@ download_data_wrds_crsp <- function(
                 cfacpr = cumprod(dlyfacprc)
               ) |>
               ungroup()
+
+            gr_date_1 <- as.Date("2001-02-01")
+            gr_date_2 <- as.Date("2002-01-01")
+            gr_date_3 <- as.Date("2004-01-01")
+
+            crsp_daily_sub <- crsp_daily_sub |>
+              mutate(
+                vol = na_if(dlyvol, -99),
+                prc = na_if(dlyprc, 0),
+                prc_adj = abs(prc) / cfacpr,
+                prc_adj = if_else(is.infinite(prc_adj), NA_real_, prc_adj)
+              ) |>
+              mutate(
+                vol_adj = case_when(
+                  primaryexch == "Q" & date < gr_date_1 ~ vol / 2.0,
+                  primaryexch == "Q" &
+                    date >= gr_date_1 &
+                    date < gr_date_2 ~ vol /
+                    1.8,
+                  primaryexch == "Q" &
+                    date >= gr_date_2 &
+                    date < gr_date_3 ~ vol /
+                    1.6,
+                  primaryexch == "Q" & date >= gr_date_3 ~ vol / 1.0,
+                  .default = vol
+                )
+              ) |>
+              select(-c(dlyvol, dlyprc, dlyfacprc))
           }
 
           crsp_daily_list[[j]] <- crsp_daily_sub
@@ -570,33 +602,6 @@ download_data_wrds_crsp <- function(
       disconnection_connection(con)
 
       processed_data <- bind_rows(crsp_daily_list)
-
-      if (isTRUE(adjust_volume)) {
-        # Gao and Ritter (2010) volume adjustment for NASDAQ trading volume
-        gr_date_1 <- as.Date("2001-02-01")
-        gr_date_2 <- as.Date("2002-01-01")
-        gr_date_3 <- as.Date("2004-01-01")
-
-        processed_data <- processed_data |>
-          mutate(
-            vol = na_if(dlyvol, -99),
-            prc = na_if(dlyprc, 0),
-            prc_adj = abs(prc) / cfacpr,
-            prc_adj = if_else(is.infinite(prc_adj), NA_real_, prc_adj)
-          ) |>
-          mutate(
-            vol_adj = case_when(
-              primaryexch == "Q" & date < gr_date_1 ~ vol / 2.0,
-              primaryexch == "Q" & date >= gr_date_1 & date < gr_date_2 ~ vol /
-                1.8,
-              primaryexch == "Q" & date >= gr_date_2 & date < gr_date_3 ~ vol /
-                1.6,
-              primaryexch == "Q" & date >= gr_date_3 ~ vol / 1.0,
-              .default = vol
-            )
-          ) |>
-          select(-c(dlyvol, dlyprc, dlyfacprc))
-      }
     }
   } else {
     cli::cli_abort("Unsupported CRSP dataset: {.val {dataset}}")
