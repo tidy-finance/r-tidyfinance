@@ -152,13 +152,13 @@ compute_portfolio_returns <- function(
     sorting_data$mktcap_lag <- 1
   }
 
-  # Filter out rows with missing values in any sorting variable, as these cannot be assigned to portfolios
+  # Filter out rows with missing values in any sorting variable, as these cannot
+  # be assigned to portfolios
   sorting_data <- sorting_data |>
-    filter(
-      if_all(all_of(sorting_variables), ~ !is.na(.))
-    )
+    tidyr::drop_na(all_of(sorting_variables))
 
-  # Replace sorting_data$mktcap_lag with 0 if it is NA, as these observations should not contribute to the value-weighted return
+  # Replace sorting_data$mktcap_lag with 0 if it is NA, as these observations
+  # should not contribute to the value-weighted return
   missing_mcap_data <- is.na(sorting_data[[w_col]])
   sorting_data[[w_col]][missing_mcap_data] <- 0
 
