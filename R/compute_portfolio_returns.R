@@ -152,7 +152,7 @@ compute_portfolio_returns <- function(
     sorting_data$mktcap_lag <- 1
   }
 
-  # Filter out rows with missing values in either of the sorting variable, as these cannot be assigned to portfolios
+  # Filter out rows with missing values in any sorting variable, as these cannot be assigned to portfolios
   sorting_data <- sorting_data |>
     filter(
       if_all(all_of(sorting_variables), ~ !is.na(.))
