@@ -106,7 +106,7 @@ compute_portfolio_returns <- function(
   breakpoint_options_secondary = NULL,
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
-  min_portfolio_size = 0,
+  min_portfolio_size = 0L,
   data_options = NULL
 ) {
   if (is.null(data_options)) {
@@ -141,7 +141,7 @@ compute_portfolio_returns <- function(
   required_columns <- c(sorting_variables, date_col, id_col, ret_col)
 
   missing_columns <- setdiff(required_columns, colnames(sorting_data))
-  if (length(missing_columns) > 0) {
+  if (length(missing_columns) > 0L) {
     cli::cli_abort(
       "Missing columns: {paste(missing_columns, collapse = ', ')}."
     )
@@ -149,7 +149,7 @@ compute_portfolio_returns <- function(
 
   mktcap_lag_missing <- !(w_col %in% colnames(sorting_data))
   if (mktcap_lag_missing) {
-    sorting_data$mktcap_lag <- 1
+    sorting_data$mktcap_lag <- 1L
   }
 
   # Filter out rows with missing values in any sorting variable, as these cannot
@@ -160,17 +160,25 @@ compute_portfolio_returns <- function(
   # Replace sorting_data$mktcap_lag with 0 if it is NA, as these observations
   # should not contribute to the value-weighted return
   missing_mcap_data <- is.na(sorting_data[[w_col]])
-  sorting_data[[w_col]][missing_mcap_data] <- 0
+  sorting_data[[w_col]][missing_mcap_data] <- 0L
+
+  # Drop dates with insufficient observations
+  if (min_portfolio_size > 0L) {
+    sorting_data <- sorting_data |>
+      group_by(.data[[date_col]]) |>
+      filter(n() >= min_portfolio_size) |>
+      ungroup()
+  }
 
   if (
     !is.null(rebalancing_month) &&
-      (rebalancing_month > 12 || rebalancing_month < 1)
+      (rebalancing_month > 12L || rebalancing_month < 1L)
   ) {
     cli::cli_abort("Invalid rebalancing_month.")
   }
 
   if (sorting_method == "univariate") {
-    if (length(sorting_variables) > 1) {
+    if (length(sorting_variables) > 1L) {
       cli::cli_abort("Only provide one sorting variable for univariate sorts.")
     }
 
@@ -242,7 +250,7 @@ compute_portfolio_returns <- function(
   }
 
   if (sorting_method == "bivariate-dependent") {
-    if (length(sorting_variables) != 2) {
+    if (length(sorting_variables) != 2L) {
       cli::cli_abort("Provide two sorting variables for bivariate sorts.")
     }
 
@@ -277,7 +285,7 @@ compute_portfolio_returns <- function(
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[2],
+            sorting_variable = sorting_variables[2L],
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
@@ -288,7 +296,7 @@ compute_portfolio_returns <- function(
         mutate(
           portfolio_main = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[1],
+            sorting_variable = sorting_variables[1L],
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
@@ -348,7 +356,7 @@ compute_portfolio_returns <- function(
   }
 
   if (sorting_method == "bivariate-independent") {
-    if (length(sorting_variables) != 2) {
+    if (length(sorting_variables) != 2L) {
       cli::cli_abort("Provide two sorting variables for bivariate sorts.")
     }
 
@@ -358,14 +366,14 @@ compute_portfolio_returns <- function(
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[2],
+            sorting_variable = sorting_variables[2L],
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           ),
           portfolio_main = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[1],
+            sorting_variable = sorting_variables[1L],
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
@@ -379,14 +387,14 @@ compute_portfolio_returns <- function(
         mutate(
           portfolio_secondary = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[2],
+            sorting_variable = sorting_variables[2L],
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           ),
           portfolio_main = assign_portfolio(
             pick(everything()),
-            sorting_variable = sorting_variables[1],
+            sorting_variable = sorting_variables[1L],
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
@@ -410,7 +418,7 @@ compute_portfolio_returns <- function(
             rename("..id" = all_of(id_col)) |>
             mutate(
               lower_bound = .data[[date_col]],
-              upper_bound = .data[[date_col]] + months(12)
+              upper_bound = .data[[date_col]] + months(12L)
             ) |>
             select(-all_of(date_col)),
           join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
