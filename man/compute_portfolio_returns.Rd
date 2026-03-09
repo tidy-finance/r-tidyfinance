@@ -13,7 +13,7 @@ compute_portfolio_returns(
   breakpoint_options_secondary = NULL,
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
-  min_portfolio_size = 0,
+  min_portfolio_size = 0L,
   data_options = NULL
 )
 }
