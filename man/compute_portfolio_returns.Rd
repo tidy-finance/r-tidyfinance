@@ -14,7 +14,8 @@ compute_portfolio_returns(
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
   min_portfolio_size = 0L,
-  data_options = NULL
+  data_options = NULL,
+  quiet = FALSE
 )
 }
 \arguments{
@@ -70,16 +71,21 @@ check). Small portfolios' returns are set to zero.}
 \item{data_options}{A named list of \link{data_options} with characters, indicating
 the column names required to run this function.  The required column names identify dates,
 the stocks, and returns. Defaults to \code{date=date}, \code{id=permno}, and \code{ret_excess = ret_excess}.}
+
+\item{quiet}{A logical value indicating whether to suppress informational
+messages about missing values in the output panel (default is \code{FALSE}).}
 }
 \value{
-A data frame with computed portfolio returns, containing the
-following columns:
+A data frame with computed portfolio returns as a complete panel
+(all portfolio-date combinations), containing the following columns:
 \itemize{
 \item \code{portfolio}: The portfolio identifier.
 \item \code{date}: The date of the portfolio return.
 \item \code{ret_excess_vw}: The value-weighted excess return of the portfolio
-(only computed if the \code{sorting_data} contains \code{mktcap_lag})
+(only computed if the \code{sorting_data} contains \code{mktcap_lag}). \code{NA} if
+insufficient observations for that portfolio-date.
 \item \code{ret_excess_ew}: The equal-weighted excess return of the portfolio.
+\code{NA} if insufficient observations for that portfolio-date.
 }
 }
 \description{

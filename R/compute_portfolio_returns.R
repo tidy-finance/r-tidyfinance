@@ -58,15 +58,19 @@
 #' @param data_options A named list of \link{data_options} with characters, indicating
 #'   the column names required to run this function.  The required column names identify dates,
 #'   the stocks, and returns. Defaults to `date=date`, `id=permno`, and `ret_excess = ret_excess`.
+#' @param quiet A logical value indicating whether to suppress informational
+#'   messages about missing values in the output panel (default is `FALSE`).
 #'
-#' @return A data frame with computed portfolio returns, containing the
-#'   following columns:
+#' @return A data frame with computed portfolio returns as a complete panel
+#'   (all portfolio-date combinations), containing the following columns:
 #'   \itemize{
 #'     \item `portfolio`: The portfolio identifier.
 #'     \item `date`: The date of the portfolio return.
 #'     \item `ret_excess_vw`: The value-weighted excess return of the portfolio
-#'      (only computed if the `sorting_data` contains `mktcap_lag`)
+#'      (only computed if the `sorting_data` contains `mktcap_lag`). `NA` if
+#'      insufficient observations for that portfolio-date.
 #'     \item `ret_excess_ew`: The equal-weighted excess return of the portfolio.
+#'      `NA` if insufficient observations for that portfolio-date.
 #'   }
 #'
 #' @note Ensure that the `sorting_data` contains all the required columns: The
@@ -107,7 +111,8 @@ compute_portfolio_returns <- function(
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
   min_portfolio_size = 0L,
-  data_options = NULL
+  data_options = NULL,
+  quiet = FALSE
 ) {
   if (is.null(data_options)) {
     data_options <- data_options()
@@ -152,6 +157,9 @@ compute_portfolio_returns <- function(
     sorting_data$mktcap_lag <- 1L
   }
 
+  # Store the dates before filtering out missing values
+  all_dates <- unique(sorting_data[[date_col]])
+
   # Filter out rows with missing values in any sorting variable, as these cannot
   # be assigned to portfolios
   sorting_data <- sorting_data |>
@@ -168,6 +176,32 @@ compute_portfolio_returns <- function(
       group_by(.data[[date_col]]) |>
       filter(n() >= min_portfolio_size) |>
       ungroup()
+  }
+
+  # Handle edge case where all observations are filtered out
+  if (nrow(sorting_data) == 0L) {
+    if (!quiet) {
+      cli::cli_inform(
+        paste0(
+          "Returning an empty panel: all observations were filtered out ",
+          "(n() < {min_portfolio_size} on every date)."
+        )
+      )
+    }
+
+    empty_result <- tibble::tibble(
+      portfolio = integer(0L),
+      !!date_col := as.Date(character(0L)),
+      ret_excess_ew = numeric(0L)
+    )
+    if (!mktcap_lag_missing) {
+      empty_result <- empty_result |>
+        tibble::add_column(
+          ret_excess_vw = numeric(0L),
+          .before = "ret_excess_ew"
+        )
+    }
+    return(empty_result)
   }
 
   if (
@@ -456,5 +490,38 @@ compute_portfolio_returns <- function(
   if (mktcap_lag_missing) {
     portfolio_returns <- portfolio_returns |> select(-ret_excess_vw)
   }
-  portfolio_returns[!is.na(portfolio_returns$portfolio), ]
+
+  portfolio_returns <- portfolio_returns[!is.na(portfolio_returns$portfolio), ]
+
+  # Complete the panel: ensure all portfolio-date combinations are present
+  all_portfolios <- unique(portfolio_returns$portfolio)
+
+  complete_panel <- tidyr::expand_grid(
+    portfolio = all_portfolios,
+    !!date_col := all_dates
+  )
+
+  return_cols <- if (mktcap_lag_missing) {
+    "ret_excess_ew"
+  } else {
+    c("ret_excess_vw", "ret_excess_ew")
+  }
+
+  portfolio_returns <- complete_panel |>
+    left_join(portfolio_returns, by = c("portfolio", date_col))
+
+  # Count and report missing values
+  n_missing <- sum(is.na(portfolio_returns[["ret_excess_ew"]]))
+
+  if (!quiet && n_missing > 0L) {
+    cli::cli_inform(
+      paste0(
+        "Returning a complete panel with {n_missing} missing value{?s} ",
+        "in factor returns due to insufficient observations ",
+        "(n() < {min_portfolio_size})."
+      )
+    )
+  }
+
+  portfolio_returns
 }

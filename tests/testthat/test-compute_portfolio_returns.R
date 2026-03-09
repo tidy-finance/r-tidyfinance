@@ -797,3 +797,21 @@ test_that("bivariate-independent handles large data without error", {
     )
   )
 })
+
+test_that("output is a complete panel of portfolio x date", {
+  data <- make_panel(n_stocks = 10, n_months = 12)
+
+  result <- compute_portfolio_returns(
+    data,
+    "size",
+    "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 3),
+    min_portfolio_size = 0L,
+    quiet = TRUE
+  )
+
+  n_portfolios <- length(unique(result$portfolio))
+  n_dates_out <- length(unique(result$date))
+
+  expect_equal(nrow(result), n_portfolios * n_dates_out)
+})
