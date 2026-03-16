@@ -494,7 +494,7 @@ compute_portfolio_returns <- function(
   portfolio_returns <- portfolio_returns[!is.na(portfolio_returns$portfolio), ]
 
   # Complete the panel: ensure all portfolio-date combinations are present
-  all_portfolios <- unique(portfolio_returns$portfolio)
+  all_portfolios <- na.omit(unique(portfolio_returns$portfolio))
 
   complete_panel <- tidyr::expand_grid(
     portfolio = all_portfolios,

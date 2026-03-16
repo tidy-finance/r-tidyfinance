@@ -101,6 +101,13 @@ compute_breakpoints <- function(
     sorting_values <- sorting_values[keep]
   }
 
+  if (length(sorting_values) == 0L) {
+    cli::cli_warn(
+      "No breakpoints were calculated, likely due to an insufficient number of observations after filtering for breakpoint exchanges."
+    )
+    return(NA_real_)
+  }
+
   if (!is.null(n_portfolios)) {
     if (n_portfolios <= 1L) {
       cli::cli_abort("{.arg n_portfolios} must be larger than 1.")
