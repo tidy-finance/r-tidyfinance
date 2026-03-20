@@ -33,8 +33,9 @@ names required to run this function. The required column names identify dates. D
 \code{date = date}.}
 }
 \value{
-A data frame with the estimated risk premiums, the number of observations, standard
-errors, and t-statistics for each factor in the model.
+A data frame with the estimated risk premiums, the number of time periods (\code{n}),
+standard errors, t-statistics, average cross-sectional R-squared (\code{r_squared}), and
+average number of cross-sectional observations (\code{n_obs}) for each factor in the model.
 }
 \description{
 This function estimates Fama-MacBeth regressions by first running cross-sectional regressions

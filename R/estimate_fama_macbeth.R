@@ -19,8 +19,9 @@
 #'  names required to run this function. The required column names identify dates. Defaults to
 #'  `date = date`.
 #'
-#' @return A data frame with the estimated risk premiums, the number of observations, standard
-#'  errors, and t-statistics for each factor in the model.
+#' @return A data frame with the estimated risk premiums, the number of time periods (`n`),
+#'  standard errors, t-statistics, average cross-sectional R-squared (`r_squared`), and
+#'  average number of cross-sectional observations (`n_obs`) for each factor in the model.
 #'
 #' @export
 #'
@@ -91,7 +92,26 @@ estimate_fama_macbeth <- function(
   # Proceed with estimation if all checks pass
   cross_sections <- cross_sections |>
     select(-row_check) |>
-    mutate(estimates = purrr::map(data, ~ estimate_model(., model))) |>
+    mutate(
+      cross_fit = purrr::map(data, ~ lm(as.formula(model), data = .)),
+      estimates = purrr::map(cross_fit, ~ {
+        coefs <- stats::coef(.)
+        if ("(Intercept)" %in% names(coefs)) {
+          names(coefs)[names(coefs) == "(Intercept)"] <- "intercept"
+        }
+        tibble::as_tibble(t(coefs))
+      }),
+      r_squared = purrr::map_dbl(cross_fit, ~ summary(.)$r.squared),
+      n_obs = purrr::map_dbl(cross_fit, ~ nrow(.$model))
+    ) |>
+    select(-cross_fit)
+
+  # Compute average R-squared and N across time periods
+  avg_r_squared <- mean(cross_sections$r_squared)
+  avg_n_obs <- mean(cross_sections$n_obs)
+
+  cross_sections <- cross_sections |>
+    select(-r_squared, -n_obs) |>
     tidyr::unnest(estimates) |>
     select(-data) |>
     tidyr::pivot_longer(-all_of(data_options$date))
@@ -122,9 +142,11 @@ estimate_fama_macbeth <- function(
         vcov == "iid",
         risk_premium / standard_error * sqrt(n),
         risk_premium / standard_error
-      )
+      ),
+      r_squared = avg_r_squared,
+      n_obs = avg_n_obs
     ) |>
-    select(factor = name, risk_premium, n, standard_error, t_statistic)
+    select(factor = name, risk_premium, n, standard_error, t_statistic, r_squared, n_obs)
 
   aggregations
 }
