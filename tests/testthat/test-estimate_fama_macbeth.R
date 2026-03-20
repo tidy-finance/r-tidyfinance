@@ -64,7 +64,7 @@ test_that("estimate_fama_macbeth works with valid iid vcov", {
 
   expect_s3_class(result, "tbl_df")
   expect_true(all(
-    c("factor", "risk_premium", "n", "standard_error", "t_statistic") %in%
+    c("factor", "risk_premium", "n", "standard_error", "t_statistic", "r_squared", "n_obs") %in%
       colnames(result)
   ))
 })
@@ -94,7 +94,7 @@ test_that("estimate_fama_macbeth works with valid newey-west vcov", {
 
   expect_s3_class(result, "tbl_df")
   expect_true(all(
-    c("factor", "risk_premium", "n", "standard_error", "t_statistic") %in%
+    c("factor", "risk_premium", "n", "standard_error", "t_statistic", "r_squared", "n_obs") %in%
       colnames(result)
   ))
 })
@@ -119,6 +119,56 @@ test_that("estimate_fama_macbeth computes correct number of rows", {
   result <- estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap")
 
   expect_equal(nrow(result), 4)
+})
+
+test_that("estimate_fama_macbeth reports r_squared and n_obs correctly", {
+  set.seed(42)
+  data <- tibble(
+    date = rep(
+      seq.Date(
+        from = as.Date("2020-01-01"),
+        to = as.Date("2020-12-01"),
+        by = "month"
+      ),
+      each = 50
+    ),
+    permno = rep(1:50, times = 12),
+    ret_excess = rnorm(600, 0, 0.1),
+    beta = rnorm(600, 1, 0.2),
+    bm = rnorm(600, 0.5, 0.1),
+    log_mktcap = rnorm(600, 10, 1)
+  )
+
+  result <- estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap")
+
+  # r_squared should be between 0 and 1
+  expect_true(all(result$r_squared >= 0 & result$r_squared <= 1))
+  # r_squared should be the same for all factors (from the same cross-sectional regressions)
+  expect_equal(length(unique(result$r_squared)), 1)
+  # n_obs should equal the average cross-sectional observations (50 per period here)
+  expect_equal(result$n_obs, rep(50, nrow(result)))
+  # n_obs should be the same for all factors
+  expect_equal(length(unique(result$n_obs)), 1)
+})
+
+test_that("estimate_fama_macbeth n_obs reflects average when cross-sections vary in size", {
+  set.seed(99)
+  n_period1 <- 40L
+  n_period2 <- 60L
+  data <- tibble(
+    date = c(
+      rep(as.Date("2020-01-01"), n_period1),
+      rep(as.Date("2020-02-01"), n_period2)
+    ),
+    ret_excess = rnorm(n_period1 + n_period2, 0, 0.1),
+    beta = rnorm(n_period1 + n_period2, 1, 0.2),
+    bm = rnorm(n_period1 + n_period2, 0.5, 0.1)
+  )
+
+  result <- estimate_fama_macbeth(data, "ret_excess ~ beta + bm")
+
+  expected_avg_n_obs <- mean(c(n_period1, n_period2))
+  expect_equal(result$n_obs, rep(expected_avg_n_obs, nrow(result)))
 })
 
 test_that("estimate_fama_macbeth handles edge cases", {
