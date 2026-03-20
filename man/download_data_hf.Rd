@@ -2,42 +2,50 @@
 % Please edit documentation in R/download_data_hf.R
 \name{download_data_hf}
 \alias{download_data_hf}
-\title{Download 5-second aggregated orderbook data
-for the SPY ETF (S&P 500 tracker) from a Hugging Face dataset.}
+\title{Download data from a Hugging Face dataset}
 \usage{
 download_data_hf(
   dataset = NULL,
   start_date = "2007-06-27",
   end_date = "2007-07-27",
-  type = deprecated()
+  type = deprecated(),
+  ...
 )
 }
 \arguments{
-\item{dataset}{The dataset to download (e.g., "high_frequency_sp500").}
+\item{dataset}{Character(1). The dataset to download. Supported values are
+\code{"high_frequency_sp500"} and \code{"factor-library"}.}
 
-\item{start_date}{Date or character. Start date (inclusive) in "YYYY-MM-DD" format. If NULL, the internal default is used.}
+\item{start_date}{Date or character. Start date (inclusive) in
+\code{"YYYY-MM-DD"} format. Only used for \code{"high_frequency_sp500"}.}
 
-\item{end_date}{Date or character. End date (inclusive) in "YYYY-MM-DD" format. If NULL, the internal default is used.}
+\item{end_date}{Date or character. End date (inclusive) in \code{"YYYY-MM-DD"}
+format. Only used for \code{"high_frequency_sp500"}.}
 
 \item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
+
+\item{...}{For \code{dataset = "factor-library"}: named arguments passed to
+\code{filter_grid()} to select portfolio characteristics (e.g.,
+\code{sorting_variable}, \code{rebalancing}). Optionally pass \code{fill_all = TRUE} to
+suppress defaults and match only on explicitly provided filters.}
 }
 \value{
-A tibble with processed data, including dates and the relevant
-financial metrics, filtered by the specified date range.
+A tibble with the downloaded data. For \code{"high_frequency_sp500"},
+contains 5-second aggregated orderbook snapshots filtered to the requested
+date range. For \code{"factor-library"}, contains portfolio return data joined
+with the full grid metadata for the matched portfolio IDs.
 }
 \description{
-Find parquet files in a dataset whose paths include \code{date=YYYY-MM-DD},
-filter them to the provided date interval, then read and row-bind their
-contents using \code{arrow::read_parquet()}.
-}
-\details{
-The function locates parquet files in the specified Hugging Face dataset whose paths include \code{date=YYYY-MM-DD},
-filters them to the provided date interval, and reads/row-binds them with arrow::read_parquet().
+Downloads data from a supported Hugging Face dataset. For
+\code{"high_frequency_sp500"}, parquet files are filtered by date range and
+row-bound. For \code{"factor-library"}, portfolio characteristics are selected via
+\code{filter_grid()} and the matching return data is downloaded.
 }
 \examples{
 \dontrun{
-  # Download 5-second aggregated orderbook snapshots for SPY.
   download_data_hf("high_frequency_sp500", "2007-07-26", "2007-07-27")
+  download_data_hf("factor-library", sorting_variable = "52w", rebalancing = "annual")
+  download_data_hf("factor-library", sorting_variable = "ag", fill_all = TRUE)
 }
 
 }

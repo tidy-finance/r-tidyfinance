@@ -18,7 +18,9 @@
 #'   depending on the dataset type.
 #' @param type `r lifecycle::badge("deprecated")` Use `domain` and `dataset` instead.
 #' @param ... Additional arguments passed to specific download functions depending on the `domain`.
-#'   For instance, if `domain` is "constituents", this might include parameters specific to `download_data_constituents`.
+#'   For instance, if `domain` is `"constituents"`, arguments are passed to `download_data_constituents()`.
+#'   If `domain` is `"hf"` and `dataset` is `"factor-library"`, arguments are used to filter the
+#'   portfolio grid (e.g., `sorting_variable`, `rebalancing`, `fill_all`); see `download_data_hf()` for details.
 #'
 #' @returns A tibble with processed data, including dates and the relevant
 #'   financial metrics, filtered by the specified date range.
@@ -32,6 +34,7 @@
 #'   download_data("fred", series = c("GDP", "CPIAUCNS"))
 #'   download_data("stock_prices", symbols = c("AAPL", "MSFT"))
 #'   download_data("hf", "high_frequency_sp500", "2007-07-26", "2007-07-27")
+#'   download_data("hf", "factor-library", sorting_variable = "52w", rebalancing = "annual")
 #' }
 download_data <- function(
   domain = NULL,
@@ -126,7 +129,8 @@ download_data <- function(
     processed_data <- download_data_hf(
       dataset = dataset,
       start_date = start_date,
-      end_date = end_date
+      end_date = end_date,
+      ...
     )
   } else {
     cli::cli_abort("Unsupported domain: {.val {domain}}")
