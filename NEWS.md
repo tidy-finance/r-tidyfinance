@@ -12,6 +12,7 @@
 - Added more indexes to `list_supported_indexes()`.
 - Added `download_data_hf()` and support for `type = "hf_high_frequency_sp500"`.
 - Deprecated `type` parameter in favor of `domain` and `dataset`.
+- Remove lower bound of excess returns for CRSP data. 
 
 ## Improvements
 
