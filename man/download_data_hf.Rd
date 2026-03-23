@@ -27,7 +27,8 @@ format. Only used for \code{"high_frequency_sp500"}.}
 \item{...}{For \code{dataset = "factor-library"}: named arguments passed to
 \code{filter_grid()} to select portfolio characteristics (e.g.,
 \code{sorting_variable}, \code{rebalancing}). Optionally pass \code{fill_all = TRUE} to
-suppress defaults and match only on explicitly provided filters.}
+suppress defaults and match only on explicitly provided filters. Passing an
+unrecognised filter name raises an error listing the supported names.}
 }
 \value{
 A tibble with the downloaded data. For \code{"high_frequency_sp500"},

@@ -296,7 +296,7 @@ download_factor_library_returns_ids <- function(ids) {
     dplyr::left_join(
       available_files,
       dplyr::join_by(sorting_variable, sorting_variable_lag)
-    ) 
+    )
 
   relevant_urls <- id_grid |>
     dplyr::distinct(url, sorting_variable, sorting_variable_lag)
