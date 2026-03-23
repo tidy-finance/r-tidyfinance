@@ -141,7 +141,7 @@ download_data_hf <- function(
     tibble::tibble(
       date = seq.Date(as.Date(start_date), as.Date(end_date), by = "day")
     ) |>
-      dplyr::inner_join(available_files, by = "date") |>
+      dplyr::inner_join(available_files, dplyr::join_by(date)) |>
       dplyr::transmute(
         data = purrr::map(url, ~ arrow::read_parquet(.x))
       ) |>
@@ -275,7 +275,7 @@ download_factor_library_returns_ids <- function(ids) {
   id_grid <- get_available_hf_files(organization, "factor-library-grid") |>
     dplyr::pull(.data$url) |>
     arrow::read_parquet() |>
-    dplyr::inner_join(id_values, dplyr::join_by("id")) |>
+    dplyr::inner_join(id_values, dplyr::join_by(id)) |>
     dplyr::mutate(
       sorting_variable = stringr::str_replace(.data$sorting_variable, "sv_", "")
     )
@@ -285,7 +285,7 @@ download_factor_library_returns_ids <- function(ids) {
     dplyr::distinct() |>
     dplyr::left_join(
       available_files,
-      dplyr::join_by("sorting_variable", "sorting_variable_lag")
+      dplyr::join_by(sorting_variable, sorting_variable_lag)
     ) |>
     dplyr::select("id", "url")
 
@@ -296,7 +296,7 @@ download_factor_library_returns_ids <- function(ids) {
   ) |>
     dplyr::bind_rows()
 
-  portfolio_data |> dplyr::left_join(id_grid, dplyr::join_by("id"))
+  portfolio_data |> dplyr::left_join(id_grid, dplyr::join_by(id))
 }
 
 #' Download factor library data from Hugging Face
