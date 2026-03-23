@@ -221,8 +221,7 @@ download_data_wrds_crsp <- function(
       crsp_monthly <- crsp_monthly |>
         left_join(factors_ff_3_monthly, join_by(date)) |>
         mutate(
-          ret_excess = ret_adj - risk_free,
-          ret_excess = pmax(ret_excess, -1)
+          ret_excess = ret_adj - risk_free
         ) |>
         select(-risk_free, -mkt_excess, -hml, -smb)
 
@@ -327,8 +326,7 @@ download_data_wrds_crsp <- function(
       crsp_monthly <- crsp_monthly |>
         left_join(factors_ff_3_monthly, join_by(date)) |>
         mutate(
-          ret_excess = ret - risk_free,
-          ret_excess = pmax(ret_excess, -1)
+          ret_excess = ret - risk_free
         ) |>
         select(-risk_free, -mkt_excess, -hml, -smb)
 
@@ -427,8 +425,7 @@ download_data_wrds_crsp <- function(
               join_by(date)
             ) |>
             mutate(
-              ret_excess = ret - risk_free,
-              ret_excess = pmax(ret_excess, -1)
+              ret_excess = ret - risk_free
             ) |>
             select(-risk_free)
 
@@ -551,8 +548,7 @@ download_data_wrds_crsp <- function(
               join_by(date)
             ) |>
             mutate(
-              ret_excess = ret - risk_free,
-              ret_excess = pmax(ret_excess, -1)
+              ret_excess = ret - risk_free
             ) |>
             select(-risk_free)
 
