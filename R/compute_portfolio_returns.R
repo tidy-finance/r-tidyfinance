@@ -45,7 +45,10 @@
 #'   June of the following year. The default `NULL` corresponds to periodic
 #'   rebalancing.
 #' @param breakpoint_options_main A named list of \link{breakpoint_options} passed to
-#'   `breakpoint_function` for the main sorting variable.
+#'   `breakpoint_function` for the main sorting variable. Also accepts
+#'   `cap_weight` (numeric between 0 and 1, default `0.8`) to control the
+#'   percentile at which market capitalization is winsorized when computing
+#'   `ret_excess_vw_truncated`.
 #' @param breakpoint_function_main A function to compute the main sorting
 #'   variable. The default is set to \link{compute_breakpoints}.
 #' @param breakpoint_options_secondary An optional named list of \link{breakpoint_options}
@@ -71,6 +74,9 @@
 #'      insufficient observations for that portfolio-date.
 #'     \item `ret_excess_ew`: The equal-weighted excess return of the portfolio.
 #'      `NA` if insufficient observations for that portfolio-date.
+#'     \item `ret_excess_vw_truncated`: The truncated value-weighted excess return of the portfolio
+#'      (only computed if the `sorting_data` contains `mktcap_lag`). Weights are computed using the truncated market capitalization, where we winsorize the market capitalization at the percentile defined by `cap_weight` in `breakpoint_options_main` (default: 0.8). `NA` if
+#'      insufficient observations for that portfolio-date.
 #'   }
 #'
 #' @note Ensure that the `sorting_data` contains all the required columns: The
@@ -142,6 +148,7 @@ compute_portfolio_returns <- function(
   id_col <- data_options$id
   ret_col <- data_options$ret_excess
   w_col <- data_options$mktcap_lag
+  cap_weight <- if (!is.null(breakpoint_options_main[["cap_weight"]])) breakpoint_options_main[["cap_weight"]] else 0.8
 
   required_columns <- c(sorting_variables, date_col, id_col, ret_col)
 
@@ -199,7 +206,12 @@ compute_portfolio_returns <- function(
         tibble::add_column(
           ret_excess_vw = numeric(0L),
           .before = "ret_excess_ew"
+        ) |> 
+                tibble::add_column(
+          ret_excess_vw_truncated = numeric(0L),
+          .before = "ret_excess_ew"
         )
+
     }
     return(empty_result)
   }
@@ -279,6 +291,17 @@ compute_portfolio_returns <- function(
           NA_real_,
           mean(.data[[ret_col]])
         ),
+        ret_excess_vw_truncated = if_else(
+            n() < min_portfolio_size,
+            NA_real_,
+            {
+              w_truncated <- pmin(
+                .data[[w_col]],
+                quantile(.data[[w_col]], cap_weight, na.rm = TRUE)
+              )
+              stats::weighted.mean(.data[[ret_col]], w_truncated)
+            }
+          ),
         .groups = "drop"
       )
   }
@@ -380,11 +403,22 @@ compute_portfolio_returns <- function(
           NA_real_,
           mean(.data[[ret_col]])
         ),
+          ret_excess_vw_truncated = if_else(
+              n() < min_portfolio_size,
+              NA_real_,
+              {
+                w_truncated <- pmin(
+                  .data[[w_col]],
+                  quantile(.data[[w_col]], cap_weight, na.rm = TRUE)
+                )
+                stats::weighted.mean(.data[[ret_col]], w_truncated)
+              }
+            ),
         .groups = "drop"
       ) |>
       group_by(portfolio = portfolio_main, .data[[date_col]]) |>
       summarize(
-        across(c(ret_excess_vw, ret_excess_ew), \(x) mean(x, na.rm = TRUE)),
+        across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_truncated), \(x) mean(x, na.rm = TRUE)),
         .groups = "drop"
       )
   }
@@ -478,17 +512,28 @@ compute_portfolio_returns <- function(
           NA_real_,
           mean(.data[[ret_col]])
         ),
+          ret_excess_vw_truncated = if_else(
+              n() < min_portfolio_size,
+              NA_real_,
+              {
+                w_truncated <- pmin(
+                  .data[[w_col]],
+                  quantile(.data[[w_col]], cap_weight, na.rm = TRUE)
+                )
+                stats::weighted.mean(.data[[ret_col]], w_truncated)
+              }
+            ),
         .groups = "drop"
       ) |>
       group_by(portfolio = portfolio_main, .data[[date_col]]) |>
       summarize(
-        across(c(ret_excess_vw, ret_excess_ew), \(x) mean(x, na.rm = TRUE)),
+        across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_truncated), \(x) mean(x, na.rm = TRUE)),
         .groups = "drop"
       )
   }
 
   if (mktcap_lag_missing) {
-    portfolio_returns <- portfolio_returns |> select(-ret_excess_vw)
+    portfolio_returns <- portfolio_returns |> select(-ret_excess_vw, -ret_excess_vw_truncated)
   }
 
   portfolio_returns <- portfolio_returns[!is.na(portfolio_returns$portfolio), ]
@@ -504,7 +549,7 @@ compute_portfolio_returns <- function(
   return_cols <- if (mktcap_lag_missing) {
     "ret_excess_ew"
   } else {
-    c("ret_excess_vw", "ret_excess_ew")
+    c("ret_excess_vw", "ret_excess_ew", "ret_excess_vw_truncated")
   }
 
   portfolio_returns <- complete_panel |>
