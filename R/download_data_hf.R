@@ -278,25 +278,21 @@ download_factor_library_returns_ids <- function(ids) {
     dplyr::inner_join(id_values, dplyr::join_by(id)) |>
     dplyr::mutate(
       sorting_variable = stringr::str_replace(.data$sorting_variable, "sv_", "")
-    )
-
-  portfolio_information <- id_grid |>
-    dplyr::select("id", "sorting_variable", "sorting_variable_lag") |>
-    dplyr::distinct() |>
+    ) |>
     dplyr::left_join(
       available_files,
       dplyr::join_by(sorting_variable, sorting_variable_lag)
-    ) |>
-    dplyr::select("id", "url")
+    ) 
 
-  portfolio_data <- purrr::map2(
-    portfolio_information$id,
-    portfolio_information$url,
-    ~ arrow::read_parquet(.y) |> dplyr::filter(.data$id == .x)
-  ) |>
-    dplyr::bind_rows()
-
-  portfolio_data |> dplyr::left_join(id_grid, dplyr::join_by(id))
+  relevant_urls <- id_grid |> 
+    dplyr::distinct(url)
+  
+  relevant_files <- relevant_urls$url|> 
+    purrr::map(~arrow::read_parquet(.x)) |> 
+      dplyr::bind_rows()
+  
+  relevant_files |> 
+    dplyr::inner_join(id_grid |> dplyr::select(-c(url, path, size)), by = dplyr::join_by(id)) 
 }
 
 #' Download factor library data from Hugging Face
