@@ -284,10 +284,38 @@ download_factor_library_returns_ids <- function(ids) {
       dplyr::join_by(sorting_variable, sorting_variable_lag)
     ) 
 
-  relevant_urls <- id_grid |> 
-    dplyr::distinct(url)
-  
-  relevant_files <- relevant_urls$url|> 
+  relevant_urls <- id_grid |>
+    dplyr::distinct(url, sorting_variable, sorting_variable_lag)
+
+  if (nrow(relevant_urls) == 0) {
+    cli::cli_abort(c(
+      "No parquet files found for the requested portfolio IDs.",
+      "i" = "Check that the provided {.arg ids} are valid and exist in the factor library grid."
+    ))
+  }
+
+  missing_urls <- relevant_urls |>
+    dplyr::filter(is.na(.data$url))
+
+  if (nrow(missing_urls) > 0) {
+    missing_keys <- missing_urls |>
+      dplyr::inner_join(
+        id_grid |> dplyr::select("id", "sorting_variable", "sorting_variable_lag"),
+        dplyr::join_by(sorting_variable, sorting_variable_lag)
+      ) |>
+      dplyr::mutate(
+        key = paste0("id=", .data$id, " (", .data$sorting_variable, " / ", .data$sorting_variable_lag, ")")
+      ) |>
+      dplyr::pull(.data$key)
+
+    cli::cli_abort(c(
+      "No parquet file found for {length(missing_keys)} portfolio ID{?s}.",
+      "x" = "Affected ID{?s}: {.val {missing_keys}}",
+      "i" = "Check that the {.arg sorting_variable} and {.arg sorting_variable_lag} values exist in the factor library."
+    ))
+  }
+
+  relevant_files <- relevant_urls$url |>
     purrr::map(~arrow::read_parquet(.x)) |> 
       dplyr::bind_rows()
   
