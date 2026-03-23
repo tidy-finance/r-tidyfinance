@@ -77,7 +77,8 @@ get_available_hf_files <- function(organization, dataset) {
 #' @param ... For `dataset = "factor-library"`: named arguments passed to
 #'   `filter_grid()` to select portfolio characteristics (e.g.,
 #'   `sorting_variable`, `rebalancing`). Optionally pass `fill_all = TRUE` to
-#'   suppress defaults and match only on explicitly provided filters.
+#'   suppress defaults and match only on explicitly provided filters. Passing an
+#'   unrecognised filter name raises an error listing the supported names.
 #'
 #' @return A tibble with the downloaded data. For `"high_frequency_sp500"`,
 #'   contains 5-second aggregated orderbook snapshots filtered to the requested
@@ -201,7 +202,8 @@ check_supported_dataset_hf <- function(dataset) {
 #'   explicitly provided filters are applied and all other columns are left
 #'   unrestricted.
 #'
-#' @return An integer vector of portfolio IDs matching the specified criteria.
+#' @return A vector of portfolio IDs matching the specified criteria. Returns
+#'   an empty vector when no rows satisfy the filters.
 #' @noRd
 filter_grid <- function(..., fill_all = FALSE) {
   filters <- list(...)
@@ -255,16 +257,20 @@ filter_grid <- function(..., fill_all = FALSE) {
 #'
 #' Given a vector of portfolio IDs from the `tidy-finance/factor-library-grid`,
 #' this function downloads the corresponding return data from the
-#' `tidy-finance/factor-library` dataset on Hugging Face. It resolves the
-#' correct parquet files by matching on `sorting_variable` and
-#' `sorting_variable_lag`, reads only the rows for the requested IDs, and
-#' joins the full grid metadata back onto the result.
+#' `tidy-finance/factor-library` dataset on Hugging Face. It identifies the
+#' unique `(sorting_variable, sorting_variable_lag)` combinations for the
+#' requested IDs, downloads one parquet file per combination in full, and
+#' then inner-joins to retain only the requested IDs. The grid metadata is
+#' joined back onto the result.
 #'
-#' @param ids Integer vector of portfolio IDs to download, as returned by
+#' Raises an error if `ids` is empty or contains IDs that cannot be matched to
+#' a parquet file (listing the affected IDs and their key columns).
+#'
+#' @param ids Vector of portfolio IDs to download, as returned by
 #'   `filter_grid()`.
 #'
-#' @return A tibble of portfolio returns joined with the grid metadata columns
-#'   for the requested IDs.
+#' @return A tibble of portfolio returns with the grid metadata columns for the
+#'   requested IDs appended.
 #' @noRd
 download_factor_library_returns_ids <- function(ids) {
   organization <- "tidy-finance"
@@ -343,7 +349,8 @@ download_factor_library_returns_ids <- function(ids) {
 #'   columns not specified in `...` are left unrestricted rather than set to
 #'   their defaults.
 #'
-#' @return A tibble as returned by `download_factor_library_returns_ids()`.
+#' @return A tibble of portfolio returns with grid metadata columns appended,
+#'   one row per portfolio-period observation for the matched IDs.
 #' @noRd
 download_data_hf_factor_library <- function(..., fill_all = FALSE) {
   ids <- filter_grid(..., fill_all = fill_all)
