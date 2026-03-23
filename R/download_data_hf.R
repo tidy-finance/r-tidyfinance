@@ -221,6 +221,14 @@ filter_grid <- function(..., fill_all = FALSE) {
     weighting_scheme = "VW"
   )
 
+  unsupported <- setdiff(names(filters), names(defaults))
+  if (length(unsupported) > 0) {
+    cli::cli_abort(c(
+      "{length(unsupported)} unsupported filter name{?s}: {.val {unsupported}}",
+      "i" = "Supported filters: {.val {names(defaults)}}"
+    ))
+  }
+
   if (!fill_all) {
     for (col in names(defaults)) {
       if (!col %in% names(filters)) {
