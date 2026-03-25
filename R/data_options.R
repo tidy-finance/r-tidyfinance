@@ -57,12 +57,12 @@ data_options <- function(
   }
 
   # Error handling for ret_excess
-  if (!is.character(ret_excess) || length(mktcap_lag) != 1) {
+  if (!is.character(ret_excess) || length(ret_excess) != 1) {
     cli::cli_abort("{.arg ret_excess} must be a single character")
   }
 
   # Error handling for portfolio
-  if (!is.character(ret_excess) || length(mktcap_lag) != 1) {
+  if (!is.character(portfolio) || length(portfolio) != 1) {
     cli::cli_abort("{.arg portfolio} must be a single character")
   }
 
