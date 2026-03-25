@@ -4,17 +4,22 @@
 #'
 #' Joins lagged values of selected variables from one dataset (`new_data`)
 #' into another (`original_data`), based on date ranges defined by `min_lag`
-#' and `max_lag`. Optionally applies a Fama–French style year-based adjustment.
+#' and `max_lag`. Unlike [add_lagged_columns()], this function supports joining
+#' across data frames with different date grids (e.g., monthly source data
+#' into quarterly target data).
 #'
-#' @param original_data A data frame containing the original panel data.
-#' @param new_data A data frame containing the variables to lag and merge.
+#' @param original_data A data frame containing the target panel data.
+#' @param new_data A data frame containing the source variables to lag and merge.
+#'  All columns besides `id_keys` and `id_date` will be lagged and joined.
 #' @param id_keys A character vector specifying the identifier column(s).
 #' @param id_date A string giving the date column name (default: `"date"`).
-#' @param min_lag A `lubridate::Period` specifying the lower lag bound.
-#' @param max_lag A `lubridate::Period` specifying the upper lag bound.
-#' @param ff_adjustment Logical; if `TRUE`, applies a Fama–French year adjustment.
+#' @param min_lag A `lubridate::Period` specifying the lower lag bound (inclusive).
+#' @param max_lag A `lubridate::Period` specifying the upper lag bound (inclusive).
+#' @param ff_adjustment Logical; if `TRUE`, keeps only the last observation per
+#'  identifier and year before lagging (Fama–French convention). Defaults to `FALSE`.
 #'
-#' @return A data frame with lagged columns from `new_data` joined to `original_data`.
+#' @return A data frame with all columns from `original_data` plus the lagged
+#'  columns from `new_data` (keeping their original names).
 #' @export
 #'
 #' @examples
@@ -61,14 +66,34 @@ join_lagged_values <- function(
     )
   }
 
+  missing_keys_original <- setdiff(id_keys, names(original_data))
+  if (length(missing_keys_original) > 0) {
+    cli::cli_abort(
+      "{.arg original_data} is missing id column{?s}: {.field {missing_keys_original}}."
+    )
+  }
+
+  missing_keys_new <- setdiff(id_keys, names(new_data))
+  if (length(missing_keys_new) > 0) {
+    cli::cli_abort(
+      "{.arg new_data} is missing id column{?s}: {.field {missing_keys_new}}."
+    )
+  }
+
   new_column_names <- new_data |>
     dplyr::select(-dplyr::all_of(c(id_keys, id_date))) |>
     names()
 
+  if (length(new_column_names) == 0) {
+    cli::cli_abort(
+      "{.arg new_data} must contain columns besides {.field {id_keys}} and {.field {id_date}}."
+    )
+  }
+
   new_data <- new_data |>
     dplyr::mutate(
       .lower = .data[[id_date]] %m+% min_lag,
-      .upper = .lower %m+% max_lag
+      .upper = .data[[id_date]] %m+% max_lag
     )
 
   if (ff_adjustment) {
@@ -85,7 +110,7 @@ join_lagged_values <- function(
 
     if (ff_adjustment) {
       tmp_data <- tmp_data |>
-        dplyr::group_by(dplyr::across(all_of(c(id_keys, ".year")))) |>
+        dplyr::group_by(dplyr::across(dplyr::all_of(c(id_keys, ".year")))) |>
         dplyr::slice_max(order_by = .data[[id_date]], n = 1) |>
         dplyr::ungroup() |>
         dplyr::select(-dplyr::all_of(id_date))
@@ -98,7 +123,7 @@ join_lagged_values <- function(
         dplyr::join_by(
           !!!rlang::syms(id_keys),
           closest(.date >= .lower),
-          .date < .upper
+          .date <= .upper
         )
       ) |>
       dplyr::pull(dplyr::all_of(col_name))
