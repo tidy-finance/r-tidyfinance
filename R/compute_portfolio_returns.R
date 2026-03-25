@@ -79,7 +79,7 @@
 #'      `NA` if insufficient observations for that portfolio-date.
 #'     \item `ret_excess_vw_capped`: The capped value-weighted excess return of the portfolio
 #'      (only computed if the `sorting_data` contains `mktcap_lag`). Weights are
-#'      computed using market capitalization winsorized at the `cap_weight`
+#'      computed using market capitalization capped at the `cap_weight`
 #'      percentile per date. `NA` if insufficient observations for that
 #'      portfolio-date.
 #'   }
@@ -148,6 +148,11 @@ compute_portfolio_returns <- function(
     cli::cli_warn(
       "No 'breakpoint_options_secondary' specified in bivariate sort."
     )
+  }
+
+  if (!is.numeric(cap_weight) || length(cap_weight) != 1L ||
+      is.na(cap_weight) || cap_weight < 0 || cap_weight > 1) {
+    cli::cli_abort("'cap_weight' must be a single numeric value in [0, 1].")
   }
 
   date_col <- data_options$date
