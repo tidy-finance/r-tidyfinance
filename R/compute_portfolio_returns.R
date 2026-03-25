@@ -59,7 +59,7 @@
 #'   portfolio constituents (default is set to `0`, effectively deactivating the
 #'   check). Small portfolios' returns are set to zero.
 #' @param cap_weight A numeric value between 0 and 1 specifying the percentile
-#'   at which market capitalization is winsorized per date when computing
+#'   at which market capitalization is capped per date when computing
 #'   `ret_excess_vw_capped`. Defaults to `0.8`.
 #' @param data_options A named list of \link{data_options} with characters, indicating
 #'   the column names required to run this function.  The required column names identify dates,
@@ -472,7 +472,7 @@ summarise_portfolio_returns <- function(data, ret_col, w_col, w_capped_col,
   data |>
     dplyr::summarise(
       ret_excess_vw = dplyr::if_else(
-        dplyr::n() < min_portfolio_size,
+        dplyr::n() < min_portfolio_size | sum(.data[[w_col]]) == 0,
         NA_real_,
         stats::weighted.mean(.data[[ret_col]], .data[[w_col]])
       ),
@@ -482,7 +482,7 @@ summarise_portfolio_returns <- function(data, ret_col, w_col, w_capped_col,
         mean(.data[[ret_col]])
       ),
       ret_excess_vw_capped = dplyr::if_else(
-        dplyr::n() < min_portfolio_size,
+        dplyr::n() < min_portfolio_size | sum(.data[[w_capped_col]]) == 0,
         NA_real_,
         stats::weighted.mean(.data[[ret_col]], .data[[w_capped_col]])
       ),
