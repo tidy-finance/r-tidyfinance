@@ -67,7 +67,7 @@ download_data_wrds_trace_enhanced <- function(
     ) |>
     collect()
 
-  disconnection_connection(con)
+  disconnect_connection(con)
 
   # Enhanced Trace: Post 06-02-2012 -----------------------------------------
   # Trades (trc_st = T) and correction (trc_st = R)

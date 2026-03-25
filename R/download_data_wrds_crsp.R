@@ -148,7 +148,7 @@ download_data_wrds_crsp <- function(
           shrout = shrout * 1000
         )
 
-      disconnection_connection(con)
+      disconnect_connection(con)
 
       crsp_monthly <- crsp_monthly |>
         mutate(
@@ -274,7 +274,7 @@ download_data_wrds_crsp <- function(
           shrout = shrout * 1000
         )
 
-      disconnection_connection(con)
+      disconnect_connection(con)
 
       crsp_monthly <- crsp_monthly |>
         mutate(
@@ -460,7 +460,7 @@ download_data_wrds_crsp <- function(
         cli::cli_progress_update()
       }
 
-      disconnection_connection(con)
+      disconnect_connection(con)
 
       processed_data <- bind_rows(crsp_daily_list)
     } else {
@@ -595,7 +595,7 @@ download_data_wrds_crsp <- function(
         cli::cli_progress_update()
       }
 
-      disconnection_connection(con)
+      disconnect_connection(con)
 
       processed_data <- bind_rows(crsp_daily_list)
     }

@@ -37,7 +37,7 @@ download_data_wrds_ccm_links <- function(
     collect() |>
     mutate(linkenddt = tidyr::replace_na(linkenddt, today()))
 
-  disconnection_connection(con)
+  disconnect_connection(con)
 
   ccm_links
 }

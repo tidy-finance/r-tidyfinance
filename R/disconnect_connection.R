@@ -10,6 +10,21 @@
 #'   otherwise.
 #'
 #' @export
-disconnection_connection <- function(con) {
+disconnect_connection <- function(con) {
   DBI::dbDisconnect(con)
+}
+
+#' @rdname disconnect_connection
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `disconnection_connection()` was renamed to `disconnect_connection()`.
+#' @export
+disconnection_connection <- function(con) {
+  lifecycle::deprecate_warn(
+    "0.5.0",
+    "disconnection_connection()",
+    "disconnect_connection()"
+  )
+  disconnect_connection(con)
 }

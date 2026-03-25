@@ -108,7 +108,7 @@ download_data_wrds_compustat <- function(
       ) |>
       collect()
 
-    disconnection_connection(con)
+    disconnect_connection(con)
 
     compustat <- compustat |>
       mutate(
@@ -170,7 +170,7 @@ download_data_wrds_compustat <- function(
       ) |>
       collect()
 
-    disconnection_connection(con)
+    disconnect_connection(con)
 
     compustat <- compustat |>
       tidyr::drop_na(gvkey, datadate, fyearq, fqtr) |>
