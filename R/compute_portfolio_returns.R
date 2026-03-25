@@ -48,7 +48,7 @@
 #'   `breakpoint_function` for the main sorting variable. Also accepts
 #'   `cap_weight` (numeric between 0 and 1, default `0.8`) to control the
 #'   percentile at which market capitalization is winsorized when computing
-#'   `ret_excess_vw_truncated`.
+#'   `ret_excess_vw_capped`.
 #' @param breakpoint_function_main A function to compute the main sorting
 #'   variable. The default is set to \link{compute_breakpoints}.
 #' @param breakpoint_options_secondary An optional named list of \link{breakpoint_options}
@@ -74,8 +74,8 @@
 #'      insufficient observations for that portfolio-date.
 #'     \item `ret_excess_ew`: The equal-weighted excess return of the portfolio.
 #'      `NA` if insufficient observations for that portfolio-date.
-#'     \item `ret_excess_vw_truncated`: The truncated value-weighted excess return of the portfolio
-#'      (only computed if the `sorting_data` contains `mktcap_lag`). Weights are computed using the truncated market capitalization, where we winsorize the market capitalization at the percentile defined by `cap_weight` in `breakpoint_options_main` (default: 0.8). `NA` if
+#'     \item `ret_excess_vw_capped`: The capped value-weighted excess return of the portfolio
+#'      (only computed if the `sorting_data` contains `mktcap_lag`). Weights are computed using the capped market capitalization, where we winsorize the market capitalization at the percentile defined by `cap_weight` in `breakpoint_options_main` (default: 0.8). `NA` if
 #'      insufficient observations for that portfolio-date.
 #'   }
 #'
@@ -148,6 +148,7 @@ compute_portfolio_returns <- function(
   id_col <- data_options$id
   ret_col <- data_options$ret_excess
   w_col <- data_options$mktcap_lag
+  w_capped_col <- paste0(w_col, "_capped")
   cap_weight <- if (!is.null(breakpoint_options_main[["cap_weight"]])) breakpoint_options_main[["cap_weight"]] else 0.8
 
   required_columns <- c(sorting_variables, date_col, id_col, ret_col)
@@ -176,6 +177,9 @@ compute_portfolio_returns <- function(
   # should not contribute to the value-weighted return
   missing_mcap_data <- is.na(sorting_data[[w_col]])
   sorting_data[[w_col]][missing_mcap_data] <- 0L
+
+  # Compute capped market capitalization
+  sorting_data[[w_capped_col]] <- pmin(sorting_data[[w_col]], quantile(sorting_data[[w_col]], cap_weight, na.rm = TRUE))
 
   # Drop dates with insufficient observations
   if (min_portfolio_size > 0L) {
@@ -206,12 +210,11 @@ compute_portfolio_returns <- function(
         tibble::add_column(
           ret_excess_vw = numeric(0L),
           .before = "ret_excess_ew"
-        ) |> 
-                tibble::add_column(
-          ret_excess_vw_truncated = numeric(0L),
+        ) |>
+        tibble::add_column(
+          ret_excess_vw_capped = numeric(0L),
           .before = "ret_excess_ew"
         )
-
     }
     return(empty_result)
   }
@@ -291,17 +294,11 @@ compute_portfolio_returns <- function(
           NA_real_,
           mean(.data[[ret_col]])
         ),
-        ret_excess_vw_truncated = if_else(
-            n() < min_portfolio_size,
-            NA_real_,
-            {
-              w_truncated <- pmin(
-                .data[[w_col]],
-                quantile(.data[[w_col]], cap_weight, na.rm = TRUE)
-              )
-              stats::weighted.mean(.data[[ret_col]], w_truncated)
-            }
-          ),
+        ret_excess_vw_capped = if_else(
+          n() < min_portfolio_size,
+          NA_real_,
+          stats::weighted.mean(.data[[ret_col]], .data[[w_capped_col]])
+        ),
         .groups = "drop"
       )
   }
@@ -403,22 +400,16 @@ compute_portfolio_returns <- function(
           NA_real_,
           mean(.data[[ret_col]])
         ),
-          ret_excess_vw_truncated = if_else(
-              n() < min_portfolio_size,
-              NA_real_,
-              {
-                w_truncated <- pmin(
-                  .data[[w_col]],
-                  quantile(.data[[w_col]], cap_weight, na.rm = TRUE)
-                )
-                stats::weighted.mean(.data[[ret_col]], w_truncated)
-              }
-            ),
+        ret_excess_vw_capped = if_else(
+          n() < min_portfolio_size,
+          NA_real_,
+          stats::weighted.mean(.data[[ret_col]], .data[[w_capped_col]])
+        ),
         .groups = "drop"
       ) |>
       group_by(portfolio = portfolio_main, .data[[date_col]]) |>
       summarize(
-        across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_truncated), \(x) mean(x, na.rm = TRUE)),
+        across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped), \(x) mean(x, na.rm = TRUE)),
         .groups = "drop"
       )
   }
@@ -512,28 +503,22 @@ compute_portfolio_returns <- function(
           NA_real_,
           mean(.data[[ret_col]])
         ),
-          ret_excess_vw_truncated = if_else(
-              n() < min_portfolio_size,
-              NA_real_,
-              {
-                w_truncated <- pmin(
-                  .data[[w_col]],
-                  quantile(.data[[w_col]], cap_weight, na.rm = TRUE)
-                )
-                stats::weighted.mean(.data[[ret_col]], w_truncated)
-              }
-            ),
+        ret_excess_vw_capped = if_else(
+          n() < min_portfolio_size,
+          NA_real_,
+          stats::weighted.mean(.data[[ret_col]], .data[[w_capped_col]])
+        ),
         .groups = "drop"
       ) |>
       group_by(portfolio = portfolio_main, .data[[date_col]]) |>
       summarize(
-        across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_truncated), \(x) mean(x, na.rm = TRUE)),
+        across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped), \(x) mean(x, na.rm = TRUE)),
         .groups = "drop"
       )
   }
 
   if (mktcap_lag_missing) {
-    portfolio_returns <- portfolio_returns |> select(-ret_excess_vw, -ret_excess_vw_truncated)
+    portfolio_returns <- portfolio_returns |> select(-ret_excess_vw, -ret_excess_vw_capped)
   }
 
   portfolio_returns <- portfolio_returns[!is.na(portfolio_returns$portfolio), ]
@@ -549,7 +534,7 @@ compute_portfolio_returns <- function(
   return_cols <- if (mktcap_lag_missing) {
     "ret_excess_ew"
   } else {
-    c("ret_excess_vw", "ret_excess_ew", "ret_excess_vw_truncated")
+    c("ret_excess_vw", "ret_excess_ew", "ret_excess_vw_capped")
   }
 
   portfolio_returns <- complete_panel |>

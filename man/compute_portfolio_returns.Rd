@@ -56,7 +56,7 @@ rebalancing.}
 \code{breakpoint_function} for the main sorting variable. Also accepts
 \code{cap_weight} (numeric between 0 and 1, default \code{0.8}) to control the
 percentile at which market capitalization is winsorized when computing
-\code{ret_excess_vw_truncated}.}
+\code{ret_excess_vw_capped}.}
 
 \item{breakpoint_options_secondary}{An optional named list of \link{breakpoint_options}
 passed to \code{breakpoint_function} for the secondary sorting variable.}
@@ -89,8 +89,8 @@ A data frame with computed portfolio returns as a complete panel
 insufficient observations for that portfolio-date.
 \item \code{ret_excess_ew}: The equal-weighted excess return of the portfolio.
 \code{NA} if insufficient observations for that portfolio-date.
-\item \code{ret_excess_vw_truncated}: The truncated value-weighted excess return of the portfolio
-(only computed if the \code{sorting_data} contains \code{mktcap_lag}). Weights are computed using the truncated market capitalization, where we winsorize the market capitalization at the percentile defined by \code{cap_weight} in \code{breakpoint_options_main} (default: 0.8). \code{NA} if
+\item \code{ret_excess_vw_capped}: The capped value-weighted excess return of the portfolio
+(only computed if the \code{sorting_data} contains \code{mktcap_lag}). Weights are computed using the capped market capitalization, where we winsorize the market capitalization at the percentile defined by \code{cap_weight} in \code{breakpoint_options_main} (default: 0.8). \code{NA} if
 insufficient observations for that portfolio-date.
 }
 }
