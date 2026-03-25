@@ -287,27 +287,7 @@ compute_portfolio_returns <- function(
 
     portfolio_returns <- portfolio_returns |>
       dplyr::group_by(portfolio, .data[[date_col]]) |>
-      dplyr::summarize(
-        ret_excess_vw = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          stats::weighted.mean(
-            .data[[ret_col]],
-            .data[[w_col]]
-          )
-        ),
-        ret_excess_ew = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          mean(.data[[ret_col]])
-        ),
-        ret_excess_vw_capped = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          stats::weighted.mean(.data[[ret_col]], .data[[w_capped_col]])
-        ),
-        .groups = "drop"
-      )
+      summarise_portfolio_returns(ret_col, w_col, w_capped_col, min_portfolio_size)
   }
 
   if (sorting_method == "bivariate-dependent") {
@@ -391,32 +371,11 @@ compute_portfolio_returns <- function(
     }
 
     portfolio_returns <- portfolio_returns |>
-      dplyr::group_by(
-        portfolio_main,
-        portfolio_secondary,
-        .data[[date_col]]
-      ) |>
-      dplyr::summarize(
-        ret_excess_vw = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          stats::weighted.mean(.data[[ret_col]], .data[[w_col]])
-        ),
-        ret_excess_ew = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          mean(.data[[ret_col]])
-        ),
-        ret_excess_vw_capped = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          stats::weighted.mean(.data[[ret_col]], .data[[w_capped_col]])
-        ),
-        .groups = "drop"
-      ) |>
+      dplyr::group_by(portfolio_main, portfolio_secondary, .data[[date_col]]) |>
+      summarise_portfolio_returns(ret_col, w_col, w_capped_col, min_portfolio_size) |>
       dplyr::group_by(portfolio = portfolio_main, .data[[date_col]]) |>
-      dplyr::summarize(
-        across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped), \(x) mean(x, na.rm = TRUE)),
+      dplyr::summarise(
+        dplyr::across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped), \(x) mean(x, na.rm = TRUE)),
         .groups = "drop"
       )
   }
@@ -494,32 +453,11 @@ compute_portfolio_returns <- function(
     }
 
     portfolio_returns <- portfolio_returns |>
-      dplyr::group_by(
-        portfolio_main,
-        portfolio_secondary,
-        .data[[date_col]]
-      ) |>
-      dplyr::summarize(
-        ret_excess_vw = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          stats::weighted.mean(.data[[ret_col]], .data[[w_col]])
-        ),
-        ret_excess_ew = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          mean(.data[[ret_col]])
-        ),
-        ret_excess_vw_capped = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          stats::weighted.mean(.data[[ret_col]], .data[[w_capped_col]])
-        ),
-        .groups = "drop"
-      ) |>
+      dplyr::group_by(portfolio_main, portfolio_secondary, .data[[date_col]]) |>
+      summarise_portfolio_returns(ret_col, w_col, w_capped_col, min_portfolio_size) |>
       dplyr::group_by(portfolio = portfolio_main, .data[[date_col]]) |>
-      dplyr::summarize(
-        across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped), \(x) mean(x, na.rm = TRUE)),
+      dplyr::summarise(
+        dplyr::across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped), \(x) mean(x, na.rm = TRUE)),
         .groups = "drop"
       )
   }
@@ -558,4 +496,44 @@ compute_portfolio_returns <- function(
   }
 
   portfolio_returns
+}
+
+#' Summarise portfolio returns (internal helper)
+#'
+#' Computes equal-weighted, value-weighted, and capped value-weighted returns
+#' for an already-grouped data frame. Groups with fewer than
+#' `min_portfolio_size` observations receive `NA`.
+#'
+#' @param data A grouped data frame.
+#' @param ret_col Column name for excess returns.
+#' @param w_col Column name for market capitalisation weights.
+#' @param w_capped_col Column name for capped market capitalisation weights.
+#' @param min_portfolio_size Minimum number of stocks per portfolio-date.
+#'
+#' @return An ungrouped data frame with columns `ret_excess_vw`,
+#'   `ret_excess_ew`, and `ret_excess_vw_capped`.
+#'
+#' @keywords internal
+#' @noRd
+summarise_portfolio_returns <- function(data, ret_col, w_col, w_capped_col,
+                                        min_portfolio_size) {
+  data |>
+    dplyr::summarise(
+      ret_excess_vw = dplyr::if_else(
+        dplyr::n() < min_portfolio_size,
+        NA_real_,
+        stats::weighted.mean(.data[[ret_col]], .data[[w_col]])
+      ),
+      ret_excess_ew = dplyr::if_else(
+        dplyr::n() < min_portfolio_size,
+        NA_real_,
+        mean(.data[[ret_col]])
+      ),
+      ret_excess_vw_capped = dplyr::if_else(
+        dplyr::n() < min_portfolio_size,
+        NA_real_,
+        stats::weighted.mean(.data[[ret_col]], .data[[w_capped_col]])
+      ),
+      .groups = "drop"
+    )
 }
