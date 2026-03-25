@@ -14,6 +14,7 @@ compute_portfolio_returns(
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
   min_portfolio_size = 0L,
+  cap_weight = 0.8,
   data_options = NULL,
   quiet = FALSE
 )
@@ -53,10 +54,7 @@ June of the following year. The default \code{NULL} corresponds to periodic
 rebalancing.}
 
 \item{breakpoint_options_main}{A named list of \link{breakpoint_options} passed to
-\code{breakpoint_function} for the main sorting variable. Also accepts
-\code{cap_weight} (numeric between 0 and 1, default \code{0.8}) to control the
-percentile at which market capitalization is winsorized when computing
-\code{ret_excess_vw_capped}.}
+\code{breakpoint_function} for the main sorting variable.}
 
 \item{breakpoint_options_secondary}{An optional named list of \link{breakpoint_options}
 passed to \code{breakpoint_function} for the secondary sorting variable.}
@@ -70,6 +68,10 @@ sorting variable. The default is set to \link{compute_breakpoints}.}
 \item{min_portfolio_size}{An integer specifying the minimum number of
 portfolio constituents (default is set to \code{0}, effectively deactivating the
 check). Small portfolios' returns are set to zero.}
+
+\item{cap_weight}{A numeric value between 0 and 1 specifying the percentile
+at which market capitalization is capped per date when computing
+\code{ret_excess_vw_capped}. Defaults to \code{0.8}.}
 
 \item{data_options}{A named list of \link{data_options} with characters, indicating
 the column names required to run this function.  The required column names identify dates,
@@ -90,11 +92,15 @@ insufficient observations for that portfolio-date.
 \item \code{ret_excess_ew}: The equal-weighted excess return of the portfolio.
 \code{NA} if insufficient observations for that portfolio-date.
 \item \code{ret_excess_vw_capped}: The capped value-weighted excess return of the portfolio
-(only computed if the \code{sorting_data} contains \code{mktcap_lag}). Weights are computed using the capped market capitalization, where we winsorize the market capitalization at the percentile defined by \code{cap_weight} in \code{breakpoint_options_main} (default: 0.8). \code{NA} if
-insufficient observations for that portfolio-date.
+(only computed if the \code{sorting_data} contains \code{mktcap_lag}). Weights are
+computed using market capitalization capped at the \code{cap_weight}
+percentile per date. \code{NA} if insufficient observations for that
+portfolio-date.
 }
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 This function computes individual portfolio returns based on specified
 sorting variables and sorting methods. The portfolios can be rebalanced every
 period or on an annual frequency by specifying a rebalancing month, which is
