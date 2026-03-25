@@ -5,7 +5,7 @@
 #' Additionally, each index has a corresponding `skip` value, which indicates the number of lines
 #' to skip when reading the CSV file.
 #'
-#' @return A tibble with three columns:
+#' @returns A tibble with three columns:
 #' \describe{
 #'   \item{index}{The name of the financial index (e.g., "DAX", "S&P 500").}
 #'   \item{url}{The URL to the CSV file containing the holdings data for the index.}

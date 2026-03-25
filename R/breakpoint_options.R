@@ -17,7 +17,7 @@
 #' @param ... Additional optional arguments. These will be captured in the resulting
 #'  structure as a list.
 #'
-#' @return A list of class \code{"tidyfinance_breakpoint_options"} containing the provided
+#' @returns A list of class \code{"tidyfinance_breakpoint_options"} containing the provided
 #' breakpoint options, including any additional arguments passed via \code{...}.
 #'
 #' @export

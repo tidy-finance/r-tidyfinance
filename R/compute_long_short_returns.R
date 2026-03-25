@@ -16,7 +16,7 @@
 #'  names required to run this function. The required column names identify dates. Defaults to
 #'  `date = date`, `portfolio = portfolio` and `ret_excess = ret_excess`.
 #'
-#' @return A data frame with columns for date, return measurement types (from the "ret_measure"
+#' @returns A data frame with columns for date, return measurement types (from the "ret_measure"
 #'  column), and the computed long-short returns. The data frame is arranged by date and pivoted to
 #'  have return measurement types as columns with their corresponding long-short returns.
 #'

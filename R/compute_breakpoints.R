@@ -37,7 +37,7 @@
 #' @param data_options A named list of \link{data_options} with characters, indicating the column names
 #'  required to run this function. The required column names identify dates. Defaults to `exchange = exchange`.
 #'
-#' @return A vector of breakpoints of the desired length.
+#' @returns A vector of breakpoints of the desired length.
 #'
 #' @note This function will stop and throw an error if both `n_portfolios` and
 #'   `percentiles` are provided or if neither is provided. Ensure that you only

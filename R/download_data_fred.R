@@ -7,7 +7,7 @@
 #' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
 #' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
 #'
-#' @return A tibble containing the processed data with three columns:
+#' @returns A tibble containing the processed data with three columns:
 #' \describe{
 #'   \item{date}{The date corresponding to the data point.}
 #'   \item{value}{The value of the data series at that date.}

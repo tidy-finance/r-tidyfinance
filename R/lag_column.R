@@ -14,7 +14,7 @@
 #' @param drop_na A logical value indicating whether to drop `NA` values from the resulting lagged
 #'  column. Defaults to `TRUE`.
 #' @param ff_adjustment A logical value indicating whether to lag monthly data based on Fama-French conventions. Here, the values are lagged based on the last observation within the year is taken. Defaults to `FALSE`.
-#' @return A vector of the same length as `column`, containing the lagged values.
+#' @returns A vector of the same length as `column`, containing the lagged values.
 #'  If no matching dates are found within the lag window, `NA` is returned for that position.
 #'
 #' @export
@@ -101,7 +101,7 @@ lag_column <- function(
 #'  column. Defaults to `TRUE`.
 #' @param ff_adjustment A logical value indicating whether to lag monthly data based on Fama-French conventions. Here, the values are lagged based on the last observation within the year is taken. Defaults to `FALSE`.
 #' @param data_options A list of additional options for data processing, such as the `date` column. If `NULL`, defaults are used.
-#' @return A data frame with new, lagged columns added.
+#' @returns A data frame with new, lagged columns added.
 #' @examples
 #' # Example using a tibble and dplyr::group_by
 #'  data <- tibble::tibble(

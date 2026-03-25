@@ -17,7 +17,7 @@
 #' @param min_obs Minimum number of non-missing rows required per window.
 #'   Defaults to `periods`.
 #'
-#' @return A numeric vector aligned with the rows of `data`.
+#' @returns A numeric vector aligned with the rows of `data`.
 #' @export
 #'
 #' @examples

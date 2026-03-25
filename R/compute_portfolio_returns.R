@@ -61,7 +61,7 @@
 #' @param quiet A logical value indicating whether to suppress informational
 #'   messages about missing values in the output panel (default is `FALSE`).
 #'
-#' @return A data frame with computed portfolio returns as a complete panel
+#' @returns A data frame with computed portfolio returns as a complete panel
 #'   (all portfolio-date combinations), containing the following columns:
 #'   \itemize{
 #'     \item `portfolio`: The portfolio identifier.

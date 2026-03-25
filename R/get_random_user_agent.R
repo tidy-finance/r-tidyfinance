@@ -4,7 +4,7 @@
 #' The list contains user agents for various operating systems and browsers, including
 #' Windows, macOS, Linux, Android, iPhone, Chrome, Safari, Firefox, and Edge.
 #'
-#' @return A character string representing a randomly selected user agent.
+#' @returns A character string representing a randomly selected user agent.
 #'
 get_random_user_agent <- function() {
   user_agents <- c(

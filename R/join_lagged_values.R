@@ -14,7 +14,7 @@
 #' @param max_lag A `lubridate::Period` specifying the upper lag bound.
 #' @param ff_adjustment Logical; if `TRUE`, applies a Fama–French year adjustment.
 #'
-#' @return A data frame with lagged columns from `new_data` joined to `original_data`.
+#' @returns A data frame with lagged columns from `new_data` joined to `original_data`.
 #' @export
 #'
 #' @examples

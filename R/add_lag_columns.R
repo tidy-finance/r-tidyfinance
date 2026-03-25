@@ -17,7 +17,7 @@
 #' @param data_options A list of additional options for data processing, such as
 #' the `date` column. If `NULL`, defaults are used.
 #'
-#' @return A data frame with lagged versions of the specified columns appended,
+#' @returns A data frame with lagged versions of the specified columns appended,
 #' optionally grouped by another column.
 #'
 #' @export

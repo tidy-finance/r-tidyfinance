@@ -8,7 +8,7 @@
 #'  constituent data. The index must be one of the supported indexes listed by
 #'  \link{list_supported_indexes}.
 #'
-#' @return A tibble with two columns:
+#' @returns A tibble with two columns:
 #' \describe{
 #'   \item{symbol}{The ticker symbol of the equity constituent.}
 #'   \item{name}{The name of the equity constituent.}

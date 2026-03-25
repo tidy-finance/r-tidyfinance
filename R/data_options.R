@@ -15,7 +15,7 @@
 #' @param portfolio A character string representing the portfolio variable (e.g., "portfolio").
 #' @param ... Additional arguments to be included in the data options list.
 #'
-#' @return A list of class `tidyfinance_data_options` containing the specified data options.
+#' @returns A list of class `tidyfinance_data_options` containing the specified data options.
 #'
 #' @export
 #'

@@ -23,7 +23,7 @@
 #'  indicating the column names required to run this function. The required
 #'  column names identify dates.  Defaults to `date = date` and `id = permno`.
 #'
-#' @return A vector of portfolio assignments for each row in the input `data`.
+#' @returns A vector of portfolio assignments for each row in the input `data`.
 #'
 #' @export
 #'

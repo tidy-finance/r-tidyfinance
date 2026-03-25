@@ -19,7 +19,7 @@
 #'  names required to run this function. The required column names identify dates. Defaults to
 #'  `date = date`.
 #'
-#' @return A data frame with the estimated risk premiums, the number of observations, standard
+#' @returns A data frame with the estimated risk premiums, the number of observations, standard
 #'  errors, and t-statistics for each factor in the model.
 #'
 #' @export

@@ -16,7 +16,7 @@
 #' @param data_options A named list of \link{data_options} with characters, indicating the column
 #'  names required to run this function. The required column names identify dates and the stocks.
 #'  Defaults to `date = date` and `id = permno`.
-#' @return A tibble with the estimated betas for each time period.
+#' @returns A tibble with the estimated betas for each time period.
 #'
 #' @export
 #'
