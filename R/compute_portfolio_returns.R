@@ -176,13 +176,23 @@ compute_portfolio_returns <- function(
   sorting_data <- sorting_data |>
     tidyr::drop_na(dplyr::all_of(sorting_variables))
 
-  # Replace sorting_data$mktcap_lag with 0 if it is NA, as these observations
-  # should not contribute to the value-weighted return
-  missing_mcap_data <- is.na(sorting_data[[w_col]])
-  sorting_data[[w_col]][missing_mcap_data] <- 0L
+  # Compute capped market capitalization per date before replacing NAs,
+  # so that the quantile is not distorted by zero-filled missing values
+  sorting_data <- sorting_data |>
+    dplyr::group_by(.data[[date_col]]) |>
+    dplyr::mutate(
+      !!w_capped_col := pmin(
+        .data[[w_col]],
+        stats::quantile(.data[[w_col]], cap_weight, na.rm = TRUE)
+      )
+    ) |>
+    dplyr::ungroup()
 
-  # Compute capped market capitalization
-  sorting_data[[w_capped_col]] <- pmin(sorting_data[[w_col]], quantile(sorting_data[[w_col]], cap_weight, na.rm = TRUE))
+  # Replace NA market caps with 0, as these observations should not contribute
+  # to the value-weighted return
+  missing_mcap_data <- is.na(sorting_data[[w_col]])
+  sorting_data[[w_col]][missing_mcap_data] <- 0
+  sorting_data[[w_capped_col]][missing_mcap_data] <- 0
 
   # Drop dates with insufficient observations
   if (min_portfolio_size > 0L) {
