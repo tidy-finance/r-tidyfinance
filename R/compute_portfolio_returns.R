@@ -48,10 +48,7 @@
 #'   June of the following year. The default `NULL` corresponds to periodic
 #'   rebalancing.
 #' @param breakpoint_options_main A named list of \link{breakpoint_options} passed to
-#'   `breakpoint_function` for the main sorting variable. Also accepts
-#'   `cap_weight` (numeric between 0 and 1, default `0.8`) to control the
-#'   percentile at which market capitalization is winsorized when computing
-#'   `ret_excess_vw_capped`.
+#'   `breakpoint_function` for the main sorting variable.
 #' @param breakpoint_function_main A function to compute the main sorting
 #'   variable. The default is set to \link{compute_breakpoints}.
 #' @param breakpoint_options_secondary An optional named list of \link{breakpoint_options}
@@ -61,6 +58,9 @@
 #' @param min_portfolio_size An integer specifying the minimum number of
 #'   portfolio constituents (default is set to `0`, effectively deactivating the
 #'   check). Small portfolios' returns are set to zero.
+#' @param cap_weight A numeric value between 0 and 1 specifying the percentile
+#'   at which market capitalization is winsorized per date when computing
+#'   `ret_excess_vw_capped`. Defaults to `0.8`.
 #' @param data_options A named list of \link{data_options} with characters, indicating
 #'   the column names required to run this function.  The required column names identify dates,
 #'   the stocks, and returns. Defaults to `date=date`, `id=permno`, and `ret_excess = ret_excess`.
@@ -78,8 +78,10 @@
 #'     \item `ret_excess_ew`: The equal-weighted excess return of the portfolio.
 #'      `NA` if insufficient observations for that portfolio-date.
 #'     \item `ret_excess_vw_capped`: The capped value-weighted excess return of the portfolio
-#'      (only computed if the `sorting_data` contains `mktcap_lag`). Weights are computed using the capped market capitalization, where we winsorize the market capitalization at the percentile defined by `cap_weight` in `breakpoint_options_main` (default: 0.8). `NA` if
-#'      insufficient observations for that portfolio-date.
+#'      (only computed if the `sorting_data` contains `mktcap_lag`). Weights are
+#'      computed using market capitalization winsorized at the `cap_weight`
+#'      percentile per date. `NA` if insufficient observations for that
+#'      portfolio-date.
 #'   }
 #'
 #' @note Ensure that the `sorting_data` contains all the required columns: The
@@ -120,6 +122,7 @@ compute_portfolio_returns <- function(
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
   min_portfolio_size = 0L,
+  cap_weight = 0.8,
   data_options = NULL,
   quiet = FALSE
 ) {
@@ -152,7 +155,6 @@ compute_portfolio_returns <- function(
   ret_col <- data_options$ret_excess
   w_col <- data_options$mktcap_lag
   w_capped_col <- paste0(w_col, "_capped")
-  cap_weight <- if (!is.null(breakpoint_options_main[["cap_weight"]])) breakpoint_options_main[["cap_weight"]] else 0.8
 
   required_columns <- c(sorting_variables, date_col, id_col, ret_col)
 
