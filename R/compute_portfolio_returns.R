@@ -167,7 +167,7 @@ compute_portfolio_returns <- function(
 
   mktcap_lag_missing <- !(w_col %in% colnames(sorting_data))
   if (mktcap_lag_missing) {
-    sorting_data$mktcap_lag <- 1L
+    sorting_data[[w_col]] <- 1L
   }
 
   # Store the dates before filtering out missing values
