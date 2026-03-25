@@ -275,7 +275,7 @@ compute_portfolio_returns <- function(
               upper_bound = .data[[date_col]] + months(12)
             ) |>
             dplyr::select(-all_of(date_col)),
-          dplyr::join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+          dplyr::join_by(..id, closest(..date >= lower_bound), ..date <= upper_bound),
           relationship = "many-to-one"
         ) |>
         dplyr::rename("{date_col}" := "..date", "{id_col}" := "..id")
@@ -380,7 +380,7 @@ compute_portfolio_returns <- function(
               upper_bound = .data[[date_col]] + months(12)
             ) |>
             dplyr::select(-all_of(date_col)),
-          dplyr::join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+          dplyr::join_by(..id, closest(..date >= lower_bound), ..date <= upper_bound),
           relationship = "many-to-one"
         ) |>
         dplyr::rename("{date_col}" := "..date", "{id_col}" := "..id")
@@ -483,7 +483,7 @@ compute_portfolio_returns <- function(
               upper_bound = .data[[date_col]] + months(12L)
             ) |>
             dplyr::select(-all_of(date_col)),
-          dplyr::join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+          dplyr::join_by(..id, closest(..date >= lower_bound), ..date <= upper_bound),
           relationship = "many-to-one"
         ) |>
         dplyr::rename("{date_col}" := "..date", "{id_col}" := "..id")
