@@ -45,11 +45,11 @@ ability to specify a range of lags. It also allows for the optional removal of \
 }
 \examples{
 # Example using a tibble and dplyr::group_by
- data <- tibble::tibble(
-   permno = rep(1:2, each = 10),
-   date = rep(seq.Date(as.Date('2023-01-01'), by = "month", length.out = 10), 2),
-   size = runif(20, 100, 200),
-   bm = runif(20, 0.5, 1.5)
- )
-data |> add_lagged_columns(cols = "size", lag= months(2), by = "permno")
+data <- tibble::tibble(
+  permno = rep(1:2, each = 10),
+  date = rep(seq.Date(as.Date("2023-01-01"), by = "month", length.out = 10), 2),
+  size = runif(20, 100, 200),
+  bm = runif(20, 0.5, 1.5)
+)
+add_lagged_columns(data, cols = "size", lag = months(2), by = "permno")
 }

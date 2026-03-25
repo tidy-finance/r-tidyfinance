@@ -51,7 +51,6 @@ lag_column <- function(
   drop_na = FALSE,
   ff_adjustment = FALSE
 ) {
-
   if (lag < 0 || max_lag < lag) {
     cli::cli_abort(
       "{.arg lag} and {.arg max_lag} must be non-negative and {.arg max_lag} must be greater than or equal to {.arg lag}"
@@ -106,15 +105,14 @@ lag_column <- function(
 #' @return A data frame with new, lagged columns added.
 #' @examples
 #' # Example using a tibble and dplyr::group_by
-#'  data <- tibble::tibble(
-#'    permno = rep(1:2, each = 10),
-#'    date = rep(seq.Date(as.Date('2023-01-01'), by = "month", length.out = 10), 2),
-#'    size = runif(20, 100, 200),
-#'    bm = runif(20, 0.5, 1.5)
-#'  )
-#' data |> add_lagged_columns(cols = "size", lag= months(2), by = "permno")
+#' data <- tibble::tibble(
+#'   permno = rep(1:2, each = 10),
+#'   date = rep(seq.Date(as.Date("2023-01-01"), by = "month", length.out = 10), 2),
+#'   size = runif(20, 100, 200),
+#'   bm = runif(20, 0.5, 1.5)
+#' )
+#' add_lagged_columns(data, cols = "size", lag = months(2), by = "permno")
 #' @export
-
 add_lagged_columns <- function(
   df,
   cols,
@@ -157,7 +155,14 @@ add_lagged_columns <- function(
   for (col in cols) {
     df <- df |>
       dplyr::mutate(
-        "{col}_lag" := lag_column(.data[[col]], .data[[data_options$date]], lag, max_lag, drop_na, ff_adjustment)
+        "{col}_lag" := lag_column(
+          .data[[col]],
+          .data[[data_options$date]],
+          lag,
+          max_lag,
+          drop_na,
+          ff_adjustment
+        )
       )
   }
 
