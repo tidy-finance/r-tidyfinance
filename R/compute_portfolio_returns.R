@@ -1,5 +1,8 @@
 #' Compute Portfolio Returns
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' This function computes individual portfolio returns based on specified
 #' sorting variables and sorting methods. The portfolios can be rebalanced every
 #' period or on an annual frequency by specifying a rebalancing month, which is
@@ -171,7 +174,7 @@ compute_portfolio_returns <- function(
   # Filter out rows with missing values in any sorting variable, as these cannot
   # be assigned to portfolios
   sorting_data <- sorting_data |>
-    tidyr::drop_na(all_of(sorting_variables))
+    tidyr::drop_na(dplyr::all_of(sorting_variables))
 
   # Replace sorting_data$mktcap_lag with 0 if it is NA, as these observations
   # should not contribute to the value-weighted return
@@ -184,7 +187,7 @@ compute_portfolio_returns <- function(
   # Drop dates with insufficient observations
   if (min_portfolio_size > 0L) {
     sorting_data <- sorting_data |>
-      group_by(.data[[date_col]]) |>
+      dplyr::group_by(.data[[date_col]]) |>
       filter(n() >= min_portfolio_size) |>
       ungroup()
   }
@@ -233,10 +236,10 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
-        group_by(.data[[date_col]]) |>
-        mutate(
+        dplyr::group_by(.data[[date_col]]) |>
+        dplyr::mutate(
           portfolio = assign_portfolio(
-            data = pick(everything()),
+            data = dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables,
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
@@ -245,42 +248,42 @@ compute_portfolio_returns <- function(
         )
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(.data[[date_col]]) == rebalancing_month) |>
-        group_by(.data[[date_col]]) |>
-        mutate(
+        dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
+        dplyr::group_by(.data[[date_col]]) |>
+        dplyr::mutate(
           portfolio = assign_portfolio(
-            data = pick(everything()),
+            data = dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables,
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
-        ungroup() |>
-        select(all_of(c(id_col, date_col, "portfolio")))
+        dplyr::ungroup() |>
+        dplyr::select(all_of(c(id_col, date_col, "portfolio")))
 
       portfolio_returns <- sorting_data |>
-        rename(
+        dplyr::rename(
           "..date" = all_of(date_col),
           "..id" := all_of(id_col)
         ) |>
-        left_join(
+        dplyr::left_join(
           portfolio_data |>
-            rename("..id" = all_of(id_col)) |>
-            mutate(
+            dplyr::rename("..id" = all_of(id_col)) |>
+            dplyr::mutate(
               lower_bound = .data[[date_col]],
               upper_bound = .data[[date_col]] + months(12)
             ) |>
-            select(-all_of(date_col)),
-          join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+            dplyr::select(-all_of(date_col)),
+          dplyr::join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
           relationship = "many-to-one"
         ) |>
-        rename("{date_col}" := "..date", "{id_col}" := "..id")
+        dplyr::rename("{date_col}" := "..date", "{id_col}" := "..id")
     }
 
     portfolio_returns <- portfolio_returns |>
-      group_by(portfolio, .data[[date_col]]) |>
-      summarize(
+      dplyr::group_by(portfolio, .data[[date_col]]) |>
+      dplyr::summarize(
         ret_excess_vw = if_else(
           n() < min_portfolio_size,
           NA_real_,
@@ -310,54 +313,54 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
-        group_by(.data[[date_col]]) |>
-        mutate(
+        dplyr::group_by(.data[[date_col]]) |>
+        dplyr::mutate(
           portfolio_secondary = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[2],
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           )
         ) |>
-        ungroup() |>
-        group_by(.data[[date_col]], portfolio_secondary) |>
-        mutate(
+        dplyr::ungroup() |>
+        dplyr::group_by(.data[[date_col]], portfolio_secondary) |>
+        dplyr::mutate(
           portfolio_main = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1],
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
-        ungroup()
+        dplyr::ungroup()
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(.data[[date_col]]) == rebalancing_month) |>
-        group_by(.data[[date_col]]) |>
-        mutate(
+        dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
+        dplyr::group_by(.data[[date_col]]) |>
+        dplyr::mutate(
           portfolio_secondary = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[2L],
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           )
         ) |>
-        ungroup() |>
-        group_by(.data[[date_col]], portfolio_secondary) |>
-        mutate(
+        dplyr::ungroup() |>
+        dplyr::group_by(.data[[date_col]], portfolio_secondary) |>
+        dplyr::mutate(
           portfolio_main = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1L],
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
-        ungroup() |>
-        select(all_of(c(
+        dplyr::ungroup() |>
+        dplyr::select(all_of(c(
           id_col,
           date_col,
           "portfolio_main",
@@ -365,31 +368,31 @@ compute_portfolio_returns <- function(
         )))
 
       portfolio_returns <- sorting_data |>
-        rename(
+        dplyr::rename(
           "..date" = all_of(date_col),
           "..id" := all_of(id_col)
         ) |>
-        left_join(
+        dplyr::left_join(
           portfolio_data |>
-            rename("..id" = all_of(id_col)) |>
-            mutate(
+            dplyr::rename("..id" = all_of(id_col)) |>
+            dplyr::mutate(
               lower_bound = .data[[date_col]],
               upper_bound = .data[[date_col]] + months(12)
             ) |>
-            select(-all_of(date_col)),
-          join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+            dplyr::select(-all_of(date_col)),
+          dplyr::join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
           relationship = "many-to-one"
         ) |>
-        rename("{date_col}" := "..date", "{id_col}" := "..id")
+        dplyr::rename("{date_col}" := "..date", "{id_col}" := "..id")
     }
 
     portfolio_returns <- portfolio_returns |>
-      group_by(
+      dplyr::group_by(
         portfolio_main,
         portfolio_secondary,
         .data[[date_col]]
       ) |>
-      summarize(
+      dplyr::summarize(
         ret_excess_vw = if_else(
           n() < min_portfolio_size,
           NA_real_,
@@ -407,8 +410,8 @@ compute_portfolio_returns <- function(
         ),
         .groups = "drop"
       ) |>
-      group_by(portfolio = portfolio_main, .data[[date_col]]) |>
-      summarize(
+      dplyr::group_by(portfolio = portfolio_main, .data[[date_col]]) |>
+      dplyr::summarize(
         across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped), \(x) mean(x, na.rm = TRUE)),
         .groups = "drop"
       )
@@ -421,46 +424,46 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
-        group_by(.data[[date_col]]) |>
-        mutate(
+        dplyr::group_by(.data[[date_col]]) |>
+        dplyr::mutate(
           portfolio_secondary = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[2L],
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           ),
           portfolio_main = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1L],
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
-        ungroup()
+        dplyr::ungroup()
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(.data[[date_col]]) == rebalancing_month) |>
-        group_by(.data[[date_col]]) |>
-        mutate(
+        dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
+        dplyr::group_by(.data[[date_col]]) |>
+        dplyr::mutate(
           portfolio_secondary = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[2L],
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           ),
           portfolio_main = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1L],
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
-        ungroup() |>
-        select(all_of(c(
+        dplyr::ungroup() |>
+        dplyr::select(all_of(c(
           id_col,
           date_col,
           "portfolio_main",
@@ -468,31 +471,31 @@ compute_portfolio_returns <- function(
         )))
 
       portfolio_returns <- sorting_data |>
-        rename(
+        dplyr::rename(
           "..date" = all_of(date_col),
           "..id" := all_of(id_col)
         ) |>
-        left_join(
+        dplyr::left_join(
           portfolio_data |>
-            rename("..id" = all_of(id_col)) |>
-            mutate(
+            dplyr::rename("..id" = all_of(id_col)) |>
+            dplyr::mutate(
               lower_bound = .data[[date_col]],
               upper_bound = .data[[date_col]] + months(12L)
             ) |>
-            select(-all_of(date_col)),
-          join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
+            dplyr::select(-all_of(date_col)),
+          dplyr::join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
           relationship = "many-to-one"
         ) |>
-        rename("{date_col}" := "..date", "{id_col}" := "..id")
+        dplyr::rename("{date_col}" := "..date", "{id_col}" := "..id")
     }
 
     portfolio_returns <- portfolio_returns |>
-      group_by(
+      dplyr::group_by(
         portfolio_main,
         portfolio_secondary,
         .data[[date_col]]
       ) |>
-      summarize(
+      dplyr::summarize(
         ret_excess_vw = if_else(
           n() < min_portfolio_size,
           NA_real_,
@@ -510,15 +513,11 @@ compute_portfolio_returns <- function(
         ),
         .groups = "drop"
       ) |>
-      group_by(portfolio = portfolio_main, .data[[date_col]]) |>
-      summarize(
+      dplyr::group_by(portfolio = portfolio_main, .data[[date_col]]) |>
+      dplyr::summarize(
         across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped), \(x) mean(x, na.rm = TRUE)),
         .groups = "drop"
       )
-  }
-
-  if (mktcap_lag_missing) {
-    portfolio_returns <- portfolio_returns |> select(-ret_excess_vw, -ret_excess_vw_capped)
   }
 
   portfolio_returns <- portfolio_returns[!is.na(portfolio_returns$portfolio), ]
@@ -538,7 +537,8 @@ compute_portfolio_returns <- function(
   }
 
   portfolio_returns <- complete_panel |>
-    left_join(portfolio_returns, by = c("portfolio", date_col))
+    dplyr::left_join(portfolio_returns, by = c("portfolio", date_col)) |>
+    dplyr::select(dplyr::all_of(c("portfolio", date_col, return_cols)))
 
   # Count and report missing values
   n_missing <- sum(is.na(portfolio_returns[["ret_excess_ew"]]))
