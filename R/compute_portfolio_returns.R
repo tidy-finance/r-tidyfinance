@@ -266,23 +266,7 @@ compute_portfolio_returns <- function(
         dplyr::ungroup() |>
         dplyr::select(all_of(c(id_col, date_col, "portfolio")))
 
-      portfolio_returns <- sorting_data |>
-        dplyr::rename(
-          "..date" = all_of(date_col),
-          "..id" := all_of(id_col)
-        ) |>
-        dplyr::left_join(
-          portfolio_data |>
-            dplyr::rename("..id" = all_of(id_col)) |>
-            dplyr::mutate(
-              lower_bound = .data[[date_col]],
-              upper_bound = .data[[date_col]] + months(12)
-            ) |>
-            dplyr::select(-all_of(date_col)),
-          dplyr::join_by(..id, closest(..date >= lower_bound), ..date <= upper_bound),
-          relationship = "many-to-one"
-        ) |>
-        dplyr::rename("{date_col}" := "..date", "{id_col}" := "..id")
+      portfolio_returns <- join_rebalanced_portfolios(sorting_data, portfolio_data, date_col, id_col)
     }
 
     portfolio_returns <- portfolio_returns |>
@@ -351,23 +335,7 @@ compute_portfolio_returns <- function(
           "portfolio_secondary"
         )))
 
-      portfolio_returns <- sorting_data |>
-        dplyr::rename(
-          "..date" = all_of(date_col),
-          "..id" := all_of(id_col)
-        ) |>
-        dplyr::left_join(
-          portfolio_data |>
-            dplyr::rename("..id" = all_of(id_col)) |>
-            dplyr::mutate(
-              lower_bound = .data[[date_col]],
-              upper_bound = .data[[date_col]] + months(12)
-            ) |>
-            dplyr::select(-all_of(date_col)),
-          dplyr::join_by(..id, closest(..date >= lower_bound), ..date <= upper_bound),
-          relationship = "many-to-one"
-        ) |>
-        dplyr::rename("{date_col}" := "..date", "{id_col}" := "..id")
+      portfolio_returns <- join_rebalanced_portfolios(sorting_data, portfolio_data, date_col, id_col)
     }
 
     portfolio_returns <- portfolio_returns |>
@@ -433,23 +401,7 @@ compute_portfolio_returns <- function(
           "portfolio_secondary"
         )))
 
-      portfolio_returns <- sorting_data |>
-        dplyr::rename(
-          "..date" = all_of(date_col),
-          "..id" := all_of(id_col)
-        ) |>
-        dplyr::left_join(
-          portfolio_data |>
-            dplyr::rename("..id" = all_of(id_col)) |>
-            dplyr::mutate(
-              lower_bound = .data[[date_col]],
-              upper_bound = .data[[date_col]] + months(12L)
-            ) |>
-            dplyr::select(-all_of(date_col)),
-          dplyr::join_by(..id, closest(..date >= lower_bound), ..date <= upper_bound),
-          relationship = "many-to-one"
-        ) |>
-        dplyr::rename("{date_col}" := "..date", "{id_col}" := "..id")
+      portfolio_returns <- join_rebalanced_portfolios(sorting_data, portfolio_data, date_col, id_col)
     }
 
     portfolio_returns <- portfolio_returns |>
@@ -536,4 +488,36 @@ summarise_portfolio_returns <- function(data, ret_col, w_col, w_capped_col,
       ),
       .groups = "drop"
     )
+}
+
+#' Join rebalanced portfolio assignments to sorting data (internal helper)
+#'
+#' Performs an inequality join to carry forward annual portfolio assignments to
+#' all dates within the 12-month rebalancing window.
+#'
+#' @param sorting_data The full panel of stock-level data.
+#' @param portfolio_data Portfolio assignments at rebalancing dates.
+#' @param date_col Name of the date column.
+#' @param id_col Name of the stock identifier column.
+#'
+#' @return A data frame with portfolio assignments joined to all dates.
+#'
+#' @keywords internal
+#' @noRd
+join_rebalanced_portfolios <- function(sorting_data, portfolio_data,
+                                       date_col, id_col) {
+  sorting_data |>
+    dplyr::rename("..date" = dplyr::all_of(date_col), "..id" = dplyr::all_of(id_col)) |>
+    dplyr::left_join(
+      portfolio_data |>
+        dplyr::rename("..id" = dplyr::all_of(id_col)) |>
+        dplyr::mutate(
+          lower_bound = .data[[date_col]],
+          upper_bound = .data[[date_col]] + months(12)
+        ) |>
+        dplyr::select(-dplyr::all_of(date_col)),
+      dplyr::join_by(..id, closest(..date >= lower_bound), ..date <= upper_bound),
+      relationship = "many-to-one"
+    ) |>
+    dplyr::rename("{date_col}" := "..date", "{id_col}" := "..id")
 }
