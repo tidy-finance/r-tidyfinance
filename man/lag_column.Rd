@@ -19,13 +19,13 @@ lag_column(
 \item{date}{A vector representing dates corresponding to the \code{column}. The column should be in a
 date or datetime format.}
 
-\item{lag}{An integer or an \code{lubridate::periods()} object, e.g., \code{month(1)}, specifying the minimum lag (in days, hours, etc.) to apply to \code{column}.}
+\item{lag}{An integer or an \code{lubridate::periods()} object, e.g., \code{month(1)}, specifying the minimum lag (inclusive) to apply to \code{column}.}
 
-\item{max_lag}{An integer or an \code{lubridate::periods()} object specifying the maximum lag (in days, hours, etc.) to apply to \code{column}.
+\item{max_lag}{An integer or an \code{lubridate::periods()} object specifying the maximum lag (inclusive) to apply to \code{column}.
 Defaults to \code{lag}.}
 
 \item{drop_na}{A logical value indicating whether to drop \code{NA} values from the resulting lagged
-column. Defaults to \code{TRUE}.}
+column. Defaults to \code{FALSE}.}
 
 \item{ff_adjustment}{A logical value indicating whether to lag monthly data based on Fama-French conventions. Here, the values are lagged based on the last observation within the year is taken. Defaults to \code{FALSE}.}
 }

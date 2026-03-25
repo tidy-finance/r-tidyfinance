@@ -15,7 +15,7 @@ make_panel <- function(n_stocks = 50, n_months = 24, seed = 42) {
       exchange = sample(c("NYSE", "NASDAQ"), n(), replace = TRUE)
     ) |>
     arrange(date, permno) |>
-    as.data.frame()
+    as_tibble()
 }
 
 test_that("error if sorting_variables is NULL or empty", {
