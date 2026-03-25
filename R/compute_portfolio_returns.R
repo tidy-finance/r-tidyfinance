@@ -1,5 +1,8 @@
 #' Compute Portfolio Returns
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' This function computes individual portfolio returns based on specified
 #' sorting variables and sorting methods. The portfolios can be rebalanced every
 #' period or on an annual frequency by specifying a rebalancing month, which is
@@ -55,6 +58,9 @@
 #' @param min_portfolio_size An integer specifying the minimum number of
 #'   portfolio constituents (default is set to `0`, effectively deactivating the
 #'   check). Small portfolios' returns are set to zero.
+#' @param cap_weight A numeric value between 0 and 1 specifying the percentile
+#'   at which market capitalization is capped per date when computing
+#'   `ret_excess_vw_capped`. Defaults to `0.8`.
 #' @param data_options A named list of \link{data_options} with characters, indicating
 #'   the column names required to run this function.  The required column names identify dates,
 #'   the stocks, and returns. Defaults to `date=date`, `id=permno`, and `ret_excess = ret_excess`.
@@ -71,6 +77,11 @@
 #'      insufficient observations for that portfolio-date.
 #'     \item `ret_excess_ew`: The equal-weighted excess return of the portfolio.
 #'      `NA` if insufficient observations for that portfolio-date.
+#'     \item `ret_excess_vw_capped`: The capped value-weighted excess return of the portfolio
+#'      (only computed if the `sorting_data` contains `mktcap_lag`). Weights are
+#'      computed using market capitalization capped at the `cap_weight`
+#'      percentile per date. `NA` if insufficient observations for that
+#'      portfolio-date.
 #'   }
 #'
 #' @note Ensure that the `sorting_data` contains all the required columns: The
@@ -111,6 +122,7 @@ compute_portfolio_returns <- function(
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
   min_portfolio_size = 0L,
+  cap_weight = 0.8,
   data_options = NULL,
   quiet = FALSE
 ) {
@@ -138,10 +150,16 @@ compute_portfolio_returns <- function(
     )
   }
 
+  if (!is.numeric(cap_weight) || length(cap_weight) != 1L ||
+      is.na(cap_weight) || cap_weight < 0 || cap_weight > 1) {
+    cli::cli_abort("'cap_weight' must be a single numeric value in [0, 1].")
+  }
+
   date_col <- data_options$date
   id_col <- data_options$id
   ret_col <- data_options$ret_excess
   w_col <- data_options$mktcap_lag
+  w_capped_col <- paste0(w_col, "_capped")
 
   required_columns <- c(sorting_variables, date_col, id_col, ret_col)
 
@@ -154,7 +172,7 @@ compute_portfolio_returns <- function(
 
   mktcap_lag_missing <- !(w_col %in% colnames(sorting_data))
   if (mktcap_lag_missing) {
-    sorting_data$mktcap_lag <- 1L
+    sorting_data[[w_col]] <- 1L
   }
 
   # Store the dates before filtering out missing values
@@ -163,20 +181,25 @@ compute_portfolio_returns <- function(
   # Filter out rows with missing values in any sorting variable, as these cannot
   # be assigned to portfolios
   sorting_data <- sorting_data |>
-    tidyr::drop_na(all_of(sorting_variables))
+    tidyr::drop_na(dplyr::all_of(sorting_variables))
 
-  # Replace sorting_data$mktcap_lag with 0 if it is NA, as these observations
-  # should not contribute to the value-weighted return
+  # Compute capped market capitalization per date before replacing NAs,
+  # so that the quantile is not distorted by zero-filled missing values
+  sorting_data <- sorting_data |>
+    dplyr::group_by(.data[[date_col]]) |>
+    dplyr::mutate(
+      !!w_capped_col := pmin(
+        .data[[w_col]],
+        stats::quantile(.data[[w_col]], cap_weight, na.rm = TRUE)
+      )
+    ) |>
+    dplyr::ungroup()
+
+  # Replace NA market caps with 0, as these observations should not contribute
+  # to the value-weighted return
   missing_mcap_data <- is.na(sorting_data[[w_col]])
-  sorting_data[[w_col]][missing_mcap_data] <- 0L
-
-  # Drop dates with insufficient observations
-  if (min_portfolio_size > 0L) {
-    sorting_data <- sorting_data |>
-      group_by(.data[[date_col]]) |>
-      filter(n() >= min_portfolio_size) |>
-      ungroup()
-  }
+  sorting_data[[w_col]][missing_mcap_data] <- 0
+  sorting_data[[w_capped_col]][missing_mcap_data] <- 0
 
   # Handle edge case where all observations are filtered out
   if (nrow(sorting_data) == 0L) {
@@ -184,7 +207,7 @@ compute_portfolio_returns <- function(
       cli::cli_inform(
         paste0(
           "Returning an empty panel: all observations were filtered out ",
-          "(n() < {min_portfolio_size} on every date)."
+          "(n() <= {min_portfolio_size} on every date)."
         )
       )
     }
@@ -198,6 +221,10 @@ compute_portfolio_returns <- function(
       empty_result <- empty_result |>
         tibble::add_column(
           ret_excess_vw = numeric(0L),
+          .before = "ret_excess_ew"
+        ) |>
+        tibble::add_column(
+          ret_excess_vw_capped = numeric(0L),
           .before = "ret_excess_ew"
         )
     }
@@ -218,10 +245,10 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
-        group_by(.data[[date_col]]) |>
-        mutate(
+        dplyr::group_by(.data[[date_col]]) |>
+        dplyr::mutate(
           portfolio = assign_portfolio(
-            data = pick(everything()),
+            data = dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables,
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
@@ -230,57 +257,26 @@ compute_portfolio_returns <- function(
         )
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(.data[[date_col]]) == rebalancing_month) |>
-        group_by(.data[[date_col]]) |>
-        mutate(
+        dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
+        dplyr::group_by(.data[[date_col]]) |>
+        dplyr::mutate(
           portfolio = assign_portfolio(
-            data = pick(everything()),
+            data = dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables,
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
-        ungroup() |>
-        select(all_of(c(id_col, date_col, "portfolio")))
+        dplyr::ungroup() |>
+        dplyr::select(all_of(c(id_col, date_col, "portfolio")))
 
-      portfolio_returns <- sorting_data |>
-        rename(
-          "..date" = all_of(date_col),
-          "..id" := all_of(id_col)
-        ) |>
-        left_join(
-          portfolio_data |>
-            rename("..id" = all_of(id_col)) |>
-            mutate(
-              lower_bound = .data[[date_col]],
-              upper_bound = .data[[date_col]] + months(12)
-            ) |>
-            select(-all_of(date_col)),
-          join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
-          relationship = "many-to-one"
-        ) |>
-        rename("{date_col}" := "..date", "{id_col}" := "..id")
+      portfolio_returns <- join_rebalanced_portfolios(sorting_data, portfolio_data, date_col, id_col)
     }
 
     portfolio_returns <- portfolio_returns |>
-      group_by(portfolio, .data[[date_col]]) |>
-      summarize(
-        ret_excess_vw = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          stats::weighted.mean(
-            .data[[ret_col]],
-            .data[[w_col]]
-          )
-        ),
-        ret_excess_ew = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          mean(.data[[ret_col]])
-        ),
-        .groups = "drop"
-      )
+      dplyr::group_by(portfolio, .data[[date_col]]) |>
+      summarise_portfolio_returns(ret_col, w_col, w_capped_col, min_portfolio_size)
   }
 
   if (sorting_method == "bivariate-dependent") {
@@ -290,101 +286,69 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
-        group_by(.data[[date_col]]) |>
-        mutate(
+        dplyr::group_by(.data[[date_col]]) |>
+        dplyr::mutate(
           portfolio_secondary = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[2],
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           )
         ) |>
-        ungroup() |>
-        group_by(.data[[date_col]], portfolio_secondary) |>
-        mutate(
+        dplyr::ungroup() |>
+        dplyr::group_by(.data[[date_col]], portfolio_secondary) |>
+        dplyr::mutate(
           portfolio_main = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1],
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
-        ungroup()
+        dplyr::ungroup()
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(.data[[date_col]]) == rebalancing_month) |>
-        group_by(.data[[date_col]]) |>
-        mutate(
+        dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
+        dplyr::group_by(.data[[date_col]]) |>
+        dplyr::mutate(
           portfolio_secondary = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[2L],
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           )
         ) |>
-        ungroup() |>
-        group_by(.data[[date_col]], portfolio_secondary) |>
-        mutate(
+        dplyr::ungroup() |>
+        dplyr::group_by(.data[[date_col]], portfolio_secondary) |>
+        dplyr::mutate(
           portfolio_main = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1L],
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
-        ungroup() |>
-        select(all_of(c(
+        dplyr::ungroup() |>
+        dplyr::select(all_of(c(
           id_col,
           date_col,
           "portfolio_main",
           "portfolio_secondary"
         )))
 
-      portfolio_returns <- sorting_data |>
-        rename(
-          "..date" = all_of(date_col),
-          "..id" := all_of(id_col)
-        ) |>
-        left_join(
-          portfolio_data |>
-            rename("..id" = all_of(id_col)) |>
-            mutate(
-              lower_bound = .data[[date_col]],
-              upper_bound = .data[[date_col]] + months(12)
-            ) |>
-            select(-all_of(date_col)),
-          join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
-          relationship = "many-to-one"
-        ) |>
-        rename("{date_col}" := "..date", "{id_col}" := "..id")
+      portfolio_returns <- join_rebalanced_portfolios(sorting_data, portfolio_data, date_col, id_col)
     }
 
     portfolio_returns <- portfolio_returns |>
-      group_by(
-        portfolio_main,
-        portfolio_secondary,
-        .data[[date_col]]
-      ) |>
-      summarize(
-        ret_excess_vw = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          stats::weighted.mean(.data[[ret_col]], .data[[w_col]])
-        ),
-        ret_excess_ew = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          mean(.data[[ret_col]])
-        ),
-        .groups = "drop"
-      ) |>
-      group_by(portfolio = portfolio_main, .data[[date_col]]) |>
-      summarize(
-        across(c(ret_excess_vw, ret_excess_ew), \(x) mean(x, na.rm = TRUE)),
+      dplyr::group_by(portfolio_main, portfolio_secondary, .data[[date_col]]) |>
+      summarise_portfolio_returns(ret_col, w_col, w_capped_col, min_portfolio_size) |>
+      dplyr::group_by(portfolio = portfolio_main, .data[[date_col]]) |>
+      dplyr::summarise(
+        dplyr::across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped), \(x) mean(x, na.rm = TRUE)),
         .groups = "drop"
       )
   }
@@ -396,99 +360,63 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- sorting_data |>
-        group_by(.data[[date_col]]) |>
-        mutate(
+        dplyr::group_by(.data[[date_col]]) |>
+        dplyr::mutate(
           portfolio_secondary = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[2L],
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           ),
           portfolio_main = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1L],
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
-        ungroup()
+        dplyr::ungroup()
     } else {
       portfolio_data <- sorting_data |>
-        filter(month(.data[[date_col]]) == rebalancing_month) |>
-        group_by(.data[[date_col]]) |>
-        mutate(
+        dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
+        dplyr::group_by(.data[[date_col]]) |>
+        dplyr::mutate(
           portfolio_secondary = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[2L],
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           ),
           portfolio_main = assign_portfolio(
-            pick(everything()),
+            dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1L],
             breakpoint_options = breakpoint_options_main,
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
-        ungroup() |>
-        select(all_of(c(
+        dplyr::ungroup() |>
+        dplyr::select(all_of(c(
           id_col,
           date_col,
           "portfolio_main",
           "portfolio_secondary"
         )))
 
-      portfolio_returns <- sorting_data |>
-        rename(
-          "..date" = all_of(date_col),
-          "..id" := all_of(id_col)
-        ) |>
-        left_join(
-          portfolio_data |>
-            rename("..id" = all_of(id_col)) |>
-            mutate(
-              lower_bound = .data[[date_col]],
-              upper_bound = .data[[date_col]] + months(12L)
-            ) |>
-            select(-all_of(date_col)),
-          join_by(..id, closest(..date >= lower_bound), ..date < upper_bound),
-          relationship = "many-to-one"
-        ) |>
-        rename("{date_col}" := "..date", "{id_col}" := "..id")
+      portfolio_returns <- join_rebalanced_portfolios(sorting_data, portfolio_data, date_col, id_col)
     }
 
     portfolio_returns <- portfolio_returns |>
-      group_by(
-        portfolio_main,
-        portfolio_secondary,
-        .data[[date_col]]
-      ) |>
-      summarize(
-        ret_excess_vw = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          stats::weighted.mean(.data[[ret_col]], .data[[w_col]])
-        ),
-        ret_excess_ew = if_else(
-          n() < min_portfolio_size,
-          NA_real_,
-          mean(.data[[ret_col]])
-        ),
-        .groups = "drop"
-      ) |>
-      group_by(portfolio = portfolio_main, .data[[date_col]]) |>
-      summarize(
-        across(c(ret_excess_vw, ret_excess_ew), \(x) mean(x, na.rm = TRUE)),
+      dplyr::group_by(portfolio_main, portfolio_secondary, .data[[date_col]]) |>
+      summarise_portfolio_returns(ret_col, w_col, w_capped_col, min_portfolio_size) |>
+      dplyr::group_by(portfolio = portfolio_main, .data[[date_col]]) |>
+      dplyr::summarise(
+        dplyr::across(c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped), \(x) mean(x, na.rm = TRUE)),
         .groups = "drop"
       )
-  }
-
-  if (mktcap_lag_missing) {
-    portfolio_returns <- portfolio_returns |> select(-ret_excess_vw)
   }
 
   portfolio_returns <- portfolio_returns[!is.na(portfolio_returns$portfolio), ]
@@ -504,11 +432,12 @@ compute_portfolio_returns <- function(
   return_cols <- if (mktcap_lag_missing) {
     "ret_excess_ew"
   } else {
-    c("ret_excess_vw", "ret_excess_ew")
+    c("ret_excess_vw", "ret_excess_ew", "ret_excess_vw_capped")
   }
 
   portfolio_returns <- complete_panel |>
-    left_join(portfolio_returns, by = c("portfolio", date_col))
+    dplyr::left_join(portfolio_returns, by = c("portfolio", date_col)) |>
+    dplyr::select(dplyr::all_of(c("portfolio", date_col, return_cols)))
 
   # Count and report missing values
   n_missing <- sum(is.na(portfolio_returns[["ret_excess_ew"]]))
@@ -524,4 +453,76 @@ compute_portfolio_returns <- function(
   }
 
   portfolio_returns
+}
+
+#' Summarise portfolio returns (internal helper)
+#'
+#' Computes equal-weighted, value-weighted, and capped value-weighted returns
+#' for an already-grouped data frame. Groups with fewer than
+#' `min_portfolio_size` observations receive `NA`.
+#'
+#' @param data A grouped data frame.
+#' @param ret_col Column name for excess returns.
+#' @param w_col Column name for market capitalisation weights.
+#' @param w_capped_col Column name for capped market capitalisation weights.
+#' @param min_portfolio_size Minimum number of stocks per portfolio-date.
+#'
+#' @return An ungrouped data frame with columns `ret_excess_vw`,
+#'   `ret_excess_ew`, and `ret_excess_vw_capped`.
+#'
+#' @keywords internal
+#' @noRd
+summarise_portfolio_returns <- function(data, ret_col, w_col, w_capped_col,
+                                        min_portfolio_size) {
+  data |>
+    dplyr::summarise(
+      ret_excess_vw = dplyr::if_else(
+        dplyr::n() < min_portfolio_size | sum(.data[[w_col]]) == 0,
+        NA_real_,
+        stats::weighted.mean(.data[[ret_col]], .data[[w_col]])
+      ),
+      ret_excess_ew = dplyr::if_else(
+        dplyr::n() < min_portfolio_size,
+        NA_real_,
+        mean(.data[[ret_col]])
+      ),
+      ret_excess_vw_capped = dplyr::if_else(
+        dplyr::n() < min_portfolio_size | sum(.data[[w_capped_col]]) == 0,
+        NA_real_,
+        stats::weighted.mean(.data[[ret_col]], .data[[w_capped_col]])
+      ),
+      .groups = "drop"
+    )
+}
+
+#' Join rebalanced portfolio assignments to sorting data (internal helper)
+#'
+#' Performs an inequality join to carry forward annual portfolio assignments to
+#' all dates within the 12-month rebalancing window.
+#'
+#' @param sorting_data The full panel of stock-level data.
+#' @param portfolio_data Portfolio assignments at rebalancing dates.
+#' @param date_col Name of the date column.
+#' @param id_col Name of the stock identifier column.
+#'
+#' @return A data frame with portfolio assignments joined to all dates.
+#'
+#' @keywords internal
+#' @noRd
+join_rebalanced_portfolios <- function(sorting_data, portfolio_data,
+                                       date_col, id_col) {
+  sorting_data |>
+    dplyr::rename("..date" = dplyr::all_of(date_col), "..id" = dplyr::all_of(id_col)) |>
+    dplyr::left_join(
+      portfolio_data |>
+        dplyr::rename("..id" = dplyr::all_of(id_col)) |>
+        dplyr::mutate(
+          lower_bound = .data[[date_col]],
+          upper_bound = .data[[date_col]] + months(12)
+        ) |>
+        dplyr::select(-dplyr::all_of(date_col)),
+      dplyr::join_by(..id, closest(..date >= lower_bound), ..date <= upper_bound),
+      relationship = "many-to-one"
+    ) |>
+    dplyr::rename("{date_col}" := "..date", "{id_col}" := "..id")
 }

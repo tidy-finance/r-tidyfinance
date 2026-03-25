@@ -189,6 +189,7 @@ utils::globalVariables(
     "portfolio_secondary",
     "ret_excess_ew",
     "ret_excess_vw",
+    "ret_excess_vw_capped",
     "ret_measure",
     "top",
     "upper_bound",
