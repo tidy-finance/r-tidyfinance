@@ -15,7 +15,7 @@ download_data_osap(
 specifying the start date for the data. If not provided, the full dataset is returned.}
 
 \item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
-specifying the start date for the data. If not provided, the full dataset is returned.}
+specifying the end date for the data. If not provided, the full dataset is returned.}
 
 \item{sheet_id}{A character string representing the Google Sheet ID from which to download the data.
 Default is \code{"1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"}.}

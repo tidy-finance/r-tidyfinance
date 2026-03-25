@@ -27,7 +27,7 @@ download_data_wrds_trace_enhanced <- function(
 ) {
   if (!is.character(cusips) || anyNA(cusips) || !all(nchar(cusips) == 9)) {
     cli::cli_abort(
-      "{.arg cusip} must be a character vector of 9-digit CUSIPs, not {.obj_type_friendly {cusips}}."
+      "{.arg cusips} must be a character vector of 9-digit CUSIPs, not {.obj_type_friendly {cusips}}."
     )
   }
 

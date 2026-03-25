@@ -1,4 +1,4 @@
-#' Join lagged variable values over a date range
+#' Join Lagged Variable Values over a Date Range
 #'
 #' @description `r lifecycle::badge('experimental')`
 #'

@@ -39,7 +39,7 @@ downloads the legacy version of CRSP.}
 daily data as a character vector.}
 
 \item{add_ccm_links}{A logical indicating whether CRSP-Compustat links should be
-added automtically using \code{\link[=download_data_wrds_ccm_links]{download_data_wrds_ccm_links()}}.}
+added automatically using \code{\link[=download_data_wrds_ccm_links]{download_data_wrds_ccm_links()}}.}
 
 \item{adjust_volume}{A logical indicating whether daily CRSP trading volume data
 should be adjusted according to Gao & Ritter (2010).}

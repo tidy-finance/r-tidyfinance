@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_rolling_value.R
 \name{compute_rolling_value}
 \alias{compute_rolling_value}
-\title{Compute a rolling value by period}
+\title{Compute a Rolling Value by Period}
 \usage{
 compute_rolling_value(
   data,

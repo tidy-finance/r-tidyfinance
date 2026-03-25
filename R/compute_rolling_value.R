@@ -1,4 +1,4 @@
-#' Compute a rolling value by period
+#' Compute a Rolling Value by Period
 #'
 #' @description `r lifecycle::badge('experimental')`
 #'

@@ -31,7 +31,7 @@
 #'   computes basic statistics (n, mean, sd, min, median, max). When TRUE,
 #'   additional quantiles (1%, 5%, 10%, 25%, 75%, 90%, 95%, 99%) are computed.
 #' @param drop_na A logical flag indicating whether to drop missing values for
-#'   each variabl (default is FALSE).
+#'   each variable (default is FALSE).
 #'
 #' @returns A tibble with summary statistics for each selected variable. If `by`
 #'   is specified, the output includes the grouping variable as well. Each row

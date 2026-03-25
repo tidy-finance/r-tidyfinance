@@ -28,7 +28,7 @@ computes basic statistics (n, mean, sd, min, median, max). When TRUE,
 additional quantiles (1\%, 5\%, 10\%, 25\%, 75\%, 90\%, 95\%, 99\%) are computed.}
 
 \item{drop_na}{A logical flag indicating whether to drop missing values for
-each variabl (default is FALSE).}
+each variable (default is FALSE).}
 }
 \value{
 A tibble with summary statistics for each selected variable. If \code{by}

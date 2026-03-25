@@ -14,7 +14,7 @@ estimate_betas(
 )
 }
 \arguments{
-\item{data}{A tibble containing the data with a date identifier (defaults to \code{date}), a stock
+\item{data}{A data frame containing the data with a date identifier (defaults to \code{date}), a stock
 identifier (defaults to \code{permno}), and other variables used in the model.}
 
 \item{model}{A formula representing the model to be estimated (e.g.,
@@ -34,7 +34,7 @@ names required to run this function. The required column names identify dates an
 Defaults to \code{date = date} and \code{id = permno}.}
 }
 \value{
-A tibble with the estimated betas for each time period.
+A data frame with the estimated betas for each time period.
 }
 \description{
 This function estimates rolling betas for a given model using the provided data.

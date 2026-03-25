@@ -3,7 +3,7 @@
 #' This function estimates rolling betas for a given model using the provided data.
 #' It supports parallel processing for faster computation using the `furrr` package.
 #'
-#' @param data A tibble containing the data with a date identifier (defaults to `date`), a stock
+#' @param data A data frame containing the data with a date identifier (defaults to `date`), a stock
 #'  identifier (defaults to `permno`), and other variables used in the model.
 #' @param model A formula representing the model to be estimated (e.g.,
 #'   `ret_excess ~ mkt_excess + smb + hml`).
@@ -16,7 +16,7 @@
 #' @param data_options A named list of \link{data_options} with characters, indicating the column
 #'  names required to run this function. The required column names identify dates and the stocks.
 #'  Defaults to `date = date` and `id = permno`.
-#' @returns A tibble with the estimated betas for each time period.
+#' @returns A data frame with the estimated betas for each time period.
 #'
 #' @export
 #'

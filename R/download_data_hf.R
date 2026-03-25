@@ -1,6 +1,6 @@
-#' List parquet files in a Hugging Face dataset
+#' List Parquet Files in a Hugging Face Dataset
 #'
-#' Query the Hugging Face Datasets API and return a tibble of files with a
+#' Query the Hugging Face Datasets API and return a data frame of files with a
 #' `.parquet` suffix. The function follows pagination links returned in the
 #' response `Link` header and returns path, size and a resolved URL.
 #'

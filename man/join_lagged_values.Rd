@@ -2,7 +2,7 @@
 % Please edit documentation in R/join_lagged_values.R
 \name{join_lagged_values}
 \alias{join_lagged_values}
-\title{Join lagged variable values over a date range}
+\title{Join Lagged Variable Values over a Date Range}
 \usage{
 join_lagged_values(
   original_data,

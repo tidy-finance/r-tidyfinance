@@ -20,7 +20,7 @@
 #' @param additional_columns Additional columns from the CRSP monthly or
 #'   daily data as a character vector.
 #' @param add_ccm_links A logical indicating whether CRSP-Compustat links should be
-#'   added automtically using [download_data_wrds_ccm_links()].
+#'   added automatically using [download_data_wrds_ccm_links()].
 #' @param adjust_volume A logical indicating whether daily CRSP trading volume data
 #'   should be adjusted according to Gao & Ritter (2010).
 #'

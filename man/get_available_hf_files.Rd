@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_data_hf.R
 \name{get_available_hf_files}
 \alias{get_available_hf_files}
-\title{List parquet files in a Hugging Face dataset}
+\title{List Parquet Files in a Hugging Face Dataset}
 \usage{
 get_available_hf_files(organization, dataset)
 }
@@ -15,7 +15,7 @@ get_available_hf_files(organization, dataset)
 A tibble with columns: path (character), size (numeric) and url (character).
 }
 \description{
-Query the Hugging Face Datasets API and return a tibble of files with a
+Query the Hugging Face Datasets API and return a data frame of files with a
 \code{.parquet} suffix. The function follows pagination links returned in the
 response \code{Link} header and returns path, size and a resolved URL.
 }
