@@ -196,21 +196,13 @@ compute_portfolio_returns <- function(
   sorting_data[[w_col]][missing_mcap_data] <- 0
   sorting_data[[w_capped_col]][missing_mcap_data] <- 0
 
-  # Drop dates with insufficient observations
-  if (min_portfolio_size > 0L) {
-    sorting_data <- sorting_data |>
-      dplyr::group_by(.data[[date_col]]) |>
-      filter(n() >= min_portfolio_size) |>
-      ungroup()
-  }
-
   # Handle edge case where all observations are filtered out
   if (nrow(sorting_data) == 0L) {
     if (!quiet) {
       cli::cli_inform(
         paste0(
           "Returning an empty panel: all observations were filtered out ",
-          "(n() < {min_portfolio_size} on every date)."
+          "(n() <= {min_portfolio_size} on every date)."
         )
       )
     }
