@@ -184,11 +184,11 @@ check_supported_dataset_hf <- function(dataset) {
 #'   grid. Supported columns and their defaults are:
 #'   \describe{
 #'     \item{`sorting_variable`}{`"me"`}
-#'     \item{`exclude_size`}{`0`}
+#'     \item{`exclude_size`}{`0.2`}
 #'     \item{`exclude_financials`}{`FALSE`}
 #'     \item{`exclude_utilities`}{`FALSE`}
 #'     \item{`exclude_negative_earnings`}{`FALSE`}
-#'     \item{`sorting_variable_lag`}{`"3m"`}
+#'     \item{`sorting_variable_lag`}{`"6m"`}
 #'     \item{`rebalancing`}{`"monthly"`}
 #'     \item{`breakpoints_main`}{`10`}
 #'     \item{`sorting_method`}{`"univariate"`}
@@ -210,11 +210,11 @@ filter_grid <- function(..., fill_all = FALSE) {
 
   defaults <- list(
     sorting_variable = "me",
-    exclude_size = 0,
+    exclude_size = 0.2,
     exclude_financials = FALSE,
     exclude_utilities = FALSE,
     exclude_negative_earnings = FALSE,
-    sorting_variable_lag = "3m",
+    sorting_variable_lag = "6m",
     rebalancing = "monthly",
     breakpoints_main = 10,
     sorting_method = "univariate",
