@@ -162,7 +162,7 @@ test_that("univariate periodic has correct columns with mktcap_lag", {
     breakpoint_options_main = breakpoint_options(n_portfolios = 5)
   )
   expect_true(all(
-    c("portfolio", "date", "ret_excess_vw", "ret_excess_ew") %in%
+    c("portfolio", "date", "ret_excess_vw", "ret_excess_ew", "ret_excess_vw_capped") %in%
       colnames(result)
   ))
 })
@@ -177,6 +177,7 @@ test_that("univariate periodic has correct columns without mktcap_lag", {
   )
   expect_true("ret_excess_ew" %in% colnames(result))
   expect_false("ret_excess_vw" %in% colnames(result))
+  expect_false("ret_excess_vw_capped" %in% colnames(result))
 })
 
 test_that("univariate periodic returns correct number of portfolios", {
@@ -351,7 +352,7 @@ test_that("bivariate-dependent has correct output columns", {
     )
   )
   expect_true(all(
-    c("portfolio", "date", "ret_excess_vw", "ret_excess_ew") %in%
+    c("portfolio", "date", "ret_excess_vw", "ret_excess_ew", "ret_excess_vw_capped") %in%
       colnames(result)
   ))
 })
@@ -509,7 +510,7 @@ test_that("min_portfolio_size applies per portfolio-date group", {
   expect_true(any(is.na(result$ret_excess_ew)))
 })
 
-test_that("missing mktcap_lag removes ret_excess_vw column", {
+test_that("missing mktcap_lag removes ret_excess_vw and ret_excess_vw_capped columns", {
   data <- make_panel() |> select(-mktcap_lag)
   result <- compute_portfolio_returns(
     data,
@@ -518,6 +519,7 @@ test_that("missing mktcap_lag removes ret_excess_vw column", {
     breakpoint_options_main = breakpoint_options(n_portfolios = 5)
   )
   expect_false("ret_excess_vw" %in% colnames(result))
+  expect_false("ret_excess_vw_capped" %in% colnames(result))
   expect_true("ret_excess_ew" %in% colnames(result))
 })
 
@@ -531,6 +533,7 @@ test_that("missing mktcap_lag works for bivariate-independent", {
     breakpoint_options_secondary = breakpoint_options(n_portfolios = 2)
   )
   expect_false("ret_excess_vw" %in% colnames(result))
+  expect_false("ret_excess_vw_capped" %in% colnames(result))
   expect_true("ret_excess_ew" %in% colnames(result))
 })
 
@@ -814,4 +817,103 @@ test_that("output is a complete panel of portfolio x date", {
   n_dates_out <- length(unique(result$date))
 
   expect_equal(nrow(result), n_portfolios * n_dates_out)
+})
+
+test_that("changing cap_weight changes ret_excess_vw_capped", {
+  data <- make_panel(n_stocks = 100, n_months = 12)
+
+  result_80 <- compute_portfolio_returns(
+    data,
+    "size",
+    "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 5),
+    cap_weight = 0.8
+  )
+  result_50 <- compute_portfolio_returns(
+    data,
+    "size",
+    "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 5),
+    cap_weight = 0.5
+  )
+
+  # Capped returns should differ with different cap_weight
+  expect_false(isTRUE(all.equal(
+    result_80$ret_excess_vw_capped,
+    result_50$ret_excess_vw_capped
+  )))
+  # But EW returns should be identical (unaffected by cap_weight)
+  expect_equal(result_80$ret_excess_ew, result_50$ret_excess_ew)
+})
+
+test_that("cap_weight = 1 makes ret_excess_vw_capped equal to ret_excess_vw", {
+  data <- make_panel(n_stocks = 100, n_months = 12)
+  result <- compute_portfolio_returns(
+    data,
+    "size",
+    "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 5),
+    cap_weight = 1
+  )
+  expect_equal(result$ret_excess_vw_capped, result$ret_excess_vw)
+})
+
+test_that("error for invalid cap_weight values", {
+  data <- make_panel()
+  expect_error(
+    compute_portfolio_returns(
+      data, "size", "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 5),
+      cap_weight = 1.5
+    ),
+    "cap_weight"
+  )
+  expect_error(
+    compute_portfolio_returns(
+      data, "size", "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 5),
+      cap_weight = -0.1
+    ),
+    "cap_weight"
+  )
+  expect_error(
+    compute_portfolio_returns(
+      data, "size", "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 5),
+      cap_weight = NA
+    ),
+    "cap_weight"
+  )
+  expect_error(
+    compute_portfolio_returns(
+      data, "size", "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 5),
+      cap_weight = "high"
+    ),
+    "cap_weight"
+  )
+})
+
+test_that("all-NA mktcap_lag produces NA not NaN for VW returns", {
+  set.seed(42)
+  data <- data.frame(
+    permno = 1:20,
+    date = as.Date("2020-01-01"),
+    mktcap_lag = NA_real_,
+    ret_excess = rnorm(20, 0, 0.05),
+    size = 1:20
+  )
+  result <- compute_portfolio_returns(
+    data,
+    "size",
+    "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 2)
+  )
+  # VW returns should be NA (not NaN) when all weights are zero
+  expect_true(all(is.na(result$ret_excess_vw)))
+  expect_false(any(is.nan(result$ret_excess_vw)))
+  expect_true(all(is.na(result$ret_excess_vw_capped)))
+  expect_false(any(is.nan(result$ret_excess_vw_capped)))
+  # EW returns should still be computed
+  expect_false(any(is.na(result$ret_excess_ew)))
 })
