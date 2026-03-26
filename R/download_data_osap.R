@@ -1,6 +1,6 @@
 #' Download and Process Open Source Asset Pricing Data
 #'
-#' This function downloads the data from [Open Source Asset Pricing](https://www.openassetpricing.com/data/)
+#' Downloads the data from [Open Source Asset Pricing](https://www.openassetpricing.com/data/)
 #' from Google Sheets using a specified sheet ID, processes the data by converting column names to
 #' snake_case, and optionally filters the data based on a provided date range.
 #'

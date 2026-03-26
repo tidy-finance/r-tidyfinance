@@ -1,6 +1,6 @@
 #' Estimate Fama-MacBeth Regressions
 #'
-#' This function estimates Fama-MacBeth regressions by first running cross-sectional regressions
+#' Estimates Fama-MacBeth regressions by first running cross-sectional regressions
 #' for each time period and then aggregating the results over time to obtain average risk premia
 #' and corresponding t-statistics.
 #'

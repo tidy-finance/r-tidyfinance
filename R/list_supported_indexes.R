@@ -1,6 +1,6 @@
 #' List Supported Indexes
 #'
-#' This function returns a tibble containing information about supported financial indexes.
+#' Returns a tibble containing information about supported financial indexes.
 #' Each index is associated with a URL that points to a CSV file containing the holdings of the index.
 #' Additionally, each index has a corresponding `skip` value, which indicates the number of lines
 #' to skip when reading the CSV file.

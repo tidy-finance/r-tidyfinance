@@ -2,7 +2,7 @@
 #'
 #' @description `r lifecycle::badge('experimental')`
 #'
-#' This function generates a lagged version of a given column based on a date variable, with the
+#' Generates a lagged version of a given column based on a date variable, with the
 #' ability to specify a range of lags. It also allows for the optional removal of `NA` values.
 #'
 #' @param column A numeric vector or column to be lagged.
@@ -85,10 +85,10 @@ lag_column <- function(
 }
 
 
-#' Add a lagged a Column Based on Date and Time Range
+#' Add a Lagged Column Based on Date and Time Range
 #'
 #' @description
-#' This function takes a data.frame and appends a lagged version of given columns based on a date variable, with the
+#' Takes a data.frame and appends a lagged version of given columns based on a date variable, with the
 #' ability to specify a range of lags. It also allows for the optional removal of `NA` values.
 #'
 #' @param df A data frame containing the variables to lag.

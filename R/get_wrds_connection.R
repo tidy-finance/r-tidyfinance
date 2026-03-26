@@ -1,6 +1,6 @@
 #' Establish a Connection to the WRDS Database
 #'
-#' This function establishes a connection to the Wharton Research Data Services
+#' Establishes a connection to the Wharton Research Data Services
 #' (WRDS) database using the `RPostgres` package. It requires that the
 #' `RPostgres` package is installed and that valid WRDS credentials are set as
 #' environment variables.

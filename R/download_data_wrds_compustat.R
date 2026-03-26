@@ -1,6 +1,6 @@
 #' Download Data from WRDS Compustat
 #'
-#' This function downloads financial data from the WRDS Compustat database for a
+#' Downloads financial data from the WRDS Compustat database for a
 #' given dataset, start date, and end date. It filters the data
 #' according to industry format, data format, and consolidation level, and
 #' returns the most current data for each reporting period. Additionally, the

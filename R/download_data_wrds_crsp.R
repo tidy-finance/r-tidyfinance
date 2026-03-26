@@ -1,6 +1,6 @@
 #' Download Data from WRDS CRSP
 #'
-#' This function downloads and processes stock return data from the CRSP
+#' Downloads and processes stock return data from the CRSP
 #' database for a specified period. Users can choose between monthly and daily
 #' datasets. The function also adjusts returns for delisting and calculates
 #' market capitalization and excess returns over the risk-free rate.

@@ -2,7 +2,7 @@
 #'
 #' @description `r lifecycle::badge('experimental')`
 #'
-#'   This function assigns data points to portfolios based on a specified
+#'   Assigns data points to portfolios based on a specified
 #'   sorting variable and the selected function to compute breakpoints. Users
 #'   can specify a function to compute breakpoints. The function must take
 #'   `data` and `sorting_variable` as the first two arguments. Additional

@@ -1,8 +1,8 @@
-#' Estimate Model
+#' Estimate a Linear Model
 #'
 #' @description `r lifecycle::badge('experimental')`
 #'
-#' This function estimates a linear model specified by one or more independent
+#' Estimates a linear model specified by one or more independent
 #' variables. It checks for the presence of the specified independent variables
 #' in the dataset and whether the dataset has a sufficient number of
 #' observations. Depending on the `output` parameter, it returns the model's

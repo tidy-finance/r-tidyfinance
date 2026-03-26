@@ -1,6 +1,6 @@
 #' Create Breakpoint Options for Portfolio Sorting
 #'
-#' This function generates a structured list of options for defining breakpoints in
+#' Generates a structured list of options for defining breakpoints in
 #' portfolio sorting. It includes parameters for the number of portfolios, percentile
 #' thresholds, exchange-specific breakpoints, and smooth bunching, along with additional
 #' optional parameters.

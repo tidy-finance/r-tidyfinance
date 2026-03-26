@@ -1,6 +1,6 @@
 #' Download Constituent Data
 #'
-#' This function downloads and processes the constituent data for a specified financial index.
+#' Downloads and processes the constituent data for a specified financial index.
 #' The data is fetched from a remote CSV file, filtered, and cleaned to provide relevant information
 #'  about constituents.
 #'

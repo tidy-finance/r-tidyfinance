@@ -6,15 +6,14 @@
 #'
 #' @param organization Character(1). Hugging Face organization or user name.
 #' @param dataset Character(1). Dataset name under the organization.
-#' @returns A tibble with columns: path (character), size (numeric) and url (character).
 #' @details Uses httr2 to perform HTTP requests. Requires internet access and
 #'   the dataset to be publicly accessible or accessible with appropriate auth.
+#' @returns A tibble with columns: path (character), size (numeric) and url (character).
+#' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' get_available_hf_files("voigtstefan", "sp500")
 #' }
-#'
-#' @export
 get_available_hf_files <- function(organization, dataset) {
   api_url <- paste0(
     "https://huggingface.co/api/datasets/",
@@ -60,8 +59,7 @@ get_available_hf_files <- function(organization, dataset) {
     )
 }
 
-#' Download 5-second aggregated orderbook data
-#' for the SPY ETF (S&P 500 tracker) from a Hugging Face dataset.
+#' Download Data from Hugging Face
 #'
 #' Find parquet files in a dataset whose paths include `date=YYYY-MM-DD`,
 #' filter them to the provided date interval, then read and row-bind their
@@ -78,13 +76,11 @@ get_available_hf_files <- function(organization, dataset) {
 #' @details The function locates parquet files in the specified Hugging Face dataset whose paths include `date=YYYY-MM-DD`,
 #'   filters them to the provided date interval, and reads/row-binds them with arrow::read_parquet().
 #'
+#' @export
 #' @examples
-#' \dontrun{
-#'   # Download 5-second aggregated orderbook snapshots for SPY.
+#' \donttest{
 #'   download_data_hf("high_frequency_sp500", "2007-07-26", "2007-07-27")
 #' }
-#'
-#' @export
 download_data_hf <- function(
   dataset = NULL,
   start_date = "2007-06-27",

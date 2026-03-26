@@ -1,6 +1,6 @@
 #' Download CCM Links from WRDS
 #'
-#' This function downloads data from the WRDS CRSP/Compustat Merged (CCM) links
+#' Downloads data from the WRDS CRSP/Compustat Merged (CCM) links
 #' database. It allows users to specify the type of links (`linktype`) and the
 #' primacy of the link (`linkprim`).
 #'

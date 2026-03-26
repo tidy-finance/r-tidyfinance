@@ -1,6 +1,6 @@
 #' Compute Portfolio Returns
 #'
-#' This function computes individual portfolio returns based on specified
+#' Computes individual portfolio returns based on specified
 #' sorting variables and sorting methods. The portfolios can be rebalanced every
 #' period or on an annual frequency by specifying a rebalancing month, which is
 #' only applicable at a monthly return frequency. The function supports
@@ -61,6 +61,10 @@
 #' @param quiet A logical value indicating whether to suppress informational
 #'   messages about missing values in the output panel (default is `FALSE`).
 #'
+#' @note Ensure that the `sorting_data` contains all the required columns: The
+#'   specified sorting variables and `ret_excess`. The function will stop and
+#'   throw an error if any required columns are missing.
+#'
 #' @returns A data frame with computed portfolio returns as a complete panel
 #'   (all portfolio-date combinations), containing the following columns:
 #'   \itemize{
@@ -72,10 +76,6 @@
 #'     \item `ret_excess_ew`: The equal-weighted excess return of the portfolio.
 #'      `NA` if insufficient observations for that portfolio-date.
 #'   }
-#'
-#' @note Ensure that the `sorting_data` contains all the required columns: The
-#'   specified sorting variables and `ret_excess`. The function will stop and
-#'   throw an error if any required columns are missing.
 #'
 #' @export
 #'

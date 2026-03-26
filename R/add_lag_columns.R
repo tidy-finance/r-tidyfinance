@@ -2,7 +2,7 @@
 #'
 #' @description `r lifecycle::badge('experimental')`
 #'
-#' This function adds lagged versions of specified columns to a data frame. Optionally,
+#' Adds lagged versions of specified columns to a data frame. Optionally,
 #' the operation can be grouped by another column and allows for flexible handling
 #' of missing values. The lag is applied based on the `date` column in the data frame.
 #'

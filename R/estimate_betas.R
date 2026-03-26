@@ -1,6 +1,6 @@
 #' Estimate Rolling Betas
 #'
-#' This function estimates rolling betas for a given model using the provided data.
+#' Estimates rolling betas for a given model using the provided data.
 #' It supports parallel processing for faster computation using the `furrr` package.
 #'
 #' @param data A data frame containing the data with a date identifier (defaults to `date`), a stock

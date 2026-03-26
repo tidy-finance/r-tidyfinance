@@ -1,6 +1,6 @@
 #' Create Data Options
 #'
-#' This function creates a list of data options used in financial data analysis,
+#' Creates a list of data options used in financial data analysis,
 #' specifically for TidyFinance-related functions. It allows users to specify
 #' key parameters such as `id`, `date`, `exchange`, `mktcap_lag`, and `ret_excess`
 #' along with other additional options passed through `...`.

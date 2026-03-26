@@ -1,6 +1,6 @@
 #' Download and Process Data from FRED
 #'
-#' This function downloads a specified data series from the Federal Reserve Economic Data (FRED)
+#' Downloads a specified data series from the Federal Reserve Economic Data (FRED)
 #' website, processes the data, and returns it as a tibble.
 #'
 #' @param series A character vector specifying the FRED series ID to download.
@@ -15,7 +15,7 @@
 #' }
 #'
 #' @details
-#' This function constructs the URL based on the provided FRED series ID, performs an HTTP GET
+#' Constructs the URL based on the provided FRED series ID, performs an HTTP GET
 #' request to download the data in CSV format, and processes it to a tidy tibble format. The
 #' resulting tibble includes the date, value, and the series ID.
 #'

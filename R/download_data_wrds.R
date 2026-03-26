@@ -1,6 +1,6 @@
 #' Download Data from WRDS
 #'
-#' This function acts as a wrapper to download data from various WRDS datasets
+#' Acts as a wrapper to download data from various WRDS datasets
 #' including CRSP, Compustat, and CCM links based on the specified dataset. It is
 #' designed to handle different datasets by redirecting to the appropriate
 #' specific data download function.
