@@ -77,6 +77,9 @@ download_data_wrds_compustat <- function(
   if (dataset == "compustat_annual") {
     funda_db <- tbl(con, I("comp.funda"))
 
+    has_pi <- "pi" %in% additional_columns
+    additional_columns_safe <- setdiff(additional_columns, "pi")
+
     compustat <- funda_db |>
       filter(
         indfmt == "INDL" &
@@ -104,8 +107,9 @@ download_data_wrds_compustat <- function(
         xint,
         xsga,
         curcd,
-        all_of(additional_columns)
+        all_of(additional_columns_safe)
       ) |>
+      {\(x) if (has_pi) mutate(x, pi = sql('"pi"')) else x}() |>
       collect()
 
     disconnect_connection(con)
