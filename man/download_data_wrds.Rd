@@ -39,7 +39,7 @@ designed to handle different datasets by redirecting to the appropriate
 specific data download function.
 }
 \examples{
-\donttest{
+\dontrun{
   crsp_monthly <- download_data_wrds("crsp_monthly", "2020-01-01", "2020-12-31")
   compustat_annual <- download_data_wrds("compustat_annual", "2020-01-01", "2020-12-31")
   ccm_links <- download_data_wrds("ccm_links")

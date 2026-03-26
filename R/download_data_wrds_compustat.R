@@ -24,7 +24,7 @@
 #'
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #'   download_data_wrds_compustat("compustat_annual", "2020-01-01", "2020-12-31")
 #'   download_data_wrds_compustat("compustat_quarterly", "2020-01-01", "2020-12-31")
 #'

@@ -16,12 +16,13 @@
 #' The approach is inspired by `tidyquant::tq_index()`, which uses a different wrapper around
 #' other ETFs.
 #'
-#' @returns A tibble with four columns:
+#' @returns A tibble with five columns:
 #' \describe{
 #'   \item{symbol}{The ticker symbol of the equity constituent.}
 #'   \item{name}{The name of the equity constituent.}
 #'   \item{location}{The location where the company is based.}
 #'   \item{exchange}{The exchange where the equity is traded.}
+#'   \item{currency}{The currency in which the equity is traded, derived from the exchange.}
 #' }
 #' The tibble is filtered to exclude non-equity entries, blacklisted symbols, empty names, and any
 #' entries containing the index name or "CASH".

@@ -19,7 +19,7 @@ to add the .Renviron file to the .gitignore file to prevent it from being tracke
 by version control.
 }
 \examples{
-\donttest{
+\dontrun{
 set_wrds_credentials()
 }
 }

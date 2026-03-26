@@ -86,7 +86,7 @@ lag_column <- function(
 }
 
 
-#' Add a Lagged Column Based on Date and Time Range
+#' Add Lagged Columns Based on Date and Time Range
 #'
 #' @description
 #' Takes a data.frame and appends a lagged version of given columns based on a date variable, with the

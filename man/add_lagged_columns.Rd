@@ -2,7 +2,7 @@
 % Please edit documentation in R/lag_column.R
 \name{add_lagged_columns}
 \alias{add_lagged_columns}
-\title{Add a Lagged Column Based on Date and Time Range}
+\title{Add Lagged Columns Based on Date and Time Range}
 \usage{
 add_lagged_columns(
   df,

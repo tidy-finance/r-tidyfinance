@@ -12,7 +12,7 @@
 #'
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' set_wrds_credentials()
 #' }
 set_wrds_credentials <- function() {

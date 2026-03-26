@@ -44,7 +44,7 @@ annual data also includes the calculated book equity (be),
 operating profitability (op), and investment (inv) for each company.
 }
 \examples{
-\donttest{
+\dontrun{
   download_data_wrds_compustat("compustat_annual", "2020-01-01", "2020-12-31")
   download_data_wrds_compustat("compustat_quarterly", "2020-01-01", "2020-12-31")
 
