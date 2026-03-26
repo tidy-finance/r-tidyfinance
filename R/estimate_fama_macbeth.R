@@ -101,6 +101,13 @@ estimate_fama_macbeth <- function(
     if (vcov == "iid") {
       sqrt(stats::vcov(model)[1, 1])
     } else if (vcov == "newey-west") {
+      # Default to prewhite = FALSE to avoid VAR(1) failures on short series
+      if (is.null(vcov_options)) {
+        vcov_options <- list()
+      }
+      if (is.null(vcov_options$prewhite)) {
+        vcov_options$prewhite <- FALSE
+      }
       sqrt(do.call(sandwich::NeweyWest, c(list(model), vcov_options)))
     }
   }
