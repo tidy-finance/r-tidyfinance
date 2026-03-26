@@ -329,3 +329,150 @@ test_that("periods = nrow(data) uses full history for last row", {
   expect_true(all(is.na(result[1:4])))
   expect_equal(result[5], mean(c(2, 4, 6, 8, 10)))
 })
+
+test_that("data_options with non-default date column works", {
+  df <- tibble::tibble(
+    month = seq.Date(as.Date("2020-01-01"), by = "month", length.out = 12),
+    value = seq_len(12)
+  )
+  result <- compute_rolling_value(
+    df,
+    .f = ~ mean(.x$value),
+    period = "month",
+    periods = 3,
+    min_obs = 1,
+    data_options = data_options(date = "month")
+  )
+  expect_type(result, "double")
+  expect_length(result, 12)
+  expect_false(any(is.na(result)))
+})
+
+test_that("non-default date column produces same results as default", {
+  dates <- seq.Date(as.Date("2020-01-01"), by = "month", length.out = 6)
+  vals <- c(10, 20, 30, 40, 50, 60)
+
+  df_default <- tibble::tibble(date = dates, value = vals)
+  df_custom <- tibble::tibble(trade_date = dates, value = vals)
+
+  res_default <- compute_rolling_value(
+    df_default,
+    .f = ~ mean(.x$value),
+    period = "month",
+    periods = 3,
+    min_obs = 1
+  )
+  res_custom <- compute_rolling_value(
+    df_custom,
+    .f = ~ mean(.x$value),
+    period = "month",
+    periods = 3,
+    min_obs = 1,
+    data_options = data_options(date = "trade_date")
+  )
+
+  expect_equal(res_default, res_custom)
+})
+
+test_that("errors when mapped date column is absent from data", {
+  df <- make_monthly_df(6)
+  expect_error(
+    compute_rolling_value(
+      df,
+      .f = ~ mean(.x$value),
+      period = "month",
+      periods = 3,
+      data_options = data_options(date = "month")
+    ),
+    "month"
+  )
+})
+
+test_that("errors when mapped date column is not of class Date", {
+  df <- tibble::tibble(
+    month = as.character(seq.Date(
+      as.Date("2020-01-01"),
+      by = "month",
+      length.out = 6
+    )),
+    value = 1:6
+  )
+  expect_error(
+    compute_rolling_value(
+      df,
+      .f = ~ mean(.x$value),
+      period = "month",
+      periods = 3,
+      data_options = data_options(date = "month")
+    ),
+    "Date"
+  )
+})
+
+test_that("errors when data_options$date is NULL", {
+  df <- make_monthly_df(6)
+  opts <- data_options()
+  opts$date <- NULL
+
+  expect_error(
+    compute_rolling_value(
+      df,
+      .f = ~ mean(.x$value),
+      period = "month",
+      periods = 3,
+      data_options = opts
+    ),
+    "data_options"
+  )
+})
+
+test_that("errors when data_options$date is NA", {
+  df <- make_monthly_df(6)
+  opts <- data_options()
+  opts$date <- NA_character_
+
+  expect_error(
+    compute_rolling_value(
+      df,
+      .f = ~ mean(.x$value),
+      period = "month",
+      periods = 3,
+      data_options = opts
+    ),
+    "data_options"
+  )
+})
+
+test_that("errors when data_options$date is not character", {
+  df <- make_monthly_df(6)
+  opts <- data_options()
+  opts$date <- 42
+
+  expect_error(
+    compute_rolling_value(
+      df,
+      .f = ~ mean(.x$value),
+      period = "month",
+      periods = 3,
+      data_options = opts
+    ),
+    "data_options"
+  )
+})
+
+test_that("errors when data_options$date has length > 1", {
+  df <- make_monthly_df(6)
+  opts <- data_options()
+  opts$date <- c("date", "month")
+
+  expect_error(
+    compute_rolling_value(
+      df,
+      .f = ~ mean(.x$value),
+      period = "month",
+      periods = 3,
+      data_options = opts
+    ),
+    "data_options"
+  )
+})

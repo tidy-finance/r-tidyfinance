@@ -97,6 +97,12 @@ compute_rolling_value <- function(
   }
   date_col <- data_options$date
 
+  if (!is.character(date_col) || length(date_col) != 1 || is.na(date_col)) {
+    cli::cli_abort(
+      "{.field date} in {.arg data_options} must be a single non-missing string, not {.obj_type_friendly {date_col}}."
+    )
+  }
+
   if (!date_col %in% names(data)) {
     cli::cli_abort("{.arg data} must contain a {.field {date_col}} column.")
   }
