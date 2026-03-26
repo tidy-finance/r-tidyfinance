@@ -35,7 +35,7 @@ A vector of portfolio assignments for each row in the input \code{data}.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This function assigns data points to portfolios based on a specified
+Assigns data points to portfolios based on a specified
 sorting variable and the selected function to compute breakpoints. Users
 can specify a function to compute breakpoints. The function must take
 \code{data} and \code{sorting_variable} as the first two arguments. Additional
@@ -45,6 +45,7 @@ breakpoints are computed with \link{compute_breakpoints}. The default
 column names can be modified using \link{data_options}.
 }
 \examples{
+set.seed(42)
 data <- data.frame(
   id = 1:100,
   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),

@@ -6,19 +6,19 @@
 #' optional parameters.
 #'
 #' @param n_portfolios Integer, optional. The number of portfolios to create. Must be a
-#'  positive integer. If not provided, defaults to \code{NULL}.
+#'  positive integer. If not provided, defaults to `NULL`.
 #' @param percentiles Numeric vector, optional. A vector of percentile thresholds for
 #'  defining breakpoints. Each value should be between 0 and 1. If not provided, defaults
-#'  to \code{NULL}.
+#'  to `NULL`.
 #' @param breakpoint_exchanges Character, optional. A non-empty string specifying the
-#'  exchange for which the breakpoints apply. If not provided, defaults to \code{NULL}.
+#'  exchange for which the breakpoints apply. If not provided, defaults to `NULL`.
 #' @param smooth_bunching Logical, optional. Indicates whether smooth bunching should
-#'  be applied. Defaults to \code{FALSE}.
+#'  be applied. Defaults to `FALSE`.
 #' @param ... Additional optional arguments. These will be captured in the resulting
 #'  structure as a list.
 #'
-#' @returns A list of class \code{"tidyfinance_breakpoint_options"} containing the provided
-#' breakpoint options, including any additional arguments passed via \code{...}.
+#' @returns A list of class `"tidyfinance_breakpoint_options"` containing the provided
+#' breakpoint options, including any additional arguments passed via `...`.
 #'
 #' @export
 #'

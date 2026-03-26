@@ -20,6 +20,7 @@
 #' @export
 #'
 #' @examples
+#' set.seed(42)
 #' # Basic example with a vector
 #' dates <- as.Date("2023-01-01") + 0:9
 #' values <- rnorm(10)
@@ -100,9 +101,12 @@ lag_column <- function(
 #' @param drop_na A logical value indicating whether to drop `NA` values from the resulting lagged
 #'  columns. Defaults to `FALSE`.
 #' @param ff_adjustment A logical value indicating whether to lag monthly data based on Fama-French conventions. Here, the values are lagged based on the last observation within the year is taken. Defaults to `FALSE`.
-#' @param data_options A list of additional options for data processing, such as the `date` column. If `NULL`, defaults are used.
+#' @param data_options A named list of \link{data_options} with characters, indicating
+#'   the column names required to run this function. The required column names identify
+#'   dates. Defaults to `date = date`.
 #' @returns A data frame with new, lagged columns added.
 #' @examples
+#' set.seed(42)
 #' # Example using a tibble and dplyr::group_by
 #' data <- tibble::tibble(
 #'   permno = rep(1:2, each = 10),

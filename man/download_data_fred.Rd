@@ -22,11 +22,11 @@ A tibble containing the processed data with three columns:
 }
 }
 \description{
-This function downloads a specified data series from the Federal Reserve Economic Data (FRED)
+Downloads a specified data series from the Federal Reserve Economic Data (FRED)
 website, processes the data, and returns it as a tibble.
 }
 \details{
-This function constructs the URL based on the provided FRED series ID, performs an HTTP GET
+Constructs the URL based on the provided FRED series ID, performs an HTTP GET
 request to download the data in CSV format, and processes it to a tidy tibble format. The
 resulting tibble includes the date, value, and the series ID.
 

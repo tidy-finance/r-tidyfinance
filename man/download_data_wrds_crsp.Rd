@@ -51,13 +51,13 @@ risk-free rate. The structure of the returned data frame depends on the
 selected dataset.
 }
 \description{
-This function downloads and processes stock return data from the CRSP
+Downloads and processes stock return data from the CRSP
 database for a specified period. Users can choose between monthly and daily
 datasets. The function also adjusts returns for delisting and calculates
 market capitalization and excess returns over the risk-free rate.
 }
 \examples{
-\dontrun{
+\donttest{
   crsp_monthly <- download_data_wrds_crsp("crsp_monthly", "2020-11-01", "2020-12-31")
   crsp_daily <- download_data_wrds_crsp("crsp_daily", "2020-12-01", "2020-12-31")
 
@@ -65,6 +65,7 @@ market capitalization and excess returns over the risk-free rate.
   download_data_wrds_crsp("crsp_monthly", "2020-11-01", "2020-12-31",
                           additional_columns = c("mthvol", "mthvolflg"))
 }
+
 }
 \references{
 Gao, X., & Ritter, J. R. (2010). The marketing of seasoned equity offerings.

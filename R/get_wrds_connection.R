@@ -15,12 +15,12 @@
 #'   WRDS database. This object can be used with other DBI-compliant functions
 #'   to interact with the database.
 #'
-#' @seealso \code{\link[RPostgres]{Postgres}}, \code{\link[DBI]{dbDisconnect}} for more
-#'          information on managing database connections.
+#' @seealso [RPostgres::Postgres()], [DBI::dbDisconnect()] for more
+#'   information on managing database connections.
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   # Before using this function, set your WRDS credentials:
 #'   # Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")
 #'

@@ -18,11 +18,12 @@
 #' @param ff_adjustment Logical; if `TRUE`, keeps only the last observation per
 #'  identifier and year before lagging (Fama–French convention). Defaults to `FALSE`.
 #'
-#' @return A data frame with all columns from `original_data` plus the lagged
+#' @returns A data frame with all columns from `original_data` plus the lagged
 #'  columns from `new_data` (keeping their original names).
 #' @export
 #'
 #' @examples
+#' set.seed(42)
 #' library(dplyr)
 #' library(lubridate)
 #'

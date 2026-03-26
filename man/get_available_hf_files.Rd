@@ -24,8 +24,7 @@ Uses httr2 to perform HTTP requests. Requires internet access and
 the dataset to be publicly accessible or accessible with appropriate auth.
 }
 \examples{
-\dontrun{
+\donttest{
 get_available_hf_files("voigtstefan", "sp500")
 }
-
 }

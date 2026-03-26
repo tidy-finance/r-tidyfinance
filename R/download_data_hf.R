@@ -70,11 +70,11 @@ get_available_hf_files <- function(organization, dataset) {
 #' @param end_date Date or character. End date (inclusive) in "YYYY-MM-DD" format. If NULL, the internal default is used.
 #' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #'
-#' @returns A tibble with processed data, including dates and the relevant
-#'   financial metrics, filtered by the specified date range.
-#'
 #' @details The function locates parquet files in the specified Hugging Face dataset whose paths include `date=YYYY-MM-DD`,
 #'   filters them to the provided date interval, and reads/row-binds them with arrow::read_parquet().
+#'
+#' @returns A tibble with processed data, including dates and the relevant
+#'   financial metrics, filtered by the specified date range.
 #'
 #' @export
 #' @examples

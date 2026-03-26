@@ -36,10 +36,11 @@ If no matching dates are found within the lag window, \code{NA} is returned for 
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This function generates a lagged version of a given column based on a date variable, with the
+Generates a lagged version of a given column based on a date variable, with the
 ability to specify a range of lags. It also allows for the optional removal of \code{NA} values.
 }
 \examples{
+set.seed(42)
 # Basic example with a vector
 dates <- as.Date("2023-01-01") + 0:9
 values <- rnorm(10)

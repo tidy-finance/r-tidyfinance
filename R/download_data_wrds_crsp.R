@@ -29,14 +29,8 @@
 #'   risk-free rate. The structure of the returned data frame depends on the
 #'   selected dataset.
 #'
-#' @references
-#'   Gao, X., & Ritter, J. R. (2010). The marketing of seasoned equity offerings.
-#'   *Journal of Financial Economics*, 97(1), 33–52.
-#'   \doi{10.1016/j.jfineco.2010.03.007}
-#'
-#' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   crsp_monthly <- download_data_wrds_crsp("crsp_monthly", "2020-11-01", "2020-12-31")
 #'   crsp_daily <- download_data_wrds_crsp("crsp_daily", "2020-12-01", "2020-12-31")
 #'
@@ -44,6 +38,13 @@
 #'   download_data_wrds_crsp("crsp_monthly", "2020-11-01", "2020-12-31",
 #'                           additional_columns = c("mthvol", "mthvolflg"))
 #' }
+#'
+#' @references
+#'   Gao, X., & Ritter, J. R. (2010). The marketing of seasoned equity offerings.
+#'   *Journal of Financial Economics*, 97(1), 33–52.
+#'   \doi{10.1016/j.jfineco.2010.03.007}
+#'
+#' @export
 download_data_wrds_crsp <- function(
   dataset = NULL,
   start_date = NULL,

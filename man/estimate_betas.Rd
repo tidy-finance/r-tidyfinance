@@ -26,7 +26,7 @@ seconds to look back when estimating the rolling model.}
 \item{min_obs}{An integer specifying the minimum number of observations required to estimate
 the model. Defaults to 80\% of \code{lookback}.}
 
-\item{use_furrr}{A logical indicating whether to use the \code{furrr} package and its paralellization
+\item{use_furrr}{A logical indicating whether to use the \code{furrr} package and its parallelization
 capabilities. Defaults to FALSE.}
 
 \item{data_options}{A named list of \link{data_options} with characters, indicating the column
@@ -37,7 +37,7 @@ Defaults to \code{date = date} and \code{id = permno}.}
 A data frame with the estimated betas for each time period.
 }
 \description{
-This function estimates rolling betas for a given model using the provided data.
+Estimates rolling betas for a given model using the provided data.
 It supports parallel processing for faster computation using the \code{furrr} package.
 }
 \examples{

@@ -13,7 +13,7 @@ chapters in Tidy Finance with R.
 }
 \description{
 Returns a character vector containing the names of the chapters available in
-the Tidy Finance resource. This function provides a quick reference to the
+the Tidy Finance resource. It provides a quick reference to the
 various topics covered.
 }
 \examples{

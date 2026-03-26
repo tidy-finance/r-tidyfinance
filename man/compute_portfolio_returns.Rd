@@ -74,8 +74,8 @@ at which market capitalization is capped per date when computing
 \code{ret_excess_vw_capped}. Defaults to \code{0.8}.}
 
 \item{data_options}{A named list of \link{data_options} with characters, indicating
-the column names required to run this function.  The required column names identify dates,
-the stocks, and returns. Defaults to \code{date=date}, \code{id=permno}, and \code{ret_excess = ret_excess}.}
+the column names required to run this function. The required column names identify dates,
+the stocks, and returns. Defaults to \code{date = date}, \code{id = permno}, and \code{ret_excess = ret_excess}.}
 
 \item{quiet}{A logical value indicating whether to suppress informational
 messages about missing values in the output panel (default is \code{FALSE}).}
@@ -99,8 +99,6 @@ portfolio-date.
 }
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This function computes individual portfolio returns based on specified
 sorting variables and sorting methods. The portfolios can be rebalanced every
 period or on an annual frequency by specifying a rebalancing month, which is
@@ -123,6 +121,7 @@ specified sorting variables and \code{ret_excess}. The function will stop and
 throw an error if any required columns are missing.
 }
 \examples{
+set.seed(42)
 # Univariate sorting with periodic rebalancing
 data <- data.frame(
   permno = 1:500,

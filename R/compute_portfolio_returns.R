@@ -59,8 +59,8 @@
 #'   at which market capitalization is capped per date when computing
 #'   `ret_excess_vw_capped`. Defaults to `0.8`.
 #' @param data_options A named list of \link{data_options} with characters, indicating
-#'   the column names required to run this function.  The required column names identify dates,
-#'   the stocks, and returns. Defaults to `date=date`, `id=permno`, and `ret_excess = ret_excess`.
+#'   the column names required to run this function. The required column names identify dates,
+#'   the stocks, and returns. Defaults to `date = date`, `id = permno`, and `ret_excess = ret_excess`.
 #' @param quiet A logical value indicating whether to suppress informational
 #'   messages about missing values in the output panel (default is `FALSE`).
 #'
@@ -88,6 +88,7 @@
 #' @export
 #'
 #' @examples
+#' set.seed(42)
 #' # Univariate sorting with periodic rebalancing
 #' data <- data.frame(
 #'   permno = 1:500,
@@ -464,7 +465,7 @@ compute_portfolio_returns <- function(
 #' @param w_capped_col Column name for capped market capitalisation weights.
 #' @param min_portfolio_size Minimum number of stocks per portfolio-date.
 #'
-#' @return An ungrouped data frame with columns `ret_excess_vw`,
+#' @returns An ungrouped data frame with columns `ret_excess_vw`,
 #'   `ret_excess_ew`, and `ret_excess_vw_capped`.
 #'
 #' @keywords internal
@@ -502,7 +503,7 @@ summarise_portfolio_returns <- function(data, ret_col, w_col, w_capped_col,
 #' @param date_col Name of the date column.
 #' @param id_col Name of the stock identifier column.
 #'
-#' @return A data frame with portfolio assignments joined to all dates.
+#' @returns A data frame with portfolio assignments joined to all dates.
 #'
 #' @keywords internal
 #' @noRd

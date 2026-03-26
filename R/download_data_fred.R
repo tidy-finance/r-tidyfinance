@@ -7,13 +7,6 @@
 #' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
 #' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
 #'
-#' @returns A tibble containing the processed data with three columns:
-#' \describe{
-#'   \item{date}{The date corresponding to the data point.}
-#'   \item{value}{The value of the data series at that date.}
-#'   \item{series}{The FRED series ID corresponding to the data.}
-#' }
-#'
 #' @details
 #' Constructs the URL based on the provided FRED series ID, performs an HTTP GET
 #' request to download the data in CSV format, and processes it to a tidy tibble format. The
@@ -22,6 +15,13 @@
 #' This approach is inspired by `quantmod::getSymbolsFRED()` which uses a different wrapper around
 #' the same FRED download data site. If you want to systematically download FRED data via API,
 #' please consider using `fredr` package.
+#'
+#' @returns A tibble containing the processed data with three columns:
+#' \describe{
+#'   \item{date}{The date corresponding to the data point.}
+#'   \item{value}{The value of the data series at that date.}
+#'   \item{series}{The FRED series ID corresponding to the data.}
+#' }
 #'
 #' @export
 #'

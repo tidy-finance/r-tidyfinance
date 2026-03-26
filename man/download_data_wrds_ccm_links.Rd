@@ -21,12 +21,12 @@ A data frame with the columns \code{permno}, \code{gvkey}, \code{linkdt}, and
 dates are replaced with today's date.
 }
 \description{
-This function downloads data from the WRDS CRSP/Compustat Merged (CCM) links
+Downloads data from the WRDS CRSP/Compustat Merged (CCM) links
 database. It allows users to specify the type of links (\code{linktype}) and the
 primacy of the link (\code{linkprim}).
 }
 \examples{
-\dontrun{
+\donttest{
   ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P")
 }
 

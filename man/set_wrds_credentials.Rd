@@ -10,7 +10,7 @@ set_wrds_credentials()
 Invisibly returns TRUE. Displays messages to the user based on their input and actions taken.
 }
 \description{
-This function prompts the user to input their WRDS (Wharton Research Data Services)
+Prompts the user to input their WRDS (Wharton Research Data Services)
 username and password, and stores these credentials in a .Renviron file. The user can
 choose to store the .Renviron file in either the project directory or the home directory.
 If the .Renviron file already contains WRDS credentials, the user will be asked if they
@@ -19,7 +19,7 @@ to add the .Renviron file to the .gitignore file to prevent it from being tracke
 by version control.
 }
 \examples{
-\dontrun{
+\donttest{
 set_wrds_credentials()
 }
 }

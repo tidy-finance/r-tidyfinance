@@ -12,7 +12,7 @@ constituent data. The index must be one of the supported indexes listed by
 \link{list_supported_indexes}.}
 }
 \value{
-A tibble with two columns:
+A tibble with four columns:
 \describe{
 \item{symbol}{The ticker symbol of the equity constituent.}
 \item{name}{The name of the equity constituent.}
@@ -23,7 +23,7 @@ The tibble is filtered to exclude non-equity entries, blacklisted symbols, empty
 entries containing the index name or "CASH".
 }
 \description{
-This function downloads and processes the constituent data for a specified financial index.
+Downloads and processes the constituent data for a specified financial index.
 The data is fetched from a remote CSV file, filtered, and cleaned to provide relevant information
 about constituents.
 }
@@ -32,8 +32,8 @@ The function retrieves the URL of the CSV file for the specified index from ETF 
 an HTTP GET request to download the CSV file, and processes the CSV file to extract equity
 constituents.
 
-The approach is inspired by \code{tidyquant::tq_index()}, which uses a different wrapper around o
-ther ETFs.
+The approach is inspired by \code{tidyquant::tq_index()}, which uses a different wrapper around
+other ETFs.
 }
 \examples{
 \donttest{

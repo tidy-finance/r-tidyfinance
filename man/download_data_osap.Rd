@@ -25,7 +25,7 @@ A tibble containing the processed data. The column names are converted to snake_
 and the data is filtered by the specified date range if \code{start_date} and \code{end_date} are provided.
 }
 \description{
-This function downloads the data from \href{https://www.openassetpricing.com/data/}{Open Source Asset Pricing}
+Downloads the data from \href{https://www.openassetpricing.com/data/}{Open Source Asset Pricing}
 from Google Sheets using a specified sheet ID, processes the data by converting column names to
 snake_case, and optionally filters the data based on a provided date range.
 }

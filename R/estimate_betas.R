@@ -11,7 +11,7 @@
 #'  seconds to look back when estimating the rolling model.
 #' @param min_obs An integer specifying the minimum number of observations required to estimate
 #'  the model. Defaults to 80% of `lookback`.
-#' @param use_furrr A logical indicating whether to use the `furrr` package and its paralellization
+#' @param use_furrr A logical indicating whether to use the `furrr` package and its parallelization
 #'  capabilities. Defaults to FALSE.
 #' @param data_options A named list of \link{data_options} with characters, indicating the column
 #'  names required to run this function. The required column names identify dates and the stocks.

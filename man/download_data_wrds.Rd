@@ -33,13 +33,13 @@ A data frame containing the requested data, with the structure and
 contents depending on the specified \code{dataset}.
 }
 \description{
-This function acts as a wrapper to download data from various WRDS datasets
+Acts as a wrapper to download data from various WRDS datasets
 including CRSP, Compustat, and CCM links based on the specified dataset. It is
 designed to handle different datasets by redirecting to the appropriate
 specific data download function.
 }
 \examples{
-\dontrun{
+\donttest{
   crsp_monthly <- download_data_wrds("crsp_monthly", "2020-01-01", "2020-12-31")
   compustat_annual <- download_data_wrds("compustat_annual", "2020-01-01", "2020-12-31")
   ccm_links <- download_data_wrds("ccm_links")

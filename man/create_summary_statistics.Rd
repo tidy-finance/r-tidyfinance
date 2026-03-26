@@ -38,7 +38,7 @@ the computed statistics.
 }
 \description{
 Computes a set of summary statistics for numeric and integer variables in a
-data frame. This function allows users to select specific variables for
+data frame. It allows users to select specific variables for
 summarization and can calculate statistics for the whole dataset or within
 groups specified by the \code{by} argument. Additional detail levels for quantiles
 can be included.

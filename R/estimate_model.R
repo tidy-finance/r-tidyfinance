@@ -30,6 +30,7 @@
 #' @export
 #'
 #' @examples
+#' set.seed(42)
 #' data <- data.frame(
 #'   ret_excess = rnorm(100),
 #'   mkt_excess = rnorm(100),

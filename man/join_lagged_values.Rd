@@ -2,7 +2,7 @@
 % Please edit documentation in R/join_lagged_values.R
 \name{join_lagged_values}
 \alias{join_lagged_values}
-\title{Join Lagged Variable Values over a Date Range}
+\title{Join lagged variable values over a date range}
 \usage{
 join_lagged_values(
   original_data,
@@ -45,6 +45,7 @@ across data frames with different date grids (e.g., monthly source data
 into quarterly target data).
 }
 \examples{
+set.seed(42)
 library(dplyr)
 library(lubridate)
 

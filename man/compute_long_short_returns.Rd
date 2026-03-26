@@ -30,12 +30,13 @@ column), and the computed long-short returns. The data frame is arranged by date
 have return measurement types as columns with their corresponding long-short returns.
 }
 \description{
-This function calculates long-short returns based on the returns of portfolios. The long-short
+Calculates long-short returns based on the returns of portfolios. The long-short
 return is computed as the difference between the returns of the "top" and "bottom" portfolios.
 The direction of the calculation can be adjusted based on whether the return from the "bottom"
 portfolio is subtracted from or added to the return from the "top" portfolio.
 }
 \examples{
+set.seed(42)
 data <- data.frame(
   permno = 1:100,
   date = rep(seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 100), each = 10),

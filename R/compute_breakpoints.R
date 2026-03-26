@@ -46,6 +46,7 @@
 #' @export
 #'
 #' @examples
+#' set.seed(42)
 #' data <- data.frame(
 #'   id = 1:100,
 #'   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),

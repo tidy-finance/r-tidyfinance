@@ -35,7 +35,7 @@ data_options(
 A list of class \code{tidyfinance_data_options} containing the specified data options.
 }
 \description{
-This function creates a list of data options used in financial data analysis,
+Creates a list of data options used in financial data analysis,
 specifically for TidyFinance-related functions. It allows users to specify
 key parameters such as \code{id}, \code{date}, \code{exchange}, \code{mktcap_lag}, and \code{ret_excess}
 along with other additional options passed through \code{...}.

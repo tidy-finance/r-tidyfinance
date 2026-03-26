@@ -2,12 +2,9 @@
 % Please edit documentation in R/disconnect_connection.R
 \name{disconnect_connection}
 \alias{disconnect_connection}
-\alias{disconnection_connection}
 \title{Disconnect Database Connection}
 \usage{
 disconnect_connection(con)
-
-disconnection_connection(con)
 }
 \arguments{
 \item{con}{A database connection object created by DBI::dbConnect or any
@@ -18,10 +15,5 @@ A logical value: \code{TRUE} if disconnection was successful, \code{FALSE}
 otherwise.
 }
 \description{
-This function safely disconnects an established database connection using the
-DBI package.
-
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-\code{disconnection_connection()} was renamed to \code{disconnect_connection()}.
+Safely disconnects an established database connection using the DBI package.
 }
