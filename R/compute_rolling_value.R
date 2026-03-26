@@ -8,7 +8,8 @@
 #' single scalar. Windows with fewer than `min_obs` complete rows
 #' return `NA_real_`.
 #'
-#' @param data A data frame with a date column of class `Date`.
+#' @param data A data frame with a date column of class `Date`, named according
+#'   to `data_options$date` (default `"date"`).
 #' @param .f A function applied to each window. Receives a data-frame
 #'   slice (complete cases only) and must return a single scalar value.
 #' @param period A string specifying the period for rolling windows
