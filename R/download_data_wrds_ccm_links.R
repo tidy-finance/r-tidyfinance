@@ -31,7 +31,7 @@ download_data_wrds_ccm_links <- function(
 
   ccm_links <- ccm_linking_table_db |>
     filter(
-      linktype %in% c("LU", "LC") & linkprim %in% c("P", "C")
+      linktype %in% !!linktype & linkprim %in% !!linkprim        
     ) |>
     select(permno = lpermno, gvkey, linkdt, linkenddt) |>
     collect() |>
