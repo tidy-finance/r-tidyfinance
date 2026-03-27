@@ -74,11 +74,50 @@ get_available_huggingface_files <- function(organization, dataset) {
 #' @param end_date Date or character. End date (inclusive) in `"YYYY-MM-DD"`
 #'   format. Only used for `"high_frequency_sp500"`.
 #' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
-#' @param ... For `dataset = "factor-library"`: named arguments passed to
-#'   `filter_grid()` to select portfolio characteristics (e.g.,
-#'   `sorting_variable`, `rebalancing`). Optionally pass `fill_all = TRUE` to
-#'   suppress defaults and match only on explicitly provided filters. Passing an
-#'   unrecognised filter name raises an error listing the supported names.
+#' @param ... For `dataset = "factor-library"`: named arguments used to filter
+#'   the portfolio grid. Each argument takes the form `column = value`, where
+#'   `value` may be a vector to match multiple levels. Optionally pass
+#'   `fill_all = TRUE` to leave unspecified columns unrestricted (default:
+#'   `FALSE`, i.e. unspecified columns are fixed at the defaults listed below).
+#'   Passing an unrecognised column name raises an error listing the supported
+#'   names. Ignored when `dataset != "factor-library"`.
+#'
+#'   **Note:** The defaults below reflect one common portfolio construction
+#'   choice, but may not suit every research question. Always verify that the
+#'   selected combination matches your intended design.
+#'
+#'   Supported columns and their defaults are:
+#'   \describe{
+#'     \item{`sorting_variable`}{**Required.** The firm characteristic used to
+#'       sort stocks into portfolios (e.g., `"me"` for market equity, `"bm"`
+#'       for book-to-market). No default is applied.}
+#'     \item{`exclude_size`}{`0.2`. Fraction of the smallest stocks (by market
+#'       cap) excluded from the portfolio universe. `0.2` drops the bottom 20\%.}
+#'     \item{`exclude_financials`}{`FALSE`. Whether to drop financial-sector
+#'       stocks (SIC 6000–6999) from the universe.}
+#'     \item{`exclude_utilities`}{`FALSE`. Whether to drop utility-sector stocks
+#'       (SIC 4900–4999) from the universe.}
+#'     \item{`exclude_negative_earnings`}{`FALSE`. Whether to drop firms with
+#'       negative earnings before sorting.}
+#'     \item{`sorting_variable_lag`}{`"6m"`. Lag applied to the sorting variable
+#'       before portfolio assignment, controlling for publication and reporting
+#'       delays (e.g., `"6m"` = 6-month lag).}
+#'     \item{`rebalancing`}{`"monthly"`. How frequently portfolios are
+#'       reformed: `"monthly"` or `"annual"`.}
+#'     \item{`breakpoints_main`}{`10`. Number of quantile groups (e.g., `10`
+#'       for decile portfolios).}
+#'     \item{`sorting_method`}{`"univariate"`. Whether portfolios are formed on
+#'       a single sort (`"univariate"`) or a sequential double sort
+#'       (`"sequential"`).}
+#'     \item{`breakpoints_secondary`}{`NA`. Number of groups for the secondary
+#'       sort variable; only relevant when `sorting_method = "sequential"`.}
+#'     \item{`breakpoints_exchanges`}{`"NYSE"`. Exchange(s) used to compute
+#'       breakpoints. `"NYSE"` uses only NYSE-listed stocks to define quantile
+#'       cutoffs, which is the conventional Fama–French approach.}
+#'     \item{`weighting_scheme`}{`"VW"`. Return weighting within portfolios:
+#'       `"VW"` for value-weighted (market-cap weighted) or `"EW"` for
+#'       equal-weighted.}
+#'   }
 #'
 #' @return A tibble with the downloaded data. For `"high_frequency_sp500"`,
 #'   contains 5-second aggregated orderbook snapshots filtered to the requested
@@ -183,7 +222,7 @@ check_supported_dataset_hf <- function(dataset) {
 #' @param ... Named arguments of the form `column = value` used to filter the
 #'   grid. Supported columns and their defaults are:
 #'   \describe{
-#'     \item{`sorting_variable`}{`"me"`}
+#'     \item{`sorting_variable`}{No default.}
 #'     \item{`exclude_size`}{`0.2`}
 #'     \item{`exclude_financials`}{`FALSE`}
 #'     \item{`exclude_utilities`}{`FALSE`}
