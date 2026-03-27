@@ -72,3 +72,16 @@ Gao, X., & Ritter, J. R. (2010). The marketing of seasoned equity offerings.
 \emph{Journal of Financial Economics}, 97(1), 33–52.
 \doi{10.1016/j.jfineco.2010.03.007}
 }
+\seealso{
+Other WRDS functions: 
+\code{\link{create_wrds_dummy_database}()},
+\code{\link{disconnect_connection}()},
+\code{\link{download_data_wrds}()},
+\code{\link{download_data_wrds_ccm_links}()},
+\code{\link{download_data_wrds_compustat}()},
+\code{\link{download_data_wrds_fisd}()},
+\code{\link{download_data_wrds_trace_enhanced}()},
+\code{\link{get_wrds_connection}()},
+\code{\link{set_wrds_credentials}()}
+}
+\concept{WRDS functions}

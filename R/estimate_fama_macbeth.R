@@ -22,6 +22,7 @@
 #' @returns A data frame with the estimated risk premiums, the number of observations, standard
 #'  errors, and t-statistics for each factor in the model.
 #'
+#' @family estimation functions
 #' @export
 #'
 #' @examples

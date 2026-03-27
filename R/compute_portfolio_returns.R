@@ -68,6 +68,7 @@
 #'   specified sorting variables and `ret_excess`. The function will stop and
 #'   throw an error if any required columns are missing.
 #'
+#' @family portfolio functions
 #' @returns A data frame with computed portfolio returns as a complete panel
 #'   (all portfolio-date combinations), containing the following columns:
 #'   \itemize{

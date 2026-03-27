@@ -23,6 +23,7 @@
 #'   \item{series}{The FRED series ID corresponding to the data.}
 #' }
 #'
+#' @family download functions
 #' @export
 #'
 #' @examples

@@ -27,6 +27,7 @@
 #' The tibble is filtered to exclude non-equity entries, blacklisted symbols, empty names, and any
 #' entries containing the index name or "CASH".
 #'
+#' @family download functions
 #' @export
 #'
 #' @examples

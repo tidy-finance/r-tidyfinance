@@ -48,3 +48,12 @@ data_options(
 )
 
 }
+\seealso{
+Other portfolio functions: 
+\code{\link{assign_portfolio}()},
+\code{\link{breakpoint_options}()},
+\code{\link{compute_breakpoints}()},
+\code{\link{compute_long_short_returns}()},
+\code{\link{compute_portfolio_returns}()}
+}
+\concept{portfolio functions}

@@ -15,6 +15,7 @@
 #'   `linkenddt`, where `linkenddt` is the end date of the link, and missing end
 #'   dates are replaced with today's date.
 #'
+#' @family WRDS functions
 #' @export
 #' @examples
 #' \dontrun{

@@ -14,6 +14,7 @@
 #' @returns A tibble containing the processed data. The column names are converted to snake_case,
 #' and the data is filtered by the specified date range if `start_date` and `end_date` are provided.
 #'
+#' @family download functions
 #' @export
 #'
 #' @examples

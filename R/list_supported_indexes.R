@@ -12,6 +12,7 @@
 #'   \item{skip}{The number of lines to skip when reading the CSV file.}
 #' }
 #'
+#' @family utility functions
 #' @export
 #'
 #' @examples

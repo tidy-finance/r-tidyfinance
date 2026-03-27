@@ -53,3 +53,12 @@ portfolio_returns <- compute_portfolio_returns(
 compute_long_short_returns(portfolio_returns)
 
 }
+\seealso{
+Other portfolio functions: 
+\code{\link{assign_portfolio}()},
+\code{\link{breakpoint_options}()},
+\code{\link{compute_breakpoints}()},
+\code{\link{compute_portfolio_returns}()},
+\code{\link{data_options}()}
+}
+\concept{portfolio functions}

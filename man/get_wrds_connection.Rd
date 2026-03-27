@@ -38,4 +38,16 @@ username and password as environment variables \code{WRDS_USER} and
 \seealso{
 \code{\link[RPostgres:Postgres]{RPostgres::Postgres()}}, \code{\link[DBI:dbDisconnect]{DBI::dbDisconnect()}} for more
 information on managing database connections.
+
+Other WRDS functions: 
+\code{\link{create_wrds_dummy_database}()},
+\code{\link{disconnect_connection}()},
+\code{\link{download_data_wrds}()},
+\code{\link{download_data_wrds_ccm_links}()},
+\code{\link{download_data_wrds_compustat}()},
+\code{\link{download_data_wrds_crsp}()},
+\code{\link{download_data_wrds_fisd}()},
+\code{\link{download_data_wrds_trace_enhanced}()},
+\code{\link{set_wrds_credentials}()}
 }
+\concept{WRDS functions}

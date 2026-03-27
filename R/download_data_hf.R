@@ -9,6 +9,7 @@
 #' @details Uses httr2 to perform HTTP requests. Requires internet access and
 #'   the dataset to be publicly accessible or accessible with appropriate auth.
 #' @returns A tibble with columns: path (character), size (numeric) and url (character).
+#' @family download functions
 #' @export
 #' @examples
 #' \donttest{
@@ -76,6 +77,7 @@ get_available_hf_files <- function(organization, dataset) {
 #' @returns A tibble with processed data, including dates and the relevant
 #'   financial metrics, filtered by the specified date range.
 #'
+#' @family download functions
 #' @export
 #' @examples
 #' \donttest{

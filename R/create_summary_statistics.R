@@ -38,7 +38,24 @@
 #'   represents a variable (and a group if `by` is used), and columns include
 #'   the computed statistics.
 #'
+#' @family utility functions
 #' @export
+#'
+#' @examples
+#' data <- data.frame(
+#'   ret = c(0.01, -0.02, 0.03, NA, 0.005),
+#'   size = c(100, 200, 150, 300, 250),
+#'   group = c("A", "A", "B", "B", "A")
+#' )
+#'
+#' # Basic summary across all observations
+#' create_summary_statistics(data, ret, size)
+#'
+#' # Grouped summary
+#' create_summary_statistics(data, ret, size, by = group)
+#'
+#' # Detailed quantiles
+#' create_summary_statistics(data, ret, detail = TRUE)
 create_summary_statistics <- function(
   data,
   ...,

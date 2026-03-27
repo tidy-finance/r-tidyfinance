@@ -44,6 +44,7 @@
 #'   *Journal of Financial Economics*, 97(1), 33–52.
 #'   \doi{10.1016/j.jfineco.2010.03.007}
 #'
+#' @family WRDS functions
 #' @export
 download_data_wrds_crsp <- function(
   dataset = NULL,

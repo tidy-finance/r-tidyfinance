@@ -1,11 +1,14 @@
-#' Get a Random User Agent
+#' Get a random user agent string
 #'
-#' This internal function selects and returns a random user agent string from a predefined list.
-#' The list contains user agents for various operating systems and browsers, including
-#' Windows, macOS, Linux, Android, iPhone, Chrome, Safari, Firefox, and Edge.
+#' Selects and returns a random user agent string from a predefined list
+#' covering common browsers and operating systems (Windows, macOS, Linux,
+#' Android, iOS; Chrome, Firefox, Safari, Edge).
 #'
-#' @returns A character string representing a randomly selected user agent.
+#' @returns A length-one character vector containing the randomly selected
+#'   user agent string.
 #'
+#' @keywords internal
+#' @noRd
 get_random_user_agent <- function() {
   user_agents <- c(
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.111 Safari/537.36",

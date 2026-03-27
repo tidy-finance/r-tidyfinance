@@ -20,6 +20,7 @@
 #'
 #' @returns A data frame with all columns from `original_data` plus the lagged
 #'  columns from `new_data` (keeping their original names).
+#' @family rolling and lagging functions
 #' @export
 #'
 #' @examples

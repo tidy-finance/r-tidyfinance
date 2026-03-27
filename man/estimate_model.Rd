@@ -73,3 +73,9 @@ estimate_model(data, "ret_excess ~ mkt_excess + smb + hml",
 )
 
 }
+\seealso{
+Other estimation functions: 
+\code{\link{estimate_betas}()},
+\code{\link{estimate_fama_macbeth}()}
+}
+\concept{estimation functions}

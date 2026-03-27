@@ -68,3 +68,9 @@ data |>
  )
 
 }
+\seealso{
+Other estimation functions: 
+\code{\link{estimate_betas}()},
+\code{\link{estimate_model}()}
+}
+\concept{estimation functions}

@@ -54,3 +54,10 @@ data <- tibble::tibble(
 )
 add_lagged_columns(data, cols = "size", lag = months(2), by = "permno")
 }
+\seealso{
+Other rolling and lagging functions: 
+\code{\link{compute_rolling_value}()},
+\code{\link{join_lagged_values}()},
+\code{\link{lag_column}()}
+}
+\concept{rolling and lagging functions}

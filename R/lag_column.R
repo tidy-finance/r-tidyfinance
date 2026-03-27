@@ -17,6 +17,7 @@
 #' @returns A vector of the same length as `column`, containing the lagged values.
 #'  If no matching dates are found within the lag window, `NA` is returned for that position.
 #'
+#' @family rolling and lagging functions
 #' @export
 #'
 #' @examples
@@ -105,6 +106,7 @@ lag_column <- function(
 #'   the column names required to run this function. The required column names identify
 #'   dates. Defaults to `date = date`.
 #' @returns A data frame with new, lagged columns added.
+#' @family rolling and lagging functions
 #' @examples
 #' set.seed(42)
 #' # Example using a tibble and dplyr::group_by

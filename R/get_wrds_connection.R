@@ -17,6 +17,7 @@
 #'
 #' @seealso [RPostgres::Postgres()], [DBI::dbDisconnect()] for more
 #'   information on managing database connections.
+#' @family WRDS functions
 #' @export
 #'
 #' @examples

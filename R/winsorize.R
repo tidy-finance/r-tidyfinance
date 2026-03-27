@@ -12,6 +12,7 @@
 #' @returns A numeric vector with the extreme values replaced by the
 #'   corresponding quantile values.
 #'
+#' @family utility functions
 #' @export
 #'
 #' @examples

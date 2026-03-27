@@ -18,6 +18,7 @@
 #'   frequency, coupon, last interest date, issue ID, issuer ID, SIC code of the
 #'   issuer.
 #'
+#' @family WRDS functions
 #' @export
 #' @examples
 #' \dontrun{

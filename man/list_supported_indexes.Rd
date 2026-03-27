@@ -25,3 +25,12 @@ supported_indexes <- list_supported_indexes()
 print(supported_indexes)
 
 }
+\seealso{
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}

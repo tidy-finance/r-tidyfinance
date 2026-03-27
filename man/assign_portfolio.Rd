@@ -60,3 +60,12 @@ assign_portfolio(
 )
 
 }
+\seealso{
+Other portfolio functions: 
+\code{\link{breakpoint_options}()},
+\code{\link{compute_breakpoints}()},
+\code{\link{compute_long_short_returns}()},
+\code{\link{compute_portfolio_returns}()},
+\code{\link{data_options}()}
+}
+\concept{portfolio functions}

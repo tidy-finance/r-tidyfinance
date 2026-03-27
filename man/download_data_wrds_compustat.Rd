@@ -52,3 +52,16 @@ operating profitability (op), and investment (inv) for each company.
   download_data_wrds_compustat("compustat_annual", additional_columns = c("aodo", "aldo"))
 }
 }
+\seealso{
+Other WRDS functions: 
+\code{\link{create_wrds_dummy_database}()},
+\code{\link{disconnect_connection}()},
+\code{\link{download_data_wrds}()},
+\code{\link{download_data_wrds_ccm_links}()},
+\code{\link{download_data_wrds_crsp}()},
+\code{\link{download_data_wrds_fisd}()},
+\code{\link{download_data_wrds_trace_enhanced}()},
+\code{\link{get_wrds_connection}()},
+\code{\link{set_wrds_credentials}()}
+}
+\concept{WRDS functions}

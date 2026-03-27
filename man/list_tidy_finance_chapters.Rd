@@ -20,3 +20,12 @@ various topics covered.
 list_tidy_finance_chapters()
 
 }
+\seealso{
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{list_supported_indexes}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}

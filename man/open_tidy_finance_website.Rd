@@ -28,3 +28,12 @@ open_tidy_finance_website()
 open_tidy_finance_website("beta-estimation")
 
 }
+\seealso{
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{list_supported_indexes}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{trim}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}

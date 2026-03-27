@@ -8,6 +8,7 @@
 #'   available in the Tidy Finance resource. These names correspond to specific
 #'   chapters in Tidy Finance with R.
 #'
+#' @family utility functions
 #' @export
 #'
 #' @examples

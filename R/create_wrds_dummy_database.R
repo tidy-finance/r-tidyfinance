@@ -9,6 +9,7 @@
 #'
 #' @returns Invisible `NULL`. Side effect: downloads a file to the specified path.
 #'
+#' @family WRDS functions
 #' @export
 #' @examples
 #' path <- paste0(tempdir(), "/tidy_finance_r.sqlite")

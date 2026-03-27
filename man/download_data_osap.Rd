@@ -34,3 +34,16 @@ snake_case, and optionally filters the data based on a provided date range.
   osap <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
 }
 }
+\seealso{
+Other download functions: 
+\code{\link{download_data}()},
+\code{\link{download_data_constituents}()},
+\code{\link{download_data_factors_ff}()},
+\code{\link{download_data_factors_q}()},
+\code{\link{download_data_fred}()},
+\code{\link{download_data_hf}()},
+\code{\link{download_data_macro_predictors}()},
+\code{\link{download_data_stock_prices}()},
+\code{\link{get_available_hf_files}()}
+}
+\concept{download functions}

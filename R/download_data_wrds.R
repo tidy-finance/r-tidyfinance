@@ -19,6 +19,7 @@
 #' @returns A data frame containing the requested data, with the structure and
 #'   contents depending on the specified `dataset`.
 #'
+#' @family WRDS functions
 #' @export
 #' @examples
 #' \dontrun{

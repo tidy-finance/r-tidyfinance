@@ -18,6 +18,7 @@
 #'  Defaults to `date = date` and `id = permno`.
 #' @returns A data frame with the estimated betas for each time period.
 #'
+#' @family estimation functions
 #' @export
 #'
 #' @examples

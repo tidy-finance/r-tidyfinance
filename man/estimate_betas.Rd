@@ -79,3 +79,9 @@ data_daily <- data_daily |>
 estimate_betas(data_daily, "ret_excess ~ mkt_excess", lubridate::days(90), use_furrr = TRUE)
 
 }
+\seealso{
+Other estimation functions: 
+\code{\link{estimate_fama_macbeth}()},
+\code{\link{estimate_model}()}
+}
+\concept{estimation functions}

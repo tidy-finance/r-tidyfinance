@@ -22,6 +22,7 @@
 #'   used to identify the date column. Uses [data_options()] defaults if `NULL`.
 #'
 #' @returns A numeric vector aligned with the rows of `data`.
+#' @family rolling and lagging functions
 #' @export
 #'
 #' @examples

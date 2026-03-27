@@ -8,7 +8,14 @@
 #' @returns A logical value: `TRUE` if disconnection was successful, `FALSE`
 #'   otherwise.
 #'
+#' @family WRDS functions
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' con <- get_wrds_connection()
+#' disconnect_connection(con)
+#' }
 disconnect_connection <- function(con) {
   DBI::dbDisconnect(con)
 }

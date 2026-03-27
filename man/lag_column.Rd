@@ -64,3 +64,10 @@ data |>
  dplyr::ungroup()
 
 }
+\seealso{
+Other rolling and lagging functions: 
+\code{\link{add_lagged_columns}()},
+\code{\link{compute_rolling_value}()},
+\code{\link{join_lagged_values}()}
+}
+\concept{rolling and lagging functions}

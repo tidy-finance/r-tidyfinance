@@ -27,6 +27,7 @@
 #'   vector of length `nrow(data)` with `NA` for rows with missing data or
 #'   insufficient observations.
 #'
+#' @family estimation functions
 #' @export
 #'
 #' @examples

@@ -10,6 +10,7 @@
 #'
 #' @returns Invisibly returns TRUE. Displays messages to the user based on their input and actions taken.
 #'
+#' @family WRDS functions
 #' @export
 #' @examples
 #' \dontrun{

@@ -58,3 +58,28 @@ Summary statistics are computed for each variable specified in \code{...}. If a
 \code{by} variable is provided, statistics are computed within each level of the
 \code{by} variable.
 }
+\examples{
+data <- data.frame(
+  ret = c(0.01, -0.02, 0.03, NA, 0.005),
+  size = c(100, 200, 150, 300, 250),
+  group = c("A", "A", "B", "B", "A")
+)
+
+# Basic summary across all observations
+create_summary_statistics(data, ret, size)
+
+# Grouped summary
+create_summary_statistics(data, ret, size, by = group)
+
+# Detailed quantiles
+create_summary_statistics(data, ret, detail = TRUE)
+}
+\seealso{
+Other utility functions: 
+\code{\link{list_supported_indexes}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}

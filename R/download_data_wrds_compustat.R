@@ -22,6 +22,7 @@
 #'   variables for book equity (be), operating profitability (op), investment
 #'   (inv), and others.
 #'
+#' @family WRDS functions
 #' @export
 #' @examples
 #' \dontrun{

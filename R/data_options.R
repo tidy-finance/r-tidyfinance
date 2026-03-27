@@ -17,6 +17,7 @@
 #'
 #' @returns A list of class `tidyfinance_data_options` containing the specified data options.
 #'
+#' @family portfolio functions
 #' @export
 #'
 #' @examples

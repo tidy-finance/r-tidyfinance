@@ -20,6 +20,7 @@
 #' @returns A list of class `"tidyfinance_breakpoint_options"` containing the provided
 #' breakpoint options, including any additional arguments passed via `...`.
 #'
+#' @family portfolio functions
 #' @export
 #'
 #' @examples

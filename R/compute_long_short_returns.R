@@ -20,6 +20,7 @@
 #'  column), and the computed long-short returns. The data frame is arranged by date and pivoted to
 #'  have return measurement types as columns with their corresponding long-short returns.
 #'
+#' @family portfolio functions
 #' @export
 #'
 #' @examples

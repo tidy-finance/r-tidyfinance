@@ -33,3 +33,16 @@ securities. It finally returns a data frame with selected fields from the
   fisd_extended <- download_data_wrds_fisd(additional_columns = c("asset_backed", "defeased"))
 }
 }
+\seealso{
+Other WRDS functions: 
+\code{\link{create_wrds_dummy_database}()},
+\code{\link{disconnect_connection}()},
+\code{\link{download_data_wrds}()},
+\code{\link{download_data_wrds_ccm_links}()},
+\code{\link{download_data_wrds_compustat}()},
+\code{\link{download_data_wrds_crsp}()},
+\code{\link{download_data_wrds_trace_enhanced}()},
+\code{\link{get_wrds_connection}()},
+\code{\link{set_wrds_credentials}()}
+}
+\concept{WRDS functions}

@@ -43,6 +43,7 @@
 #'
 #' @returns A vector of breakpoints of the desired length.
 #'
+#' @family portfolio functions
 #' @export
 #'
 #' @examples

@@ -15,6 +15,7 @@
 #'   identifying information (i.e., CUSIP, trade date/time) and trade-specific
 #'   information (i.e., price/yield, volume, counterparty, and reporting side).
 #'
+#' @family WRDS functions
 #' @export
 #' @examples
 #' \dontrun{

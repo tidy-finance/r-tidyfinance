@@ -47,3 +47,16 @@ specific data download function.
   trace_enhanced <- download_data_wrds("trace_enhanced", cusips = "00101JAH9")
 }
 }
+\seealso{
+Other WRDS functions: 
+\code{\link{create_wrds_dummy_database}()},
+\code{\link{disconnect_connection}()},
+\code{\link{download_data_wrds_ccm_links}()},
+\code{\link{download_data_wrds_compustat}()},
+\code{\link{download_data_wrds_crsp}()},
+\code{\link{download_data_wrds_fisd}()},
+\code{\link{download_data_wrds_trace_enhanced}()},
+\code{\link{get_wrds_connection}()},
+\code{\link{set_wrds_credentials}()}
+}
+\concept{WRDS functions}
