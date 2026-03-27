@@ -24,11 +24,14 @@ format. Only used for \code{"high_frequency_sp500"}.}
 
 \item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
 
-\item{...}{For \code{dataset = "factor-library"}: named arguments passed to
-\code{filter_grid()} to select portfolio characteristics (e.g.,
-\code{sorting_variable}, \code{rebalancing}). Optionally pass \code{fill_all = TRUE} to
-suppress defaults and match only on explicitly provided filters. Passing an
-unrecognised filter name raises an error listing the supported names.}
+\item{...}{For \code{dataset = "factor-library"}: named arguments used to filter
+the portfolio grid. Each argument takes the form \code{column = value}, where
+\code{value} may be a vector to match multiple levels. Optionally pass
+\code{fill_all = TRUE} to leave unspecified columns unrestricted (default:
+\code{FALSE}, i.e. unspecified columns are fixed at the defaults listed below).
+Passing an unrecognised column name raises an error listing the supported
+names. Ignored when \code{dataset != "factor-library"}. See the Details section
+for supported columns and their defaults.}
 }
 \value{
 A tibble with the downloaded data. For \code{"high_frequency_sp500"},
@@ -41,6 +44,44 @@ Downloads data from a supported Hugging Face dataset. For
 \code{"high_frequency_sp500"}, parquet files are filtered by date range and
 row-bound. For \code{"factor-library"}, portfolio characteristics are selected via
 \code{filter_grid()} and the matching return data is downloaded.
+}
+\details{
+\strong{Note on \code{dataset = "factor-library"} defaults:} The defaults below reflect
+one common portfolio construction choice, but may not suit every research
+question. Always verify that the selected combination matches your intended
+design.
+
+Supported columns and their defaults for \code{...}:
+\itemize{
+\item \code{sorting_variable}: \strong{Required.} The firm characteristic used to sort
+stocks into portfolios (e.g., \code{"me"} for market equity, \code{"bm"} for
+book-to-market). No default is applied.
+\item \code{exclude_size} (default: \code{0.2}): Fraction of the smallest stocks (by
+market cap) excluded from the portfolio universe. \code{0.2} drops the bottom
+20\%.
+\item \code{exclude_financials} (default: \code{FALSE}): Whether to drop financial-sector
+stocks (SIC 6000-6999) from the universe.
+\item \code{exclude_utilities} (default: \code{FALSE}): Whether to drop utility-sector
+stocks (SIC 4900-4999) from the universe.
+\item \code{exclude_negative_earnings} (default: \code{FALSE}): Whether to drop firms with
+negative earnings before sorting.
+\item \code{sorting_variable_lag} (default: \code{"6m"}): Lag applied to the sorting
+variable before portfolio assignment (e.g., \code{"6m"} = 6-month lag).
+\item \code{rebalancing} (default: \code{"monthly"}): How frequently portfolios are
+reformed: \code{"monthly"} or \code{"annual"}.
+\item \code{breakpoints_main} (default: \code{10}): Number of quantile groups (e.g., \code{10}
+for decile portfolios).
+\item \code{sorting_method} (default: \code{"univariate"}): Whether portfolios are formed
+on a single sort (\code{"univariate"}) or a sequential double sort
+(\code{"sequential"}).
+\item \code{breakpoints_secondary} (default: \code{NA}): Number of groups for the secondary
+sort variable; only relevant when \code{sorting_method = "sequential"}.
+\item \code{breakpoints_exchanges} (default: \code{"NYSE"}): Exchange(s) used to compute
+breakpoints. \code{"NYSE"} uses only NYSE-listed stocks to define quantile
+cutoffs (the conventional Fama-French approach).
+\item \code{weighting_scheme} (default: \code{"VW"}): Return weighting within portfolios:
+\code{"VW"} for value-weighted or \code{"EW"} for equal-weighted.
+}
 }
 \examples{
 \dontrun{

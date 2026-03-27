@@ -80,44 +80,45 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'   `fill_all = TRUE` to leave unspecified columns unrestricted (default:
 #'   `FALSE`, i.e. unspecified columns are fixed at the defaults listed below).
 #'   Passing an unrecognised column name raises an error listing the supported
-#'   names. Ignored when `dataset != "factor-library"`.
+#'   names. Ignored when `dataset != "factor-library"`. See the Details section
+#'   for supported columns and their defaults.
 #'
-#'   **Note:** The defaults below reflect one common portfolio construction
-#'   choice, but may not suit every research question. Always verify that the
-#'   selected combination matches your intended design.
+#' @details
+#' **Note on `dataset = "factor-library"` defaults:** The defaults below reflect
+#' one common portfolio construction choice, but may not suit every research
+#' question. Always verify that the selected combination matches your intended
+#' design.
 #'
-#'   Supported columns and their defaults are:
-#'   \describe{
-#'     \item{`sorting_variable`}{**Required.** The firm characteristic used to
-#'       sort stocks into portfolios (e.g., `"me"` for market equity, `"bm"`
-#'       for book-to-market). No default is applied.}
-#'     \item{`exclude_size`}{`0.2`. Fraction of the smallest stocks (by market
-#'       cap) excluded from the portfolio universe. `0.2` drops the bottom 20\%.}
-#'     \item{`exclude_financials`}{`FALSE`. Whether to drop financial-sector
-#'       stocks (SIC 6000–6999) from the universe.}
-#'     \item{`exclude_utilities`}{`FALSE`. Whether to drop utility-sector stocks
-#'       (SIC 4900–4999) from the universe.}
-#'     \item{`exclude_negative_earnings`}{`FALSE`. Whether to drop firms with
-#'       negative earnings before sorting.}
-#'     \item{`sorting_variable_lag`}{`"6m"`. Lag applied to the sorting variable
-#'       before portfolio assignment, controlling for publication and reporting
-#'       delays (e.g., `"6m"` = 6-month lag).}
-#'     \item{`rebalancing`}{`"monthly"`. How frequently portfolios are
-#'       reformed: `"monthly"` or `"annual"`.}
-#'     \item{`breakpoints_main`}{`10`. Number of quantile groups (e.g., `10`
-#'       for decile portfolios).}
-#'     \item{`sorting_method`}{`"univariate"`. Whether portfolios are formed on
-#'       a single sort (`"univariate"`) or a sequential double sort
-#'       (`"sequential"`).}
-#'     \item{`breakpoints_secondary`}{`NA`. Number of groups for the secondary
-#'       sort variable; only relevant when `sorting_method = "sequential"`.}
-#'     \item{`breakpoints_exchanges`}{`"NYSE"`. Exchange(s) used to compute
-#'       breakpoints. `"NYSE"` uses only NYSE-listed stocks to define quantile
-#'       cutoffs, which is the conventional Fama–French approach.}
-#'     \item{`weighting_scheme`}{`"VW"`. Return weighting within portfolios:
-#'       `"VW"` for value-weighted (market-cap weighted) or `"EW"` for
-#'       equal-weighted.}
-#'   }
+#' Supported columns and their defaults for `...`:
+#'
+#' - `sorting_variable`: **Required.** The firm characteristic used to sort
+#'   stocks into portfolios (e.g., `"me"` for market equity, `"bm"` for
+#'   book-to-market). No default is applied.
+#' - `exclude_size` (default: `0.2`): Fraction of the smallest stocks (by
+#'   market cap) excluded from the portfolio universe. `0.2` drops the bottom
+#'   20%.
+#' - `exclude_financials` (default: `FALSE`): Whether to drop financial-sector
+#'   stocks (SIC 6000-6999) from the universe.
+#' - `exclude_utilities` (default: `FALSE`): Whether to drop utility-sector
+#'   stocks (SIC 4900-4999) from the universe.
+#' - `exclude_negative_earnings` (default: `FALSE`): Whether to drop firms with
+#'   negative earnings before sorting.
+#' - `sorting_variable_lag` (default: `"6m"`): Lag applied to the sorting
+#'   variable before portfolio assignment (e.g., `"6m"` = 6-month lag).
+#' - `rebalancing` (default: `"monthly"`): How frequently portfolios are
+#'   reformed: `"monthly"` or `"annual"`.
+#' - `breakpoints_main` (default: `10`): Number of quantile groups (e.g., `10`
+#'   for decile portfolios).
+#' - `sorting_method` (default: `"univariate"`): Whether portfolios are formed
+#'   on a single sort (`"univariate"`) or a sequential double sort
+#'   (`"sequential"`).
+#' - `breakpoints_secondary` (default: `NA`): Number of groups for the secondary
+#'   sort variable; only relevant when `sorting_method = "sequential"`.
+#' - `breakpoints_exchanges` (default: `"NYSE"`): Exchange(s) used to compute
+#'   breakpoints. `"NYSE"` uses only NYSE-listed stocks to define quantile
+#'   cutoffs (the conventional Fama-French approach).
+#' - `weighting_scheme` (default: `"VW"`): Return weighting within portfolios:
+#'   `"VW"` for value-weighted or `"EW"` for equal-weighted.
 #'
 #' @return A tibble with the downloaded data. For `"high_frequency_sp500"`,
 #'   contains 5-second aggregated orderbook snapshots filtered to the requested
@@ -261,11 +262,11 @@ filter_grid <- function(..., fill_all = FALSE) {
     weighting_scheme = "VW"
   )
 
-  unsupported <- setdiff(names(filters), names(defaults))
+  unsupported <- setdiff(names(filters), c("sorting_variable", names(defaults)))
   if (length(unsupported) > 0) {
     cli::cli_abort(c(
       "{length(unsupported)} unsupported filter name{?s}: {.val {unsupported}}",
-      "i" = "Supported filters: {.val {names(defaults)}}"
+      "i" = "Supported filters: {.val {c('sorting_variable', names(defaults))}}"
     ))
   }
 
