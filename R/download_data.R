@@ -8,7 +8,7 @@
 #'
 #' @param domain The domain of the dataset to download (e.g., "famafrench",
 #'   "globalq", "macro_predictors", "wrds", "constituents", "fred",
-#'   "stock_prices", "osap", "hf").
+#'   "stock_prices", "osap", "tidyfinance").
 #' @param dataset Optional. The specific dataset to download within the domain.
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the start date for the data. If not provided, the full dataset or a subset is returned,
@@ -19,7 +19,7 @@
 #' @param type `r lifecycle::badge("deprecated")` Use `domain` and `dataset` instead.
 #' @param ... Additional arguments passed to specific download functions depending on the `domain`.
 #'   For instance, if `domain` is `"constituents"`, arguments are passed to `download_data_constituents()`.
-#'   If `domain` is `"hf"` and `dataset` is `"factor-library"`, arguments are used to filter the
+#'   If `domain` is `"tidyfinance"` and `dataset` is `"factor-library"`, arguments are used to filter the
 #'   portfolio grid (e.g., `sorting_variable`, `rebalancing`, `fill_all`); see `download_data_huggingface()` for details.
 #'
 #' @returns A tibble with processed data, including dates and the relevant
@@ -33,8 +33,8 @@
 #'   download_data("constituents", index = "DAX")
 #'   download_data("fred", series = c("GDP", "CPIAUCNS"))
 #'   download_data("stock_prices", symbols = c("AAPL", "MSFT"))
-#'   download_data("hf", "high_frequency_sp500", "2007-07-26", "2007-07-27")
-#'   download_data("hf", "factor-library", sorting_variable = "52w", rebalancing = "annual")
+#'   download_data("tidyfinance", "high_frequency_sp500", "2007-07-26", "2007-07-27")
+#'   download_data("tidyfinance", "factor-library", sorting_variable = "52w", rebalancing = "annual")
 #' }
 download_data <- function(
   domain = NULL,
@@ -125,7 +125,7 @@ download_data <- function(
       end_date = end_date,
       ...
     )
-  } else if (domain == "hf") {
+  } else if (domain == "tidyfinance") {
     processed_data <- download_data_huggingface(
       dataset = dataset,
       start_date = start_date,
@@ -151,7 +151,7 @@ is_legacy_type <- function(x) {
   macro_types <- list_supported_types_macro_predictors()
   wrds_types <- list_supported_types_wrds()
   other_types <- list_supported_types_other() |>
-    dplyr::filter(.data$type != "osap")
+    dplyr::filter(.data$domain != "tidyfinance", .data$type != "osap")
 
   all_types <- dplyr::bind_rows(
     ff_types,
@@ -205,10 +205,10 @@ parse_type_to_domain_dataset <- function(type) {
     return(list(domain = "wrds", dataset = dataset))
   }
 
-  # High frequency: "hf_*" -> domain = "hf"
+  # High frequency: "hf_*" -> domain = "tidyfinance"
   if (grepl("^hf_", type)) {
     dataset <- sub("^hf_", "", type)
-    return(list(domain = "hf", dataset = dataset))
+    return(list(domain = "tidyfinance", dataset = dataset))
   }
 
   # Simple domain-only types (no dataset component)
@@ -237,7 +237,7 @@ check_supported_domain <- function(domain) {
     "fred",
     "stock_prices",
     "osap",
-    "hf"
+    "tidyfinance"
   )
 
   if (!domain %in% supported_domains) {
