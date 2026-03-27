@@ -14,8 +14,8 @@ compute_rolling_value(
 )
 }
 \arguments{
-\item{data}{A data frame with a date column of class \code{Date}. The date
-column name is determined by \code{data_options$date} (default \code{"date"}).}
+\item{data}{A data frame with a date column of class \code{Date}, named according
+to \code{data_options$date} (default \code{"date"}).}
 
 \item{.f}{A function applied to each window. Receives a data-frame
 slice (complete cases only) and must return a single scalar value.}

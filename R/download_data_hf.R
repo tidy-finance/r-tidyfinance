@@ -11,11 +11,11 @@
 #'   the dataset to be publicly accessible or accessible with appropriate auth.
 #' @examples
 #' \dontrun{
-#' get_available_hf_files("voigtstefan", "sp500")
+#' get_available_huggingface_files("voigtstefan", "sp500")
 #' }
 #'
 #' @export
-get_available_hf_files <- function(organization, dataset) {
+get_available_huggingface_files <- function(organization, dataset) {
   api_url <- paste0(
     "https://huggingface.co/api/datasets/",
     organization,
@@ -87,13 +87,13 @@ get_available_hf_files <- function(organization, dataset) {
 #'
 #' @examples
 #' \dontrun{
-#'   download_data_hf("high_frequency_sp500", "2007-07-26", "2007-07-27")
-#'   download_data_hf("factor-library", sorting_variable = "52w", rebalancing = "annual")
-#'   download_data_hf("factor-library", sorting_variable = "ag", fill_all = TRUE)
+#'   download_data_huggingface("high_frequency_sp500", "2007-07-26", "2007-07-27")
+#'   download_data_huggingface("factor-library", sorting_variable = "52w", rebalancing = "annual")
+#'   download_data_huggingface("factor-library", sorting_variable = "ag", fill_all = TRUE)
 #' }
 #'
 #' @export
-download_data_hf <- function(
+download_data_huggingface <- function(
   dataset = NULL,
   start_date = "2007-06-27",
   end_date = "2007-07-27",
@@ -104,7 +104,7 @@ download_data_hf <- function(
   if (lifecycle::is_present(type)) {
     lifecycle::deprecate_warn(
       when = "0.5.0",
-      what = "download_data_hf(type)",
+      what = "download_data_huggingface(type)",
       details = "Use the `dataset` argument instead."
     )
     dataset <- sub("^hf_", "", type)
@@ -114,7 +114,7 @@ download_data_hf <- function(
   if (!is.null(dataset) && is_legacy_type_hf(dataset)) {
     lifecycle::deprecate_warn(
       when = "0.5.0",
-      what = "download_data_hf(type)",
+      what = "download_data_huggingface(type)",
       details = paste0(
         "The `type` argument is deprecated. ",
         "Use `dataset` instead (e.g., 'high_frequency_sp500' instead of 'hf_high_frequency_sp500')."
@@ -134,7 +134,7 @@ download_data_hf <- function(
     dataset_name <- "sp500"
 
     date_pattern <- "date=([0-9]{4}-[0-9]{2}-[0-9]{2})"
-    available_files <- get_available_hf_files(organization, dataset_name) |>
+    available_files <- get_available_huggingface_files(organization, dataset_name) |>
       dplyr::mutate(
         date = as.Date(stringr::str_match(.data$path, date_pattern)[, 2])
       )
@@ -239,7 +239,7 @@ filter_grid <- function(..., fill_all = FALSE) {
     }
   }
 
-  result <- get_available_hf_files("tidy-finance", "factor-library-grid") |>
+  result <- get_available_huggingface_files("tidy-finance", "factor-library-grid") |>
     dplyr::pull(.data$url) |>
     arrow::read_parquet() |>
     dplyr::mutate(
@@ -276,7 +276,7 @@ download_factor_library_returns_ids <- function(ids) {
   organization <- "tidy-finance"
   dataset_name <- "factor-library"
 
-  available_files <- get_available_hf_files(organization, dataset_name) |>
+  available_files <- get_available_huggingface_files(organization, dataset_name) |>
     tidyr::extract(
       col = "path",
       into = c("sorting_variable", "sorting_variable_lag"),
@@ -286,7 +286,7 @@ download_factor_library_returns_ids <- function(ids) {
 
   id_values <- data.frame(id = ids)
 
-  id_grid <- get_available_hf_files(organization, "factor-library-grid") |>
+  id_grid <- get_available_huggingface_files(organization, "factor-library-grid") |>
     dplyr::pull(.data$url) |>
     arrow::read_parquet() |>
     dplyr::inner_join(id_values, dplyr::join_by(id)) |>

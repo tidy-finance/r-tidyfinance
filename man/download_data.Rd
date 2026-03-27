@@ -33,7 +33,7 @@ depending on the dataset type.}
 \item{...}{Additional arguments passed to specific download functions depending on the \code{domain}.
 For instance, if \code{domain} is \code{"constituents"}, arguments are passed to \code{download_data_constituents()}.
 If \code{domain} is \code{"hf"} and \code{dataset} is \code{"factor-library"}, arguments are used to filter the
-portfolio grid (e.g., \code{sorting_variable}, \code{rebalancing}, \code{fill_all}); see \code{download_data_hf()} for details.}
+portfolio grid (e.g., \code{sorting_variable}, \code{rebalancing}, \code{fill_all}); see \code{download_data_huggingface()} for details.}
 }
 \value{
 A tibble with processed data, including dates and the relevant
