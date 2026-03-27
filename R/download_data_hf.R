@@ -209,7 +209,6 @@ filter_grid <- function(..., fill_all = FALSE) {
   filters <- list(...)
 
   defaults <- list(
-    sorting_variable = "me",
     exclude_size = 0.2,
     exclude_financials = FALSE,
     exclude_utilities = FALSE,
