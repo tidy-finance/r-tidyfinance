@@ -99,9 +99,21 @@ estimate_fama_macbeth <- function(
   # Function to compute the standard error based on the specified vcov
   compute_standard_error <- function(model, vcov, vcov_options = NULL) {
     if (vcov == "iid") {
-      sqrt(stats::vcov(model)[1, 1])
-    } else if (vcov == "newey-west") {
-      sqrt(do.call(sandwich::NeweyWest, c(list(model), vcov_options)))
+      return(sqrt(stats::vcov(model)[1, 1]))
+    }
+
+    if (vcov == "newey-west") {
+      if (is.null(vcov_options)) vcov_options <- list()
+      if (is.null(vcov_options$prewhite)) vcov_options$prewhite <- FALSE
+
+      V <- tryCatch(
+        do.call(sandwich::NeweyWest, c(list(model), vcov_options)),
+        error = function(e) {
+          do.call(sandwich::NeweyWest, c(list(model), list(prewhite = FALSE)))
+        }
+      )
+
+      return(sqrt(V[1, 1]))
     }
   }
 
