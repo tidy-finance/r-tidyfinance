@@ -81,17 +81,14 @@ estimate_fama_macbeth <- function(
     data_options <- data_options()
   }
 
-  # Check that vcov is one of the allowed options
   if (!vcov %in% c("iid", "newey-west")) {
     cli::cli_abort("{.arg vcov} must be either 'iid' or 'newey-west'.")
   }
 
-  # Check that the data has a date column
   if (!data_options$date %in% colnames(data)) {
     cli::cli_abort("The data must contain a {data_options$date} column.")
   }
 
-  # Cross-sectional regressions
   cross_sections <- data |>
     tidyr::nest(data = -all_of(data_options$date)) |>
     mutate(
@@ -101,14 +98,12 @@ estimate_fama_macbeth <- function(
       )
     )
 
-  # Check if any date grouping has fewer rows than columns in the model
   if (any(!cross_sections$row_check)) {
     cli::cli_abort(
       "Each date grouping must have more rows than the number of predictors in the model to estimate coefficients. Please check your data."
     )
   }
 
-  # Proceed with estimation if all checks pass
   cross_sections <- cross_sections |>
     select(-row_check) |>
     mutate(
@@ -124,21 +119,23 @@ estimate_fama_macbeth <- function(
         }
       ),
       r_squared = purrr::map_dbl(.data$cross_fit, ~ summary(.)$r.squared),
+      adj_r_squared = purrr::map_dbl(
+        .data$cross_fit,
+        ~ summary(.)$adj.r.squared
+      ),
       n_obs = purrr::map_dbl(.data$cross_fit, ~ nrow(.$model))
     ) |>
     select(-"cross_fit")
 
-  # Preserve per-period summary statistics before reshaping
   cross_section_stats <- cross_sections |>
-    select(all_of(data_options$date), "r_squared", "n_obs")
+    select(all_of(data_options$date), "r_squared", "adj_r_squared", "n_obs")
 
   cross_sections <- cross_sections |>
-    select(-"r_squared", -"n_obs") |>
+    select(-"r_squared", -"adj_r_squared", -"n_obs") |>
     tidyr::unnest(estimates) |>
     select(-data) |>
     tidyr::pivot_longer(-all_of(data_options$date))
 
-  # Function to compute the standard error based on the specified vcov
   compute_standard_error <- function(model, vcov, vcov_options = NULL) {
     if (vcov == "iid") {
       sqrt(stats::vcov(model)[1, 1])
@@ -147,7 +144,6 @@ estimate_fama_macbeth <- function(
     }
   }
 
-  # Time-series aggregations
   aggregations <- cross_sections |>
     tidyr::nest(data = c(all_of(data_options$date), value)) |>
     mutate(
@@ -170,12 +166,13 @@ estimate_fama_macbeth <- function(
     select(factor = name, risk_premium, n, standard_error, t_statistic)
 
   if (detail) {
-    # Compute average R-squared and N across time periods
     avg_r_squared <- mean(cross_section_stats$r_squared)
+    avg_adj_r_squared <- mean(cross_section_stats$adj_r_squared)
     avg_n_obs <- mean(cross_section_stats$n_obs)
 
     summary_statistics <- tibble::tibble(
       r_squared = avg_r_squared,
+      adj_r_squared = avg_adj_r_squared,
       n_obs = avg_n_obs
     )
 
