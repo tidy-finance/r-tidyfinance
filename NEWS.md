@@ -12,6 +12,7 @@
 - Added more indexes to `list_supported_indexes()`.
 - Added `download_data_hf()` and support for `type = "hf_high_frequency_sp500"`.
 - Deprecated `type` parameter in favor of `domain` and `dataset`.
+- Added `detail` parameter to `estimate_fama_macbeth()` to include average `n_obs` and `r_squared`.
 
 ## Improvements
 

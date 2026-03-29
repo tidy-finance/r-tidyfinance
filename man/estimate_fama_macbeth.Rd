@@ -9,7 +9,8 @@ estimate_fama_macbeth(
   model,
   vcov = "newey-west",
   vcov_options = NULL,
-  data_options = NULL
+  data_options = NULL,
+  detail = FALSE
 )
 }
 \arguments{
@@ -31,11 +32,26 @@ apply a prewhitening transformation. Default is an empty list.}
 \item{data_options}{A named list of \link{data_options} with characters, indicating the column
 names required to run this function. The required column names identify dates. Defaults to
 \code{date = date}.}
+
+\item{detail}{A logical value indicating whether to return additional summary
+statistics. If \code{FALSE} (default), the function returns only the coefficient
+estimates. If \code{TRUE}, it returns a list with two elements: \code{coefficients}
+(the usual estimates table) and \code{summary_statistics} (a one-row tibble with
+the average cross-sectional R-squared and the average number of
+observations per cross-section).}
 }
 \value{
-A data frame with the estimated risk premiums, the number of time periods (\code{n}),
-standard errors, t-statistics, average cross-sectional R-squared (\code{r_squared}), and
-average number of cross-sectional observations (\code{n_obs}) for each factor in the model.
+If \code{detail = FALSE} (default), a tibble with columns \code{factor},
+\code{risk_premium}, \code{n} (number of time periods), \code{standard_error}, and
+\code{t_statistic}.
+
+If \code{detail = TRUE}, a named list with two elements:
+\describe{
+\item{coefficients}{The same tibble described above.}
+\item{summary_statistics}{A one-row tibble with \code{r_squared} (mean
+cross-sectional R-squared) and \code{n_obs} (mean cross-sectional
+observation count).}
+}
 }
 \description{
 This function estimates Fama-MacBeth regressions by first running cross-sectional regressions
@@ -59,6 +75,9 @@ estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap")
 estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", vcov = "iid")
 estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap",
                       vcov = "newey-west", vcov_options = list(lag = 6, prewhite = FALSE))
+
+# Return detailed output including R-squared and observation counts
+estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", detail = TRUE)
 
 # Use different column name for date
 data |>

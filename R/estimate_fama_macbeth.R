@@ -18,10 +18,24 @@
 #' @param data_options A named list of \link{data_options} with characters, indicating the column
 #'  names required to run this function. The required column names identify dates. Defaults to
 #'  `date = date`.
+#' @param detail A logical value indicating whether to return additional summary
+#'   statistics. If `FALSE` (default), the function returns only the coefficient
+#'   estimates. If `TRUE`, it returns a list with two elements: `coefficients`
+#'   (the usual estimates table) and `summary_statistics` (a one-row tibble with
+#'   the average cross-sectional R-squared and the average number of
+#'   observations per cross-section).
 #'
-#' @return A data frame with the estimated risk premiums, the number of time periods (`n`),
-#'  standard errors, t-statistics, average cross-sectional R-squared (`r_squared`), and
-#'  average number of cross-sectional observations (`n_obs`) for each factor in the model.
+#' @return If `detail = FALSE` (default), a tibble with columns `factor`,
+#'   `risk_premium`, `n` (number of time periods), `standard_error`, and
+#'   `t_statistic`.
+#'
+#'   If `detail = TRUE`, a named list with two elements:
+#'   \describe{
+#'     \item{coefficients}{The same tibble described above.}
+#'     \item{summary_statistics}{A one-row tibble with `r_squared` (mean
+#'       cross-sectional R-squared) and `n_obs` (mean cross-sectional
+#'       observation count).}
+#'   }
 #'
 #' @export
 #'
@@ -43,6 +57,9 @@
 #' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap",
 #'                       vcov = "newey-west", vcov_options = list(lag = 6, prewhite = FALSE))
 #'
+#' # Return detailed output including R-squared and observation counts
+#' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", detail = TRUE)
+#'
 #' # Use different column name for date
 #' data |>
 #'   dplyr::rename(month = date) |>
@@ -56,7 +73,8 @@ estimate_fama_macbeth <- function(
   model,
   vcov = "newey-west",
   vcov_options = NULL,
-  data_options = NULL
+  data_options = NULL,
+  detail = FALSE
 ) {
   if (is.null(data_options)) {
     data_options <- data_options()
@@ -94,24 +112,27 @@ estimate_fama_macbeth <- function(
     select(-row_check) |>
     mutate(
       cross_fit = purrr::map(data, ~ lm(as.formula(model), data = .)),
-      estimates = purrr::map(cross_fit, ~ {
-        coefs <- stats::coef(.)
-        if ("(Intercept)" %in% names(coefs)) {
-          names(coefs)[names(coefs) == "(Intercept)"] <- "intercept"
+      estimates = purrr::map(
+        .data$cross_fit,
+        ~ {
+          coefs <- stats::coef(.)
+          if ("(Intercept)" %in% names(coefs)) {
+            names(coefs)[names(coefs) == "(Intercept)"] <- "intercept"
+          }
+          tibble::as_tibble(t(coefs))
         }
-        tibble::as_tibble(t(coefs))
-      }),
-      r_squared = purrr::map_dbl(cross_fit, ~ summary(.)$r.squared),
-      n_obs = purrr::map_dbl(cross_fit, ~ nrow(.$model))
+      ),
+      r_squared = purrr::map_dbl(.data$cross_fit, ~ summary(.)$r.squared),
+      n_obs = purrr::map_dbl(.data$cross_fit, ~ nrow(.$model))
     ) |>
-    select(-cross_fit)
+    select(-"cross_fit")
 
-  # Compute average R-squared and N across time periods
-  avg_r_squared <- mean(cross_sections$r_squared)
-  avg_n_obs <- mean(cross_sections$n_obs)
+  # Preserve per-period summary statistics before reshaping
+  cross_section_stats <- cross_sections |>
+    select(all_of(data_options$date), "r_squared", "n_obs")
 
   cross_sections <- cross_sections |>
-    select(-r_squared, -n_obs) |>
+    select(-"r_squared", -"n_obs") |>
     tidyr::unnest(estimates) |>
     select(-data) |>
     tidyr::pivot_longer(-all_of(data_options$date))
@@ -135,18 +156,33 @@ estimate_fama_macbeth <- function(
       standard_error = purrr::map_dbl(
         model,
         ~ compute_standard_error(., vcov, vcov_options)
-      )
-    ) |>
-    mutate(
-      t_statistic = ifelse(
-        vcov == "iid",
-        risk_premium / standard_error * sqrt(n),
-        risk_premium / standard_error
       ),
+      t_statistic = risk_premium / standard_error
+    )
+
+  if (vcov == "iid") {
+    aggregations <- aggregations |>
+      mutate(t_statistic = t_statistic * sqrt(n))
+  }
+
+  aggregations <- aggregations |>
+    select(factor = name, risk_premium, n, standard_error, t_statistic)
+
+  if (detail) {
+    # Compute average R-squared and N across time periods
+    avg_r_squared <- mean(cross_section_stats$r_squared)
+    avg_n_obs <- mean(cross_section_stats$n_obs)
+
+    summary_statistics <- tibble::tibble(
       r_squared = avg_r_squared,
       n_obs = avg_n_obs
-    ) |>
-    select(factor = name, risk_premium, n, standard_error, t_statistic, r_squared, n_obs)
+    )
 
-  aggregations
+    list(
+      coefficients = aggregations,
+      summary_statistics = summary_statistics
+    )
+  } else {
+    aggregations
+  }
 }
