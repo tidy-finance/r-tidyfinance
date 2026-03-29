@@ -177,7 +177,7 @@ test_that("input validation: id_keys must be character", {
   )
 })
 
-test_that("input validation: id_date must exist in both datasets", {
+test_that("input validation: date column must exist in both datasets", {
   df1 <- tibble(id = 1, date = as.Date("2020-01-01"))
   df2 <- tibble(id = 1, dt = as.Date("2020-01-01"), x = 1)
 
@@ -186,14 +186,14 @@ test_that("input validation: id_date must exist in both datasets", {
       df1,
       df2,
       id_keys = "id",
-      id_date = "dt",
       min_lag = months(1),
-      max_lag = months(3)
+      max_lag = months(3),
+      data_options = data_options(date = "dt")
     )
   )
 })
 
-test_that("custom id_date column name works", {
+test_that("custom date column name via data_options works", {
   df1 <- tibble(id = 1, dt = as.Date(c("2020-03-01", "2020-04-01")))
   df2 <- tibble(
     id = 1,
@@ -205,9 +205,9 @@ test_that("custom id_date column name works", {
     original_data = df1,
     new_data = df2,
     id_keys = "id",
-    id_date = "dt",
     min_lag = months(1),
-    max_lag = months(4)
+    max_lag = months(4),
+    data_options = data_options(date = "dt")
   )
 
   expect_true("x" %in% names(result))

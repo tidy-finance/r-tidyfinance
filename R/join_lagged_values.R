@@ -10,15 +10,17 @@
 #'
 #' @param original_data A data frame containing the target panel data.
 #' @param new_data A data frame containing the source variables to lag and merge.
-#'  All columns besides `id_keys` and `id_date` will be lagged and joined.
+#'  All columns besides `id_keys` and the date column will be lagged and joined.
 #' @param id_keys A character vector specifying the identifier column(s).
-#' @param id_date A string giving the date column name (default: `"date"`).
 #' @param min_lag A `lubridate::Period` specifying the lower lag bound (inclusive).
 #' @param max_lag A `lubridate::Period` specifying the upper lag bound (inclusive).
 #' @param ff_adjustment Logical; if `TRUE`, keeps only the last observation per
 #'  identifier and year before lagging (Fama–French convention). Defaults to `FALSE`.
+#' @param data_options A list of class `tidyfinance_data_options` (created via
+#'  [data_options()]) specifying column name mappings. The `date` element is used
+#'  to identify the date column. Uses [data_options()] defaults if `NULL`.
 #'
-#' @return A data frame with all columns from `original_data` plus the lagged
+#' @returns A data frame with all columns from `original_data` plus the lagged
 #'  columns from `new_data` (keeping their original names).
 #' @export
 #'
@@ -45,11 +47,16 @@ join_lagged_values <- function(
   original_data,
   new_data,
   id_keys,
-  id_date = "date",
   min_lag,
   max_lag,
-  ff_adjustment = FALSE
+  ff_adjustment = FALSE,
+  data_options = NULL
 ) {
+  if (is.null(data_options)) {
+    data_options <- data_options()
+  }
+  id_date <- data_options$date
+
   if (!is.character(id_keys)) {
     cli::cli_abort(
       "{.arg id_keys} must be a character vector, not {.obj_type_friendly {id_keys}}."
