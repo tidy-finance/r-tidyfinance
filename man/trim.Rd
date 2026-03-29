@@ -28,3 +28,12 @@ data <- rnorm(100)
 trimmed_data <- trim(x = data, cut = 0.05)
 
 }
+\seealso{
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{list_supported_indexes}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}

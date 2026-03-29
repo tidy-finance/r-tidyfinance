@@ -23,6 +23,7 @@
 #'   rate, market excess return, and other factors, filtered by the specified
 #'   date range.
 #'
+#' @family download functions
 #' @export
 #' @examples
 #' \donttest{
@@ -139,6 +140,7 @@ download_data_factors_ff <- function(
 #'   rate, market excess return, and other factors, filtered by the specified
 #'   date range.
 #'
+#' @family download functions
 #' @export
 #' @examples
 #' \donttest{

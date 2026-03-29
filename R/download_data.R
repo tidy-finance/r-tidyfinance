@@ -25,6 +25,7 @@
 #' @returns A tibble with processed data, including dates and the relevant
 #'   financial metrics, filtered by the specified date range.
 #'
+#' @family download functions
 #' @export
 #' @examples
 #' \donttest{

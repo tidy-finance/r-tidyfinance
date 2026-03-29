@@ -10,7 +10,7 @@ set_wrds_credentials()
 Invisibly returns TRUE. Displays messages to the user based on their input and actions taken.
 }
 \description{
-This function prompts the user to input their WRDS (Wharton Research Data Services)
+Prompts the user to input their WRDS (Wharton Research Data Services)
 username and password, and stores these credentials in a .Renviron file. The user can
 choose to store the .Renviron file in either the project directory or the home directory.
 If the .Renviron file already contains WRDS credentials, the user will be asked if they
@@ -23,3 +23,16 @@ by version control.
 set_wrds_credentials()
 }
 }
+\seealso{
+Other WRDS functions: 
+\code{\link{create_wrds_dummy_database}()},
+\code{\link{disconnect_connection}()},
+\code{\link{download_data_wrds}()},
+\code{\link{download_data_wrds_ccm_links}()},
+\code{\link{download_data_wrds_compustat}()},
+\code{\link{download_data_wrds_crsp}()},
+\code{\link{download_data_wrds_fisd}()},
+\code{\link{download_data_wrds_trace_enhanced}()},
+\code{\link{get_wrds_connection}()}
+}
+\concept{WRDS functions}

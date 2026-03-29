@@ -1,6 +1,6 @@
 #' Check if a Dataset Type is Supported
 #'
-#' This function checks if a given dataset type is supported by verifying
+#' Checks if a given dataset type is supported by verifying
 #' against a list of all supported dataset types from different domains. If the
 #' specified type is not supported, it stops execution and returns an error
 #' message listing all supported types.

@@ -32,18 +32,19 @@ columns. Defaults to \code{FALSE}.}
 
 \item{ff_adjustment}{A logical value indicating whether to lag monthly data based on Fama-French conventions. Here, the values are lagged based on the last observation within the year is taken. Defaults to \code{FALSE}.}
 
-\item{data_options}{A list of additional options for data processing, such as the \code{date} column. If \code{NULL}, defaults are used.}
+\item{data_options}{A named list of \link{data_options} with characters, indicating
+the column names required to run this function. The required column names identify
+dates. Defaults to \code{date = date}.}
 }
 \value{
 A data frame with new, lagged columns added.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
-This function takes a data.frame and appends a lagged version of given columns based on a date variable, with the
+Takes a data.frame and appends a lagged version of given columns based on a date variable, with the
 ability to specify a range of lags. It also allows for the optional removal of \code{NA} values.
 }
 \examples{
+set.seed(42)
 # Example using a tibble and dplyr::group_by
 data <- tibble::tibble(
   permno = rep(1:2, each = 10),
@@ -53,3 +54,10 @@ data <- tibble::tibble(
 )
 add_lagged_columns(data, cols = "size", lag = months(2), by = "permno")
 }
+\seealso{
+Other rolling and lagging functions: 
+\code{\link{compute_rolling_value}()},
+\code{\link{join_lagged_values}()},
+\code{\link{lag_column}()}
+}
+\concept{rolling and lagging functions}

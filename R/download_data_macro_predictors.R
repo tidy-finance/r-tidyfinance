@@ -18,6 +18,7 @@
 #' @returns A tibble with processed data, filtered by the specified date range
 #'   and including financial metrics.
 #'
+#' @family download functions
 #' @export
 #'
 #' @examples

@@ -12,7 +12,7 @@ A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
 \code{domain} (the domain to which the dataset belongs, always "Goyal-Welch").
 }
 \description{
-This function returns a tibble with the supported macro predictor dataset
+Returns a tibble with the supported macro predictor dataset
 types provided by Goyal-Welch, including their frequencies (monthly,
 quarterly, annual). All dataset types reference the same source file
 "PredictorData2022.xlsx" for the year 2022. Additionally, it annotates each

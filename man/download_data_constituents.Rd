@@ -12,18 +12,19 @@ constituent data. The index must be one of the supported indexes listed by
 \link{list_supported_indexes}.}
 }
 \value{
-A tibble with two columns:
+A tibble with five columns:
 \describe{
 \item{symbol}{The ticker symbol of the equity constituent.}
 \item{name}{The name of the equity constituent.}
 \item{location}{The location where the company is based.}
 \item{exchange}{The exchange where the equity is traded.}
+\item{currency}{The currency in which the equity is traded, derived from the exchange.}
 }
 The tibble is filtered to exclude non-equity entries, blacklisted symbols, empty names, and any
 entries containing the index name or "CASH".
 }
 \description{
-This function downloads and processes the constituent data for a specified financial index.
+Downloads and processes the constituent data for a specified financial index.
 The data is fetched from a remote CSV file, filtered, and cleaned to provide relevant information
 about constituents.
 }
@@ -32,8 +33,8 @@ The function retrieves the URL of the CSV file for the specified index from ETF 
 an HTTP GET request to download the CSV file, and processes the CSV file to extract equity
 constituents.
 
-The approach is inspired by \code{tidyquant::tq_index()}, which uses a different wrapper around o
-ther ETFs.
+The approach is inspired by \code{tidyquant::tq_index()}, which uses a different wrapper around
+other ETFs.
 }
 \examples{
 \donttest{
@@ -41,3 +42,16 @@ ther ETFs.
 }
 
 }
+\seealso{
+Other download functions: 
+\code{\link{download_data}()},
+\code{\link{download_data_factors_ff}()},
+\code{\link{download_data_factors_q}()},
+\code{\link{download_data_fred}()},
+\code{\link{download_data_hf}()},
+\code{\link{download_data_macro_predictors}()},
+\code{\link{download_data_osap}()},
+\code{\link{download_data_stock_prices}()},
+\code{\link{get_available_hf_files}()}
+}
+\concept{download functions}

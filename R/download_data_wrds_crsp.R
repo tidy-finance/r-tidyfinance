@@ -1,6 +1,6 @@
 #' Download Data from WRDS CRSP
 #'
-#' This function downloads and processes stock return data from the CRSP
+#' Downloads and processes stock return data from the CRSP
 #' database for a specified period. Users can choose between monthly and daily
 #' datasets. The function also adjusts returns for delisting and calculates
 #' market capitalization and excess returns over the risk-free rate.
@@ -20,7 +20,7 @@
 #' @param additional_columns Additional columns from the CRSP monthly or
 #'   daily data as a character vector.
 #' @param add_ccm_links A logical indicating whether CRSP-Compustat links should be
-#'   added automtically using [download_data_wrds_ccm_links()].
+#'   added automatically using [download_data_wrds_ccm_links()].
 #' @param adjust_volume A logical indicating whether daily CRSP trading volume data
 #'   should be adjusted according to Gao & Ritter (2010).
 #'
@@ -29,12 +29,6 @@
 #'   risk-free rate. The structure of the returned data frame depends on the
 #'   selected dataset.
 #'
-#' @references
-#'   Gao, X., & Ritter, J. R. (2010). The marketing of seasoned equity offerings.
-#'   *Journal of Financial Economics*, 97(1), 33–52.
-#'   \doi{10.1016/j.jfineco.2010.03.007}
-#'
-#' @export
 #' @examples
 #' \dontrun{
 #'   crsp_monthly <- download_data_wrds_crsp("crsp_monthly", "2020-11-01", "2020-12-31")
@@ -44,6 +38,14 @@
 #'   download_data_wrds_crsp("crsp_monthly", "2020-11-01", "2020-12-31",
 #'                           additional_columns = c("mthvol", "mthvolflg"))
 #' }
+#'
+#' @references
+#'   Gao, X., & Ritter, J. R. (2010). The marketing of seasoned equity offerings.
+#'   *Journal of Financial Economics*, 97(1), 33–52.
+#'   \doi{10.1016/j.jfineco.2010.03.007}
+#'
+#' @family WRDS functions
+#' @export
 download_data_wrds_crsp <- function(
   dataset = NULL,
   start_date = NULL,
@@ -148,7 +150,7 @@ download_data_wrds_crsp <- function(
           shrout = shrout * 1000
         )
 
-      disconnection_connection(con)
+      disconnect_connection(con)
 
       crsp_monthly <- crsp_monthly |>
         mutate(
@@ -274,7 +276,7 @@ download_data_wrds_crsp <- function(
           shrout = shrout * 1000
         )
 
-      disconnection_connection(con)
+      disconnect_connection(con)
 
       crsp_monthly <- crsp_monthly |>
         mutate(
@@ -460,7 +462,7 @@ download_data_wrds_crsp <- function(
         cli::cli_progress_update()
       }
 
-      disconnection_connection(con)
+      disconnect_connection(con)
 
       processed_data <- bind_rows(crsp_daily_list)
     } else {
@@ -595,7 +597,7 @@ download_data_wrds_crsp <- function(
         cli::cli_progress_update()
       }
 
-      disconnection_connection(con)
+      disconnect_connection(con)
 
       processed_data <- bind_rows(crsp_daily_list)
     }

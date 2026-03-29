@@ -1,8 +1,5 @@
 #' Compute Portfolio Returns
 #'
-#' @description
-#' `r lifecycle::badge("experimental")`
-#'
 #' This function computes individual portfolio returns based on specified
 #' sorting variables and sorting methods. The portfolios can be rebalanced every
 #' period or on an annual frequency by specifying a rebalancing month, which is
@@ -62,12 +59,17 @@
 #'   at which market capitalization is capped per date when computing
 #'   `ret_excess_vw_capped`. Defaults to `0.8`.
 #' @param data_options A named list of \link{data_options} with characters, indicating
-#'   the column names required to run this function.  The required column names identify dates,
-#'   the stocks, and returns. Defaults to `date=date`, `id=permno`, and `ret_excess = ret_excess`.
+#'   the column names required to run this function. The required column names identify dates,
+#'   the stocks, and returns. Defaults to `date = date`, `id = permno`, and `ret_excess = ret_excess`.
 #' @param quiet A logical value indicating whether to suppress informational
 #'   messages about missing values in the output panel (default is `FALSE`).
 #'
-#' @return A data frame with computed portfolio returns as a complete panel
+#' @note Ensure that the `sorting_data` contains all the required columns: The
+#'   specified sorting variables and `ret_excess`. The function will stop and
+#'   throw an error if any required columns are missing.
+#'
+#' @family portfolio functions
+#' @returns A data frame with computed portfolio returns as a complete panel
 #'   (all portfolio-date combinations), containing the following columns:
 #'   \itemize{
 #'     \item `portfolio`: The portfolio identifier.
@@ -84,13 +86,10 @@
 #'      portfolio-date.
 #'   }
 #'
-#' @note Ensure that the `sorting_data` contains all the required columns: The
-#'   specified sorting variables and `ret_excess`. The function will stop and
-#'   throw an error if any required columns are missing.
-#'
 #' @export
 #'
 #' @examples
+#' set.seed(42)
 #' # Univariate sorting with periodic rebalancing
 #' data <- data.frame(
 #'   permno = 1:500,
@@ -467,7 +466,7 @@ compute_portfolio_returns <- function(
 #' @param w_capped_col Column name for capped market capitalisation weights.
 #' @param min_portfolio_size Minimum number of stocks per portfolio-date.
 #'
-#' @return An ungrouped data frame with columns `ret_excess_vw`,
+#' @returns An ungrouped data frame with columns `ret_excess_vw`,
 #'   `ret_excess_ew`, and `ret_excess_vw_capped`.
 #'
 #' @keywords internal
@@ -505,7 +504,7 @@ summarise_portfolio_returns <- function(data, ret_col, w_col, w_capped_col,
 #' @param date_col Name of the date column.
 #' @param id_col Name of the stock identifier column.
 #'
-#' @return A data frame with portfolio assignments joined to all dates.
+#' @returns A data frame with portfolio assignments joined to all dates.
 #'
 #' @keywords internal
 #' @noRd

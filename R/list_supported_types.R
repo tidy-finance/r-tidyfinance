@@ -1,7 +1,7 @@
 # Define types ------------------------------------------------------------
 #' List Supported Fama-French Dataset Types
 #'
-#' This function returns a tibble with the supported Fama-French dataset types,
+#' Returns a tibble with the supported Fama-French dataset types,
 #' including their names and frequencies (daily, weekly, monthly). Each dataset
 #' type is associated with a specific Fama-French model (e.g., 3 factors, 5
 #' factors). Additionally, it annotates each dataset with the domain
@@ -636,7 +636,7 @@ list_supported_types_ff <- function() {
 
 #' List Supported Legacy Fama-French Dataset Types
 #'
-#' This function returns a tibble with the legacy names of initially supported
+#' Returns a tibble with the legacy names of initially supported
 #' Fama-French dataset types, including their names and frequencies (daily, weekly, monthly).
 #' Each dataset type is associated with a specific Fama-French model (e.g., 3 factors, 5
 #' factors). Additionally, it annotates each dataset with the domain "Fama-French".
@@ -689,7 +689,7 @@ list_supported_types_ff_legacy <- function() {
 
 #' List Supported Global Q Dataset Types
 #'
-#' This function returns a tibble with the supported Global Q dataset types,
+#' Returns a tibble with the supported Global Q dataset types,
 #' including their names and frequencies (daily, weekly, weekly week-to-week,
 #' monthly, quarterly, annual). Each dataset type is associated with the Global
 #' Q model, specifically the q5 factors model for the year 2023. Additionally,
@@ -720,7 +720,7 @@ list_supported_types_q <- function() {
 
 #' List Supported Macro Predictor Dataset Types
 #'
-#' This function returns a tibble with the supported macro predictor dataset
+#' Returns a tibble with the supported macro predictor dataset
 #' types provided by Goyal-Welch, including their frequencies (monthly,
 #' quarterly, annual). All dataset types reference the same source file
 #' "PredictorData2022.xlsx" for the year 2022. Additionally, it annotates each
@@ -745,7 +745,7 @@ list_supported_types_macro_predictors <- function() {
 
 #' List Supported WRDS Dataset Types
 #'
-#' This function returns a tibble with the supported dataset types provided via
+#' Returns a tibble with the supported dataset types provided via
 #' WRDS. Additionally, it annotates each dataset with the domain "WRDS".
 #'
 #' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
@@ -809,7 +809,7 @@ list_supported_types_other <- function() {
 
 #' List All Supported Dataset Types
 #'
-#' This function aggregates and returns a comprehensive tibble of all supported
+#' Aggregates and returns a comprehensive tibble of all supported
 #' dataset types from different domains. It includes various datasets across
 #' different frequencies (daily, weekly, monthly, quarterly, annual) and models
 #' (e.g., q5 factors, Fama-French 3 and 5 factors, macro predictors).

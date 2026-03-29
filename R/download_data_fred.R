@@ -1,21 +1,14 @@
 #' Download and Process Data from FRED
 #'
-#' This function downloads a specified data series from the Federal Reserve Economic Data (FRED)
+#' Downloads a specified data series from the Federal Reserve Economic Data (FRED)
 #' website, processes the data, and returns it as a tibble.
 #'
 #' @param series A character vector specifying the FRED series ID to download.
 #' @param start_date The start date for filtering the data, in "YYYY-MM-DD" format.
 #' @param end_date The end date for filtering the data, in "YYYY-MM-DD" format.
 #'
-#' @return A tibble containing the processed data with three columns:
-#' \describe{
-#'   \item{date}{The date corresponding to the data point.}
-#'   \item{value}{The value of the data series at that date.}
-#'   \item{series}{The FRED series ID corresponding to the data.}
-#' }
-#'
 #' @details
-#' This function constructs the URL based on the provided FRED series ID, performs an HTTP GET
+#' Constructs the URL based on the provided FRED series ID, performs an HTTP GET
 #' request to download the data in CSV format, and processes it to a tidy tibble format. The
 #' resulting tibble includes the date, value, and the series ID.
 #'
@@ -23,6 +16,14 @@
 #' the same FRED download data site. If you want to systematically download FRED data via API,
 #' please consider using `fredr` package.
 #'
+#' @returns A tibble containing the processed data with three columns:
+#' \describe{
+#'   \item{date}{The date corresponding to the data point.}
+#'   \item{value}{The value of the data series at that date.}
+#'   \item{series}{The FRED series ID corresponding to the data.}
+#' }
+#'
+#' @family download functions
 #' @export
 #'
 #' @examples

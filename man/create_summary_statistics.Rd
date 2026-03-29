@@ -28,7 +28,7 @@ computes basic statistics (n, mean, sd, min, median, max). When TRUE,
 additional quantiles (1\%, 5\%, 10\%, 25\%, 75\%, 90\%, 95\%, 99\%) are computed.}
 
 \item{drop_na}{A logical flag indicating whether to drop missing values for
-each variabl (default is FALSE).}
+each variable (default is FALSE).}
 }
 \value{
 A tibble with summary statistics for each selected variable. If \code{by}
@@ -38,7 +38,7 @@ the computed statistics.
 }
 \description{
 Computes a set of summary statistics for numeric and integer variables in a
-data frame. This function allows users to select specific variables for
+data frame. It allows users to select specific variables for
 summarization and can calculate statistics for the whole dataset or within
 groups specified by the \code{by} argument. Additional detail levels for quantiles
 can be included.
@@ -58,3 +58,28 @@ Summary statistics are computed for each variable specified in \code{...}. If a
 \code{by} variable is provided, statistics are computed within each level of the
 \code{by} variable.
 }
+\examples{
+data <- data.frame(
+  ret = c(0.01, -0.02, 0.03, NA, 0.005),
+  size = c(100, 200, 150, 300, 250),
+  group = c("A", "A", "B", "B", "A")
+)
+
+# Basic summary across all observations
+create_summary_statistics(data, ret, size)
+
+# Grouped summary
+create_summary_statistics(data, ret, size, by = group)
+
+# Detailed quantiles
+create_summary_statistics(data, ret, detail = TRUE)
+}
+\seealso{
+Other utility functions: 
+\code{\link{list_supported_indexes}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}

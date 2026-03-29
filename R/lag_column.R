@@ -2,7 +2,7 @@
 #'
 #' @description `r lifecycle::badge('experimental')`
 #'
-#' This function generates a lagged version of a given column based on a date variable, with the
+#' Generates a lagged version of a given column based on a date variable, with the
 #' ability to specify a range of lags. It also allows for the optional removal of `NA` values.
 #'
 #' @param column A numeric vector or column to be lagged.
@@ -14,12 +14,14 @@
 #' @param drop_na A logical value indicating whether to drop `NA` values from the resulting lagged
 #'  column. Defaults to `FALSE`.
 #' @param ff_adjustment A logical value indicating whether to lag monthly data based on Fama-French conventions. Here, the values are lagged based on the last observation within the year is taken. Defaults to `FALSE`.
-#' @return A vector of the same length as `column`, containing the lagged values.
+#' @returns A vector of the same length as `column`, containing the lagged values.
 #'  If no matching dates are found within the lag window, `NA` is returned for that position.
 #'
+#' @family rolling and lagging functions
 #' @export
 #'
 #' @examples
+#' set.seed(42)
 #' # Basic example with a vector
 #' dates <- as.Date("2023-01-01") + 0:9
 #' values <- rnorm(10)
@@ -87,9 +89,8 @@ lag_column <- function(
 
 #' Add Lagged Columns Based on Date and Time Range
 #'
-#' @description `r lifecycle::badge('experimental')`
-#'
-#' This function takes a data.frame and appends a lagged version of given columns based on a date variable, with the
+#' @description
+#' Takes a data.frame and appends a lagged version of given columns based on a date variable, with the
 #' ability to specify a range of lags. It also allows for the optional removal of `NA` values.
 #'
 #' @param df A data frame containing the variables to lag.
@@ -101,9 +102,13 @@ lag_column <- function(
 #' @param drop_na A logical value indicating whether to drop `NA` values from the resulting lagged
 #'  columns. Defaults to `FALSE`.
 #' @param ff_adjustment A logical value indicating whether to lag monthly data based on Fama-French conventions. Here, the values are lagged based on the last observation within the year is taken. Defaults to `FALSE`.
-#' @param data_options A list of additional options for data processing, such as the `date` column. If `NULL`, defaults are used.
-#' @return A data frame with new, lagged columns added.
+#' @param data_options A named list of \link{data_options} with characters, indicating
+#'   the column names required to run this function. The required column names identify
+#'   dates. Defaults to `date = date`.
+#' @returns A data frame with new, lagged columns added.
+#' @family rolling and lagging functions
 #' @examples
+#' set.seed(42)
 #' # Example using a tibble and dplyr::group_by
 #' data <- tibble::tibble(
 #'   permno = rep(1:2, each = 10),

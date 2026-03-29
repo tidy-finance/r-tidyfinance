@@ -8,21 +8,19 @@ join_lagged_values(
   original_data,
   new_data,
   id_keys,
-  id_date = "date",
   min_lag,
   max_lag,
-  ff_adjustment = FALSE
+  ff_adjustment = FALSE,
+  data_options = NULL
 )
 }
 \arguments{
 \item{original_data}{A data frame containing the target panel data.}
 
 \item{new_data}{A data frame containing the source variables to lag and merge.
-All columns besides \code{id_keys} and \code{id_date} will be lagged and joined.}
+All columns besides \code{id_keys} and the date column will be lagged and joined.}
 
 \item{id_keys}{A character vector specifying the identifier column(s).}
-
-\item{id_date}{A string giving the date column name (default: \code{"date"}).}
 
 \item{min_lag}{A \code{lubridate::Period} specifying the lower lag bound (inclusive).}
 
@@ -30,6 +28,10 @@ All columns besides \code{id_keys} and \code{id_date} will be lagged and joined.
 
 \item{ff_adjustment}{Logical; if \code{TRUE}, keeps only the last observation per
 identifier and year before lagging (Fama–French convention). Defaults to \code{FALSE}.}
+
+\item{data_options}{A list of class \code{tidyfinance_data_options} (created via
+\code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{date} element is used
+to identify the date column. Uses \code{\link[=data_options]{data_options()}} defaults if \code{NULL}.}
 }
 \value{
 A data frame with all columns from \code{original_data} plus the lagged
@@ -45,6 +47,7 @@ across data frames with different date grids (e.g., monthly source data
 into quarterly target data).
 }
 \examples{
+set.seed(42)
 library(dplyr)
 library(lubridate)
 
@@ -64,3 +67,10 @@ join_lagged_values(
   max_lag = months(3)
 )
 }
+\seealso{
+Other rolling and lagging functions: 
+\code{\link{add_lagged_columns}()},
+\code{\link{compute_rolling_value}()},
+\code{\link{lag_column}()}
+}
+\concept{rolling and lagging functions}
