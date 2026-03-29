@@ -18,7 +18,7 @@ test_that("lag_column handles negative lag and max_lag values correctly", {
 
   expect_error(
     lag_column(values, dates, lag = 2, max_lag = 1),
-    regexp = "must be greater than or equal to"
+    regexp = "must be >= "
   )
 })
 

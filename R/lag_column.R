@@ -54,35 +54,48 @@ lag_column <- function(
 ) {
   if (lag < 0 || max_lag < lag) {
     cli::cli_abort(
-      "{.arg lag} and {.arg max_lag} must be non-negative and {.arg max_lag} must be greater than or equal to {.arg lag}"
+      "{.arg lag} and {.arg max_lag} must be non-negative and {.arg max_lag} must be >= {.arg lag}"
     )
   }
-
-  if (length(unique(date)) != length(date)) {
+  if (anyDuplicated(date)) {
     cli::cli_abort(
       "{.arg date} must contain unique values. Did you forget to group by an identifier variable?"
     )
   }
-  tmp_data <- dplyr::tibble(date = date, value = column) |>
-    dplyr::mutate(lower_bound = date + lag, upper_bound = date + max_lag)
+
+  src_date <- date
+  src_value <- column
 
   if (drop_na) {
-    tmp_data <- tmp_data[!is.na(tmp_data$value), ]
+    keep <- !is.na(src_value)
+    src_date <- src_date[keep]
+    src_value <- src_value[keep]
   }
 
   if (ff_adjustment) {
-    tmp_data <- tmp_data |>
-      dplyr::mutate(year = lubridate::year(date)) |>
-      dplyr::slice_max(order_by = date, n = 1, .by = year) |>
-      dplyr::select(-year)
+    yr <- lubridate::year(src_date)
+    keep <- ave(as.numeric(src_date), yr, FUN = max) == as.numeric(src_date)
+    src_date <- src_date[keep]
+    src_value <- src_value[keep]
   }
 
-  dplyr::tibble(date = date) |>
-    dplyr::left_join(
-      tmp_data |> dplyr::select(-date),
-      dplyr::join_by(closest(date >= lower_bound), date <= upper_bound)
-    ) |>
-    dplyr::pull(value)
+  # Sort source dates for findInterval
+  ord <- order(src_date)
+  src_date_sorted <- src_date[ord]
+  src_value_sorted <- src_value[ord]
+
+  lower <- date - max_lag
+  upper <- date - lag
+
+  # Find the last source date <= upper
+  idx <- findInterval(upper, src_date_sorted)
+
+  result <- rep(NA_real_, length(date))
+  valid <- idx > 0L
+  valid[valid] <- src_date_sorted[idx[valid]] >= lower[valid]
+  result[valid] <- src_value_sorted[idx[valid]]
+
+  result
 }
 
 
