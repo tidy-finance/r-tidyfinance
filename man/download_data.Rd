@@ -16,7 +16,7 @@ download_data(
 \arguments{
 \item{domain}{The domain of the dataset to download (e.g., "famafrench",
 "globalq", "macro_predictors", "wrds", "constituents", "fred",
-"stock_prices", "osap", "hf").}
+"stock_prices", "osap", "tidyfinance").}
 
 \item{dataset}{Optional. The specific dataset to download within the domain.}
 
@@ -31,7 +31,9 @@ depending on the dataset type.}
 \item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{domain} and \code{dataset} instead.}
 
 \item{...}{Additional arguments passed to specific download functions depending on the \code{domain}.
-For instance, if \code{domain} is "constituents", this might include parameters specific to \code{download_data_constituents}.}
+For instance, if \code{domain} is \code{"constituents"}, arguments are passed to \code{download_data_constituents()}.
+If \code{domain} is \code{"tidyfinance"} and \code{dataset} is \code{"factor-library"}, arguments are used to filter the
+portfolio grid (e.g., \code{sorting_variable}, \code{rebalancing}, \code{fill_all}); see \code{download_data_huggingface()} for details.}
 }
 \value{
 A tibble with processed data, including dates and the relevant
@@ -50,6 +52,7 @@ appropriate function for downloading and processing the data.
   download_data("constituents", index = "DAX")
   download_data("fred", series = c("GDP", "CPIAUCNS"))
   download_data("stock_prices", symbols = c("AAPL", "MSFT"))
-  download_data("hf", "high_frequency_sp500", "2007-07-26", "2007-07-27")
+  download_data("tidyfinance", "high_frequency_sp500", "2007-07-26", "2007-07-27")
+  download_data("tidyfinance", "factor-library", sorting_variable = "52w", rebalancing = "annual")
 }
 }

@@ -66,6 +66,13 @@ assign_portfolio <- function(
     data_options
   )
 
+  if (anyNA(breakpoints)) {
+    cli::cli_warn(
+      "No portfolios were assigned due to missing breakpoints."
+    )
+    return(NA_integer_)
+  }
+
   portfolio_indices <- findInterval(x, breakpoints, all.inside = TRUE)
 
   n_expected <- length(breakpoints) - 1L
