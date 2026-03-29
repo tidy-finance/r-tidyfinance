@@ -53,10 +53,8 @@ Other download functions:
 \code{\link{download_data_constituents}()},
 \code{\link{download_data_factors_q}()},
 \code{\link{download_data_fred}()},
-\code{\link{download_data_hf}()},
 \code{\link{download_data_macro_predictors}()},
 \code{\link{download_data_osap}()},
-\code{\link{download_data_stock_prices}()},
-\code{\link{get_available_hf_files}()}
+\code{\link{download_data_stock_prices}()}
 }
 \concept{download functions}

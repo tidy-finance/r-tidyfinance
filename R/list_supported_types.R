@@ -785,21 +785,24 @@ list_supported_types_other <- function() {
       "constituents",
       "fred",
       "osap",
-      "hf_high_frequency_sp500"
+      "high_frequency_sp500",
+      "factor_library"
     ),
     "dataset_name" = c(
       "YahooFinance",
       "various",
       "various",
       "Open Source Asset Pricing",
-      "High Frequency S&P 500"
+      "High Frequency S&P 500",
+      "Factor Library"
     ),
     "domain" = c(
       "Stock Prices",
       "Index Constituents",
       "FRED",
       "Open Source Asset Pricing",
-      "Hugging Face"
+      "tidyfinance",
+      "tidyfinance"
     )
   )
 }

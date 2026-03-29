@@ -212,6 +212,12 @@ utils::globalVariables(
     "curcdq",
     "dlyfacprc",
     "dlyprc",
-    "dlyvol"
+    "dlyvol",
+    "sorting_variable",
+    "sorting_variable_lag",
+    "url",
+    "path",
+    "size",
+    "id"
   )
 )
