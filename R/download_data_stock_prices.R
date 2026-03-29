@@ -12,6 +12,7 @@
 #' @returns A tibble containing the downloaded stock data with columns: symbol,
 #'   date, volume, open, low, high, close, and adjusted_close.
 #'
+#' @family download functions
 #' @export
 #'
 #' @examples

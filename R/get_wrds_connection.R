@@ -1,6 +1,6 @@
 #' Establish a Connection to the WRDS Database
 #'
-#' This function establishes a connection to the Wharton Research Data Services
+#' Establishes a connection to the Wharton Research Data Services
 #' (WRDS) database using the `RPostgres` package. It requires that the
 #' `RPostgres` package is installed and that valid WRDS credentials are set as
 #' environment variables.
@@ -15,8 +15,9 @@
 #'   WRDS database. This object can be used with other DBI-compliant functions
 #'   to interact with the database.
 #'
-#' @seealso \code{\link[RPostgres]{Postgres}}, \code{\link[DBI]{dbDisconnect}} for more
-#'          information on managing database connections.
+#' @seealso [RPostgres::Postgres()], [DBI::dbDisconnect()] for more
+#'   information on managing database connections.
+#' @family WRDS functions
 #' @export
 #'
 #' @examples

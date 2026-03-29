@@ -39,7 +39,7 @@ downloads the legacy version of CRSP.}
 daily data as a character vector.}
 
 \item{add_ccm_links}{A logical indicating whether CRSP-Compustat links should be
-added automtically using \code{\link[=download_data_wrds_ccm_links]{download_data_wrds_ccm_links()}}.}
+added automatically using \code{\link[=download_data_wrds_ccm_links]{download_data_wrds_ccm_links()}}.}
 
 \item{adjust_volume}{A logical indicating whether daily CRSP trading volume data
 should be adjusted according to Gao & Ritter (2010).}
@@ -51,7 +51,7 @@ risk-free rate. The structure of the returned data frame depends on the
 selected dataset.
 }
 \description{
-This function downloads and processes stock return data from the CRSP
+Downloads and processes stock return data from the CRSP
 database for a specified period. Users can choose between monthly and daily
 datasets. The function also adjusts returns for delisting and calculates
 market capitalization and excess returns over the risk-free rate.
@@ -65,9 +65,23 @@ market capitalization and excess returns over the risk-free rate.
   download_data_wrds_crsp("crsp_monthly", "2020-11-01", "2020-12-31",
                           additional_columns = c("mthvol", "mthvolflg"))
 }
+
 }
 \references{
 Gao, X., & Ritter, J. R. (2010). The marketing of seasoned equity offerings.
 \emph{Journal of Financial Economics}, 97(1), 33–52.
 \doi{10.1016/j.jfineco.2010.03.007}
 }
+\seealso{
+Other WRDS functions: 
+\code{\link{create_wrds_dummy_database}()},
+\code{\link{disconnect_connection}()},
+\code{\link{download_data_wrds}()},
+\code{\link{download_data_wrds_ccm_links}()},
+\code{\link{download_data_wrds_compustat}()},
+\code{\link{download_data_wrds_fisd}()},
+\code{\link{download_data_wrds_trace_enhanced}()},
+\code{\link{get_wrds_connection}()},
+\code{\link{set_wrds_credentials}()}
+}
+\concept{WRDS functions}

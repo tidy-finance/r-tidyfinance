@@ -2,7 +2,7 @@
 #'
 #' @description `r lifecycle::badge('experimental')`
 #'
-#'   This function computes breakpoints based on a specified sorting. It can
+#'   Computes breakpoints based on a specified sorting. It can
 #'   optionally filter the data by exchanges before computing the breakpoints.
 #'   The function requires either the number of portfolios to be created or
 #'   specific percentiles for the breakpoints, but not both. The function also
@@ -37,15 +37,17 @@
 #' @param data_options A named list of \link{data_options} with characters, indicating the column names
 #'  required to run this function. The required column names identify dates. Defaults to `exchange = exchange`.
 #'
-#' @return A vector of breakpoints of the desired length.
-#'
 #' @note This function will stop and throw an error if both `n_portfolios` and
 #'   `percentiles` are provided or if neither is provided. Ensure that you only
 #'   use one of these parameters.
 #'
+#' @returns A vector of breakpoints of the desired length.
+#'
+#' @family portfolio functions
 #' @export
 #'
 #' @examples
+#' set.seed(42)
 #' data <- data.frame(
 #'   id = 1:100,
 #'   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),

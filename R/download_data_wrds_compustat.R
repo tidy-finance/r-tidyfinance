@@ -1,6 +1,6 @@
 #' Download Data from WRDS Compustat
 #'
-#' This function downloads financial data from the WRDS Compustat database for a
+#' Downloads financial data from the WRDS Compustat database for a
 #' given dataset, start date, and end date. It filters the data
 #' according to industry format, data format, and consolidation level, and
 #' returns the most current data for each reporting period. Additionally, the
@@ -22,6 +22,7 @@
 #'   variables for book equity (be), operating profitability (op), investment
 #'   (inv), and others.
 #'
+#' @family WRDS functions
 #' @export
 #' @examples
 #' \dontrun{
@@ -77,6 +78,9 @@ download_data_wrds_compustat <- function(
   if (dataset == "compustat_annual") {
     funda_db <- tbl(con, I("comp.funda"))
 
+    has_pi <- "pi" %in% additional_columns
+    additional_columns_safe <- setdiff(additional_columns, "pi")
+
     compustat <- funda_db |>
       filter(
         indfmt == "INDL" &
@@ -104,11 +108,12 @@ download_data_wrds_compustat <- function(
         xint,
         xsga,
         curcd,
-        all_of(additional_columns)
+        all_of(additional_columns_safe)
       ) |>
+      {\(x) if (has_pi) mutate(x, pi = sql('"pi"')) else x}() |>
       collect()
 
-    disconnection_connection(con)
+    disconnect_connection(con)
 
     compustat <- compustat |>
       mutate(
@@ -170,7 +175,7 @@ download_data_wrds_compustat <- function(
       ) |>
       collect()
 
-    disconnection_connection(con)
+    disconnect_connection(con)
 
     compustat <- compustat |>
       tidyr::drop_na(gvkey, datadate, fyearq, fqtr) |>

@@ -2,18 +2,20 @@
 % Please edit documentation in R/compute_rolling_value.R
 \name{compute_rolling_value}
 \alias{compute_rolling_value}
-\title{Compute a rolling value by period}
+\title{Compute a Rolling Value by Period}
 \usage{
 compute_rolling_value(
   data,
   .f,
   period = "month",
   periods = 12,
-  min_obs = periods
+  min_obs = periods,
+  data_options = NULL
 )
 }
 \arguments{
-\item{data}{A data frame with a \code{date} column of class \code{Date}.}
+\item{data}{A data frame with a date column of class \code{Date}, named according
+to \code{data_options$date} (default \code{"date"}).}
 
 \item{.f}{A function applied to each window. Receives a data-frame
 slice (complete cases only) and must return a single scalar value.}
@@ -25,6 +27,10 @@ slice (complete cases only) and must return a single scalar value.}
 
 \item{min_obs}{Minimum number of non-missing rows required per window.
 Defaults to \code{periods}.}
+
+\item{data_options}{A list of class \code{tidyfinance_data_options} (created via
+\code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{date} element is
+used to identify the date column. Uses \code{\link[=data_options]{data_options()}} defaults if \code{NULL}.}
 }
 \value{
 A numeric vector aligned with the rows of \code{data}.
@@ -99,3 +105,10 @@ df_resid |>
   )
 
 }
+\seealso{
+Other rolling and lagging functions: 
+\code{\link{add_lagged_columns}()},
+\code{\link{join_lagged_values}()},
+\code{\link{lag_column}()}
+}
+\concept{rolling and lagging functions}

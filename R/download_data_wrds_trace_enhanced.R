@@ -15,6 +15,7 @@
 #'   identifying information (i.e., CUSIP, trade date/time) and trade-specific
 #'   information (i.e., price/yield, volume, counterparty, and reporting side).
 #'
+#' @family WRDS functions
 #' @export
 #' @examples
 #' \dontrun{
@@ -27,7 +28,7 @@ download_data_wrds_trace_enhanced <- function(
 ) {
   if (!is.character(cusips) || anyNA(cusips) || !all(nchar(cusips) == 9)) {
     cli::cli_abort(
-      "{.arg cusip} must be a character vector of 9-digit CUSIPs, not {.obj_type_friendly {cusips}}."
+      "{.arg cusips} must be a character vector of 9-digit CUSIPs, not {.obj_type_friendly {cusips}}."
     )
   }
 
@@ -67,7 +68,7 @@ download_data_wrds_trace_enhanced <- function(
     ) |>
     collect()
 
-  disconnection_connection(con)
+  disconnect_connection(con)
 
   # Enhanced Trace: Post 06-02-2012 -----------------------------------------
   # Trades (trc_st = T) and correction (trc_st = R)

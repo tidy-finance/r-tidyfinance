@@ -2,7 +2,7 @@
 % Please edit documentation in R/lag_column.R
 \name{add_lagged_columns}
 \alias{add_lagged_columns}
-\title{Add a lagged a Column Based on Date and Time Range}
+\title{Add Lagged Columns Based on Date and Time Range}
 \usage{
 add_lagged_columns(
   df,
@@ -20,34 +20,44 @@ add_lagged_columns(
 
 \item{cols}{A character vector specifying the names of the columns to be lagged.}
 
-\item{lag}{An integer or an \code{lubridate::periods()} object, e.g., \code{month(1)}, specifying the minimum lag (in days, hours, etc.) to apply to \code{column}.}
+\item{lag}{An integer or an \code{lubridate::periods()} object, e.g., \code{month(1)}, specifying the minimum lag (inclusive) to apply to \code{cols}.}
 
-\item{max_lag}{An integer or an \code{lubridate::periods()} object specifying the maximum lag (in days, hours, etc.) to apply to \code{column}.
+\item{max_lag}{An integer or an \code{lubridate::periods()} object specifying the maximum lag (inclusive) to apply to \code{cols}.
 Defaults to \code{lag}.}
 
 \item{by}{An optional character vector specifying the names of the columns to group by before applying the lag. Defaults to \code{NULL}.}
 
 \item{drop_na}{A logical value indicating whether to drop \code{NA} values from the resulting lagged
-column. Defaults to \code{TRUE}.}
+columns. Defaults to \code{FALSE}.}
 
 \item{ff_adjustment}{A logical value indicating whether to lag monthly data based on Fama-French conventions. Here, the values are lagged based on the last observation within the year is taken. Defaults to \code{FALSE}.}
 
-\item{data_options}{A list of additional options for data processing, such as the \code{date} column. If \code{NULL}, defaults are used.}
+\item{data_options}{A named list of \link{data_options} with characters, indicating
+the column names required to run this function. The required column names identify
+dates. Defaults to \code{date = date}.}
 }
 \value{
 A data frame with new, lagged columns added.
 }
 \description{
-This function takes a data.frame and appends a lagged version of given columns based on a date variable, with the
+Takes a data.frame and appends a lagged version of given columns based on a date variable, with the
 ability to specify a range of lags. It also allows for the optional removal of \code{NA} values.
 }
 \examples{
+set.seed(42)
 # Example using a tibble and dplyr::group_by
- data <- tibble::tibble(
-   permno = rep(1:2, each = 10),
-   date = rep(seq.Date(as.Date('2023-01-01'), by = "month", length.out = 10), 2),
-   size = runif(20, 100, 200),
-   bm = runif(20, 0.5, 1.5)
- )
-data |> add_lagged_columns(cols = "size", lag= months(2), by = "permno")
+data <- tibble::tibble(
+  permno = rep(1:2, each = 10),
+  date = rep(seq.Date(as.Date("2023-01-01"), by = "month", length.out = 10), 2),
+  size = runif(20, 100, 200),
+  bm = runif(20, 0.5, 1.5)
+)
+add_lagged_columns(data, cols = "size", lag = months(2), by = "permno")
 }
+\seealso{
+Other rolling and lagging functions: 
+\code{\link{compute_rolling_value}()},
+\code{\link{join_lagged_values}()},
+\code{\link{lag_column}()}
+}
+\concept{rolling and lagging functions}

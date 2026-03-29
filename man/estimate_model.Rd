@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimate_model.R
 \name{estimate_model}
 \alias{estimate_model}
-\title{Estimate Model}
+\title{Estimate a Linear Model}
 \usage{
 estimate_model(data, model, min_obs = 1, output = "coefficients")
 }
@@ -33,13 +33,14 @@ insufficient observations.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This function estimates a linear model specified by one or more independent
+Estimates a linear model specified by one or more independent
 variables. It checks for the presence of the specified independent variables
 in the dataset and whether the dataset has a sufficient number of
 observations. Depending on the \code{output} parameter, it returns the model's
 coefficients, t-statistics, residuals, or any combination in a named list.
 }
 \examples{
+set.seed(42)
 data <- data.frame(
   ret_excess = rnorm(100),
   mkt_excess = rnorm(100),
@@ -72,3 +73,9 @@ estimate_model(data, "ret_excess ~ mkt_excess + smb + hml",
 )
 
 }
+\seealso{
+Other estimation functions: 
+\code{\link{estimate_betas}()},
+\code{\link{estimate_fama_macbeth}()}
+}
+\concept{estimation functions}

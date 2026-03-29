@@ -20,9 +20,8 @@ test_that("basic lag join works with single id and single variable", {
 
   expect_true("x" %in% names(result))
   expect_equal(nrow(result), 4)
-  # Row with date 2020-01-01: looking for new_data where lower >= date and date < upper
-  # i.e. new_data rows where .lower <= 2020-01-01 < .upper
-  # new_data row date=2020-01-01 -> .lower=2020-02-01, .upper=2020-05-01 -> 2020-01-01 < .lower, no
+  # Row with date 2020-01-01: looking for new_data where .lower <= date and date <= .upper
+  # new_data row date=2020-01-01 -> .lower=2020-02-01, .upper=2020-04-01 -> 2020-01-01 < .lower, no
   # So first row should be NA (nothing lagged into it yet)
   expect_true(is.na(result$x[1]))
 })
@@ -159,8 +158,8 @@ test_that("ff_adjustment picks latest date per year", {
 
   expect_true("x" %in% names(result))
   # With ff_adjustment, only the max-date row per (id, year) is kept
-  # Year 2020: keeps date=2020-12-01 (x=20), .lower=2021-06-01, .upper=2022-12-01
-  # Year 2021: keeps date=2021-03-01 (x=30), .lower=2021-09-01, .upper=2023-03-01
+  # Year 2020: keeps date=2020-12-01 (x=20), .lower=2021-06-01, .upper=2022-06-01
+  # Year 2021: keeps date=2021-03-01 (x=30), .lower=2021-09-01, .upper=2022-09-01
   # For original date=2021-06-01: closest .lower <= 2021-06-01 -> 2021-06-01 == .lower of 2020 row, x=20
   expect_equal(result$x[1], 20)
 })
@@ -178,7 +177,7 @@ test_that("input validation: id_keys must be character", {
   )
 })
 
-test_that("input validation: id_date must exist in both datasets", {
+test_that("input validation: date column must exist in both datasets", {
   df1 <- tibble(id = 1, date = as.Date("2020-01-01"))
   df2 <- tibble(id = 1, dt = as.Date("2020-01-01"), x = 1)
 
@@ -187,14 +186,14 @@ test_that("input validation: id_date must exist in both datasets", {
       df1,
       df2,
       id_keys = "id",
-      id_date = "dt",
       min_lag = months(1),
-      max_lag = months(3)
+      max_lag = months(3),
+      data_options = data_options(date = "dt")
     )
   )
 })
 
-test_that("custom id_date column name works", {
+test_that("custom date column name via data_options works", {
   df1 <- tibble(id = 1, dt = as.Date(c("2020-03-01", "2020-04-01")))
   df2 <- tibble(
     id = 1,
@@ -206,9 +205,9 @@ test_that("custom id_date column name works", {
     original_data = df1,
     new_data = df2,
     id_keys = "id",
-    id_date = "dt",
     min_lag = months(1),
-    max_lag = months(4)
+    max_lag = months(4),
+    data_options = data_options(date = "dt")
   )
 
   expect_true("x" %in% names(result))

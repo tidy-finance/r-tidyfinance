@@ -14,6 +14,7 @@ compute_portfolio_returns(
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
   min_portfolio_size = 0L,
+  cap_weight = 0.8,
   data_options = NULL,
   quiet = FALSE
 )
@@ -68,9 +69,13 @@ sorting variable. The default is set to \link{compute_breakpoints}.}
 portfolio constituents (default is set to \code{0}, effectively deactivating the
 check). Small portfolios' returns are set to zero.}
 
+\item{cap_weight}{A numeric value between 0 and 1 specifying the percentile
+at which market capitalization is capped per date when computing
+\code{ret_excess_vw_capped}. Defaults to \code{0.8}.}
+
 \item{data_options}{A named list of \link{data_options} with characters, indicating
-the column names required to run this function.  The required column names identify dates,
-the stocks, and returns. Defaults to \code{date=date}, \code{id=permno}, and \code{ret_excess = ret_excess}.}
+the column names required to run this function. The required column names identify dates,
+the stocks, and returns. Defaults to \code{date = date}, \code{id = permno}, and \code{ret_excess = ret_excess}.}
 
 \item{quiet}{A logical value indicating whether to suppress informational
 messages about missing values in the output panel (default is \code{FALSE}).}
@@ -86,6 +91,11 @@ A data frame with computed portfolio returns as a complete panel
 insufficient observations for that portfolio-date.
 \item \code{ret_excess_ew}: The equal-weighted excess return of the portfolio.
 \code{NA} if insufficient observations for that portfolio-date.
+\item \code{ret_excess_vw_capped}: The capped value-weighted excess return of the portfolio
+(only computed if the \code{sorting_data} contains \code{mktcap_lag}). Weights are
+computed using market capitalization capped at the \code{cap_weight}
+percentile per date. \code{NA} if insufficient observations for that
+portfolio-date.
 }
 }
 \description{
@@ -111,6 +121,7 @@ specified sorting variables and \code{ret_excess}. The function will stop and
 throw an error if any required columns are missing.
 }
 \examples{
+set.seed(42)
 # Univariate sorting with periodic rebalancing
 data <- data.frame(
   permno = 1:500,
@@ -133,3 +144,12 @@ compute_portfolio_returns(
 )
 
 }
+\seealso{
+Other portfolio functions: 
+\code{\link{assign_portfolio}()},
+\code{\link{breakpoint_options}()},
+\code{\link{compute_breakpoints}()},
+\code{\link{compute_long_short_returns}()},
+\code{\link{data_options}()}
+}
+\concept{portfolio functions}

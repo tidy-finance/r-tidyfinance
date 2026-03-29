@@ -1,6 +1,6 @@
 #' Download CCM Links from WRDS
 #'
-#' This function downloads data from the WRDS CRSP/Compustat Merged (CCM) links
+#' Downloads data from the WRDS CRSP/Compustat Merged (CCM) links
 #' database. It allows users to specify the type of links (`linktype`) and the
 #' primacy of the link (`linkprim`).
 #'
@@ -15,6 +15,7 @@
 #'   `linkenddt`, where `linkenddt` is the end date of the link, and missing end
 #'   dates are replaced with today's date.
 #'
+#' @family WRDS functions
 #' @export
 #' @examples
 #' \dontrun{
@@ -29,15 +30,17 @@ download_data_wrds_ccm_links <- function(
 
   ccm_linking_table_db <- tbl(con, I("crsp.ccmxpf_lnkhist"))
 
+  par <- list(linktype = linktype, linkprim = linkprim)
+
   ccm_links <- ccm_linking_table_db |>
     filter(
-      linktype %in% c("LU", "LC") & linkprim %in% c("P", "C")
+      linktype %in% par$linktype & linkprim %in% par$linkprim
     ) |>
     select(permno = lpermno, gvkey, linkdt, linkenddt) |>
     collect() |>
     mutate(linkenddt = tidyr::replace_na(linkenddt, today()))
 
-  disconnection_connection(con)
+  disconnect_connection(con)
 
   ccm_links
 }

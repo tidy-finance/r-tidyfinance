@@ -28,3 +28,12 @@ data <- rnorm(100)
 winsorized_data <- winsorize(data, 0.05)
 
 }
+\seealso{
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{list_supported_indexes}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()}
+}
+\concept{utility functions}

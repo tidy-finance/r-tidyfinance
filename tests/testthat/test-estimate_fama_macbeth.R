@@ -95,7 +95,8 @@ test_that("estimate_fama_macbeth works with valid newey-west vcov", {
   result <- estimate_fama_macbeth(
     data,
     "ret_excess ~ beta + bm + log_mktcap",
-    vcov = "newey-west"
+    vcov = "newey-west",
+    vcov_options = list(prewhite = FALSE)
   )
 
   expect_s3_class(result, "tbl_df")
@@ -128,7 +129,11 @@ test_that("estimate_fama_macbeth computes correct number of rows", {
     log_mktcap = rnorm(600, 10, 1)
   )
 
-  result <- estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap")
+  result <- estimate_fama_macbeth(
+    data,
+    "ret_excess ~ beta + bm + log_mktcap",
+    vcov_options = list(prewhite = FALSE)
+  )
 
   expect_equal(nrow(result), 4)
 })

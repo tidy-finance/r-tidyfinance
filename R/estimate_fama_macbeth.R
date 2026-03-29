@@ -1,6 +1,6 @@
 #' Estimate Fama-MacBeth Regressions
 #'
-#' This function estimates Fama-MacBeth regressions by first running cross-sectional regressions
+#' Estimates Fama-MacBeth regressions by first running cross-sectional regressions
 #' for each time period and then aggregating the results over time to obtain average risk premia
 #' and corresponding t-statistics.
 #'
@@ -25,7 +25,7 @@
 #'   the average cross-sectional R-squared and the average number of
 #'   observations per cross-section).
 #'
-#' @return If `detail = FALSE` (default), a tibble with columns `factor`,
+#' @returns If `detail = FALSE` (default), a tibble with columns `factor`,
 #'   `risk_premium`, `n` (number of time periods), `standard_error`, and
 #'   `t_statistic`.
 #'
@@ -37,6 +37,7 @@
 #'       observation count).}
 #'   }
 #'
+#' @family estimation functions
 #' @export
 #'
 #' @examples

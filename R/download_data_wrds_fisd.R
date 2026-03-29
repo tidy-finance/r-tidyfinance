@@ -18,6 +18,7 @@
 #'   frequency, coupon, last interest date, issue ID, issuer ID, SIC code of the
 #'   issuer.
 #'
+#' @family WRDS functions
 #' @export
 #' @examples
 #' \dontrun{
@@ -82,7 +83,7 @@ download_data_wrds_fisd <- function(additional_columns = NULL) {
     select(issuer_id, sic_code) |>
     collect()
 
-  disconnection_connection(con)
+  disconnect_connection(con)
 
   fisd <- fisd |>
     inner_join(fisd_issuer, join_by(issuer_id))

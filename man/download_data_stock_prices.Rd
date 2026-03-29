@@ -29,3 +29,14 @@ Downloads historical stock data from Yahoo Finance for given symbols and date ra
   download_data_stock_prices("GOOGL", "2021-01-01", "2022-01-01" )
 }
 }
+\seealso{
+Other download functions: 
+\code{\link{download_data}()},
+\code{\link{download_data_constituents}()},
+\code{\link{download_data_factors_ff}()},
+\code{\link{download_data_factors_q}()},
+\code{\link{download_data_fred}()},
+\code{\link{download_data_macro_predictors}()},
+\code{\link{download_data_osap}()}
+}
+\concept{download functions}
