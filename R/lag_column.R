@@ -44,7 +44,6 @@
 #'  ) |>
 #'  dplyr::ungroup()
 #'
-
 lag_column <- function(
   column,
   date,
@@ -157,20 +156,23 @@ add_lagged_columns <- function(
   df <- df |>
     dplyr::group_by(dplyr::across(dplyr::all_of(by)))
 
-  for (col in cols) {
-    df <- df |>
-      dplyr::mutate(
-        "{col}_lag" := lag_column(
-          .data[[col]],
-          .data[[data_options$date]],
-          lag,
-          max_lag,
-          drop_na,
-          ff_adjustment
-        )
-      )
-  }
-
   df |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(by))) |>
+    dplyr::mutate(
+      dplyr::across(
+        dplyr::all_of(cols),
+        \(x) {
+          lag_column(
+            x,
+            .data[[data_options$date]],
+            lag,
+            max_lag,
+            drop_na,
+            ff_adjustment
+          )
+        },
+        .names = "{.col}_lag"
+      )
+    ) |>
     dplyr::ungroup()
 }
