@@ -19,7 +19,7 @@
 #' @param type `r lifecycle::badge("deprecated")` Use `domain` and `dataset` instead.
 #' @param ... Additional arguments passed to specific download functions depending on the `domain`.
 #'   For instance, if `domain` is `"constituents"`, arguments are passed to `download_data_constituents()`.
-#'   If `domain` is `"tidyfinance"` and `dataset` is `"factor-library"`, arguments are used to filter the
+#'   If `domain` is `"tidyfinance"` and `dataset` is `"factor_library"`, arguments are used to filter the
 #'   portfolio grid (e.g., `sorting_variable`, `rebalancing`, `fill_all`); see `download_data_huggingface()` for details.
 #'
 #' @returns A tibble with processed data, including dates and the relevant
@@ -35,7 +35,7 @@
 #'   download_data("fred", series = c("GDP", "CPIAUCNS"))
 #'   download_data("stock_prices", symbols = c("AAPL", "MSFT"))
 #'   download_data("tidyfinance", "high_frequency_sp500", "2007-07-26", "2007-07-27")
-#'   download_data("tidyfinance", "factor-library", sorting_variable = "52w", rebalancing = "annual")
+#'   download_data("tidyfinance", "factor_library", sorting_variable = "52w", rebalancing = "annual")
 #' }
 download_data <- function(
   domain = NULL,
@@ -139,10 +139,15 @@ download_data <- function(
 
   processed_data
 }
-
 #' Check if a string is a legacy type
 #' @noRd
 is_legacy_type <- function(x) {
+  # These strings are valid domain names, not legacy types
+  valid_domains <- c("constituents", "fred", "stock_prices", "osap")
+  if (x %in% valid_domains) {
+    return(FALSE)
+  }
+
   # Check all known legacy type patterns
   ff_types <- dplyr::bind_rows(
     list_supported_types_ff(),

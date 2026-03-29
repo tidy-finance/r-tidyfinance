@@ -64,27 +64,27 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'
 #' Downloads data from a supported Hugging Face dataset. For
 #' `"high_frequency_sp500"`, parquet files are filtered by date range and
-#' row-bound. For `"factor-library"`, portfolio characteristics are selected via
-#' `filter_grid()` and the matching return data is downloaded.
+#' row-bound. For `"factor_library"`, portfolio characteristics are selected via
+#' `filter_factor_library_grid()` and the matching return data is downloaded.
 #'
 #' @param dataset Character(1). The dataset to download. Supported values are
-#'   `"high_frequency_sp500"` and `"factor-library"`.
+#'   `"high_frequency_sp500"` and `"factor_library"`.
 #' @param start_date Date or character. Start date (inclusive) in
 #'   `"YYYY-MM-DD"` format. Only used for `"high_frequency_sp500"`.
 #' @param end_date Date or character. End date (inclusive) in `"YYYY-MM-DD"`
 #'   format. Only used for `"high_frequency_sp500"`.
 #' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
-#' @param ... For `dataset = "factor-library"`: named arguments used to filter
+#' @param ... For `dataset = "factor_library"`: named arguments used to filter
 #'   the portfolio grid. Each argument takes the form `column = value`, where
 #'   `value` may be a vector to match multiple levels. Optionally pass
 #'   `fill_all = TRUE` to leave unspecified columns unrestricted (default:
 #'   `FALSE`, i.e. unspecified columns are fixed at the defaults listed below).
 #'   Passing an unrecognised column name raises an error listing the supported
-#'   names. Ignored when `dataset != "factor-library"`. See the Details section
+#'   names. Ignored when `dataset != "factor_library"`. See the Details section
 #'   for supported columns and their defaults.
 #'
 #' @details
-#' **Note on `dataset = "factor-library"` defaults:** The defaults below reflect
+#' **Note on `dataset = "factor_library"` defaults:** The defaults below reflect
 #' one common portfolio construction choice, but may not suit every research
 #' question. Always verify that the selected combination matches your intended
 #' design.
@@ -122,14 +122,14 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'
 #' @return A tibble with the downloaded data. For `"high_frequency_sp500"`,
 #'   contains 5-second aggregated orderbook snapshots filtered to the requested
-#'   date range. For `"factor-library"`, contains portfolio return data joined
+#'   date range. For `"factor_library"`, contains portfolio return data joined
 #'   with the full grid metadata for the matched portfolio IDs.
 #'
 #' @examples
 #' \dontrun{
 #'   download_data_huggingface("high_frequency_sp500", "2007-07-26", "2007-07-27")
-#'   download_data_huggingface("factor-library", sorting_variable = "52w", rebalancing = "annual")
-#'   download_data_huggingface("factor-library", sorting_variable = "ag", fill_all = TRUE)
+#'   download_data_huggingface("factor_library", sorting_variable = "52w", rebalancing = "annual")
+#'   download_data_huggingface("factor_library", sorting_variable = "ag", fill_all = TRUE)
 #' }
 #'
 #' @export
@@ -167,7 +167,7 @@ download_data_huggingface <- function(
     cli::cli_abort("Argument {.arg dataset} is required.")
   }
 
-  check_supported_dataset_hf(dataset)
+  check_supported_dataset_huggingface(dataset)
 
   if (dataset == "high_frequency_sp500") {
     organization <- "voigtstefan"
@@ -190,8 +190,8 @@ download_data_huggingface <- function(
         data = purrr::map(url, ~ arrow::read_parquet(.x))
       ) |>
       tidyr::unnest(.data$data)
-  } else if (dataset == "factor-library") {
-    download_data_hf_factor_library(...)
+  } else if (dataset == "factor_library") {
+    download_data_hugging_face_factor_library(...)
   } else {
     cli::cli_abort("Unsupported dataset: {.val {dataset}}")
   }
@@ -205,8 +205,8 @@ is_legacy_type_hf <- function(x) {
 
 #' Check if Hugging Face dataset is supported
 #' @noRd
-check_supported_dataset_hf <- function(dataset) {
-  supported_datasets <- c("high_frequency_sp500", "factor-library")
+check_supported_dataset_huggingface <- function(dataset) {
+  supported_datasets <- c("high_frequency_sp500", "factor_library")
 
   if (!dataset %in% supported_datasets) {
     cli::cli_abort(c(
@@ -248,7 +248,7 @@ check_supported_dataset_hf <- function(dataset) {
 #' @return A vector of portfolio IDs matching the specified criteria. Returns
 #'   an empty vector when no rows satisfy the filters.
 #' @noRd
-filter_grid <- function(..., fill_all = FALSE) {
+filter_factor_library_grid <- function(..., fill_all = FALSE) {
   filters <- list(...)
 
   defaults <- list(
@@ -313,12 +313,12 @@ filter_grid <- function(..., fill_all = FALSE) {
 #' a parquet file (listing the affected IDs and their key columns).
 #'
 #' @param ids Vector of portfolio IDs to download, as returned by
-#'   `filter_grid()`.
+#'   `filter_factor_library_grid()`.
 #'
 #' @return A tibble of portfolio returns with the grid metadata columns for the
 #'   requested IDs appended.
 #' @noRd
-download_factor_library_returns_ids <- function(ids) {
+download_factor_library_ids <- function(ids) {
   organization <- "tidy-finance"
   dataset_name <- "factor-library"
 
@@ -403,20 +403,20 @@ download_factor_library_returns_ids <- function(ids) {
 
 #' Download factor library data from Hugging Face
 #'
-#' A thin wrapper that combines `filter_grid()` and
-#' `download_factor_library_returns_ids()`: it resolves matching portfolio IDs
+#' A thin wrapper that combines `filter_factor_library_grid()` and
+#' `download_factor_library_ids()`: it resolves matching portfolio IDs
 #' from the grid and then downloads the corresponding return data.
 #'
-#' @param ... Named filter arguments forwarded to `filter_grid()`. See
-#'   `filter_grid()` for the full list of supported columns and their defaults.
-#' @param fill_all Logical(1). Forwarded to `filter_grid()`. When `TRUE`,
+#' @param ... Named filter arguments forwarded to `filter_factor_library_grid()`. See
+#'   `filter_factor_library_grid()` for the full list of supported columns and their defaults.
+#' @param fill_all Logical(1). Forwarded to `filter_factor_library_grid()`. When `TRUE`,
 #'   columns not specified in `...` are left unrestricted rather than set to
 #'   their defaults.
 #'
 #' @return A tibble of portfolio returns with grid metadata columns appended,
 #'   one row per portfolio-period observation for the matched IDs.
 #' @noRd
-download_data_hf_factor_library <- function(..., fill_all = FALSE) {
-  ids <- filter_grid(..., fill_all = fill_all)
-  download_factor_library_returns_ids(ids)
+download_data_hugging_face_factor_library <- function(..., fill_all = FALSE) {
+  ids <- filter_factor_library_grid(..., fill_all = fill_all)
+  download_factor_library_ids(ids)
 }

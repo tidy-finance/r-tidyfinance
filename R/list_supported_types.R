@@ -786,7 +786,7 @@ list_supported_types_other <- function() {
       "fred",
       "osap",
       "high_frequency_sp500",
-      "factor-library"
+      "factor_library"
     ),
     "dataset_name" = c(
       "YahooFinance",

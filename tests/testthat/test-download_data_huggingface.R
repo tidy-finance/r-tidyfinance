@@ -26,7 +26,7 @@ make_returns_parquet_file <- function(rows, sv, sv_lag) {
 
 test_that("filter_grid() aborts with a clear message on unsupported filter names", {
   expect_error(
-    download_data_huggingface("factor-library", not_a_column = "x"),
+    download_data_huggingface("factor_library", not_a_column = "x"),
     regexp = "unsupported filter name"
   )
 })
@@ -52,7 +52,7 @@ test_that("download_factor_library_returns_ids() aborts when no IDs match the gr
     get_available_huggingface_files = mock_files,
     {
       expect_error(
-        download_factor_library_returns_ids(integer(0)),
+        download_factor_library_ids(integer(0)),
         regexp = "No parquet files found for the requested portfolio IDs"
       )
     }
@@ -78,7 +78,7 @@ test_that("download_factor_library_returns_ids() aborts when a parquet URL is mi
     get_available_huggingface_files = mock_files,
     {
       expect_error(
-        download_factor_library_returns_ids(1L),
+        download_factor_library_ids(1L),
         regexp = "No parquet file found for 1 portfolio ID"
       )
     }
@@ -87,7 +87,7 @@ test_that("download_factor_library_returns_ids() aborts when a parquet URL is mi
 
 # Successful download (mocked) ------------------------------------------
 
-test_that("download_data_huggingface() returns a tibble for factor-library with matched IDs", {
+test_that("download_data_huggingface() returns a tibble for factor_library with matched IDs", {
   grid_rows <- tibble::tibble(
     id = 1L,
     sorting_variable = "sv_me",
@@ -107,7 +107,7 @@ test_that("download_data_huggingface() returns a tibble for factor-library with 
     get_available_huggingface_files = mock_files,
     {
       result <- download_data_huggingface(
-        "factor-library",
+        "factor_library",
         sorting_variable = "me",
         fill_all = TRUE
       )
@@ -120,11 +120,11 @@ test_that("download_data_huggingface() returns a tibble for factor-library with 
 
 # Live smoke test -------------------------------------------------------
 
-test_that("download_data_huggingface() downloads factor-library data successfully", {
+test_that("download_data_huggingface() downloads factor_library data successfully", {
   skip_if_offline()
   skip_on_cran()
 
-  result <- download_data_huggingface("factor-library", sorting_variable = "me")
+  result <- download_data_huggingface("factor_library", sorting_variable = "me")
 
   expect_s3_class(result, "tbl_df")
   expect_true(nrow(result) > 0)

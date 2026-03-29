@@ -14,7 +14,7 @@ download_data_huggingface(
 }
 \arguments{
 \item{dataset}{Character(1). The dataset to download. Supported values are
-\code{"high_frequency_sp500"} and \code{"factor-library"}.}
+\code{"high_frequency_sp500"} and \code{"factor_library"}.}
 
 \item{start_date}{Date or character. Start date (inclusive) in
 \code{"YYYY-MM-DD"} format. Only used for \code{"high_frequency_sp500"}.}
@@ -24,29 +24,29 @@ format. Only used for \code{"high_frequency_sp500"}.}
 
 \item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
 
-\item{...}{For \code{dataset = "factor-library"}: named arguments used to filter
+\item{...}{For \code{dataset = "factor_library"}: named arguments used to filter
 the portfolio grid. Each argument takes the form \code{column = value}, where
 \code{value} may be a vector to match multiple levels. Optionally pass
 \code{fill_all = TRUE} to leave unspecified columns unrestricted (default:
 \code{FALSE}, i.e. unspecified columns are fixed at the defaults listed below).
 Passing an unrecognised column name raises an error listing the supported
-names. Ignored when \code{dataset != "factor-library"}. See the Details section
+names. Ignored when \code{dataset != "factor_library"}. See the Details section
 for supported columns and their defaults.}
 }
 \value{
 A tibble with the downloaded data. For \code{"high_frequency_sp500"},
 contains 5-second aggregated orderbook snapshots filtered to the requested
-date range. For \code{"factor-library"}, contains portfolio return data joined
+date range. For \code{"factor_library"}, contains portfolio return data joined
 with the full grid metadata for the matched portfolio IDs.
 }
 \description{
 Downloads data from a supported Hugging Face dataset. For
 \code{"high_frequency_sp500"}, parquet files are filtered by date range and
-row-bound. For \code{"factor-library"}, portfolio characteristics are selected via
-\code{filter_grid()} and the matching return data is downloaded.
+row-bound. For \code{"factor_library"}, portfolio characteristics are selected via
+\code{filter_factor_library_grid()} and the matching return data is downloaded.
 }
 \details{
-\strong{Note on \code{dataset = "factor-library"} defaults:} The defaults below reflect
+\strong{Note on \code{dataset = "factor_library"} defaults:} The defaults below reflect
 one common portfolio construction choice, but may not suit every research
 question. Always verify that the selected combination matches your intended
 design.
@@ -86,8 +86,8 @@ cutoffs (the conventional Fama-French approach).
 \examples{
 \dontrun{
   download_data_huggingface("high_frequency_sp500", "2007-07-26", "2007-07-27")
-  download_data_huggingface("factor-library", sorting_variable = "52w", rebalancing = "annual")
-  download_data_huggingface("factor-library", sorting_variable = "ag", fill_all = TRUE)
+  download_data_huggingface("factor_library", sorting_variable = "52w", rebalancing = "annual")
+  download_data_huggingface("factor_library", sorting_variable = "ag", fill_all = TRUE)
 }
 
 }

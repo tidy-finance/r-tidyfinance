@@ -32,7 +32,7 @@ depending on the dataset type.}
 
 \item{...}{Additional arguments passed to specific download functions depending on the \code{domain}.
 For instance, if \code{domain} is \code{"constituents"}, arguments are passed to \code{download_data_constituents()}.
-If \code{domain} is \code{"tidyfinance"} and \code{dataset} is \code{"factor-library"}, arguments are used to filter the
+If \code{domain} is \code{"tidyfinance"} and \code{dataset} is \code{"factor_library"}, arguments are used to filter the
 portfolio grid (e.g., \code{sorting_variable}, \code{rebalancing}, \code{fill_all}); see \code{download_data_huggingface()} for details.}
 }
 \value{
@@ -53,7 +53,7 @@ appropriate function for downloading and processing the data.
   download_data("fred", series = c("GDP", "CPIAUCNS"))
   download_data("stock_prices", symbols = c("AAPL", "MSFT"))
   download_data("tidyfinance", "high_frequency_sp500", "2007-07-26", "2007-07-27")
-  download_data("tidyfinance", "factor-library", sorting_variable = "52w", rebalancing = "annual")
+  download_data("tidyfinance", "factor_library", sorting_variable = "52w", rebalancing = "annual")
 }
 }
 \seealso{

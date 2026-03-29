@@ -14,6 +14,7 @@
 - Deprecated `type` parameter in favor of `domain` and `dataset`.
 - Removed lower bound of excess returns for CRSP data. 
 - Removed `add_lag_columns()` in favor of `add_lagged_columns()`.
+- Added domain `"tidyfinance"` with datasets `"high_frequency_sp500"` and `"factor_library"`.
 
 ## Improvements
 
