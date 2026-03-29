@@ -249,6 +249,7 @@ test_that("estimate_fama_macbeth detail = TRUE coefficients has correct structur
   )
   expect_equal(nrow(coefficients), 4)
   expect_false("r_squared" %in% colnames(coefficients))
+  expect_false("adj_r_squared" %in% colnames(coefficients))
   expect_false("n_obs" %in% colnames(coefficients))
 })
 
@@ -272,9 +273,13 @@ test_that("estimate_fama_macbeth detail = TRUE summary_statistics has correct st
   result <- estimate_fama_macbeth(data, "ret_excess ~ beta + bm", detail = TRUE)
 
   summary_stats <- result$summary_statistics
-  expect_equal(colnames(summary_stats), c("r_squared", "n_obs"))
+  expect_equal(
+    colnames(summary_stats),
+    c("r_squared", "adj_r_squared", "n_obs")
+  )
   expect_equal(nrow(summary_stats), 1)
   expect_true(summary_stats$r_squared >= 0 & summary_stats$r_squared <= 1)
+  expect_true(summary_stats$adj_r_squared <= summary_stats$r_squared)
   expect_equal(summary_stats$n_obs, 50)
 })
 

@@ -52,7 +52,7 @@ get_available_huggingface_files <- function(organization, dataset) {
   }
 
   out |>
-    tidyr::unnest(.data$data) |>
+    tidyr::unnest("data") |>
     dplyr::mutate(
       url = glue::glue(
         "https://huggingface.co/datasets/{organization}/{dataset}/resolve/main/{path}"
@@ -189,7 +189,7 @@ download_data_huggingface <- function(
       dplyr::transmute(
         data = purrr::map(url, ~ arrow::read_parquet(.x))
       ) |>
-      tidyr::unnest(.data$data)
+      tidyr::unnest("data")
   } else if (dataset == "factor_library") {
     download_data_hugging_face_factor_library(...)
   } else {
