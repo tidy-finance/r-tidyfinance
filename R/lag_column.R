@@ -166,9 +166,6 @@ add_lagged_columns <- function(
     }
   }
 
-  df <- df |>
-    dplyr::group_by(dplyr::across(dplyr::all_of(by)))
-
   df |>
     dplyr::group_by(dplyr::across(dplyr::all_of(by))) |>
     dplyr::mutate(
