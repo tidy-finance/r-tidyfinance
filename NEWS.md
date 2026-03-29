@@ -10,7 +10,7 @@
 - Added `output` parameter to `estimate_model()` to also return t-stats or residuals.
 - Added `join_lagged_values()`.
 - Added more indexes to `list_supported_indexes()`.
-- Added `download_data_huggingface()` and `get_available_huggingface_files()` and support for `type = "hf_high_frequency_sp500"`.
+- Added `download_data_huggingface()` and `get_available_huggingface_files()`. and support for `type = "hf_high_frequency_sp500"`.
 - Deprecated `type` parameter in favor of `domain` and `dataset`.
 - Removed lower bound of excess returns for CRSP data. 
 - Removed `add_lag_columns()` in favor of `add_lagged_columns()`.

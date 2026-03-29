@@ -174,7 +174,10 @@ download_data_huggingface <- function(
     dataset_name <- "sp500"
 
     date_pattern <- "date=([0-9]{4}-[0-9]{2}-[0-9]{2})"
-    available_files <- get_available_huggingface_files(organization, dataset_name) |>
+    available_files <- get_available_huggingface_files(
+      organization,
+      dataset_name
+    ) |>
       dplyr::mutate(
         date = as.Date(stringr::str_match(.data$path, date_pattern)[, 2])
       )
@@ -279,7 +282,10 @@ filter_grid <- function(..., fill_all = FALSE) {
     }
   }
 
-  result <- get_available_huggingface_files("tidy-finance", "factor-library-grid") |>
+  result <- get_available_huggingface_files(
+    "tidy-finance",
+    "factor-library-grid"
+  ) |>
     dplyr::pull(.data$url) |>
     arrow::read_parquet() |>
     dplyr::mutate(
@@ -316,7 +322,10 @@ download_factor_library_returns_ids <- function(ids) {
   organization <- "tidy-finance"
   dataset_name <- "factor-library"
 
-  available_files <- get_available_huggingface_files(organization, dataset_name) |>
+  available_files <- get_available_huggingface_files(
+    organization,
+    dataset_name
+  ) |>
     tidyr::extract(
       col = "path",
       into = c("sorting_variable", "sorting_variable_lag"),
@@ -326,7 +335,10 @@ download_factor_library_returns_ids <- function(ids) {
 
   id_values <- data.frame(id = ids)
 
-  id_grid <- get_available_huggingface_files(organization, "factor-library-grid") |>
+  id_grid <- get_available_huggingface_files(
+    organization,
+    "factor-library-grid"
+  ) |>
     dplyr::pull(.data$url) |>
     arrow::read_parquet() |>
     dplyr::inner_join(id_values, dplyr::join_by(id)) |>
@@ -354,11 +366,20 @@ download_factor_library_returns_ids <- function(ids) {
   if (nrow(missing_urls) > 0) {
     missing_keys <- missing_urls |>
       dplyr::inner_join(
-        id_grid |> dplyr::select("id", "sorting_variable", "sorting_variable_lag"),
+        id_grid |>
+          dplyr::select("id", "sorting_variable", "sorting_variable_lag"),
         dplyr::join_by(sorting_variable, sorting_variable_lag)
       ) |>
       dplyr::mutate(
-        key = paste0("id=", .data$id, " (", .data$sorting_variable, " / ", .data$sorting_variable_lag, ")")
+        key = paste0(
+          "id=",
+          .data$id,
+          " (",
+          .data$sorting_variable,
+          " / ",
+          .data$sorting_variable_lag,
+          ")"
+        )
       ) |>
       dplyr::pull(.data$key)
 
@@ -370,11 +391,14 @@ download_factor_library_returns_ids <- function(ids) {
   }
 
   relevant_files <- relevant_urls$url |>
-    purrr::map(~arrow::read_parquet(.x)) |> 
-      dplyr::bind_rows()
-  
-  relevant_files |> 
-    dplyr::inner_join(id_grid |> dplyr::select(-c(url, path, size)), by = dplyr::join_by(id)) 
+    purrr::map(~ arrow::read_parquet(.x)) |>
+    dplyr::bind_rows()
+
+  relevant_files |>
+    dplyr::inner_join(
+      id_grid |> dplyr::select(-c(url, path, size)),
+      by = dplyr::join_by(id)
+    )
 }
 
 #' Download factor library data from Hugging Face

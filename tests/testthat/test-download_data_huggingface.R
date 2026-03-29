@@ -11,8 +11,10 @@ make_returns_parquet_file <- function(rows, sv, sv_lag) {
   arrow::write_parquet(rows, tmp)
   tibble::tibble(
     path = paste0(
-      "sorting_variable=", sv,
-      "/sorting_variable_lag=", sv_lag,
+      "sorting_variable=",
+      sv,
+      "/sorting_variable_lag=",
+      sv_lag,
       "/part.parquet"
     ),
     size = file.size(tmp),

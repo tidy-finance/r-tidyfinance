@@ -36,9 +36,7 @@ Other download functions:
 \code{\link{download_data_factors_ff}()},
 \code{\link{download_data_factors_q}()},
 \code{\link{download_data_fred}()},
-\code{\link{download_data_hf}()},
 \code{\link{download_data_macro_predictors}()},
-\code{\link{download_data_osap}()},
-\code{\link{get_available_hf_files}()}
+\code{\link{download_data_osap}()}
 }
 \concept{download functions}
