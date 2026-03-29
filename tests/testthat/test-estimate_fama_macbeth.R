@@ -70,30 +70,27 @@ test_that("estimate_fama_macbeth works with valid iid vcov", {
 })
 
 test_that("estimate_fama_macbeth works with valid newey-west vcov", {
-  n_months <- 132
-  n_stocks <- 50
-  n_obs <- n_months * n_stocks
-
   data <- tibble(
     date = rep(
       seq.Date(
-        from = as.Date("2010-01-01"),
+        from = as.Date("2020-01-01"),
         to = as.Date("2020-12-01"),
         by = "month"
       ),
-      each = n_stocks
+      each = 50
     ),
-    permno = rep(1:n_stocks, times = n_months),
-    ret_excess = rnorm(n_obs, 0, 0.1),
-    beta = rnorm(n_obs, 1, 0.2),
-    bm = rnorm(n_obs, 0.5, 0.1),
-    log_mktcap = rnorm(n_obs, 10, 1)
+    permno = rep(1:50, times = 12),
+    ret_excess = rnorm(600, 0, 0.1),
+    beta = rnorm(600, 1, 0.2),
+    bm = rnorm(600, 0.5, 0.1),
+    log_mktcap = rnorm(600, 10, 1)
   )
 
   result <- estimate_fama_macbeth(
     data,
     "ret_excess ~ beta + bm + log_mktcap",
-    vcov = "newey-west"
+    vcov = "newey-west",
+    vcov_options = list(prewhite = FALSE)
   )
 
   expect_s3_class(result, "tbl_df")
@@ -104,27 +101,27 @@ test_that("estimate_fama_macbeth works with valid newey-west vcov", {
 })
 
 test_that("estimate_fama_macbeth computes correct number of rows", {
-  n_months <- 132
-  n_stocks <- 50
-  n_obs <- n_months * n_stocks
-
   data <- tibble(
     date = rep(
       seq.Date(
-        from = as.Date("2010-01-01"),
+        from = as.Date("2020-01-01"),
         to = as.Date("2020-12-01"),
         by = "month"
       ),
-      each = n_stocks
+      each = 50
     ),
-    permno = rep(1:n_stocks, times = n_months),
-    ret_excess = rnorm(n_obs, 0, 0.1),
-    beta = rnorm(n_obs, 1, 0.2),
-    bm = rnorm(n_obs, 0.5, 0.1),
-    log_mktcap = rnorm(n_obs, 10, 1)
+    permno = rep(1:50, times = 12),
+    ret_excess = rnorm(600, 0, 0.1),
+    beta = rnorm(600, 1, 0.2),
+    bm = rnorm(600, 0.5, 0.1),
+    log_mktcap = rnorm(600, 10, 1)
   )
 
-  result <- estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap")
+  result <- estimate_fama_macbeth(
+    data,
+    "ret_excess ~ beta + bm + log_mktcap",
+    vcov_options = list(prewhite = FALSE)
+  )
 
   expect_equal(nrow(result), 4)
 })
