@@ -14,6 +14,7 @@
 #' @returns Invisible `NULL`. The function is called for its side effect of opening
 #'   a web page.
 #'
+#' @family utility functions
 #' @export
 #'
 #' @examples

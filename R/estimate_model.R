@@ -1,8 +1,8 @@
-#' Estimate Model
+#' Estimate a Linear Model
 #'
 #' @description `r lifecycle::badge('experimental')`
 #'
-#' This function estimates a linear model specified by one or more independent
+#' Estimates a linear model specified by one or more independent
 #' variables. It checks for the presence of the specified independent variables
 #' in the dataset and whether the dataset has a sufficient number of
 #' observations. Depending on the `output` parameter, it returns the model's
@@ -27,9 +27,11 @@
 #'   vector of length `nrow(data)` with `NA` for rows with missing data or
 #'   insufficient observations.
 #'
+#' @family estimation functions
 #' @export
 #'
 #' @examples
+#' set.seed(42)
 #' data <- data.frame(
 #'   ret_excess = rnorm(100),
 #'   mkt_excess = rnorm(100),

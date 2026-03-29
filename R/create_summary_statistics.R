@@ -1,7 +1,7 @@
 #' Create Summary Statistics for Specified Variables
 #'
 #' Computes a set of summary statistics for numeric and integer variables in a
-#' data frame. This function allows users to select specific variables for
+#' data frame. It allows users to select specific variables for
 #' summarization and can calculate statistics for the whole dataset or within
 #' groups specified by the `by` argument. Additional detail levels for quantiles
 #' can be included.
@@ -31,14 +31,31 @@
 #'   computes basic statistics (n, mean, sd, min, median, max). When TRUE,
 #'   additional quantiles (1%, 5%, 10%, 25%, 75%, 90%, 95%, 99%) are computed.
 #' @param drop_na A logical flag indicating whether to drop missing values for
-#'   each variabl (default is FALSE).
+#'   each variable (default is FALSE).
 #'
 #' @returns A tibble with summary statistics for each selected variable. If `by`
 #'   is specified, the output includes the grouping variable as well. Each row
 #'   represents a variable (and a group if `by` is used), and columns include
 #'   the computed statistics.
 #'
+#' @family utility functions
 #' @export
+#'
+#' @examples
+#' data <- data.frame(
+#'   ret = c(0.01, -0.02, 0.03, NA, 0.005),
+#'   size = c(100, 200, 150, 300, 250),
+#'   group = c("A", "A", "B", "B", "A")
+#' )
+#'
+#' # Basic summary across all observations
+#' create_summary_statistics(data, ret, size)
+#'
+#' # Grouped summary
+#' create_summary_statistics(data, ret, size, by = group)
+#'
+#' # Detailed quantiles
+#' create_summary_statistics(data, ret, detail = TRUE)
 create_summary_statistics <- function(
   data,
   ...,

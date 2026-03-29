@@ -1,19 +1,20 @@
 #' Download and Process Open Source Asset Pricing Data
 #'
-#' This function downloads the data from [Open Source Asset Pricing](https://www.openassetpricing.com/data/)
+#' Downloads the data from [Open Source Asset Pricing](https://www.openassetpricing.com/data/)
 #' from Google Sheets using a specified sheet ID, processes the data by converting column names to
 #' snake_case, and optionally filters the data based on a provided date range.
 #'
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
 #'   specifying the start date for the data. If not provided, the full dataset is returned.
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
-#'   specifying the start date for the data. If not provided, the full dataset is returned.
+#'   specifying the end date for the data. If not provided, the full dataset is returned.
 #' @param sheet_id A character string representing the Google Sheet ID from which to download the data.
 #' Default is `"1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"`.
 #'
-#' @return A tibble containing the processed data. The column names are converted to snake_case,
+#' @returns A tibble containing the processed data. The column names are converted to snake_case,
 #' and the data is filtered by the specified date range if `start_date` and `end_date` are provided.
 #'
+#' @family download functions
 #' @export
 #'
 #' @examples

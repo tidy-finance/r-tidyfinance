@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_data_hf.R
 \name{get_available_hf_files}
 \alias{get_available_hf_files}
-\title{List parquet files in a Hugging Face dataset}
+\title{List Parquet Files in a Hugging Face Dataset}
 \usage{
 get_available_hf_files(organization, dataset)
 }
@@ -15,7 +15,7 @@ get_available_hf_files(organization, dataset)
 A tibble with columns: path (character), size (numeric) and url (character).
 }
 \description{
-Query the Hugging Face Datasets API and return a tibble of files with a
+Query the Hugging Face Datasets API and return a data frame of files with a
 \code{.parquet} suffix. The function follows pagination links returned in the
 response \code{Link} header and returns path, size and a resolved URL.
 }
@@ -24,8 +24,20 @@ Uses httr2 to perform HTTP requests. Requires internet access and
 the dataset to be publicly accessible or accessible with appropriate auth.
 }
 \examples{
-\dontrun{
+\donttest{
 get_available_hf_files("voigtstefan", "sp500")
 }
-
 }
+\seealso{
+Other download functions: 
+\code{\link{download_data}()},
+\code{\link{download_data_constituents}()},
+\code{\link{download_data_factors_ff}()},
+\code{\link{download_data_factors_q}()},
+\code{\link{download_data_fred}()},
+\code{\link{download_data_hf}()},
+\code{\link{download_data_macro_predictors}()},
+\code{\link{download_data_osap}()},
+\code{\link{download_data_stock_prices}()}
+}
+\concept{download functions}

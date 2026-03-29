@@ -14,7 +14,7 @@ estimate_betas(
 )
 }
 \arguments{
-\item{data}{A tibble containing the data with a date identifier (defaults to \code{date}), a stock
+\item{data}{A data frame containing the data with a date identifier (defaults to \code{date}), a stock
 identifier (defaults to \code{permno}), and other variables used in the model.}
 
 \item{model}{A formula representing the model to be estimated (e.g.,
@@ -26,7 +26,7 @@ seconds to look back when estimating the rolling model.}
 \item{min_obs}{An integer specifying the minimum number of observations required to estimate
 the model. Defaults to 80\% of \code{lookback}.}
 
-\item{use_furrr}{A logical indicating whether to use the \code{furrr} package and its paralellization
+\item{use_furrr}{A logical indicating whether to use the \code{furrr} package and its parallelization
 capabilities. Defaults to FALSE.}
 
 \item{data_options}{A named list of \link{data_options} with characters, indicating the column
@@ -34,10 +34,10 @@ names required to run this function. The required column names identify dates an
 Defaults to \code{date = date} and \code{id = permno}.}
 }
 \value{
-A tibble with the estimated betas for each time period.
+A data frame with the estimated betas for each time period.
 }
 \description{
-This function estimates rolling betas for a given model using the provided data.
+Estimates rolling betas for a given model using the provided data.
 It supports parallel processing for faster computation using the \code{furrr} package.
 }
 \examples{
@@ -79,3 +79,9 @@ data_daily <- data_daily |>
 estimate_betas(data_daily, "ret_excess ~ mkt_excess", lubridate::days(90), use_furrr = TRUE)
 
 }
+\seealso{
+Other estimation functions: 
+\code{\link{estimate_fama_macbeth}()},
+\code{\link{estimate_model}()}
+}
+\concept{estimation functions}

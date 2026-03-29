@@ -27,3 +27,16 @@ the user is prompted before it is replaced.
 path <- paste0(tempdir(), "/tidy_finance_r.sqlite")
 create_wrds_dummy_database(path)
 }
+\seealso{
+Other WRDS functions: 
+\code{\link{disconnect_connection}()},
+\code{\link{download_data_wrds}()},
+\code{\link{download_data_wrds_ccm_links}()},
+\code{\link{download_data_wrds_compustat}()},
+\code{\link{download_data_wrds_crsp}()},
+\code{\link{download_data_wrds_fisd}()},
+\code{\link{download_data_wrds_trace_enhanced}()},
+\code{\link{get_wrds_connection}()},
+\code{\link{set_wrds_credentials}()}
+}
+\concept{WRDS functions}

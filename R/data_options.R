@@ -1,6 +1,6 @@
 #' Create Data Options
 #'
-#' This function creates a list of data options used in financial data analysis,
+#' Creates a list of data options used in financial data analysis,
 #' specifically for TidyFinance-related functions. It allows users to specify
 #' key parameters such as `id`, `date`, `exchange`, `mktcap_lag`, and `ret_excess`
 #' along with other additional options passed through `...`.
@@ -15,8 +15,9 @@
 #' @param portfolio A character string representing the portfolio variable (e.g., "portfolio").
 #' @param ... Additional arguments to be included in the data options list.
 #'
-#' @return A list of class `tidyfinance_data_options` containing the specified data options.
+#' @returns A list of class `tidyfinance_data_options` containing the specified data options.
 #'
+#' @family portfolio functions
 #' @export
 #'
 #' @examples
@@ -57,12 +58,12 @@ data_options <- function(
   }
 
   # Error handling for ret_excess
-  if (!is.character(ret_excess) || length(mktcap_lag) != 1) {
+  if (!is.character(ret_excess) || length(ret_excess) != 1) {
     cli::cli_abort("{.arg ret_excess} must be a single character")
   }
 
   # Error handling for portfolio
-  if (!is.character(ret_excess) || length(mktcap_lag) != 1) {
+  if (!is.character(portfolio) || length(portfolio) != 1) {
     cli::cli_abort("{.arg portfolio} must be a single character")
   }
 

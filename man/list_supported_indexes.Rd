@@ -15,7 +15,7 @@ A tibble with three columns:
 }
 }
 \description{
-This function returns a tibble containing information about supported financial indexes.
+Returns a tibble containing information about supported financial indexes.
 Each index is associated with a URL that points to a CSV file containing the holdings of the index.
 Additionally, each index has a corresponding \code{skip} value, which indicates the number of lines
 to skip when reading the CSV file.
@@ -25,3 +25,12 @@ supported_indexes <- list_supported_indexes()
 print(supported_indexes)
 
 }
+\seealso{
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}

@@ -48,7 +48,7 @@ A vector of breakpoints of the desired length.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This function computes breakpoints based on a specified sorting. It can
+Computes breakpoints based on a specified sorting. It can
 optionally filter the data by exchanges before computing the breakpoints.
 The function requires either the number of portfolios to be created or
 specific percentiles for the breakpoints, but not both. The function also
@@ -62,6 +62,7 @@ This function will stop and throw an error if both \code{n_portfolios} and
 use one of these parameters.
 }
 \examples{
+set.seed(42)
 data <- data.frame(
   id = 1:100,
   exchange = sample(c("NYSE", "NASDAQ"), 100, replace = TRUE),
@@ -75,3 +76,12 @@ compute_breakpoints(
  )
 
 }
+\seealso{
+Other portfolio functions: 
+\code{\link{assign_portfolio}()},
+\code{\link{breakpoint_options}()},
+\code{\link{compute_long_short_returns}()},
+\code{\link{compute_portfolio_returns}()},
+\code{\link{data_options}()}
+}
+\concept{portfolio functions}

@@ -47,6 +47,7 @@ across data frames with different date grids (e.g., monthly source data
 into quarterly target data).
 }
 \examples{
+set.seed(42)
 library(dplyr)
 library(lubridate)
 
@@ -66,3 +67,10 @@ join_lagged_values(
   max_lag = months(3)
 )
 }
+\seealso{
+Other rolling and lagging functions: 
+\code{\link{add_lagged_columns}()},
+\code{\link{compute_rolling_value}()},
+\code{\link{lag_column}()}
+}
+\concept{rolling and lagging functions}

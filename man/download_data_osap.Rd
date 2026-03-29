@@ -15,7 +15,7 @@ download_data_osap(
 specifying the start date for the data. If not provided, the full dataset is returned.}
 
 \item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
-specifying the start date for the data. If not provided, the full dataset is returned.}
+specifying the end date for the data. If not provided, the full dataset is returned.}
 
 \item{sheet_id}{A character string representing the Google Sheet ID from which to download the data.
 Default is \code{"1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"}.}
@@ -25,7 +25,7 @@ A tibble containing the processed data. The column names are converted to snake_
 and the data is filtered by the specified date range if \code{start_date} and \code{end_date} are provided.
 }
 \description{
-This function downloads the data from \href{https://www.openassetpricing.com/data/}{Open Source Asset Pricing}
+Downloads the data from \href{https://www.openassetpricing.com/data/}{Open Source Asset Pricing}
 from Google Sheets using a specified sheet ID, processes the data by converting column names to
 snake_case, and optionally filters the data based on a provided date range.
 }
@@ -34,3 +34,16 @@ snake_case, and optionally filters the data based on a provided date range.
   osap <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
 }
 }
+\seealso{
+Other download functions: 
+\code{\link{download_data}()},
+\code{\link{download_data_constituents}()},
+\code{\link{download_data_factors_ff}()},
+\code{\link{download_data_factors_q}()},
+\code{\link{download_data_fred}()},
+\code{\link{download_data_hf}()},
+\code{\link{download_data_macro_predictors}()},
+\code{\link{download_data_stock_prices}()},
+\code{\link{get_available_hf_files}()}
+}
+\concept{download functions}

@@ -1,13 +1,14 @@
 #' List Chapters of Tidy Finance
 #'
 #' Returns a character vector containing the names of the chapters available in
-#' the Tidy Finance resource. This function provides a quick reference to the
+#' the Tidy Finance resource. It provides a quick reference to the
 #' various topics covered.
 #'
 #' @returns A character vector where each element is the name of a chapter
 #'   available in the Tidy Finance resource. These names correspond to specific
 #'   chapters in Tidy Finance with R.
 #'
+#' @family utility functions
 #' @export
 #'
 #' @examples

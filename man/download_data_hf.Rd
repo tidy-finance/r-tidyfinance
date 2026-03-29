@@ -2,8 +2,7 @@
 % Please edit documentation in R/download_data_hf.R
 \name{download_data_hf}
 \alias{download_data_hf}
-\title{Download 5-second aggregated orderbook data
-for the SPY ETF (S&P 500 tracker) from a Hugging Face dataset.}
+\title{Download Data from Hugging Face}
 \usage{
 download_data_hf(
   dataset = NULL,
@@ -35,9 +34,20 @@ The function locates parquet files in the specified Hugging Face dataset whose p
 filters them to the provided date interval, and reads/row-binds them with arrow::read_parquet().
 }
 \examples{
-\dontrun{
-  # Download 5-second aggregated orderbook snapshots for SPY.
+\donttest{
   download_data_hf("high_frequency_sp500", "2007-07-26", "2007-07-27")
 }
-
 }
+\seealso{
+Other download functions: 
+\code{\link{download_data}()},
+\code{\link{download_data_constituents}()},
+\code{\link{download_data_factors_ff}()},
+\code{\link{download_data_factors_q}()},
+\code{\link{download_data_fred}()},
+\code{\link{download_data_macro_predictors}()},
+\code{\link{download_data_osap}()},
+\code{\link{download_data_stock_prices}()},
+\code{\link{get_available_hf_files}()}
+}
+\concept{download functions}

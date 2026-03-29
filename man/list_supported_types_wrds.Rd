@@ -12,6 +12,6 @@ A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
 dataset belongs, always "WRDS").
 }
 \description{
-This function returns a tibble with the supported dataset types provided via
+Returns a tibble with the supported dataset types provided via
 WRDS. Additionally, it annotates each dataset with the domain "WRDS".
 }

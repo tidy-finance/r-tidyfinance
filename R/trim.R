@@ -12,6 +12,7 @@
 #'
 #' @returns A numeric vector with the extreme values removed.
 #'
+#' @family utility functions
 #' @export
 #'
 #' @examples
