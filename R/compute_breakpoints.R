@@ -132,7 +132,7 @@ compute_breakpoints <- function(
       mktcap_ref <- data[[mktcap_col]]
     }
     size_cutoff <- quantile(mktcap_ref, min_size_threshold, na.rm = TRUE)
-    above_size <- data[[mktcap_col]] > size_cutoff
+    above_size <- !is.na(data[[mktcap_col]]) & data[[mktcap_col]] > size_cutoff
     if (!is.null(breakpoint_exchanges)) {
       sorting_values <- data[[sorting_variable]][keep & above_size]
     } else {

@@ -585,6 +585,68 @@ test_that("min_size_threshold without breakpoint_exchanges uses full sample", {
   expect_false(identical(bp_no_filter, bp_with_filter))
 })
 
+test_that("min_size_threshold produces correct breakpoints matching manual computation", {
+  set.seed(7)
+  mktcap <- 1:100
+  sorting_var <- rnorm(100)
+  data <- data.frame(mktcap_lag = mktcap, sorting_var = sorting_var)
+
+  # manual: cutoff = quantile(1:100, 0.2) = 20.8; keep stocks with mktcap > 20.8
+  size_cutoff <- quantile(mktcap, 0.2, na.rm = TRUE)
+  above <- mktcap > size_cutoff
+  expected <- unname(quantile(sorting_var[above], seq(0, 1, length.out = 6), na.rm = TRUE))
+
+  bp <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 5, min_size_threshold = 0.2)
+  )
+
+  expect_equal(bp, expected)
+})
+
+test_that("min_size_threshold excludes stocks exactly at the cutoff (strict > not >=)", {
+  # Construct data where one stock lands exactly at the quantile cutoff.
+  # With mktcap = c(10, 20, 30, 40, 50) and threshold = 0.25:
+  # quantile type 7: h = 1 + 0.25*4 = 2; cutoff = mktcap[2] = 20 (exact integer index)
+  mktcap <- c(10, 20, 30, 40, 50)
+  sorting_var <- c(1.0, 2.0, 3.0, 4.0, 5.0)
+  data <- data.frame(mktcap_lag = mktcap, sorting_var = sorting_var)
+
+  size_cutoff <- quantile(mktcap, 0.25, na.rm = TRUE)
+  # stocks with mktcap strictly > cutoff are included; the stock at exactly cutoff is excluded
+  above <- mktcap > size_cutoff
+  expect_false(above[mktcap == size_cutoff])  # boundary stock excluded
+
+  expected <- unname(quantile(sorting_var[above], seq(0, 1, length.out = 4), na.rm = TRUE))
+  bp <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 3, min_size_threshold = 0.25)
+  )
+  expect_equal(bp, expected)
+})
+
+test_that("min_size_threshold with NA mktcap values excludes NA rows without propagating NAs", {
+  data <- data.frame(
+    mktcap_lag = c(NA, 10, 20, 30, 40, 50, 60, 70, 80, 90),
+    sorting_var = c(99, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+  )
+
+  bp <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 3, min_size_threshold = 0.2)
+  )
+
+  # breakpoints must be finite numerics — no NAs
+  expect_true(all(!is.na(bp)))
+  expect_length(bp, 4)
+
+  # manual: cutoff uses only non-NA mktcap values; row with mktcap=NA is excluded
+  size_cutoff <- quantile(c(10, 20, 30, 40, 50, 60, 70, 80, 90), 0.2, na.rm = TRUE)
+  above <- !is.na(data$mktcap_lag) & data$mktcap_lag > size_cutoff
+  expected <- unname(quantile(data$sorting_var[above], seq(0, 1, length.out = 4), na.rm = TRUE))
+  expect_equal(bp, expected)
+})
+
 test_that("min_size_threshold = NA (default) has no effect", {
   set.seed(42)
   data <- data.frame(
