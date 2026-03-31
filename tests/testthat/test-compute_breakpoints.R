@@ -534,3 +534,134 @@ test_that("function is deterministic (same input → same output)", {
   bp2 <- compute_breakpoints(data, "value", opts)
   expect_identical(bp1, bp2)
 })
+
+# --- min_size_threshold tests ---
+
+test_that("min_size_threshold with breakpoint_exchanges filters small stocks", {
+  set.seed(42)
+  data <- data.frame(
+    id = 1:200,
+    exchange = rep(c("NYSE", "NASDAQ"), each = 100),
+    mktcap_lag = c(1:100, 1:100),
+    sorting_var = rnorm(200)
+  )
+
+  bp_no_filter <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 5, breakpoint_exchanges = "NYSE")
+  )
+  bp_with_filter <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(
+      n_portfolios = 5,
+      breakpoint_exchanges = "NYSE",
+      min_size_threshold = 0.2
+    )
+  )
+
+  expect_length(bp_with_filter, 6)
+  expect_false(identical(bp_no_filter, bp_with_filter))
+})
+
+test_that("min_size_threshold without breakpoint_exchanges uses full sample", {
+  set.seed(42)
+  data <- data.frame(
+    id = 1:200,
+    exchange = rep(c("NYSE", "NASDAQ"), each = 100),
+    mktcap_lag = 1:200,
+    sorting_var = rnorm(200)
+  )
+
+  bp_no_filter <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 5)
+  )
+  bp_with_filter <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 5, min_size_threshold = 0.2)
+  )
+
+  expect_length(bp_with_filter, 6)
+  expect_false(identical(bp_no_filter, bp_with_filter))
+})
+
+test_that("min_size_threshold = NA (default) has no effect", {
+  set.seed(42)
+  data <- data.frame(
+    id = 1:100,
+    exchange = rep("NYSE", 100),
+    mktcap_lag = 1:100,
+    sorting_var = rnorm(100)
+  )
+
+  bp_default <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 5)
+  )
+  bp_explicit_na <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 5, min_size_threshold = NA)
+  )
+
+  expect_identical(bp_default, bp_explicit_na)
+})
+
+test_that("min_size_threshold errors when mktcap column is missing", {
+  data <- data.frame(
+    id = 1:100,
+    sorting_var = rnorm(100)
+  )
+
+  expect_error(
+    compute_breakpoints(
+      data, "sorting_var",
+      breakpoint_options(n_portfolios = 5, min_size_threshold = 0.2)
+    ),
+    "mktcap_lag"
+  )
+})
+
+test_that("min_size_threshold works with custom data_options", {
+  set.seed(42)
+  data <- data.frame(
+    id = 1:100,
+    listing = rep("NYSE", 100),
+    mcap = 1:100,
+    sorting_var = rnorm(100)
+  )
+
+  bp <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(
+      n_portfolios = 5,
+      breakpoint_exchanges = "NYSE",
+      min_size_threshold = 0.2
+    ),
+    data_options = data_options(exchange = "listing", mktcap_lag = "mcap")
+  )
+
+  expect_length(bp, 6)
+})
+
+test_that("breakpoint_options validates min_size_threshold", {
+  expect_error(
+    breakpoint_options(n_portfolios = 5, min_size_threshold = 0),
+    "min_size_threshold"
+  )
+  expect_error(
+    breakpoint_options(n_portfolios = 5, min_size_threshold = 1),
+    "min_size_threshold"
+  )
+  expect_error(
+    breakpoint_options(n_portfolios = 5, min_size_threshold = -0.1),
+    "min_size_threshold"
+  )
+  expect_error(
+    breakpoint_options(n_portfolios = 5, min_size_threshold = "abc"),
+    "min_size_threshold"
+  )
+  expect_error(
+    breakpoint_options(n_portfolios = 5, min_size_threshold = c(0.2, 0.3)),
+    "min_size_threshold"
+  )
+})
