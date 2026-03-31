@@ -119,7 +119,7 @@ compute_breakpoints <- function(
     sorting_values <- sorting_values[keep]
   }
 
-  if (!is.na(min_size_threshold)) {
+  if (!is.null(min_size_threshold) && !is.na(min_size_threshold)) {
     mktcap_col <- data_options$mktcap_lag
     if (!(mktcap_col %in% colnames(data))) {
       cli::cli_abort(
