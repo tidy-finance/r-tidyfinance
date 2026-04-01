@@ -79,7 +79,7 @@ lag_column <- function(
     src_value <- src_value[keep]
   }
 
-  # Fast path: exact date match via hash lookup (O(n))
+  # Fast path: exact date match 
   if (lag == max_lag) {
     target_date <- date - lag
     idx <- match(target_date, src_date)
