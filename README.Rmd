@@ -175,6 +175,40 @@ download_data(
 )
 ```
 
+### Factor Library Tools
+
+You can download pre-computed portfolio returns from the [Tidy Finance Factor Library](https://factors.tidy-finance.org) hosted on Hugging Face:
+
+```r
+download_data(
+  domain = "tidyfinance",
+  dataset = "factor_library",
+  sorting_variable = "size"
+)
+```
+
+The package also provides functions to construct your own factor portfolios:
+
+```r
+# Portfolio sorts and long-short returns
+compute_portfolio_returns()
+compute_long_short_returns()
+
+# Configuration helpers
+breakpoint_options()
+data_options()
+
+# Rolling and lagging
+add_lagged_columns()
+join_lagged_values()
+compute_rolling_value()
+
+# Regression estimation
+estimate_model()
+estimate_betas()
+estimate_fama_macbeth()
+```
+
 ### Other Helpers
 
 We include functions to check out content from [tidy-finance.org](https://www.tidy-finance.org/r/index.html):
@@ -190,20 +224,4 @@ There are also some simple helpers for regression analyses:
 winsorize()
 trim()
 create_summary_statistics()
-```
-
-We also include (experimental) functions that can be used for different applications, but note that they might heavily change in future package versions as we try to make them more general:
-
-```r
-# For portfolio sorts
-?assign_portfolio()
-
-# For model estimation
-?estimate_model()
-
-# For beta estimation
-?estimate_betas()
-
-# For beta estimation
-?estimate_fama_macbeth()
 ```
