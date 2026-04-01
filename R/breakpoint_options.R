@@ -14,11 +14,6 @@
 #'  exchange for which the breakpoints apply. If not provided, defaults to `NULL`.
 #' @param smooth_bunching Logical, optional. Indicates whether smooth bunching should
 #'  be applied. Defaults to `FALSE`.
-#' @param min_size_threshold Numeric or `NA`, optional. When set to a value between
-#'  0 and 1, stocks with market capitalization below this quantile are excluded from
-#'  breakpoint computation. The quantile is computed among `breakpoint_exchanges`
-#'  stocks if specified, otherwise among all stocks. Requires a market capitalization
-#'  column in the data (see \link{data_options}). Defaults to `NA` (no size filtering).
 #' @param ... Additional optional arguments. These will be captured in the resulting
 #'  structure as a list.
 #'
@@ -34,7 +29,6 @@
 #'   percentiles = c(0.2, 0.4, 0.6, 0.8),
 #'   breakpoint_exchanges = "NYSE",
 #'   smooth_bunching = TRUE,
-#'   min_size_threshold = 0.2,
 #'   custom_threshold = 0.5,
 #'   another_option = "example"
 #' )
@@ -44,7 +38,6 @@ breakpoint_options <- function(
   percentiles = NULL,
   breakpoint_exchanges = NULL,
   smooth_bunching = FALSE,
-  min_size_threshold = NA,
   ...
 ) {
   # Error handling for n_portfolios
@@ -82,16 +75,6 @@ breakpoint_options <- function(
     )
   }
 
-  # Error handling for min_size_threshold
-  if (length(min_size_threshold) != 1L ||
-      !(is.na(min_size_threshold) ||
-        (is.numeric(min_size_threshold) &&
-         min_size_threshold > 0 && min_size_threshold < 1))) {
-    cli::cli_abort(
-      "{.arg min_size_threshold} must be NA or a single numeric value between 0 and 1 (exclusive)."
-    )
-  }
-
   # Create the list structure with class attribute
   structure(
     list(
@@ -99,7 +82,6 @@ breakpoint_options <- function(
       "percentiles" = percentiles,
       "breakpoint_exchanges" = breakpoint_exchanges,
       "smooth_bunching" = smooth_bunching,
-      "min_size_threshold" = min_size_threshold,
       ...
     ),
     class = "tidyfinance_breakpoint_options"

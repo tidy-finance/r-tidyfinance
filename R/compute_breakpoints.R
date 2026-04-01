@@ -33,12 +33,6 @@
 #'   clusters. If sufficiently large bunching is detected, `percentiles` is
 #'   ignored and equally-spaced portfolios are returned for these cases with a
 #'   warning.
-#'     \item `min_size_threshold` An optional numeric value between 0 and 1
-#'   (exclusive) or `NA` (the default). When set, stocks with market
-#'   capitalization below this quantile are excluded from breakpoint computation.
-#'   The quantile is computed among `breakpoint_exchanges` stocks if specified,
-#'   otherwise among all stocks. Requires a market capitalization column in the
-#'   data (column name determined by \link{data_options}).
 #'   }
 #' @param data_options A named list of \link{data_options} with characters, indicating the column names
 #'  required to run this function. The required column names identify dates. Defaults to `exchange = exchange`.
@@ -64,16 +58,7 @@
 #' compute_breakpoints(
 #'   data, "market_cap",
 #'   breakpoint_options(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
-#' )
-#' compute_breakpoints(
-#'   data, "market_cap",
-#'   breakpoint_options(
-#'     n_portfolios = 5,
-#'     breakpoint_exchanges = "NYSE",
-#'     min_size_threshold = 0.2
-#'   ),
-#'   data_options = data_options(mktcap_lag = "market_cap")
-#' )
+#'  )
 #'
 compute_breakpoints <- function(
   data,
@@ -89,7 +74,6 @@ compute_breakpoints <- function(
   percentiles <- breakpoint_options$percentiles
   breakpoint_exchanges <- breakpoint_options$breakpoint_exchanges
   smooth_bunching <- breakpoint_options$smooth_bunching
-  min_size_threshold <- breakpoint_options$min_size_threshold
 
   if (is.null(data_options)) {
     data_options <- data_options()
@@ -117,27 +101,6 @@ compute_breakpoints <- function(
     }
     keep <- data[[exchange_col]] %in% breakpoint_exchanges
     sorting_values <- sorting_values[keep]
-  }
-
-  if (!is.na(min_size_threshold)) {
-    mktcap_col <- data_options$mktcap_lag
-    if (!(mktcap_col %in% colnames(data))) {
-      cli::cli_abort(
-        "Column {.val {mktcap_col}} is required when using {.arg min_size_threshold}."
-      )
-    }
-    if (!is.null(breakpoint_exchanges)) {
-      mktcap_ref <- data[[mktcap_col]][keep]
-    } else {
-      mktcap_ref <- data[[mktcap_col]]
-    }
-    size_cutoff <- quantile(mktcap_ref, min_size_threshold, na.rm = TRUE)
-    above_size <- data[[mktcap_col]] > size_cutoff
-    if (!is.null(breakpoint_exchanges)) {
-      sorting_values <- data[[sorting_variable]][keep & above_size]
-    } else {
-      sorting_values <- data[[sorting_variable]][above_size]
-    }
   }
 
   if (length(sorting_values) == 0L) {
