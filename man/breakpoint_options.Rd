@@ -52,7 +52,6 @@ breakpoint_options(
   percentiles = c(0.2, 0.4, 0.6, 0.8),
   breakpoint_exchanges = "NYSE",
   smooth_bunching = TRUE,
-  min_size_threshold = 0.2,
   custom_threshold = 0.5,
   another_option = "example"
 )
