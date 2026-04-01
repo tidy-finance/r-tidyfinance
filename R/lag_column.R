@@ -1,145 +1,57 @@
-#' Lag a Column Based on Date and Time Range
+#' Add Lagged Columns via Join
 #'
-#' @description `r lifecycle::badge('experimental')`
+#' @description
+#' Appends lagged versions of specified columns to a data frame using a
+#' join-based approach.
 #'
-#' Generates a lagged version of a given column based on a date variable, with the
-#' ability to specify a range of lags. It also allows for the optional removal of `NA` values.
+#' When `lag == max_lag` (the default), an equi-join is used: source dates are
+#' shifted forward by `lag` and matched exactly. When `lag < max_lag`, an
+#' inequality join is used: for each row, the most recent source value within the
+#' window `[date - max_lag, date - lag]` is selected.
 #'
-#' @param column A numeric vector or column to be lagged.
-#' @param date A vector representing dates corresponding to the `column`. The column should be in a
-#'  date or datetime format.
-#' @param lag An integer or an `lubridate::periods()` object, e.g., `month(1)`, specifying the minimum lag (inclusive) to apply to `column`.
-#' @param max_lag An integer or an `lubridate::periods()` object specifying the maximum lag (inclusive) to apply to `column`.
-#'  Defaults to `lag`.
-#' @param drop_na A logical value indicating whether to drop `NA` values from the resulting lagged
-#'  column. Defaults to `FALSE`.
-#' @param ff_adjustment A logical value indicating whether to lag monthly data based on Fama-French conventions. Here, the values are lagged based on the last observation within the year is taken. Defaults to `FALSE`.
-#' @returns A vector of the same length as `column`, containing the lagged values.
-#'  If no matching dates are found within the lag window, `NA` is returned for that position.
+#' The combination of `by` and date columns must be unique in `df`. If `by` is
+#' `NULL`, dates alone must be unique.
+#'
+#' @param df A data frame containing the variables to lag.
+#' @param cols A character vector specifying the names of the columns to be lagged.
+#'  Each column produces a new column suffixed with `_lag`.
+#' @param lag An integer or a `lubridate::periods()` object, e.g., `months(1)`,
+#'  specifying the minimum lag (inclusive) to apply.
+#' @param max_lag An integer or a `lubridate::periods()` object specifying the
+#'  maximum lag (inclusive) to apply. Defaults to `lag` (exact lag).
+#' @param by An optional character vector specifying grouping columns (e.g., a
+#'  stock identifier). Lagged values are matched within groups. Defaults to `NULL`.
+#' @param drop_na A logical value. If `TRUE`, `NA` values in the source columns
+#'  are excluded before matching, so the lookup skips over missing observations.
+#'  Applied independently per column. Defaults to `FALSE`.
+#' @param ff_adjustment A logical value. If `TRUE`, only the last observation per
+#'  year (within each group defined by `by`) is retained as a source for lagged
+#'  values, following Fama-French conventions for annual accounting data.
+#'  Defaults to `FALSE`.
+#' @param data_options A named list of \link{data_options} with characters, indicating
+#'   the column names required to run this function. The required column names identify
+#'   dates. Defaults to `date = date`.
+#'
+#' @returns A data frame with the same rows as `df` and new columns appended,
+#'  each suffixed with `_lag`. Unmatched rows receive `NA` in the lagged columns.
 #'
 #' @family rolling and lagging functions
 #' @export
 #'
 #' @examples
 #' set.seed(42)
-#' # Basic example with a vector
-#' dates <- as.Date("2023-01-01") + 0:9
-#' values <- rnorm(10)
-#' lagged_values <- lag_column(values, dates, lag = 1, max_lag = 3)
-#'
-#' # Example using a tibble and dplyr::group_by
-#' data <- tibble::tibble(
-#'   permno = rep(1:2, each = 10),
-#'   date = rep(seq.Date(as.Date('2023-01-01'), by = "month", length.out = 10), 2),
-#'   size = runif(20, 100, 200),
-#'   bm = runif(20, 0.5, 1.5)
-#' )
-#'
-#' data |>
-#'  dplyr::group_by(permno) |>
-#'  dplyr::mutate(
-#'    across(c(size, bm), \(x) {
-#'      lag_column(x, date, months(3), months(6), drop_na = TRUE)
-#'    })
-#'  ) |>
-#'  dplyr::ungroup()
-#'
-lag_column <- function(
-  column,
-  date,
-  lag,
-  max_lag = lag,
-  drop_na = FALSE,
-  ff_adjustment = FALSE
-) {
-  if (lag < 0 || max_lag < lag) {
-    cli::cli_abort(
-      "{.arg lag} and {.arg max_lag} must be non-negative and {.arg max_lag} must be >= {.arg lag}"
-    )
-  }
-  if (anyDuplicated(date)) {
-    cli::cli_abort(
-      "{.arg date} must contain unique values. Did you forget to group by an identifier variable?"
-    )
-  }
-
-  src_date <- date
-  src_value <- column
-
-  if (drop_na) {
-    keep <- !is.na(src_value)
-    src_date <- src_date[keep]
-    src_value <- src_value[keep]
-  }
-
-  if (ff_adjustment) {
-    yr <- lubridate::year(src_date)
-    keep <- ave(as.numeric(src_date), yr, FUN = max) == as.numeric(src_date)
-    src_date <- src_date[keep]
-    src_value <- src_value[keep]
-  }
-
-  # Fast path: exact date match 
-  if (lag == max_lag) {
-    target_date <- date - lag
-    idx <- match(target_date, src_date)
-    result <- rep(NA_real_, length(date))
-    valid <- !is.na(idx)
-    result[valid] <- src_value[idx[valid]]
-    return(result)
-  }
-
-  # Sort source dates for findInterval
-  ord <- order(src_date)
-  src_date_sorted <- src_date[ord]
-  src_value_sorted <- src_value[ord]
-
-  lower <- date - max_lag
-  upper <- date - lag
-
-  # Find the last source date <= upper
-  idx <- findInterval(upper, src_date_sorted)
-
-  result <- rep(NA_real_, length(date))
-  valid <- idx > 0L
-  valid[valid] <- src_date_sorted[idx[valid]] >= lower[valid]
-  result[valid] <- src_value_sorted[idx[valid]]
-
-  result
-}
-
-
-#' Add Lagged Columns Based on Date and Time Range
-#'
-#' @description
-#' Takes a data.frame and appends a lagged version of given columns based on a date variable, with the
-#' ability to specify a range of lags. It also allows for the optional removal of `NA` values.
-#'
-#' @param df A data frame containing the variables to lag.
-#' @param cols A character vector specifying the names of the columns to be lagged.
-#' @param by An optional character vector specifying the names of the columns to group by before applying the lag. Defaults to `NULL`.
-#' @param lag An integer or an `lubridate::periods()` object, e.g., `month(1)`, specifying the minimum lag (inclusive) to apply to `cols`.
-#' @param max_lag An integer or an `lubridate::periods()` object specifying the maximum lag (inclusive) to apply to `cols`.
-#'  Defaults to `lag`.
-#' @param drop_na A logical value indicating whether to drop `NA` values from the resulting lagged
-#'  columns. Defaults to `FALSE`.
-#' @param ff_adjustment A logical value indicating whether to lag monthly data based on Fama-French conventions. Here, the values are lagged based on the last observation within the year is taken. Defaults to `FALSE`.
-#' @param data_options A named list of \link{data_options} with characters, indicating
-#'   the column names required to run this function. The required column names identify
-#'   dates. Defaults to `date = date`.
-#' @returns A data frame with new, lagged columns added.
-#' @family rolling and lagging functions
-#' @examples
-#' set.seed(42)
-#' # Example using a tibble and dplyr::group_by
 #' data <- tibble::tibble(
 #'   permno = rep(1:2, each = 10),
 #'   date = rep(seq.Date(as.Date("2023-01-01"), by = "month", length.out = 10), 2),
 #'   size = runif(20, 100, 200),
 #'   bm = runif(20, 0.5, 1.5)
 #' )
-#' add_lagged_columns(data, cols = "size", lag = months(2), by = "permno")
-#' @export
+#'
+#' # Exact lag: each row gets the value from exactly 2 months earlier
+#' add_lagged_columns(data, cols = c("size", "bm"), lag = months(2), by = "permno")
+#'
+#' # Window lag: each row gets the most recent value from 2 to 4 months earlier
+#' add_lagged_columns(data, cols = "size", lag = months(2), max_lag = months(4), by = "permno")
 add_lagged_columns <- function(
   df,
   cols,
@@ -154,9 +66,17 @@ add_lagged_columns <- function(
     data_options <- data_options()
   }
 
-  if (!data_options$date %in% names(df)) {
+  date_col <- data_options$date
+
+  if (!date_col %in% names(df)) {
     cli::cli_abort(
-      "{.arg df} must contain the date column {.field {data_options$date}}."
+      "{.arg df} must contain the date column {.field {date_col}}."
+    )
+  }
+
+  if (lag < 0 || max_lag < lag) {
+    cli::cli_abort(
+      "{.arg lag} and {.arg max_lag} must be non-negative and {.arg max_lag} must be >= {.arg lag}."
     )
   }
 
@@ -176,23 +96,66 @@ add_lagged_columns <- function(
     }
   }
 
-  df |>
-    dplyr::group_by(dplyr::across(dplyr::all_of(by))) |>
-    dplyr::mutate(
-      dplyr::across(
-        dplyr::all_of(cols),
-        \(x) {
-          lag_column(
-            x,
-            .data[[data_options$date]],
-            lag,
-            max_lag,
-            drop_na,
-            ff_adjustment
+  join_cols <- c(by, date_col)
+
+  if (anyDuplicated(df[join_cols])) {
+    cli::cli_abort(
+      "The combination of {.arg by} and date columns must be unique in {.arg df}."
+    )
+  }
+
+  exact_lag <- (lag == max_lag)
+
+  if (!exact_lag) {
+    df[[".upper"]] <- df[[date_col]] - lag
+    df[[".lower"]] <- df[[date_col]] - max_lag
+  }
+
+  for (col in cols) {
+    lagged <- df[c(join_cols, col)]
+
+    if (drop_na) {
+      lagged <- lagged[!is.na(lagged[[col]]), ]
+    }
+
+    if (ff_adjustment) {
+      yr <- lubridate::year(lagged[[date_col]])
+      grp <- if (!is.null(by)) interaction(lagged[by], yr) else yr
+      max_dates <- ave(as.numeric(lagged[[date_col]]), grp, FUN = max)
+      lagged <- lagged[as.numeric(lagged[[date_col]]) == max_dates, ]
+    }
+
+    lag_col_name <- paste0(col, "_lag")
+
+    if (exact_lag) {
+      lagged[[date_col]] <- lagged[[date_col]] + lag
+      names(lagged)[names(lagged) == col] <- lag_col_name
+
+      df <- dplyr::left_join(df, lagged, by = join_cols)
+    } else {
+      names(lagged)[names(lagged) == date_col] <- ".src_date"
+      names(lagged)[names(lagged) == col] <- lag_col_name
+
+      df <- df |>
+        dplyr::left_join(
+          lagged,
+          by = dplyr::join_by(!!!by, closest(.upper >= .src_date))
+        ) |>
+        dplyr::mutate(
+          !!lag_col_name := dplyr::if_else(
+            !is.na(.data[[".src_date"]]) & .data[[".src_date"]] >= .data[[".lower"]],
+            .data[[lag_col_name]],
+            NA_real_
           )
-        },
-        .names = "{.col}_lag"
-      )
-    ) |>
-    dplyr::ungroup()
+        ) |>
+        dplyr::select(-".src_date")
+    }
+  }
+
+  if (!exact_lag) {
+    df[[".upper"]] <- NULL
+    df[[".lower"]] <- NULL
+  }
+
+  df
 }
