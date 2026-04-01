@@ -1,3 +1,40 @@
+test_that("lag_column works with exact lag (lag == max_lag)", {
+  dates <- as.Date("2023-01-01") + 0:9
+  values <- 1:10
+  result <- lag_column(values, dates, lag = 1)
+  expected <- c(NA, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+  expect_equal(result, expected)
+})
+
+test_that("lag_column exact lag with drop_na skips NA values", {
+  dates <- as.Date("2023-01-01") + 0:9
+  values <- c(NA, 2:10)
+  result <- lag_column(values, dates, lag = 1, drop_na = TRUE)
+  expect_true(is.na(result[2]))
+  expect_equal(result[3], 2)
+})
+
+test_that("lag_column exact lag returns NA when no match", {
+  dates <- as.Date("2023-01-01") + 0:9
+  values <- 1:10
+  result <- lag_column(values, dates, lag = 100)
+  expect_true(all(is.na(result)))
+})
+
+test_that("lag_column exact lag with months period", {
+  dates <- seq.Date(as.Date("2023-01-01"), by = "month", length.out = 6)
+  values <- 1:6
+  result <- lag_column(values, dates, lag = months(2))
+  expect_equal(result, c(NA, NA, 1, 2, 3, 4))
+})
+
+test_that("lag_column with lag = 0 returns original values", {
+  dates <- as.Date("2023-01-01") + 0:4
+  values <- c(10, 20, 30, 40, 50)
+  result <- lag_column(values, dates, lag = 0)
+  expect_equal(result, values)
+})
+
 test_that("lag_column works correctly with basic input", {
   dates <- as.Date('2023-01-01') + 0:9
   values <- 1:10

@@ -79,6 +79,16 @@ lag_column <- function(
     src_value <- src_value[keep]
   }
 
+  # Fast path: exact date match via hash lookup (O(n))
+  if (lag == max_lag) {
+    target_date <- date - lag
+    idx <- match(target_date, src_date)
+    result <- rep(NA_real_, length(date))
+    valid <- !is.na(idx)
+    result[valid] <- src_value[idx[valid]]
+    return(result)
+  }
+
   # Sort source dates for findInterval
   ord <- order(src_date)
   src_date_sorted <- src_date[ord]
