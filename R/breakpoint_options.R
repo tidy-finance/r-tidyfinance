@@ -14,7 +14,7 @@
 #'  exchange for which the breakpoints apply. If not provided, defaults to `NULL`.
 #' @param smooth_bunching Logical, optional. Indicates whether smooth bunching should
 #'  be applied. Defaults to `FALSE`.
-#' @param min_size_threshold Numeric or `NULL`, optional. When set to a value between
+#' @param min_size_threshold Numeric, optional. When set to a value between
 #'  0 and 1, stocks with market capitalization below this quantile are excluded from
 #'  breakpoint computation. The quantile is computed among `breakpoint_exchanges`
 #'  stocks if specified, otherwise among all stocks. Requires a market capitalization
@@ -83,10 +83,13 @@ breakpoint_options <- function(
   }
 
   # Error handling for min_size_threshold
-  if (!is.null(min_size_threshold) &&
+  if (
+    !is.null(min_size_threshold) &&
       (length(min_size_threshold) != 1L ||
-       !is.numeric(min_size_threshold) ||
-       min_size_threshold <= 0 || min_size_threshold >= 1)) {
+        !is.numeric(min_size_threshold) ||
+        min_size_threshold <= 0 ||
+        min_size_threshold >= 1)
+  ) {
     cli::cli_abort(
       "{.arg min_size_threshold} must be NULL or a single numeric value between 0 and 1 (exclusive)."
     )

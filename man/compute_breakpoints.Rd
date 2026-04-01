@@ -38,7 +38,7 @@ clusters. If sufficiently large bunching is detected, \code{percentiles} is
 ignored and equally-spaced portfolios are returned for these cases with a
 warning.
 \item \code{min_size_threshold} An optional numeric value between 0 and 1
-(exclusive) or \code{NULL} (the default). When set, stocks with market
+(exclusive). When set, stocks with market
 capitalization below this quantile are excluded from breakpoint computation.
 The quantile is computed among \code{breakpoint_exchanges} stocks if specified,
 otherwise among all stocks. Requires a market capitalization column in the

@@ -27,7 +27,7 @@ exchange for which the breakpoints apply. If not provided, defaults to \code{NUL
 \item{smooth_bunching}{Logical, optional. Indicates whether smooth bunching should
 be applied. Defaults to \code{FALSE}.}
 
-\item{min_size_threshold}{Numeric or \code{NULL}, optional. When set to a value between
+\item{min_size_threshold}{Numeric, optional. When set to a value between
 0 and 1, stocks with market capitalization below this quantile are excluded from
 breakpoint computation. The quantile is computed among \code{breakpoint_exchanges}
 stocks if specified, otherwise among all stocks. Requires a market capitalization
