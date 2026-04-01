@@ -177,7 +177,7 @@ download_data(
 
 ### Factor Library Tools
 
-You can download pre-computed portfolio returns from the [Tidy Finance Factor Library](https://www.tidy-finance.org/r/factor-library.html) hosted on Hugging Face:
+You can download pre-computed portfolio returns from the [Tidy Finance Factor Library](https://factor-library.tidy-finance.org) hosted on Hugging Face:
 
 ```r
 download_data(
