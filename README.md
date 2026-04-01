@@ -325,7 +325,7 @@ download_data(
 #>  2  10015 001001 1983-09-20 1986-07-31
 #>  3  10023 001002 1972-12-14 1973-06-05
 #>  4  10031 001003 1983-12-07 1989-08-16
-#>  5  54594 001004 1972-04-24 2026-03-29
+#>  5  54594 001004 1972-04-24 2026-04-01
 #>  6  61903 001005 1973-01-31 1983-01-31
 #>  7  10058 001007 1973-10-01 1979-01-30
 #>  8  10058 001007 1979-01-31 1984-09-28
@@ -361,6 +361,43 @@ download_data(
 #> # ℹ 1 more variable: cntra_mp_id <chr>
 ```
 
+### Factor Library Tools
+
+You can download pre-computed portfolio returns from the [Tidy Finance
+Factor Library](https://factors.tidy-finance.org) hosted on Hugging
+Face:
+
+``` r
+download_data(
+  domain = "tidyfinance",
+  dataset = "factor_library",
+  sorting_variable = "size"
+)
+```
+
+The package also provides functions to construct your own factor
+portfolios:
+
+``` r
+# Portfolio sorts and long-short returns
+compute_portfolio_returns()
+compute_long_short_returns()
+
+# Configuration helpers
+breakpoint_options()
+data_options()
+
+# Rolling and lagging
+add_lagged_columns()
+join_lagged_values()
+compute_rolling_value()
+
+# Regression estimation
+estimate_model()
+estimate_betas()
+estimate_fama_macbeth()
+```
+
 ### Other Helpers
 
 We include functions to check out content from
@@ -377,22 +414,4 @@ There are also some simple helpers for regression analyses:
 winsorize()
 trim()
 create_summary_statistics()
-```
-
-We also include (experimental) functions that can be used for different
-applications, but note that they might heavily change in future package
-versions as we try to make them more general:
-
-``` r
-# For portfolio sorts
-?assign_portfolio()
-
-# For model estimation
-?estimate_model()
-
-# For beta estimation
-?estimate_betas()
-
-# For beta estimation
-?estimate_fama_macbeth()
 ```
