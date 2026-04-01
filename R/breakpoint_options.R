@@ -101,6 +101,7 @@ breakpoint_options <- function(
       "percentiles" = percentiles,
       "breakpoint_exchanges" = breakpoint_exchanges,
       "smooth_bunching" = smooth_bunching,
+      "min_size_threshold" = min_size_threshold,
       ...
     ),
     class = "tidyfinance_breakpoint_options"
