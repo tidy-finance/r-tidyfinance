@@ -64,16 +64,7 @@
 #' compute_breakpoints(
 #'   data, "market_cap",
 #'   breakpoint_options(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
-#' )
-#' compute_breakpoints(
-#'   data, "market_cap",
-#'   breakpoint_options(
-#'     n_portfolios = 5,
-#'     breakpoint_exchanges = "NYSE",
-#'     min_size_threshold = 0.2
-#'   ),
-#'   data_options = data_options(mktcap_lag = "market_cap")
-#' )
+#'  )
 #'
 compute_breakpoints <- function(
   data,
@@ -89,7 +80,6 @@ compute_breakpoints <- function(
   percentiles <- breakpoint_options$percentiles
   breakpoint_exchanges <- breakpoint_options$breakpoint_exchanges
   smooth_bunching <- breakpoint_options$smooth_bunching
-  min_size_threshold <- breakpoint_options$min_size_threshold
 
   if (is.null(data_options)) {
     data_options <- data_options()

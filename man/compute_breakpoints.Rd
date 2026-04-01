@@ -79,16 +79,7 @@ compute_breakpoints(data, "market_cap", breakpoint_options(n_portfolios = 5))
 compute_breakpoints(
   data, "market_cap",
   breakpoint_options(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
-)
-compute_breakpoints(
-  data, "market_cap",
-  breakpoint_options(
-    n_portfolios = 5,
-    breakpoint_exchanges = "NYSE",
-    min_size_threshold = 0.2
-  ),
-  data_options = data_options(mktcap_lag = "market_cap")
-)
+ )
 
 }
 \seealso{
