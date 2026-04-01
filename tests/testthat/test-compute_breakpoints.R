@@ -647,7 +647,7 @@ test_that("min_size_threshold with NA mktcap values excludes NA rows without pro
   expect_equal(bp, expected)
 })
 
-test_that("min_size_threshold = NA (default) has no effect", {
+test_that("min_size_threshold = NULL (default) has no effect", {
   set.seed(42)
   data <- data.frame(
     id = 1:100,
@@ -660,12 +660,12 @@ test_that("min_size_threshold = NA (default) has no effect", {
     data, "sorting_var",
     breakpoint_options(n_portfolios = 5)
   )
-  bp_explicit_na <- compute_breakpoints(
+  bp_explicit_null <- compute_breakpoints(
     data, "sorting_var",
-    breakpoint_options(n_portfolios = 5, min_size_threshold = NA)
+    breakpoint_options(n_portfolios = 5, min_size_threshold = NULL)
   )
 
-  expect_identical(bp_default, bp_explicit_na)
+  expect_identical(bp_default, bp_explicit_null)
 })
 
 test_that("min_size_threshold errors when mktcap column is missing", {
@@ -724,6 +724,10 @@ test_that("breakpoint_options validates min_size_threshold", {
   )
   expect_error(
     breakpoint_options(n_portfolios = 5, min_size_threshold = c(0.2, 0.3)),
+    "min_size_threshold"
+  )
+  expect_error(
+    breakpoint_options(n_portfolios = 5, min_size_threshold = NA),
     "min_size_threshold"
   )
 })

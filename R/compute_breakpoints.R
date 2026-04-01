@@ -34,7 +34,7 @@
 #'   ignored and equally-spaced portfolios are returned for these cases with a
 #'   warning.
 #'     \item `min_size_threshold` An optional numeric value between 0 and 1
-#'   (exclusive) or `NA` (the default). When set, stocks with market
+#'   (exclusive) or `NULL` (the default). When set, stocks with market
 #'   capitalization below this quantile are excluded from breakpoint computation.
 #'   The quantile is computed among `breakpoint_exchanges` stocks if specified,
 #'   otherwise among all stocks. Requires a market capitalization column in the
@@ -119,7 +119,7 @@ compute_breakpoints <- function(
     sorting_values <- sorting_values[keep]
   }
 
-  if (!is.null(min_size_threshold) && !is.na(min_size_threshold)) {
+  if (!is.null(min_size_threshold)) {
     mktcap_col <- data_options$mktcap_lag
     if (!(mktcap_col %in% colnames(data))) {
       cli::cli_abort(
