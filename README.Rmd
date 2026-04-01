@@ -197,11 +197,6 @@ We also include (experimental) functions that can be used for different applicat
 ```r
 # For portfolio sorts
 ?assign_portfolio()
-?compute_portfolio_returns()
-?compute_long_short_returns()
-
-# For lagged columns
-?add_lagged_columns()
 
 # For model estimation
 ?estimate_model()
@@ -209,6 +204,6 @@ We also include (experimental) functions that can be used for different applicat
 # For beta estimation
 ?estimate_betas()
 
-# For Fama-MacBeth regressions
+# For beta estimation
 ?estimate_fama_macbeth()
 ```
