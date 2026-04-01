@@ -37,6 +37,12 @@ will not result in equal-sized portfolios off the edges due to multiple
 clusters. If sufficiently large bunching is detected, \code{percentiles} is
 ignored and equally-spaced portfolios are returned for these cases with a
 warning.
+\item \code{min_size_threshold} An optional numeric value between 0 and 1
+(exclusive) or \code{NA} (the default). When set, stocks with market
+capitalization below this quantile are excluded from breakpoint computation.
+The quantile is computed among \code{breakpoint_exchanges} stocks if specified,
+otherwise among all stocks. Requires a market capitalization column in the
+data (column name determined by \link{data_options}).
 }}
 
 \item{data_options}{A named list of \link{data_options} with characters, indicating the column names
@@ -73,7 +79,16 @@ compute_breakpoints(data, "market_cap", breakpoint_options(n_portfolios = 5))
 compute_breakpoints(
   data, "market_cap",
   breakpoint_options(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
- )
+)
+compute_breakpoints(
+  data, "market_cap",
+  breakpoint_options(
+    n_portfolios = 5,
+    breakpoint_exchanges = "NYSE",
+    min_size_threshold = 0.2
+  ),
+  data_options = data_options(mktcap_lag = "market_cap")
+)
 
 }
 \seealso{
