@@ -534,3 +534,200 @@ test_that("function is deterministic (same input → same output)", {
   bp2 <- compute_breakpoints(data, "value", opts)
   expect_identical(bp1, bp2)
 })
+
+# --- min_size_threshold tests ---
+
+test_that("min_size_threshold with breakpoint_exchanges filters small stocks", {
+  set.seed(42)
+  data <- data.frame(
+    id = 1:200,
+    exchange = rep(c("NYSE", "NASDAQ"), each = 100),
+    mktcap_lag = c(1:100, 1:100),
+    sorting_var = rnorm(200)
+  )
+
+  bp_no_filter <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 5, breakpoint_exchanges = "NYSE")
+  )
+  bp_with_filter <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(
+      n_portfolios = 5,
+      breakpoint_exchanges = "NYSE",
+      min_size_threshold = 0.2
+    )
+  )
+
+  expect_length(bp_with_filter, 6)
+  expect_false(identical(bp_no_filter, bp_with_filter))
+})
+
+test_that("min_size_threshold without breakpoint_exchanges uses full sample", {
+  set.seed(42)
+  data <- data.frame(
+    id = 1:200,
+    exchange = rep(c("NYSE", "NASDAQ"), each = 100),
+    mktcap_lag = 1:200,
+    sorting_var = rnorm(200)
+  )
+
+  bp_no_filter <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 5)
+  )
+  bp_with_filter <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 5, min_size_threshold = 0.2)
+  )
+
+  expect_length(bp_with_filter, 6)
+  expect_false(identical(bp_no_filter, bp_with_filter))
+})
+
+test_that("min_size_threshold produces correct breakpoints matching manual computation", {
+  set.seed(7)
+  mktcap <- 1:100
+  sorting_var <- rnorm(100)
+  data <- data.frame(mktcap_lag = mktcap, sorting_var = sorting_var)
+
+  # manual: cutoff = quantile(1:100, 0.2) = 20.8; keep stocks with mktcap > 20.8
+  size_cutoff <- quantile(mktcap, 0.2, na.rm = TRUE)
+  above <- mktcap > size_cutoff
+  expected <- unname(quantile(sorting_var[above], seq(0, 1, length.out = 6), na.rm = TRUE))
+
+  bp <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 5, min_size_threshold = 0.2)
+  )
+
+  expect_equal(bp, expected)
+})
+
+test_that("min_size_threshold excludes stocks exactly at the cutoff (strict > not >=)", {
+  # Construct data where one stock lands exactly at the quantile cutoff.
+  # With mktcap = c(10, 20, 30, 40, 50) and threshold = 0.25:
+  # quantile type 7: h = 1 + 0.25*4 = 2; cutoff = mktcap[2] = 20 (exact integer index)
+  mktcap <- c(10, 20, 30, 40, 50)
+  sorting_var <- c(1.0, 2.0, 3.0, 4.0, 5.0)
+  data <- data.frame(mktcap_lag = mktcap, sorting_var = sorting_var)
+
+  size_cutoff <- quantile(mktcap, 0.25, na.rm = TRUE)
+  # stocks with mktcap strictly > cutoff are included; the stock at exactly cutoff is excluded
+  above <- mktcap > size_cutoff
+  expect_false(above[mktcap == size_cutoff])  # boundary stock excluded
+
+  expected <- unname(quantile(sorting_var[above], seq(0, 1, length.out = 4), na.rm = TRUE))
+  bp <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 3, min_size_threshold = 0.25)
+  )
+  expect_equal(bp, expected)
+})
+
+test_that("min_size_threshold with NA mktcap values excludes NA rows without propagating NAs", {
+  data <- data.frame(
+    mktcap_lag = c(NA, 10, 20, 30, 40, 50, 60, 70, 80, 90),
+    sorting_var = c(99, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+  )
+
+  bp <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 3, min_size_threshold = 0.2)
+  )
+
+  # breakpoints must be finite numerics — no NAs
+  expect_true(all(!is.na(bp)))
+  expect_length(bp, 4)
+
+  # manual: cutoff uses only non-NA mktcap values; row with mktcap=NA is excluded
+  size_cutoff <- quantile(c(10, 20, 30, 40, 50, 60, 70, 80, 90), 0.2, na.rm = TRUE)
+  above <- !is.na(data$mktcap_lag) & data$mktcap_lag > size_cutoff
+  expected <- unname(quantile(data$sorting_var[above], seq(0, 1, length.out = 4), na.rm = TRUE))
+  expect_equal(bp, expected)
+})
+
+test_that("min_size_threshold = NULL (default) has no effect", {
+  set.seed(42)
+  data <- data.frame(
+    id = 1:100,
+    exchange = rep("NYSE", 100),
+    mktcap_lag = 1:100,
+    sorting_var = rnorm(100)
+  )
+
+  bp_default <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 5)
+  )
+  bp_explicit_null <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(n_portfolios = 5, min_size_threshold = NULL)
+  )
+
+  expect_identical(bp_default, bp_explicit_null)
+})
+
+test_that("min_size_threshold errors when mktcap column is missing", {
+  data <- data.frame(
+    id = 1:100,
+    sorting_var = rnorm(100)
+  )
+
+  expect_error(
+    compute_breakpoints(
+      data, "sorting_var",
+      breakpoint_options(n_portfolios = 5, min_size_threshold = 0.2)
+    ),
+    "mktcap_lag"
+  )
+})
+
+test_that("min_size_threshold works with custom data_options", {
+  set.seed(42)
+  data <- data.frame(
+    id = 1:100,
+    listing = rep("NYSE", 100),
+    mcap = 1:100,
+    sorting_var = rnorm(100)
+  )
+
+  bp <- compute_breakpoints(
+    data, "sorting_var",
+    breakpoint_options(
+      n_portfolios = 5,
+      breakpoint_exchanges = "NYSE",
+      min_size_threshold = 0.2
+    ),
+    data_options = data_options(exchange = "listing", mktcap_lag = "mcap")
+  )
+
+  expect_length(bp, 6)
+})
+
+test_that("breakpoint_options validates min_size_threshold", {
+  expect_error(
+    breakpoint_options(n_portfolios = 5, min_size_threshold = 0),
+    "min_size_threshold"
+  )
+  expect_error(
+    breakpoint_options(n_portfolios = 5, min_size_threshold = 1),
+    "min_size_threshold"
+  )
+  expect_error(
+    breakpoint_options(n_portfolios = 5, min_size_threshold = -0.1),
+    "min_size_threshold"
+  )
+  expect_error(
+    breakpoint_options(n_portfolios = 5, min_size_threshold = "abc"),
+    "min_size_threshold"
+  )
+  expect_error(
+    breakpoint_options(n_portfolios = 5, min_size_threshold = c(0.2, 0.3)),
+    "min_size_threshold"
+  )
+  expect_error(
+    breakpoint_options(n_portfolios = 5, min_size_threshold = NA),
+    "min_size_threshold"
+  )
+})

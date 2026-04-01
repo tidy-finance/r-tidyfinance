@@ -9,6 +9,7 @@ breakpoint_options(
   percentiles = NULL,
   breakpoint_exchanges = NULL,
   smooth_bunching = FALSE,
+  min_size_threshold = NULL,
   ...
 )
 }
@@ -25,6 +26,12 @@ exchange for which the breakpoints apply. If not provided, defaults to \code{NUL
 
 \item{smooth_bunching}{Logical, optional. Indicates whether smooth bunching should
 be applied. Defaults to \code{FALSE}.}
+
+\item{min_size_threshold}{Numeric, optional. When set to a value between
+0 and 1, stocks with market capitalization below this quantile are excluded from
+breakpoint computation. The quantile is computed among \code{breakpoint_exchanges}
+stocks if specified, otherwise among all stocks. Requires a market capitalization
+column in the data (see \link{data_options}). Defaults to \code{NULL} (no size filtering).}
 
 \item{...}{Additional optional arguments. These will be captured in the resulting
 structure as a list.}
