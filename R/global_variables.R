@@ -206,6 +206,7 @@ utils::globalVariables(
     "..upper_bound",
     ".date",
     ".lower",
+    ".src_date",
     ".upper",
     "observation_date",
     "curcd",
