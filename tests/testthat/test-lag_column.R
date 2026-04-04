@@ -196,3 +196,33 @@ test_that("add_lagged_columns with max_lag without grouping", {
   expect_true("size_lag" %in% colnames(result))
   expect_equal(nrow(result), 10)
 })
+
+test_that("add_lagged_columns with max_lag and non-NULL by produces correct per-group values", {
+  # Regression test: prior to fix, !!!by spliced raw strings into join_by() instead of
+  # symbols, causing the group equality constraint to be silently dropped and values to
+  # bleed across groups in the inequality-join path (lag < max_lag).
+  det_data <- tibble::tibble(
+    permno = rep(1:2, each = 4),
+    date = rep(
+      as.Date(c("2023-01-01", "2023-02-01", "2023-03-01", "2023-04-01")),
+      2
+    ),
+    value = c(10, 20, 30, 40, 100, 200, 300, 400)
+  )
+
+  result <- add_lagged_columns(
+    det_data,
+    cols = "value",
+    lag = months(1),
+    max_lag = months(2),
+    by = "permno"
+  )
+
+  # For 2023-03-01, the window is [Jan, Feb]; most recent is Feb.
+  # For 2023-04-01, the window is [Feb, Mar]; most recent is Mar.
+  p1 <- result[result$permno == 1, ]
+  p2 <- result[result$permno == 2, ]
+
+  expect_equal(p1$value_lag, c(NA, 10, 20, 30))
+  expect_equal(p2$value_lag, c(NA, 100, 200, 300))
+})
