@@ -11,7 +11,6 @@ join_lagged_values(
   min_lag,
   max_lag,
   ff_adjustment = FALSE,
-  drop_na = FALSE,
   data_options = NULL
 )
 }
@@ -28,11 +27,7 @@ All columns besides \code{id_keys} and the date column will be lagged and joined
 \item{max_lag}{A \code{lubridate::Period} specifying the upper lag bound (inclusive).}
 
 \item{ff_adjustment}{Logical; if \code{TRUE}, keeps only the last observation per
-identifier and year before lagging (Fama-French convention). Defaults to \code{FALSE}.}
-
-\item{drop_na}{A logical value. If \code{TRUE}, \code{NA} values in the source columns
-are excluded before matching, so the lookup skips over missing observations.
-Applied independently per column. Defaults to \code{FALSE}.}
+identifier and year before lagging (Fama–French convention). Defaults to \code{FALSE}.}
 
 \item{data_options}{A list of class \code{tidyfinance_data_options} (created via
 \code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{date} element is used
