@@ -142,10 +142,10 @@ add_lagged_columns <- function(
           by = dplyr::join_by(!!!rlang::syms(by), closest(.upper >= .src_date))
         ) |>
         dplyr::mutate(
-          !!lag_col_name := ifelse(
+          !!lag_col_name := dplyr::if_else(
             !is.na(.data[[".src_date"]]) & .data[[".src_date"]] >= .data[[".lower"]],
             .data[[lag_col_name]],
-            NA
+            .data[[lag_col_name]][NA_integer_]
           )
         ) |>
         dplyr::select(-".src_date")
