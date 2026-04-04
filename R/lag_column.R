@@ -121,7 +121,7 @@ add_lagged_columns <- function(
     if (ff_adjustment) {
       yr <- lubridate::year(lagged[[date_col]])
       grp <- if (!is.null(by)) interaction(lagged[by], yr) else yr
-      max_dates <- ave(as.numeric(lagged[[date_col]]), grp, FUN = max)
+      max_dates <- stats::ave(as.numeric(lagged[[date_col]]), grp, FUN = max)
       lagged <- lagged[as.numeric(lagged[[date_col]]) == max_dates, ]
     }
 
@@ -139,7 +139,7 @@ add_lagged_columns <- function(
       df <- df |>
         dplyr::left_join(
           lagged,
-          by = dplyr::join_by(!!!by, closest(.upper >= .src_date))
+          by = dplyr::join_by(!!!rlang::syms(by), closest(.upper >= .src_date))
         ) |>
         dplyr::mutate(
           !!lag_col_name := dplyr::if_else(
