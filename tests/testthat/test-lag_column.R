@@ -1,3 +1,4 @@
+set.seed(42)
 data <- tibble::tibble(
   permno = rep(1:2, each = 10),
   date = rep(seq.Date(as.Date("2023-01-01"), by = "month", length.out = 10), 2),
