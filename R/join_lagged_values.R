@@ -15,7 +15,10 @@
 #' @param min_lag A `lubridate::Period` specifying the lower lag bound (inclusive).
 #' @param max_lag A `lubridate::Period` specifying the upper lag bound (inclusive).
 #' @param ff_adjustment Logical; if `TRUE`, keeps only the last observation per
-#'  identifier and year before lagging (Fama–French convention). Defaults to `FALSE`.
+#'  identifier and year before lagging (Fama-French convention). Defaults to `FALSE`.
+#' @param drop_na A logical value. If `TRUE`, `NA` values in the source columns
+#'  are excluded before matching, so the lookup skips over missing observations.
+#'  Applied independently per column. Defaults to `FALSE`.
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'  [data_options()]) specifying column name mappings. The `date` element is used
 #'  to identify the date column. Uses [data_options()] defaults if `NULL`.
@@ -52,6 +55,7 @@ join_lagged_values <- function(
   min_lag,
   max_lag,
   ff_adjustment = FALSE,
+  drop_na = FALSE,
   data_options = NULL
 ) {
   if (is.null(data_options)) {
@@ -116,6 +120,10 @@ join_lagged_values <- function(
         dplyr::all_of(c(id_keys, id_date, col_name, ".lower", ".upper")),
         dplyr::any_of(".year")
       )
+
+    if (drop_na) {
+      tmp_data <- tmp_data[!is.na(tmp_data[[col_name]]), ]
+    }
 
     if (ff_adjustment) {
       tmp_data <- tmp_data |>
