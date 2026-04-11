@@ -361,8 +361,8 @@ download_data_wrds_crsp <- function(
           cli::cli_abort(
             paste(
               "{.val prc}, {.val vol}, {.val exchcd},",
-              "and {.val cfacpr} must be contained in {.arg additional_columns}",
-              "for {.arg adjust_volume = TRUE}."
+              "and {.val cfacpr} must be contained in",
+              "{.arg additional_columns} for {.arg adjust_volume = TRUE}."
             )
           )
         }

@@ -99,7 +99,11 @@ df_reg |>
 # Rolling cumulative-return-to-SD ratio
 set.seed(42)
 df_resid <- tibble(
-  date = seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 24),
+  date = seq.Date(
+    from = as.Date("2020-01-01"),
+    by = "month",
+    length.out = 24
+  ),
   int_roll_residual = rnorm(24, 0, 0.02)
 )
 

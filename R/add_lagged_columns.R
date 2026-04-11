@@ -44,16 +44,31 @@
 #' set.seed(42)
 #' data <- tibble::tibble(
 #'   permno = rep(1:2, each = 10),
-#'   date = rep(seq.Date(as.Date("2023-01-01"), by = "month", length.out = 10), 2),
+#'   date = rep(
+#'     seq.Date(as.Date("2023-01-01"), by = "month", length.out = 10),
+#'     2
+#'   ),
 #'   size = runif(20, 100, 200),
 #'   bm = runif(20, 0.5, 1.5)
 #' )
 #'
 #' # Exact lag: each row gets the value from exactly 2 months earlier
-#' add_lagged_columns(data, cols = c("size", "bm"), lag = months(2), by = "permno")
+#' add_lagged_columns(
+#'   data,
+#'   cols = c("size", "bm"),
+#'   lag = months(2),
+#'   by = "permno"
+#' )
 #'
 #' # Window lag: each row gets the most recent value from 2 to 4 months earlier
-#' add_lagged_columns(data, cols = "size", lag = months(2), max_lag = months(4), by = "permno")
+#' add_lagged_columns(
+#'   data,
+#'   cols = "size",
+#'   lag = months(2),
+#'   max_lag = months(4),
+#'   by = "permno"
+#' )
+#'
 add_lagged_columns <- function(
   df,
   cols,

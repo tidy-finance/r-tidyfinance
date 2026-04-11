@@ -7,7 +7,8 @@
 #' @param path The file path where the SQLite database should be saved.
 #' @param url The URL where the SQLite database is stored.
 #'
-#' @returns Invisible `NULL`. Side effect: downloads a file to the specified path.
+#' @returns Invisible `NULL`. Side effect: downloads a file to the specified
+#'   path.
 #'
 #' @family WRDS functions
 #' @export

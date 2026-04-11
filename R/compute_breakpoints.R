@@ -67,8 +67,12 @@
 #'
 #' compute_breakpoints(data, "market_cap", breakpoint_options(n_portfolios = 5))
 #' compute_breakpoints(
-#'   data, "market_cap",
-#'   breakpoint_options(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
+#'   data,
+#'   "market_cap",
+#'   breakpoint_options(
+#'     percentiles = c(0.2, 0.4, 0.6, 0.8),
+#'     breakpoint_exchanges = c("NYSE")
+#'   )
 #'  )
 #'
 compute_breakpoints <- function(
@@ -147,7 +151,10 @@ compute_breakpoints <- function(
 
   if (length(sorting_values) == 0L) {
     cli::cli_warn(
-      "No breakpoints were calculated, likely due to an insufficient number of observations after filtering for breakpoint exchanges."
+      paste(
+        "No breakpoints were calculated, likely due to an insufficient number",
+        "of observations after filtering for breakpoint exchanges."
+      )
     )
     return(NA_real_)
   }
@@ -178,7 +185,10 @@ compute_breakpoints <- function(
     if (both_edges) {
       if (!is.null(percentiles)) {
         cli::cli_warn(
-          "{.arg smooth_bunching} is TRUE and equally-spaced portfolios are returned for non-edge portfolios."
+          paste(
+            "{.arg smooth_bunching} is TRUE and equally-spaced portfolios",
+            "are returned for non-edge portfolios."
+          )
         )
       }
       mask <- sorting_values > breakpoints[1] &
@@ -201,9 +211,13 @@ compute_breakpoints <- function(
     } else if (lower_edge) {
       if (!is.null(percentiles)) {
         cli::cli_warn(
-          "{.arg smooth_bunching} is TRUE and equally-spaced portfolios are returned for non-edge portfolios."
+          paste(
+            "{.arg smooth_bunching} is TRUE and equally-spaced portfolios",
+            "are returned for non-edge portfolios."
+          )
         )
       }
+
       sorting_values_new <- sorting_values[sorting_values > breakpoints[1]]
       probs_new <- seq(0, 1, length.out = n_portfolios)
       breakpoints_new <- quantile(
@@ -216,7 +230,10 @@ compute_breakpoints <- function(
     } else if (upper_edge) {
       if (!is.null(percentiles)) {
         cli::cli_warn(
-          "{.arg smooth_bunching} is TRUE and equally-spaced portfolios are returned for non-edge portfolios."
+          paste(
+            "{.arg smooth_bunching} is TRUE and equally-spaced portfolios",
+            "are returned for non-edge portfolios."
+          )
         )
       }
       sorting_values_new <- sorting_values[

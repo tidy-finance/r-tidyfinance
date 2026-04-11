@@ -82,8 +82,12 @@ data <- data.frame(
 
 compute_breakpoints(data, "market_cap", breakpoint_options(n_portfolios = 5))
 compute_breakpoints(
-  data, "market_cap",
-  breakpoint_options(percentiles = c(0.2, 0.4, 0.6, 0.8), breakpoint_exchanges = c("NYSE"))
+  data,
+  "market_cap",
+  breakpoint_options(
+    percentiles = c(0.2, 0.4, 0.6, 0.8),
+    breakpoint_exchanges = c("NYSE")
+  )
  )
 
 }

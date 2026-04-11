@@ -137,7 +137,14 @@ set.seed(42)
 # Univariate sorting with periodic rebalancing
 data <- data.frame(
   permno = 1:500,
-  date = rep(seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 100), each = 10),
+  date = rep(
+    seq.Date(
+      from = as.Date("2020-01-01"),
+      by = "month",
+      length.out = 100
+    ),
+    each = 10
+  ),
   mktcap_lag = runif(500, 100, 1000),
   ret_excess = rnorm(500),
   size = runif(500, 50, 150)

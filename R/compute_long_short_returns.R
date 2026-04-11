@@ -34,7 +34,10 @@
 #' set.seed(42)
 #' data <- data.frame(
 #'   permno = 1:100,
-#'   date = rep(seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 100), each = 10),
+#'   date = rep(
+#'     seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 100),
+#'     each = 10
+#'   ),
 #'   mktcap_lag = runif(100, 100, 1000),
 #'   ret_excess = rnorm(100),
 #'   size = runif(100, 50, 150)

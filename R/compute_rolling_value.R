@@ -80,7 +80,11 @@
 #' # Rolling cumulative-return-to-SD ratio
 #' set.seed(42)
 #' df_resid <- tibble(
-#'   date = seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 24),
+#'   date = seq.Date(
+#'     from = as.Date("2020-01-01"),
+#'     by = "month",
+#'     length.out = 24
+#'   ),
 #'   int_roll_residual = rnorm(24, 0, 0.02)
 #' )
 #'
@@ -130,7 +134,10 @@ compute_rolling_value <- function(
   }
   if (!is.character(period) || length(period) != 1) {
     cli::cli_abort(
-      "{.arg period} must be a single string, not {.obj_type_friendly {period}}."
+      paste(
+        "{.arg period} must be a single string,",
+        "not {.obj_type_friendly {period}}."
+      )
     )
   }
 

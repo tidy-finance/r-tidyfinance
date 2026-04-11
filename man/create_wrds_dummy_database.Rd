@@ -16,7 +16,8 @@ create_wrds_dummy_database(
 \item{url}{The URL where the SQLite database is stored.}
 }
 \value{
-Invisible \code{NULL}. Side effect: downloads a file to the specified path.
+Invisible \code{NULL}. Side effect: downloads a file to the specified
+path.
 }
 \description{
 Downloads the WRDS dummy database from the respective Tidy Finance GitHub
