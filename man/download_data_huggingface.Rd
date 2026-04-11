@@ -89,7 +89,8 @@ cutoffs (the conventional Fama-French approach).
     "high_frequency_sp500", "2007-07-26", "2007-07-27"
   )
   download_data_huggingface(
-    "factor_library", sorting_variable = "52w",
+    "factor_library",
+    sorting_variable = "52w",
     rebalancing = "annual"
   )
   download_data_huggingface(
