@@ -15,36 +15,43 @@ download_data_factors_ff(
 \item{dataset}{The name of the Fama-French dataset to download
 (e.g., "Fama/French 3 Factors").}
 
-\item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
-specifying the start date for the data. If not provided, the full dataset is returned.}
+\item{start_date}{Optional. A character string or Date object in
+"YYYY-MM-DD" format specifying the start date for the data. If not
+provided, the full dataset is returned.}
 
-\item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
-specifying the end date for the data. If not provided, the full dataset is returned.}
+\item{end_date}{Optional. A character string or Date object in
+"YYYY-MM-DD" format specifying the end date for the data. If not
+provided, the full dataset is returned.}
 
 \item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
 }
 \value{
-A tibble with processed factor data, including the date, risk-free
-rate, market excess return, and other factors, filtered by the specified
-date range.
+A tibble with processed factor data, including the date,
+risk-free rate, market excess return, and other factors, filtered
+by the specified date range.
 }
 \description{
-Downloads and processes Fama-French factor data based on the specified dataset
-name and date range. The function requires the 'frenchdata' package to
-download the data. It processes the raw data into a structured format,
-including date conversion, scaling factor values, and filtering by the
-specified date range.
+Downloads and processes Fama-French factor data based on the
+specified dataset name and date range. The function requires the
+'frenchdata' package to download the data. It processes the raw data
+into a structured format, including date conversion, scaling factor
+values, and filtering by the specified date range.
 }
 \details{
-If there are multiple tables in the raw Fama-French data (e.g., value-weighted
-and equal-weighted returns), then the function only returns the first table
-because these are the most popular. Please use the \code{frenchdata} package
-directly if you need less commonly used tables.
+If there are multiple tables in the raw Fama-French data (e.g.,
+value-weighted and equal-weighted returns), then the function only
+returns the first table because these are the most popular. Please
+use the \code{frenchdata} package directly if you need less commonly used
+tables.
 }
 \examples{
 \donttest{
-  download_data_factors_ff("Fama/French 3 Factors", "2000-01-01", "2020-12-31")
-  download_data_factors_ff("10 Industry Portfolios", "2000-01-01", "2020-12-31")
+  download_data_factors_ff(
+    "Fama/French 3 Factors", "2000-01-01", "2020-12-31"
+  )
+  download_data_factors_ff(
+    "10 Industry Portfolios", "2000-01-01", "2020-12-31"
+  )
 }
 }
 \seealso{

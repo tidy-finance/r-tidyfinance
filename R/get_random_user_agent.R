@@ -10,6 +10,7 @@
 #' @keywords internal
 #' @noRd
 get_random_user_agent <- function() {
+  # nolint start
   user_agents <- c(
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.111 Safari/537.36",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_6_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.86 Safari/537.36",
@@ -32,8 +33,9 @@ get_random_user_agent <- function() {
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 12_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.128 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0"
   )
+  # nolint end
 
   user_agent <- user_agents[sample(length(user_agents), 1)]
 
-  return(user_agent)
+  user_agent
 }

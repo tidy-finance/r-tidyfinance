@@ -1,26 +1,34 @@
 # Main function -----------------------------------------------------------
 #' Download and Process Data Based on Domain and Dataset
 #'
-#' Downloads and processes data based on the specified domain (e.g., Fama-French
-#' factors, Global Q factors, or macro predictors), dataset, and date range. This
-#' function checks if the specified domain is supported and then delegates to the
-#' appropriate function for downloading and processing the data.
+#' Downloads and processes data based on the specified domain (e.g.,
+#' Fama-French factors, Global Q factors, or macro predictors),
+#' dataset, and date range. This function checks if the specified
+#' domain is supported and then delegates to the appropriate function
+#' for downloading and processing the data.
 #'
-#' @param domain The domain of the dataset to download (e.g., "famafrench",
-#'   "globalq", "macro_predictors", "wrds", "constituents", "fred",
-#'   "stock_prices", "osap", "tidyfinance").
-#' @param dataset Optional. The specific dataset to download within the domain.
-#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
-#'   specifying the start date for the data. If not provided, the full dataset or a subset is returned,
-#'   depending on the dataset type.
-#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
-#'   specifying the end date for the data. If not provided, the full dataset or a subset is returned,
-#'   depending on the dataset type.
-#' @param type `r lifecycle::badge("deprecated")` Use `domain` and `dataset` instead.
-#' @param ... Additional arguments passed to specific download functions depending on the `domain`.
-#'   For instance, if `domain` is `"constituents"`, arguments are passed to `download_data_constituents()`.
-#'   If `domain` is `"tidyfinance"` and `dataset` is `"factor_library"`, arguments are used to filter the
-#'   portfolio grid (e.g., `sorting_variable`, `rebalancing`, `fill_all`); see `download_data_huggingface()` for details.
+#' @param domain The domain of the dataset to download (e.g.,
+#'   "famafrench", "globalq", "macro_predictors", "wrds",
+#'   "constituents", "fred", "stock_prices", "osap", "tidyfinance").
+#' @param dataset Optional. The specific dataset to download within
+#'   the domain.
+#' @param start_date Optional. A character string or Date object in
+#'   "YYYY-MM-DD" format specifying the start date for the data. If
+#'   not provided, the full dataset or a subset is returned, depending
+#'   on the dataset type.
+#' @param end_date Optional. A character string or Date object in
+#'   "YYYY-MM-DD" format specifying the end date for the data. If not
+#'   provided, the full dataset or a subset is returned, depending on
+#'   the dataset type.
+#' @param type `r lifecycle::badge("deprecated")` Use `domain` and
+#'   `dataset` instead.
+#' @param ... Additional arguments passed to specific download
+#'   functions depending on the `domain`. For instance, if `domain` is
+#'   `"constituents"`, arguments are passed to
+#'   `download_data_constituents()`. If `domain` is `"tidyfinance"`
+#'   and `dataset` is `"factor_library"`, arguments are used to filter
+#'   the portfolio grid (e.g., `sorting_variable`, `rebalancing`,
+#'   `fill_all`); see `download_data_huggingface()` for details.
 #'
 #' @returns A tibble with processed data, including dates and the relevant
 #'   financial metrics, filtered by the specified date range.
@@ -29,13 +37,28 @@
 #' @export
 #' @examples
 #' \donttest{
-#'   download_data("famafrench", "Fama/French 5 Factors (2x3) [Daily]", "2000-01-01", "2020-12-31")
-#'   download_data("macro_predictors", "monthly", "2000-01-01", "2020-12-31")
-#'   download_data("constituents", index = "DAX")
-#'   download_data("fred", series = c("GDP", "CPIAUCNS"))
-#'   download_data("stock_prices", symbols = c("AAPL", "MSFT"))
-#'   download_data("tidyfinance", "high_frequency_sp500", "2007-07-26", "2007-07-27")
-#'   download_data("tidyfinance", "factor_library", sorting_variable = "52w", rebalancing = "annual")
+#' download_data(
+#'   "famafrench",
+#'   "Fama/French 5 Factors (2x3) [Daily]",
+#'   "2000-01-01",
+#'   "2020-12-31"
+#' )
+#' download_data("macro_predictors", "monthly", "2000-01-01", "2020-12-31")
+#' download_data("constituents", index = "DAX")
+#' download_data("fred", series = c("GDP", "CPIAUCNS"))
+#' download_data("stock_prices", symbols = c("AAPL", "MSFT"))
+#' download_data(
+#'   "tidyfinance",
+#'   "high_frequency_sp500",
+#'   "2007-07-26",
+#'   "2007-07-27"
+#' )
+#' download_data(
+#'   "tidyfinance",
+#'   "factor_library",
+#'   sorting_variable = "52w",
+#'   rebalancing = "annual"
+#' )
 #' }
 download_data <- function(
   domain = NULL,
@@ -203,7 +226,6 @@ parse_type_to_domain_dataset <- function(type) {
     return(list(domain = "macro_predictors", dataset = dataset))
   }
 
-  # WRDS: "wrds_*" -> domain = "wrds"
   wrds_types <- list_supported_types_wrds()
 
   if (type %in% wrds_types$type) {

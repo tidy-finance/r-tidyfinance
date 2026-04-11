@@ -40,7 +40,8 @@ test_that("trim handles edge cases", {
   # Test with an empty vector
   expect_equal(trim(numeric(0), 0.1), numeric(0))
 
-  # Test with a vector of identical values, none should be replaced since they all are at the same quantile
+  # Test with a vector of identical values, none should be replaced since they
+  # all are at the same quantile
   x <- rep(1, 10)
   expect_equal(trim(x, 0.1), x)
 })

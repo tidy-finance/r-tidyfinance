@@ -8,15 +8,15 @@ open_tidy_finance_website(chapter = NULL)
 }
 \arguments{
 \item{chapter}{An optional character string specifying the chapter to open.
-If \code{NULL} (the default), the function opens the main page of Tidy Finance with R.
-If a chapter name is provided (e.g., "beta-estimation"), the
+If \code{NULL} (the default), the function opens the main page of Tidy Finance
+with R. If a chapter name is provided (e.g., "beta-estimation"), the
 function opens the corresponding chapter's page (e.g.,
 "beta-estimation.html"). If the chapter name does not exist, then the
 function opens the main page.}
 }
 \value{
-Invisible \code{NULL}. The function is called for its side effect of opening
-a web page.
+Invisible \code{NULL}. The function is called for its side effect of
+opening a web page.
 }
 \description{
 Opens the main Tidy Finance website or a specific chapter within the site in

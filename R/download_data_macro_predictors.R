@@ -1,22 +1,27 @@
 #' Download and Process Macro Predictor Data
 #'
-#' Downloads and processes macroeconomic predictor data based on the specified
-#' dataset (monthly, quarterly, or annual), date range, and source URL. The
-#' function downloads the data from a Google Sheets export link. It
-#' processes the raw data into a structured format, calculating additional
-#' financial metrics and filtering by the specified date range.
+#' Downloads and processes macroeconomic predictor data based on the
+#' specified dataset (monthly, quarterly, or annual), date range, and
+#' source URL. The function downloads the data from a Google Sheets
+#' export link. It processes the raw data into a structured format,
+#' calculating additional financial metrics and filtering by the
+#' specified date range.
 #'
-#' @param dataset The dataset to download ("monthly", "quarterly", "annual").
-#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
-#'   specifying the start date for the data. If not provided, the full dataset is returned.
-#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
-#'   specifying the end date for the data. If not provided, the full dataset is returned.
-#' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
-#' @param sheet_id The Google Sheets ID from which to download the dataset, with the
-#'   default "1bM7vCWd3WOt95Sf9qjLPZjoiafgF_8EG".
+#' @param dataset The dataset to download ("monthly", "quarterly",
+#'   "annual").
+#' @param start_date Optional. A character string or Date object in
+#'   "YYYY-MM-DD" format specifying the start date for the data. If
+#'   not provided, the full dataset is returned.
+#' @param end_date Optional. A character string or Date object in
+#'   "YYYY-MM-DD" format specifying the end date for the data. If not
+#'   provided, the full dataset is returned.
+#' @param type `r lifecycle::badge("deprecated")` Use `dataset`
+#'   instead.
+#' @param sheet_id The Google Sheets ID from which to download the
+#'   dataset, with the default "1bM7vCWd3WOt95Sf9qjLPZjoiafgF_8EG".
 #'
-#' @returns A tibble with processed data, filtered by the specified date range
-#'   and including financial metrics.
+#' @returns A tibble with processed data, filtered by the specified
+#'   date range and including financial metrics.
 #'
 #' @family download functions
 #' @export
@@ -51,7 +56,8 @@ download_data_macro_predictors <- function(
       what = "download_data_macro_predictors(type)",
       details = paste0(
         "The `type` argument is deprecated. ",
-        "Use `dataset` instead (e.g., 'monthly' instead of 'macro_predictors_monthly')."
+        "Use `dataset` instead (e.g., 'monthly'",
+        "instead of 'macro_predictors_monthly')."
       )
     )
     dataset <- sub("^macro_predictors_", "", dataset)

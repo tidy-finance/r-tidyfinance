@@ -4,36 +4,38 @@
 #' Appends lagged versions of specified columns to a data frame using a
 #' join-based approach.
 #'
-#' When `lag == max_lag` (the default), an equi-join is used: source dates are
-#' shifted forward by `lag` and matched exactly. When `lag < max_lag`, an
-#' inequality join is used: for each row, the most recent source value within the
-#' window `[date - max_lag, date - lag]` is selected.
+#' When `lag == max_lag` (the default), an equi-join is used: source dates
+#' are shifted forward by `lag` and matched exactly. When `lag < max_lag`,
+#' an inequality join is used: for each row, the most recent source value
+#' within the window `[date - max_lag, date - lag]` is selected.
 #'
-#' The combination of `by` and date columns must be unique in `df`. If `by` is
-#' `NULL`, dates alone must be unique.
+#' The combination of `by` and date columns must be unique in `df`. If `by`
+#' is `NULL`, dates alone must be unique.
 #'
 #' @param df A data frame containing the variables to lag.
-#' @param cols A character vector specifying the names of the columns to be lagged.
-#'  Each column produces a new column suffixed with `_lag`.
-#' @param lag An integer or a `lubridate::periods()` object, e.g., `months(1)`,
-#'  specifying the minimum lag (inclusive) to apply.
-#' @param max_lag An integer or a `lubridate::periods()` object specifying the
-#'  maximum lag (inclusive) to apply. Defaults to `lag` (exact lag).
-#' @param by An optional character vector specifying grouping columns (e.g., a
-#'  stock identifier). Lagged values are matched within groups. Defaults to `NULL`.
-#' @param drop_na A logical value. If `TRUE`, `NA` values in the source columns
-#'  are excluded before matching, so the lookup skips over missing observations.
-#'  Applied independently per column. Defaults to `FALSE`.
-#' @param ff_adjustment A logical value. If `TRUE`, only the last observation per
-#'  year (within each group defined by `by`) is retained as a source for lagged
-#'  values, following Fama-French conventions for annual accounting data.
-#'  Defaults to `FALSE`.
-#' @param data_options A named list of \link{data_options} with characters, indicating
-#'   the column names required to run this function. The required column names identify
-#'   dates. Defaults to `date = date`.
+#' @param cols A character vector specifying the names of the columns to be
+#'  lagged. Each column produces a new column suffixed with `_lag`.
+#' @param lag An integer or a `lubridate::periods()` object, e.g.,
+#'  `months(1)`, specifying the minimum lag (inclusive) to apply.
+#' @param max_lag An integer or a `lubridate::periods()` object specifying
+#'  the maximum lag (inclusive) to apply. Defaults to `lag` (exact lag).
+#' @param by An optional character vector specifying grouping columns
+#'  (e.g., a stock identifier). Lagged values are matched within groups.
+#'  Defaults to `NULL`.
+#' @param drop_na A logical value. If `TRUE`, `NA` values in the source
+#'  columns are excluded before matching, so the lookup skips over missing
+#'  observations. Applied independently per column. Defaults to `FALSE`.
+#' @param ff_adjustment A logical value. If `TRUE`, only the last
+#'  observation per year (within each group defined by `by`) is retained
+#'  as a source for lagged values, following Fama-French conventions for
+#'  annual accounting data. Defaults to `FALSE`.
+#' @param data_options A named list of \link{data_options} with characters,
+#'   indicating the column names required to run this function. The
+#'   required column names identify dates. Defaults to `date = date`.
 #'
-#' @returns A data frame with the same rows as `df` and new columns appended,
-#'  each suffixed with `_lag`. Unmatched rows receive `NA` in the lagged columns.
+#' @returns A data frame with the same rows as `df` and new columns
+#'  appended, each suffixed with `_lag`. Unmatched rows receive `NA` in
+#'  the lagged columns.
 #'
 #' @family rolling and lagging functions
 #' @export
@@ -76,7 +78,10 @@ add_lagged_columns <- function(
 
   if (lag < 0 || max_lag < lag) {
     cli::cli_abort(
-      "{.arg lag} and {.arg max_lag} must be non-negative and {.arg max_lag} must be >= {.arg lag}."
+      paste(
+        "{.arg lag} and {.arg max_lag} must be non-negative",
+        "and {.arg max_lag} must be >= {.arg lag}."
+      )
     )
   }
 
@@ -100,7 +105,10 @@ add_lagged_columns <- function(
 
   if (anyDuplicated(df[join_cols])) {
     cli::cli_abort(
-      "The combination of {.arg by} and date columns must be unique in {.arg df}."
+      paste(
+        "The combination of {.arg by}",
+        "and date columns must be unique in {.arg df}."
+      )
     )
   }
 
@@ -143,7 +151,8 @@ add_lagged_columns <- function(
         ) |>
         dplyr::mutate(
           !!lag_col_name := dplyr::if_else(
-            !is.na(.data[[".src_date"]]) & .data[[".src_date"]] >= .data[[".lower"]],
+            !is.na(.data[[".src_date"]]) &
+              .data[[".src_date"]] >= .data[[".lower"]],
             .data[[lag_col_name]],
             .data[[lag_col_name]][NA_integer_]
           )

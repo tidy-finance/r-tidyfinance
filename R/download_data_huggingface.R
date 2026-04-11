@@ -6,7 +6,8 @@
 #'
 #' @param organization Character(1). Hugging Face organization or user name.
 #' @param dataset Character(1). Dataset name under the organization.
-#' @return A tibble with columns: path (character), size (numeric) and url (character).
+#' @return A tibble with columns: path (character), size (numeric) and url
+#'   (character).
 #' @details Uses httr2 to perform HTTP requests. Requires internet access and
 #'   the dataset to be publicly accessible or accessible with appropriate auth.
 #' @examples
@@ -55,7 +56,8 @@ get_available_huggingface_files <- function(organization, dataset) {
     tidyr::unnest("data") |>
     dplyr::mutate(
       url = glue::glue(
-        "https://huggingface.co/datasets/{organization}/{dataset}/resolve/main/{path}"
+        "https://huggingface.co/datasets/",
+        "{organization}/{dataset}/resolve/main/{path}"
       )
     )
 }
@@ -125,11 +127,18 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'   date range. For `"factor_library"`, contains portfolio return data joined
 #'   with the full grid metadata for the matched portfolio IDs.
 #'
-#' @examples
+##' @examples
 #' \dontrun{
-#'   download_data_huggingface("high_frequency_sp500", "2007-07-26", "2007-07-27")
-#'   download_data_huggingface("factor_library", sorting_variable = "52w", rebalancing = "annual")
-#'   download_data_huggingface("factor_library", sorting_variable = "ag", fill_all = TRUE)
+#'   download_data_huggingface(
+#'     "high_frequency_sp500", "2007-07-26", "2007-07-27"
+#'   )
+#'   download_data_huggingface(
+#'     "factor_library", sorting_variable = "52w",
+#'     rebalancing = "annual"
+#'   )
+#'   download_data_huggingface(
+#'     "factor_library", sorting_variable = "ag", fill_all = TRUE
+#'   )
 #' }
 #'
 #' @export
@@ -157,7 +166,8 @@ download_data_huggingface <- function(
       what = "download_data_huggingface(type)",
       details = paste0(
         "The `type` argument is deprecated. ",
-        "Use `dataset` instead (e.g., 'high_frequency_sp500' instead of 'hf_high_frequency_sp500')."
+        "Use `dataset` instead (e.g., 'high_frequency_sp500' instead of",
+        "'hf_high_frequency_sp500')."
       )
     )
     dataset <- sub("^hf_", "", dataset)
@@ -356,7 +366,10 @@ download_factor_library_ids <- function(ids) {
   if (nrow(relevant_urls) == 0) {
     cli::cli_abort(c(
       "No parquet files found for the requested portfolio IDs.",
-      "i" = "Check that the provided {.arg ids} are valid and exist in the factor library grid."
+      "i" = paste(
+        "Check that the provided {.arg ids} are valid",
+        "and exist in the factor library grid."
+      )
     ))
   }
 
@@ -386,7 +399,10 @@ download_factor_library_ids <- function(ids) {
     cli::cli_abort(c(
       "No parquet file found for {length(missing_keys)} portfolio ID{?s}.",
       "x" = "Affected ID{?s}: {.val {missing_keys}}",
-      "i" = "Check that the {.arg sorting_variable} and {.arg sorting_variable_lag} values exist in the factor library."
+      "i" = paste(
+        "Check that the {.arg sorting_variable} and",
+        "{.arg sorting_variable_lag} values exist in the factor library."
+      )
     ))
   }
 
@@ -407,14 +423,18 @@ download_factor_library_ids <- function(ids) {
 #' `download_factor_library_ids()`: it resolves matching portfolio IDs
 #' from the grid and then downloads the corresponding return data.
 #'
-#' @param ... Named filter arguments forwarded to `filter_factor_library_grid()`. See
-#'   `filter_factor_library_grid()` for the full list of supported columns and their defaults.
-#' @param fill_all Logical(1). Forwarded to `filter_factor_library_grid()`. When `TRUE`,
-#'   columns not specified in `...` are left unrestricted rather than set to
+#' @param ... Named filter arguments forwarded to
+#'   `filter_factor_library_grid()`. See
+#'   `filter_factor_library_grid()` for the full list of supported
+#'   columns and their defaults.
+#' @param fill_all Logical(1). Forwarded to
+#'   `filter_factor_library_grid()`. When `TRUE`, columns not
+#'   specified in `...` are left unrestricted rather than set to
 #'   their defaults.
 #'
-#' @return A tibble of portfolio returns with grid metadata columns appended,
-#'   one row per portfolio-period observation for the matched IDs.
+#' @return A tibble of portfolio returns with grid metadata columns
+#'   appended, one row per portfolio-period observation for the
+#'   matched IDs.
 #' @noRd
 download_data_hugging_face_factor_library <- function(..., fill_all = FALSE) {
   ids <- filter_factor_library_grid(..., fill_all = fill_all)

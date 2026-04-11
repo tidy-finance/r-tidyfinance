@@ -13,38 +13,49 @@ download_data_wrds(
 )
 }
 \arguments{
-\item{dataset}{A string specifying the dataset to download. Supported values:
-"crsp_monthly", "crsp_daily" for CRSP data, "compustat_annual",
-"compustat_quarterly" for Compustat data, "ccm_links" for CCM links data,
-"fisd" for FISD data, or "trace_enhanced" for TRACE data.}
+\item{dataset}{A string specifying the dataset to download.
+Supported values: "crsp_monthly", "crsp_daily" for CRSP data,
+"compustat_annual", "compustat_quarterly" for Compustat data,
+"ccm_links" for CCM links data, "fisd" for FISD data, or
+"trace_enhanced" for TRACE data.}
 
-\item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
-specifying the start date for the data. If not provided, a subset of the dataset is returned.}
+\item{start_date}{Optional. A character string or Date object in
+"YYYY-MM-DD" format specifying the start date for the data. If
+not provided, a subset of the dataset is returned.}
 
-\item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
-specifying the end date for the data. If not provided, a subset of the dataset is returned.}
+\item{end_date}{Optional. A character string or Date object in
+"YYYY-MM-DD" format specifying the end date for the data. If not
+provided, a subset of the dataset is returned.}
 
-\item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
+\item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset}
+instead.}
 
-\item{...}{Additional arguments passed to specific download functions depending on the \code{dataset}.}
+\item{...}{Additional arguments passed to specific download
+functions depending on the \code{dataset}.}
 }
 \value{
-A data frame containing the requested data, with the structure and
-contents depending on the specified \code{dataset}.
+A data frame containing the requested data, with the
+structure and contents depending on the specified \code{dataset}.
 }
 \description{
 Acts as a wrapper to download data from various WRDS datasets
-including CRSP, Compustat, and CCM links based on the specified dataset. It is
-designed to handle different datasets by redirecting to the appropriate
-specific data download function.
+including CRSP, Compustat, and CCM links based on the specified
+dataset. It is designed to handle different datasets by redirecting
+to the appropriate specific data download function.
 }
 \examples{
 \dontrun{
-  crsp_monthly <- download_data_wrds("crsp_monthly", "2020-01-01", "2020-12-31")
-  compustat_annual <- download_data_wrds("compustat_annual", "2020-01-01", "2020-12-31")
+  crsp_monthly <- download_data_wrds(
+    "crsp_monthly", "2020-01-01", "2020-12-31"
+  )
+  compustat_annual <- download_data_wrds(
+    "compustat_annual", "2020-01-01", "2020-12-31"
+  )
   ccm_links <- download_data_wrds("ccm_links")
   fisd <- download_data_wrds("fisd")
-  trace_enhanced <- download_data_wrds("trace_enhanced", cusips = "00101JAH9")
+  trace_enhanced <- download_data_wrds(
+    "trace_enhanced", cusips = "00101JAH9"
+  )
 }
 }
 \seealso{

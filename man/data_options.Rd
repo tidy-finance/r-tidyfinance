@@ -15,30 +15,37 @@ data_options(
 )
 }
 \arguments{
-\item{id}{A character string representing the identifier variable (e.g., "permno").}
+\item{id}{A character string representing the identifier variable
+(e.g., "permno").}
 
-\item{date}{A character string representing the date variable (e.g., "date").}
+\item{date}{A character string representing the date variable (e.g.,
+"date").}
 
-\item{exchange}{A character string representing the exchange variable (e.g., "exchange").}
+\item{exchange}{A character string representing the exchange variable
+(e.g., "exchange").}
 
-\item{mktcap_lag}{A character string representing the market capitalization lag variable
-(e.g., "mktcap_lag").}
+\item{mktcap_lag}{A character string representing the market
+capitalization lag variable (e.g., "mktcap_lag").}
 
-\item{ret_excess}{A character string representing the excess return variable
-(e.g., "ret_excess").}
+\item{ret_excess}{A character string representing the excess return
+variable (e.g., "ret_excess").}
 
-\item{portfolio}{A character string representing the portfolio variable (e.g., "portfolio").}
+\item{portfolio}{A character string representing the portfolio
+variable (e.g., "portfolio").}
 
-\item{...}{Additional arguments to be included in the data options list.}
+\item{...}{Additional arguments to be included in the data options
+list.}
 }
 \value{
-A list of class \code{tidyfinance_data_options} containing the specified data options.
+A list of class \code{tidyfinance_data_options} containing the
+specified data options.
 }
 \description{
 Creates a list of data options used in financial data analysis,
-specifically for TidyFinance-related functions. It allows users to specify
-key parameters such as \code{id}, \code{date}, \code{exchange}, \code{mktcap_lag}, and \code{ret_excess}
-along with other additional options passed through \code{...}.
+specifically for TidyFinance-related functions. It allows users to
+specify key parameters such as \code{id}, \code{date}, \code{exchange}, \code{mktcap_lag},
+and \code{ret_excess} along with other additional options passed through
+\code{...}.
 }
 \examples{
 data_options(

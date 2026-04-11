@@ -27,7 +27,7 @@ test_that("winsorize() handles NA values", {
   # Check that the length of the output matches the input
   expect_equal(length(winsorized_x), length(x))
 
-  # Check that NA values are still present and other values are adjusted correctly
+  # Check that NA values are still present & other values are adjusted correctly
   expect_true(all(is.na(winsorized_x) == is.na(x)))
   expect_true(all(
     winsorized_x[!is.na(winsorized_x)] >=

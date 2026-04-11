@@ -1,33 +1,40 @@
 #' Estimate Fama-MacBeth Regressions
 #'
-#' Estimates Fama-MacBeth regressions by first running cross-sectional regressions
-#' for each time period and then aggregating the results over time to obtain average risk premia
-#' and corresponding t-statistics.
+#' Estimates Fama-MacBeth regressions by first running cross-sectional
+#' regressions for each time period and then aggregating the results
+#' over time to obtain average risk premia and corresponding
+#' t-statistics.
 #'
-#' @param data A data frame containing the data for the regression. It must include a column
-#'   representing the time periods (defaults to `date`) and the variables specified in the `model`.
-#' @param model A formula representing the regression model to be estimated in each cross-section.
-#' @param vcov A character string indicating the type of standard errors to compute. Options are
-#'  `"iid"` for independent and identically distributed errors or `"newey-west"` for Newey-West
+#' @param data A data frame containing the data for the regression. It
+#'   must include a column representing the time periods (defaults to
+#'   `date`) and the variables specified in the `model`.
+#' @param model A formula representing the regression model to be
+#'   estimated in each cross-section.
+#' @param vcov A character string indicating the type of standard
+#'   errors to compute. Options are `"iid"` for independent and
+#'   identically distributed errors or `"newey-west"` for Newey-West
 #'   standard errors. Default is `"newey-west"`.
-#' @param vcov_options A list of additional arguments to be passed to the
-#'   `NeweyWest()` function when `vcov = "newey-west"`. These can include options
-#'   such as `lag`, which specifies the number of lags to use in the Newey-West
-#'   covariance matrix estimation, and `prewhite`, which indicates whether to
-#'   apply a prewhitening transformation. Default is an empty list.
-#' @param data_options A named list of \link{data_options} with characters, indicating the column
-#'  names required to run this function. The required column names identify dates. Defaults to
-#'  `date = date`.
-#' @param detail A logical value indicating whether to return additional summary
-#'   statistics. If `FALSE` (default), the function returns only the coefficient
-#'   estimates. If `TRUE`, it returns a list with two elements: `coefficients`
-#'   (the usual estimates table) and `summary_statistics` (a one-row tibble with
-#'   the average cross-sectional R-squared and the average number of
+#' @param vcov_options A list of additional arguments to be passed to
+#'   the `NeweyWest()` function when `vcov = "newey-west"`. These can
+#'   include options such as `lag`, which specifies the number of lags
+#'   to use in the Newey-West covariance matrix estimation, and
+#'   `prewhite`, which indicates whether to apply a prewhitening
+#'   transformation. Default is an empty list.
+#' @param data_options A named list of \link{data_options} with
+#'   characters, indicating the column names required to run this
+#'   function. The required column names identify dates. Defaults to
+#'   `date = date`.
+#' @param detail A logical value indicating whether to return
+#'   additional summary statistics. If `FALSE` (default), the function
+#'   returns only the coefficient estimates. If `TRUE`, it returns a
+#'   list with two elements: `coefficients` (the usual estimates
+#'   table) and `summary_statistics` (a one-row tibble with the
+#'   average cross-sectional R-squared and the average number of
 #'   observations per cross-section).
 #'
-#' @returns If `detail = FALSE` (default), a tibble with columns `factor`,
-#'   `risk_premium`, `n` (number of time periods), `standard_error`, and
-#'   `t_statistic`.
+#' @returns If `detail = FALSE` (default), a tibble with columns
+#'   `factor`, `risk_premium`, `n` (number of time periods),
+#'   `standard_error`, and `t_statistic`.
 #'
 #'   If `detail = TRUE`, a named list with two elements:
 #'   \describe{
@@ -54,12 +61,24 @@
 #' )
 #'
 #' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap")
-#' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", vcov = "iid")
-#' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap",
-#'                       vcov = "newey-west", vcov_options = list(lag = 6, prewhite = FALSE))
+#' estimate_fama_macbeth(
+#'   data,
+#'   "ret_excess ~ beta + bm + log_mktcap",
+#'   vcov = "iid"
+#' )
+#' estimate_fama_macbeth(
+#'   data,
+#'   "ret_excess ~ beta + bm + log_mktcap",
+#'   vcov = "newey-west",
+#'   vcov_options = list(lag = 6, prewhite = FALSE)
+#' )
 #'
 #' # Return detailed output including R-squared and observation counts
-#' estimate_fama_macbeth(data, "ret_excess ~ beta + bm + log_mktcap", detail = TRUE)
+#' estimate_fama_macbeth(
+#'   data,
+#'   "ret_excess ~ beta + bm + log_mktcap",
+#'   detail = TRUE
+#' )
 #'
 #' # Use different column name for date
 #' data |>
@@ -100,7 +119,10 @@ estimate_fama_macbeth <- function(
 
   if (any(!cross_sections$row_check)) {
     cli::cli_abort(
-      "Each date grouping must have more rows than the number of predictors in the model to estimate coefficients. Please check your data."
+      paste(
+        "Each date grouping must have more rows than the number of predictors",
+        "in the model to estimate coefficients. Please check your data."
+      )
     )
   }
 
@@ -152,7 +174,7 @@ estimate_fama_macbeth <- function(
       n = purrr::map_dbl(data, nrow),
       standard_error = purrr::map_dbl(
         model,
-        ~ compute_standard_error(., vcov, vcov_options)
+        \(x) compute_standard_error(x, vcov, vcov_options)
       ),
       t_statistic = risk_premium / standard_error
     )

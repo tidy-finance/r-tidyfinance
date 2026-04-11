@@ -104,7 +104,7 @@ test_that("rows with NA values are dropped before applying .f", {
   df$value[2] <- NA
   df$value[3] <- NA
 
-  # Window for row 4 spans rows 2-4; after dropping NAs only row 4 remains (1 obs)
+  # Window for row 4 spans rows 2-4; after dropping NAs only row 4 remains
   result <- compute_rolling_value(
     df,
     .f = ~ mean(.x$value),
@@ -178,9 +178,9 @@ test_that("rolling sum works correctly", {
     periods = 3,
     min_obs = 1
   )
-  expect_equal(result[3], 6) # 1 + 2 + 3
-  expect_equal(result[4], 9) # 2 + 3 + 4
-  expect_equal(result[5], 12) # 3 + 4 + 5
+  expect_equal(result[3], 6)
+  expect_equal(result[4], 9)
+  expect_equal(result[5], 12)
 })
 
 test_that("rolling sd works correctly", {
@@ -206,7 +206,7 @@ test_that("accepts purrr-style formula (.f = ~ ...)", {
     periods = 2,
     min_obs = 1
   )
-  expect_equal(result[4], 7) # 3 + 4
+  expect_equal(result[4], 7)
 })
 
 test_that("accepts a regular function for .f", {

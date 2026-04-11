@@ -162,7 +162,13 @@ test_that("univariate periodic has correct columns with mktcap_lag", {
     breakpoint_options_main = breakpoint_options(n_portfolios = 5)
   )
   expect_true(all(
-    c("portfolio", "date", "ret_excess_vw", "ret_excess_ew", "ret_excess_vw_capped") %in%
+    c(
+      "portfolio",
+      "date",
+      "ret_excess_vw",
+      "ret_excess_ew",
+      "ret_excess_vw_capped"
+    ) %in%
       colnames(result)
   ))
 })
@@ -262,27 +268,32 @@ test_that("univariate annual rebalancing has portfolio column", {
   expect_true("portfolio" %in% colnames(result))
 })
 
-test_that("univariate annual: portfolios are held constant between rebalancing months", {
-  # With rebalancing in July, a stock's portfolio should not change from
-  # July to June of the following year.
-  data <- make_panel(n_stocks = 30, n_months = 36)
-  result_periodic <- compute_portfolio_returns(
-    data,
-    "size",
-    "univariate",
-    breakpoint_options_main = breakpoint_options(n_portfolios = 3)
-  )
-  result_annual <- compute_portfolio_returns(
-    data,
-    "size",
-    "univariate",
-    rebalancing_month = 7,
-    breakpoint_options_main = breakpoint_options(n_portfolios = 3)
-  )
-  # Annual rebalancing should produce different results than periodic
-  # (unless data coincidentally aligns)
-  expect_false(identical(result_periodic, result_annual))
-})
+test_that(
+  paste(
+    "univariate annual: portfolios are held constant between rebalancing months"
+  ),
+  {
+    # With rebalancing in July, a stock's portfolio should not change from
+    # July to June of the following year.
+    data <- make_panel(n_stocks = 30, n_months = 36)
+    result_periodic <- compute_portfolio_returns(
+      data,
+      "size",
+      "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 3)
+    )
+    result_annual <- compute_portfolio_returns(
+      data,
+      "size",
+      "univariate",
+      rebalancing_month = 7,
+      breakpoint_options_main = breakpoint_options(n_portfolios = 3)
+    )
+    # Annual rebalancing should produce different results than periodic
+    # (unless data coincidentally aligns)
+    expect_false(identical(result_periodic, result_annual))
+  }
+)
 
 test_that("univariate annual: works with rebalancing_month = 1", {
   data <- make_panel(n_months = 36)
@@ -352,7 +363,13 @@ test_that("bivariate-dependent has correct output columns", {
     )
   )
   expect_true(all(
-    c("portfolio", "date", "ret_excess_vw", "ret_excess_ew", "ret_excess_vw_capped") %in%
+    c(
+      "portfolio",
+      "date",
+      "ret_excess_vw",
+      "ret_excess_ew",
+      "ret_excess_vw_capped"
+    ) %in%
       colnames(result)
   ))
 })
@@ -497,7 +514,7 @@ test_that("large min_portfolio_size produces NAs", {
 
 test_that("min_portfolio_size applies per portfolio-date group", {
   # With 50 stocks and 5 portfolios, each portfolio has ~10 stocks.
-  # Setting min_portfolio_size = 11 should make some NA, but not necessarily all.
+  # Setting min_portfolio_size = 11 should make some NA, but not necessarily all
   data <- make_panel(n_stocks = 50, n_months = 6)
   result <- compute_portfolio_returns(
     data,
@@ -510,18 +527,23 @@ test_that("min_portfolio_size applies per portfolio-date group", {
   expect_true(any(is.na(result$ret_excess_ew)))
 })
 
-test_that("missing mktcap_lag removes ret_excess_vw and ret_excess_vw_capped columns", {
-  data <- make_panel() |> select(-mktcap_lag)
-  result <- compute_portfolio_returns(
-    data,
-    "size",
-    "univariate",
-    breakpoint_options_main = breakpoint_options(n_portfolios = 5)
-  )
-  expect_false("ret_excess_vw" %in% colnames(result))
-  expect_false("ret_excess_vw_capped" %in% colnames(result))
-  expect_true("ret_excess_ew" %in% colnames(result))
-})
+test_that(
+  paste(
+    "missing mktcap_lag removes ret_excess_vw and ret_excess_vw_capped columns"
+  ),
+  {
+    data <- make_panel() |> select(-mktcap_lag)
+    result <- compute_portfolio_returns(
+      data,
+      "size",
+      "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 5)
+    )
+    expect_false("ret_excess_vw" %in% colnames(result))
+    expect_false("ret_excess_vw_capped" %in% colnames(result))
+    expect_true("ret_excess_ew" %in% colnames(result))
+  }
+)
 
 test_that("missing mktcap_lag works for bivariate-independent", {
   data <- make_panel(n_stocks = 100) |> select(-mktcap_lag)
@@ -734,18 +756,23 @@ test_that("percentile-based breakpoints work in univariate", {
   expect_equal(sort(unique(result$portfolio)), 1:3)
 })
 
-test_that("bivariate-independent uses different n_portfolios for main vs secondary", {
-  data <- make_panel(n_stocks = 200, n_months = 12)
-  result <- compute_portfolio_returns(
-    data,
-    c("size", "bm"),
-    "bivariate-independent",
-    breakpoint_options_main = breakpoint_options(n_portfolios = 5),
-    breakpoint_options_secondary = breakpoint_options(n_portfolios = 2)
-  )
-  # Output should have 5 main portfolios (averaged over 2 secondary)
-  expect_equal(sort(unique(result$portfolio)), 1:5)
-})
+test_that(
+  paste0(
+    "bivariate-independent uses different n_portfolios for main vs secondary"
+  ),
+  {
+    data <- make_panel(n_stocks = 200, n_months = 12)
+    result <- compute_portfolio_returns(
+      data,
+      c("size", "bm"),
+      "bivariate-independent",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 5),
+      breakpoint_options_secondary = breakpoint_options(n_portfolios = 2)
+    )
+    # Output should have 5 main portfolios (averaged over 2 secondary)
+    expect_equal(sort(unique(result$portfolio)), 1:5)
+  }
+)
 
 test_that("no duplicate portfolio-date rows in output", {
   data <- make_panel(n_stocks = 100, n_months = 24)
@@ -862,7 +889,9 @@ test_that("error for invalid cap_weight values", {
   data <- make_panel()
   expect_error(
     compute_portfolio_returns(
-      data, "size", "univariate",
+      data,
+      "size",
+      "univariate",
       breakpoint_options_main = breakpoint_options(n_portfolios = 5),
       cap_weight = 1.5
     ),
@@ -870,7 +899,9 @@ test_that("error for invalid cap_weight values", {
   )
   expect_error(
     compute_portfolio_returns(
-      data, "size", "univariate",
+      data,
+      "size",
+      "univariate",
       breakpoint_options_main = breakpoint_options(n_portfolios = 5),
       cap_weight = -0.1
     ),
@@ -878,7 +909,9 @@ test_that("error for invalid cap_weight values", {
   )
   expect_error(
     compute_portfolio_returns(
-      data, "size", "univariate",
+      data,
+      "size",
+      "univariate",
       breakpoint_options_main = breakpoint_options(n_portfolios = 5),
       cap_weight = NA
     ),
@@ -886,7 +919,9 @@ test_that("error for invalid cap_weight values", {
   )
   expect_error(
     compute_portfolio_returns(
-      data, "size", "univariate",
+      data,
+      "size",
+      "univariate",
       breakpoint_options_main = breakpoint_options(n_portfolios = 5),
       cap_weight = "high"
     ),

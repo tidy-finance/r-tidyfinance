@@ -119,22 +119,27 @@ test_that("percentile breakpoints are ascending", {
   expect_true(all(diff(bp) >= 0))
 })
 
-test_that("n_portfolios = 5 and percentiles = c(0.2,0.4,0.6,0.8) give same breakpoints", {
-  data <- data.frame(id = 1:1000, value = seq_len(1000))
-  bp_n <- compute_breakpoints(
-    data,
-    "value",
-    breakpoint_options(n_portfolios = 5)
-  )
-  bp_p <- compute_breakpoints(
-    data,
-    "value",
-    breakpoint_options(percentiles = c(0.2, 0.4, 0.6, 0.8))
-  )
-  expect_equal(bp_n, bp_p)
-})
+test_that(
+  paste0(
+    "n_portfolios = 5 & percentiles = c(0.2,0.4,0.6,0.8) give same breakpoints"
+  ),
+  {
+    data <- data.frame(id = 1:1000, value = seq_len(1000))
+    bp_n <- compute_breakpoints(
+      data,
+      "value",
+      breakpoint_options(n_portfolios = 5)
+    )
+    bp_p <- compute_breakpoints(
+      data,
+      "value",
+      breakpoint_options(percentiles = c(0.2, 0.4, 0.6, 0.8))
+    )
+    expect_equal(bp_n, bp_p)
+  }
+)
 
-test_that("n_portfolios = 10 and percentiles at deciles give same breakpoints", {
+test_that("n_portfolios = 10 & percentiles at deciles give same breakpoints", {
   set.seed(7)
   data <- data.frame(id = 1:5000, value = rnorm(5000))
   bp_n <- compute_breakpoints(
@@ -393,20 +398,25 @@ test_that("smooth_bunching = NULL triggers error", {
 })
 
 
-test_that("smooth_bunching = TRUE with no clustering gives same result as FALSE", {
-  data <- data.frame(id = 1:1000, value = seq_len(1000))
-  bp_smooth <- compute_breakpoints(
-    data,
-    "value",
-    breakpoint_options(n_portfolios = 5, smooth_bunching = TRUE)
-  )
-  bp_plain <- compute_breakpoints(
-    data,
-    "value",
-    breakpoint_options(n_portfolios = 5, smooth_bunching = FALSE)
-  )
-  expect_equal(bp_smooth, bp_plain)
-})
+test_that(
+  paste0(
+    "smooth_bunching = TRUE with no clustering gives same result as FALSE"
+  ),
+  {
+    data <- data.frame(id = 1:1000, value = seq_len(1000))
+    bp_smooth <- compute_breakpoints(
+      data,
+      "value",
+      breakpoint_options(n_portfolios = 5, smooth_bunching = TRUE)
+    )
+    bp_plain <- compute_breakpoints(
+      data,
+      "value",
+      breakpoint_options(n_portfolios = 5, smooth_bunching = FALSE)
+    )
+    expect_equal(bp_smooth, bp_plain)
+  }
+)
 
 test_that("NA values in sorting variable are ignored (na.rm = TRUE)", {
   data_clean <- data.frame(id = 1:100, value = seq_len(100))
@@ -484,46 +494,56 @@ test_that("breakpoints produce valid portfolio assignments via findInterval", {
   expect_equal(sort(unique(portfolios)), 1:5)
 })
 
-test_that("exchange-filtered breakpoints still produce valid assignments on full data", {
-  set.seed(1)
-  data <- data.frame(
-    id = 1:500,
-    exchange = rep(c("NYSE", "NASDAQ"), each = 250),
-    value = rnorm(500)
-  )
-  bp <- compute_breakpoints(
-    data,
-    "value",
-    breakpoint_options(n_portfolios = 5, breakpoint_exchanges = c("NYSE"))
-  )
-  portfolios <- findInterval(data$value, bp, all.inside = TRUE)
+test_that(
+  paste0(
+    "exchange-filtered breakpoints still produce valid assignments on full data"
+  ),
+  {
+    set.seed(1)
+    data <- data.frame(
+      id = 1:500,
+      exchange = rep(c("NYSE", "NASDAQ"), each = 250),
+      value = rnorm(500)
+    )
+    bp <- compute_breakpoints(
+      data,
+      "value",
+      breakpoint_options(n_portfolios = 5, breakpoint_exchanges = c("NYSE"))
+    )
+    portfolios <- findInterval(data$value, bp, all.inside = TRUE)
 
-  expect_true(all(portfolios >= 1 & portfolios <= 5))
-  expect_length(portfolios, 500)
-})
+    expect_true(all(portfolios >= 1 & portfolios <= 5))
+    expect_length(portfolios, 500)
+  }
+)
 
-test_that("smooth bunching produces more distinct interior values than raw quantiles", {
-  data <- data.frame(
-    id = 1:1000,
-    value = c(rep(0, 400), seq(1, 99, length.out = 200), rep(100, 400))
-  )
+test_that(
+  paste0(
+    "smooth bunching produces more distinct interior values than raw quantiles"
+  ),
+  {
+    data <- data.frame(
+      id = 1:1000,
+      value = c(rep(0, 400), seq(1, 99, length.out = 200), rep(100, 400))
+    )
 
-  bp_smooth <- compute_breakpoints(
-    data,
-    "value",
-    breakpoint_options(n_portfolios = 5, smooth_bunching = TRUE)
-  )
-  bp_raw <- compute_breakpoints(
-    data,
-    "value",
-    breakpoint_options(n_portfolios = 5, smooth_bunching = FALSE)
-  )
+    bp_smooth <- compute_breakpoints(
+      data,
+      "value",
+      breakpoint_options(n_portfolios = 5, smooth_bunching = TRUE)
+    )
+    bp_raw <- compute_breakpoints(
+      data,
+      "value",
+      breakpoint_options(n_portfolios = 5, smooth_bunching = FALSE)
+    )
 
-  # Smoothed version should have more distinct breakpoint values
-  n_distinct_smooth <- length(unique(round(bp_smooth, 10)))
-  n_distinct_raw <- length(unique(round(bp_raw, 10)))
-  expect_gte(n_distinct_smooth, n_distinct_raw)
-})
+    # Smoothed version should have more distinct breakpoint values
+    n_distinct_smooth <- length(unique(round(bp_smooth, 10)))
+    n_distinct_raw <- length(unique(round(bp_raw, 10)))
+    expect_gte(n_distinct_smooth, n_distinct_raw)
+  }
+)
 
 test_that("function is deterministic (same input → same output)", {
   set.seed(1)
@@ -535,8 +555,6 @@ test_that("function is deterministic (same input → same output)", {
   expect_identical(bp1, bp2)
 })
 
-# --- min_size_threshold tests ---
-
 test_that("min_size_threshold with breakpoint_exchanges filters small stocks", {
   set.seed(42)
   data <- data.frame(
@@ -547,11 +565,13 @@ test_that("min_size_threshold with breakpoint_exchanges filters small stocks", {
   )
 
   bp_no_filter <- compute_breakpoints(
-    data, "sorting_var",
+    data,
+    "sorting_var",
     breakpoint_options(n_portfolios = 5, breakpoint_exchanges = "NYSE")
   )
   bp_with_filter <- compute_breakpoints(
-    data, "sorting_var",
+    data,
+    "sorting_var",
     breakpoint_options(
       n_portfolios = 5,
       breakpoint_exchanges = "NYSE",
@@ -573,11 +593,13 @@ test_that("min_size_threshold without breakpoint_exchanges uses full sample", {
   )
 
   bp_no_filter <- compute_breakpoints(
-    data, "sorting_var",
+    data,
+    "sorting_var",
     breakpoint_options(n_portfolios = 5)
   )
   bp_with_filter <- compute_breakpoints(
-    data, "sorting_var",
+    data,
+    "sorting_var",
     breakpoint_options(n_portfolios = 5, min_size_threshold = 0.2)
   )
 
@@ -585,67 +607,105 @@ test_that("min_size_threshold without breakpoint_exchanges uses full sample", {
   expect_false(identical(bp_no_filter, bp_with_filter))
 })
 
-test_that("min_size_threshold produces correct breakpoints matching manual computation", {
-  set.seed(7)
-  mktcap <- 1:100
-  sorting_var <- rnorm(100)
-  data <- data.frame(mktcap_lag = mktcap, sorting_var = sorting_var)
+test_that(
+  paste0(
+    "min_size_threshold produces correct breakpoints"
+  ),
+  {
+    set.seed(7)
+    mktcap <- 1:100
+    sorting_var <- rnorm(100)
+    data <- data.frame(mktcap_lag = mktcap, sorting_var = sorting_var)
 
-  # manual: cutoff = quantile(1:100, 0.2) = 20.8; keep stocks with mktcap > 20.8
-  size_cutoff <- quantile(mktcap, 0.2, na.rm = TRUE)
-  above <- mktcap > size_cutoff
-  expected <- unname(quantile(sorting_var[above], seq(0, 1, length.out = 6), na.rm = TRUE))
+    # manual: cutoff = quantile(1:100, 0.2) = 20.8; keep stocks
+    # with mktcap > 20.8
+    size_cutoff <- quantile(mktcap, 0.2, na.rm = TRUE)
+    above <- mktcap > size_cutoff
+    expected <- unname(quantile(
+      sorting_var[above],
+      seq(0, 1, length.out = 6),
+      na.rm = TRUE
+    ))
 
-  bp <- compute_breakpoints(
-    data, "sorting_var",
-    breakpoint_options(n_portfolios = 5, min_size_threshold = 0.2)
-  )
+    bp <- compute_breakpoints(
+      data,
+      "sorting_var",
+      breakpoint_options(n_portfolios = 5, min_size_threshold = 0.2)
+    )
 
-  expect_equal(bp, expected)
-})
+    expect_equal(bp, expected)
+  }
+)
 
-test_that("min_size_threshold excludes stocks exactly at the cutoff (strict > not >=)", {
-  # Construct data where one stock lands exactly at the quantile cutoff.
-  # With mktcap = c(10, 20, 30, 40, 50) and threshold = 0.25:
-  # quantile type 7: h = 1 + 0.25*4 = 2; cutoff = mktcap[2] = 20 (exact integer index)
-  mktcap <- c(10, 20, 30, 40, 50)
-  sorting_var <- c(1.0, 2.0, 3.0, 4.0, 5.0)
-  data <- data.frame(mktcap_lag = mktcap, sorting_var = sorting_var)
+test_that(
+  paste0(
+    "min_size_threshold excludes stocks exactly at the cutoff (strict > not >=)"
+  ),
+  {
+    # Construct data where one stock lands exactly at the quantile cutoff.
+    # With mktcap = c(10, 20, 30, 40, 50) and threshold = 0.25:
+    # quantile type 7: h = 1 + 0.25*4 = 2; cutoff = mktcap[2] = 20 (exact
+    # integer index)
+    mktcap <- c(10, 20, 30, 40, 50)
+    sorting_var <- c(1.0, 2.0, 3.0, 4.0, 5.0)
+    data <- data.frame(mktcap_lag = mktcap, sorting_var = sorting_var)
 
-  size_cutoff <- quantile(mktcap, 0.25, na.rm = TRUE)
-  # stocks with mktcap strictly > cutoff are included; the stock at exactly cutoff is excluded
-  above <- mktcap > size_cutoff
-  expect_false(above[mktcap == size_cutoff])  # boundary stock excluded
+    size_cutoff <- quantile(mktcap, 0.25, na.rm = TRUE)
+    # stocks with mktcap strictly > cutoff are included; the stock at exactly
+    # cutoff is excluded
+    above <- mktcap > size_cutoff
+    expect_false(above[mktcap == size_cutoff]) # boundary stock excluded
 
-  expected <- unname(quantile(sorting_var[above], seq(0, 1, length.out = 4), na.rm = TRUE))
-  bp <- compute_breakpoints(
-    data, "sorting_var",
-    breakpoint_options(n_portfolios = 3, min_size_threshold = 0.25)
-  )
-  expect_equal(bp, expected)
-})
+    expected <- unname(quantile(
+      sorting_var[above],
+      seq(0, 1, length.out = 4),
+      na.rm = TRUE
+    ))
+    bp <- compute_breakpoints(
+      data,
+      "sorting_var",
+      breakpoint_options(n_portfolios = 3, min_size_threshold = 0.25)
+    )
+    expect_equal(bp, expected)
+  }
+)
 
-test_that("min_size_threshold with NA mktcap values excludes NA rows without propagating NAs", {
-  data <- data.frame(
-    mktcap_lag = c(NA, 10, 20, 30, 40, 50, 60, 70, 80, 90),
-    sorting_var = c(99, 1, 2, 3, 4, 5, 6, 7, 8, 9)
-  )
+test_that(
+  paste0(
+    "min_size_threshold with NA mktcap values excludes NA rows"
+  ),
+  {
+    data <- data.frame(
+      mktcap_lag = c(NA, 10, 20, 30, 40, 50, 60, 70, 80, 90),
+      sorting_var = c(99, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+    )
 
-  bp <- compute_breakpoints(
-    data, "sorting_var",
-    breakpoint_options(n_portfolios = 3, min_size_threshold = 0.2)
-  )
+    bp <- compute_breakpoints(
+      data,
+      "sorting_var",
+      breakpoint_options(n_portfolios = 3, min_size_threshold = 0.2)
+    )
 
-  # breakpoints must be finite numerics — no NAs
-  expect_true(all(!is.na(bp)))
-  expect_length(bp, 4)
+    # breakpoints must be finite numerics — no NAs
+    expect_true(all(!is.na(bp)))
+    expect_length(bp, 4)
 
-  # manual: cutoff uses only non-NA mktcap values; row with mktcap=NA is excluded
-  size_cutoff <- quantile(c(10, 20, 30, 40, 50, 60, 70, 80, 90), 0.2, na.rm = TRUE)
-  above <- !is.na(data$mktcap_lag) & data$mktcap_lag > size_cutoff
-  expected <- unname(quantile(data$sorting_var[above], seq(0, 1, length.out = 4), na.rm = TRUE))
-  expect_equal(bp, expected)
-})
+    # manual: cutoff uses only non-NA mktcap values; row with mktcap=NA is
+    # excluded
+    size_cutoff <- quantile(
+      c(10, 20, 30, 40, 50, 60, 70, 80, 90),
+      0.2,
+      na.rm = TRUE
+    )
+    above <- !is.na(data$mktcap_lag) & data$mktcap_lag > size_cutoff
+    expected <- unname(quantile(
+      data$sorting_var[above],
+      seq(0, 1, length.out = 4),
+      na.rm = TRUE
+    ))
+    expect_equal(bp, expected)
+  }
+)
 
 test_that("min_size_threshold = NULL (default) has no effect", {
   set.seed(42)
@@ -657,11 +717,13 @@ test_that("min_size_threshold = NULL (default) has no effect", {
   )
 
   bp_default <- compute_breakpoints(
-    data, "sorting_var",
+    data,
+    "sorting_var",
     breakpoint_options(n_portfolios = 5)
   )
   bp_explicit_null <- compute_breakpoints(
-    data, "sorting_var",
+    data,
+    "sorting_var",
     breakpoint_options(n_portfolios = 5, min_size_threshold = NULL)
   )
 
@@ -676,7 +738,8 @@ test_that("min_size_threshold errors when mktcap column is missing", {
 
   expect_error(
     compute_breakpoints(
-      data, "sorting_var",
+      data,
+      "sorting_var",
       breakpoint_options(n_portfolios = 5, min_size_threshold = 0.2)
     ),
     "mktcap_lag"
@@ -693,7 +756,8 @@ test_that("min_size_threshold works with custom data_options", {
   )
 
   bp <- compute_breakpoints(
-    data, "sorting_var",
+    data,
+    "sorting_var",
     breakpoint_options(
       n_portfolios = 5,
       breakpoint_exchanges = "NYSE",

@@ -14,42 +14,54 @@ download_data_wrds_compustat(
 )
 }
 \arguments{
-\item{dataset}{The dataset to download ("compustat_annual" or "compustat_quarterly").}
+\item{dataset}{The dataset to download ("compustat_annual" or
+"compustat_quarterly").}
 
-\item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
-specifying the start date for the data. If not provided, a subset of the dataset is returned.}
+\item{start_date}{Optional. A character string or Date object in
+"YYYY-MM-DD" format specifying the start date for the data. If
+not provided, a subset of the dataset is returned.}
 
-\item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
-specifying the end date for the data. If not provided, a subset of the dataset is returned.}
+\item{end_date}{Optional. A character string or Date object in
+"YYYY-MM-DD" format specifying the end date for the data. If not
+provided, a subset of the dataset is returned.}
 
-\item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
+\item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset}
+instead.}
 
-\item{additional_columns}{Additional columns from the Compustat table
-as a character vector.}
+\item{additional_columns}{Additional columns from the Compustat
+table as a character vector.}
 
-\item{only_us}{A logical indicating whether only US firms should be returned
-(i.e., excluding Canadian firms).}
+\item{only_us}{A logical indicating whether only US firms should be
+returned (i.e., excluding Canadian firms).}
 }
 \value{
-A data frame with financial data for the specified period, including
-variables for book equity (be), operating profitability (op), investment
-(inv), and others.
+A data frame with financial data for the specified period,
+including variables for book equity (be), operating profitability
+(op), investment (inv), and others.
 }
 \description{
 Downloads financial data from the WRDS Compustat database for a
 given dataset, start date, and end date. It filters the data
-according to industry format, data format, and consolidation level, and
-returns the most current data for each reporting period. Additionally, the
-annual data also includes the calculated book equity (be),
-operating profitability (op), and investment (inv) for each company.
+according to industry format, data format, and consolidation level,
+and returns the most current data for each reporting period.
+Additionally, the annual data also includes the calculated book
+equity (be), operating profitability (op), and investment (inv)
+for each company.
 }
 \examples{
 \dontrun{
-  download_data_wrds_compustat("compustat_annual", "2020-01-01", "2020-12-31")
-  download_data_wrds_compustat("compustat_quarterly", "2020-01-01", "2020-12-31")
+download_data_wrds_compustat("compustat_annual", "2020-01-01", "2020-12-31")
+download_data_wrds_compustat(
+  "compustat_quarterly",
+  "2020-01-01",
+  "2020-12-31"
+)
 
   # Add additional columns
-  download_data_wrds_compustat("compustat_annual", additional_columns = c("aodo", "aldo"))
+download_data_wrds_compustat(
+  "compustat_annual",
+  additional_columns = c("aodo", "aldo")
+)
 }
 }
 \seealso{

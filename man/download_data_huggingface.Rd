@@ -85,9 +85,16 @@ cutoffs (the conventional Fama-French approach).
 }
 \examples{
 \dontrun{
-  download_data_huggingface("high_frequency_sp500", "2007-07-26", "2007-07-27")
-  download_data_huggingface("factor_library", sorting_variable = "52w", rebalancing = "annual")
-  download_data_huggingface("factor_library", sorting_variable = "ag", fill_all = TRUE)
+  download_data_huggingface(
+    "high_frequency_sp500", "2007-07-26", "2007-07-27"
+  )
+  download_data_huggingface(
+    "factor_library", sorting_variable = "52w",
+    rebalancing = "annual"
+  )
+  download_data_huggingface(
+    "factor_library", sorting_variable = "ag", fill_all = TRUE
+  )
 }
 
 }

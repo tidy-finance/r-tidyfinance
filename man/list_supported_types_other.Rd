@@ -7,8 +7,11 @@
 list_supported_types_other()
 }
 \value{
-A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
+A tibble with columns \code{type} and \code{dataset_name}, where
+\code{type} indicates the code used to specify the data source and
+\code{dataset_name} provides the name of the data source.
 }
 \description{
-Returns a tibble listing the supported other data types and their corresponding dataset names.
+Returns a tibble listing the supported other data types and their
+corresponding dataset names.
 }

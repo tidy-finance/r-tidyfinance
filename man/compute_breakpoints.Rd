@@ -12,41 +12,46 @@ compute_breakpoints(
 )
 }
 \arguments{
-\item{data}{A data frame containing the dataset for breakpoint computation.}
+\item{data}{A data frame containing the dataset for breakpoint
+computation.}
 
-\item{sorting_variable}{A string specifying the column name in \code{data} to be
-used for determining breakpoints.}
+\item{sorting_variable}{A string specifying the column name in \code{data}
+to be used for determining breakpoints.}
 
-\item{breakpoint_options}{A named list of \link{breakpoint_options} for the breakpoints. The
-arguments include
+\item{breakpoint_options}{A named list of \link{breakpoint_options}
+for the breakpoints. The arguments include
 \itemize{
-\item \code{n_portfolios} An optional integer specifying the number of equally
-sized portfolios to create. This parameter is mutually exclusive with
-\code{percentiles}.
-\item \code{percentiles} An optional numeric vector specifying the percentiles for
-determining the breakpoints of the portfolios. This parameter is mutually
-exclusive with \code{n_portfolios}.
-\item \code{breakpoint_exchanges} An optional character vector specifying exchange
-names to filter the data before computing breakpoints. Exchanges must be
-stored in a column named \code{exchange} in \code{data}. If \code{NULL}, no filtering is
-applied.
-\item \code{smooth_bunching} An optional logical parameter specifying if to
-attempt smoothing non-extreme portfolios if the sorting variable bunches on
-the extremes (TRUE, the default), or not (FALSE). In some cases, smoothing
-will not result in equal-sized portfolios off the edges due to multiple
-clusters. If sufficiently large bunching is detected, \code{percentiles} is
-ignored and equally-spaced portfolios are returned for these cases with a
+\item \code{n_portfolios} An optional integer specifying the number of
+equally sized portfolios to create. This parameter is mutually
+exclusive with \code{percentiles}.
+\item \code{percentiles} An optional numeric vector specifying the
+percentiles for determining the breakpoints of the portfolios. This
+parameter is mutually exclusive with \code{n_portfolios}.
+\item \code{breakpoint_exchanges} An optional character vector
+specifying exchange names to filter the data before computing
+breakpoints. Exchanges must be stored in a column named \code{exchange}
+in \code{data}. If \code{NULL}, no filtering is applied.
+\item \code{smooth_bunching} An optional logical parameter specifying
+if to attempt smoothing non-extreme portfolios if the sorting
+variable bunches on the extremes (TRUE, the default), or not
+(FALSE). In some cases, smoothing will not result in equal-sized
+portfolios off the edges due to multiple clusters. If sufficiently
+large bunching is detected, \code{percentiles} is ignored and
+equally-spaced portfolios are returned for these cases with a
 warning.
-\item \code{min_size_threshold} An optional numeric value between 0 and 1
-(exclusive). When set, stocks with market
-capitalization below this quantile are excluded from breakpoint computation.
-The quantile is computed among \code{breakpoint_exchanges} stocks if specified,
-otherwise among all stocks. Requires a market capitalization column in the
-data (column name determined by \link{data_options}).
+\item \code{min_size_threshold} An optional numeric value between 0
+and 1 (exclusive). When set, stocks with market capitalization
+below this quantile are excluded from breakpoint computation. The
+quantile is computed among \code{breakpoint_exchanges} stocks if
+specified, otherwise among all stocks. Requires a market
+capitalization column in the data (column name determined by
+\link{data_options}).
 }}
 
-\item{data_options}{A named list of \link{data_options} with characters, indicating the column names
-required to run this function. The required column names identify dates. Defaults to \code{exchange = exchange}.}
+\item{data_options}{A named list of \link{data_options} with
+characters, indicating the column names required to run this
+function. The required column names identify dates. Defaults to
+\code{exchange = exchange}.}
 }
 \value{
 A vector of breakpoints of the desired length.
@@ -55,17 +60,17 @@ A vector of breakpoints of the desired length.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Computes breakpoints based on a specified sorting. It can
-optionally filter the data by exchanges before computing the breakpoints.
-The function requires either the number of portfolios to be created or
-specific percentiles for the breakpoints, but not both. The function also
-optionally handles cases where the sorting variable clusters on the edges,
-by assigning all extreme values to the edges and attempting to compute
-equally populated breakpoints with the remaining values.
+optionally filter the data by exchanges before computing the
+breakpoints. The function requires either the number of portfolios
+to be created or specific percentiles for the breakpoints, but not
+both. The function also optionally handles cases where the sorting
+variable clusters on the edges, by assigning all extreme values to
+the edges and attempting to compute equally populated breakpoints
+with the remaining values.
 }
 \note{
-This function will stop and throw an error if both \code{n_portfolios} and
-\code{percentiles} are provided or if neither is provided. Ensure that you only
-use one of these parameters.
+This function will stop and throw an error if both
+\code{n_portfolios} and \code{percentiles} are provided or if neither is
 }
 \examples{
 set.seed(42)

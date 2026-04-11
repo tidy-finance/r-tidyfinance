@@ -11,29 +11,36 @@ compute_long_short_returns(
 )
 }
 \arguments{
-\item{data}{A data frame containing portfolio returns. The data frame must include
-columns for the portfolio identifier, date, and return measurements. The portfolio column should
-indicate different portfolios, and there should be columns for return measurements prefixed with
-"ret_excess".}
+\item{data}{A data frame containing portfolio returns. The data frame
+must include columns for the portfolio identifier, date, and return
+measurements. The portfolio column should indicate different
+portfolios, and there should be columns for return measurements
+prefixed with "ret_excess".}
 
-\item{direction}{A character string specifying the direction of the long-short return calculation.
-It can be either "top_minus_bottom" or "bottom_minus_top". Default is "top_minus_bottom". If set
-to "bottom_minus_top", the return will be computed as (bottom - top).}
+\item{direction}{A character string specifying the direction of the
+long-short return calculation. It can be either "top_minus_bottom"
+or "bottom_minus_top". Default is "top_minus_bottom". If set to
+"bottom_minus_top", the return will be computed as (bottom - top).}
 
-\item{data_options}{A named list of \link{data_options} with characters, indicating the column
-names required to run this function. The required column names identify dates. Defaults to
+\item{data_options}{A named list of \link{data_options} with
+characters, indicating the column names required to run this
+function. The required column names identify dates. Defaults to
 \code{date = date}, \code{portfolio = portfolio} and \code{ret_excess = ret_excess}.}
 }
 \value{
-A data frame with columns for date, return measurement types (from the "ret_measure"
-column), and the computed long-short returns. The data frame is arranged by date and pivoted to
-have return measurement types as columns with their corresponding long-short returns.
+A data frame with columns for date, return measurement types
+(from the "ret_measure" column), and the computed long-short
+returns. The data frame is arranged by date and pivoted to have
+return measurement types as columns with their corresponding
+long-short returns.
 }
 \description{
-Calculates long-short returns based on the returns of portfolios. The long-short
-return is computed as the difference between the returns of the "top" and "bottom" portfolios.
-The direction of the calculation can be adjusted based on whether the return from the "bottom"
-portfolio is subtracted from or added to the return from the "top" portfolio.
+Calculates long-short returns based on the returns of portfolios. The
+long-short return is computed as the difference between the returns
+of the "top" and "bottom" portfolios. The direction of the calculation
+can be adjusted based on whether the return from the "bottom"
+portfolio is subtracted from or added to the return from the "top"
+portfolio.
 }
 \examples{
 set.seed(42)

@@ -50,7 +50,11 @@ library(dplyr)
 # Rolling standard deviation
 set.seed(42)
 df <- tibble(
-  date = seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 24),
+  date = seq.Date(
+    from = as.Date("2020-01-01"),
+    by = "month",
+    length.out = 24
+  ),
   value = rnorm(24)
 )
 
@@ -68,7 +72,11 @@ df |>
 # Rolling last residual from a regression
 set.seed(42)
 df_reg <- tibble(
-  date = seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 60),
+  date = seq.Date(
+    from = as.Date("2020-01-01"),
+    by = "month",
+    length.out = 60
+  ),
   ret_excess = rnorm(60, 0, 0.05),
   mkt_excess = rnorm(60, 0, 0.04),
   smb = rnorm(60, 0, 0.03),
@@ -79,7 +87,9 @@ df_reg |>
   mutate(
     residual = compute_rolling_value(
       pick(everything()),
-      .f = ~ last(lm(ret_excess ~ mkt_excess + smb + hml, data = .x)$residuals),
+      .f = \(x) {
+        last(lm(ret_excess ~ mkt_excess + smb + hml, data = x)$residuals)
+      },
       period = "month",
       periods = 24,
       min_obs = 12

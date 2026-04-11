@@ -21,104 +21,116 @@ compute_portfolio_returns(
 }
 \arguments{
 \item{sorting_data}{A data frame containing the dataset for portfolio
-assignment and return computation. Following CRSP naming conventions, the
-panel data must identify individual stocks with \code{permno} and the time point
-with \code{date}. It must contain columns for the sorting variables and
-\code{ret_excess}. Additionally, \code{mktcap_lag} is needed for value-weighted
-returns.}
+assignment and return computation. Following CRSP naming
+conventions, the panel data must identify individual stocks with
+\code{permno} and the time point with \code{date}. It must contain columns
+for the sorting variables and \code{ret_excess}. Additionally,
+\code{mktcap_lag} is needed for value-weighted returns.}
 
-\item{sorting_variables}{A character vector specifying the column names in
-\code{sorting_data} to be used for sorting and determining portfolio
-assignments. For univariate sorts, provide a single variable. For bivariate
-sorts, provide two variables, where the first string refers to the main
-variable and the second string refers to the secondary ("control")
-variable.}
+\item{sorting_variables}{A character vector specifying the column
+names in \code{sorting_data} to be used for sorting and determining
+portfolio assignments. For univariate sorts, provide a single
+variable. For bivariate sorts, provide two variables, where the
+first string refers to the main variable and the second string
+refers to the secondary ("control") variable.}
 
-\item{sorting_method}{A string specifying the sorting method to be used.
-Possible values are:
+\item{sorting_method}{A string specifying the sorting method to be
+used. Possible values are:
 \itemize{
 \item \code{"univariate"}: For a single sorting variable.
-\item \code{"bivariate-dependent"}: For two sorting variables, where the main
-sort depends on the secondary variable.
-\item \code{"bivariate-independent"}: For two independent sorting variables.
+\item \code{"bivariate-dependent"}: For two sorting variables, where
+the main sort depends on the secondary variable.
+\item \code{"bivariate-independent"}: For two independent sorting
+variables.
 }
 For bivariate sorts, the portfolio returns are averaged over the
-controlling sorting variable (i.e., the second sorting variable) and only
-portfolio returns for the main sorting variable (given as the first element
-of \code{sorting_variable}) are returned.}
+controlling sorting variable (i.e., the second sorting variable)
+and only portfolio returns for the main sorting variable (given as
+the first element of \code{sorting_variable}) are returned.}
 
-\item{rebalancing_month}{An integer between 1 and 12 specifying the month in
-which to form portfolios that are held constant for one year. For example,
-setting it to \code{7} creates portfolios in July that are held constant until
-June of the following year. The default \code{NULL} corresponds to periodic
-rebalancing.}
+\item{rebalancing_month}{An integer between 1 and 12 specifying the
+month in which to form portfolios that are held constant for one
+year. For example, setting it to \code{7} creates portfolios in July
+that are held constant until June of the following year. The
+default \code{NULL} corresponds to periodic rebalancing.}
 
-\item{breakpoint_options_main}{A named list of \link{breakpoint_options} passed to
-\code{breakpoint_function} for the main sorting variable.}
+\item{breakpoint_options_main}{A named list of
+\link{breakpoint_options} passed to \code{breakpoint_function} for the
+main sorting variable.}
 
-\item{breakpoint_options_secondary}{An optional named list of \link{breakpoint_options}
-passed to \code{breakpoint_function} for the secondary sorting variable.}
+\item{breakpoint_options_secondary}{An optional named list of
+\link{breakpoint_options} passed to \code{breakpoint_function} for the
+secondary sorting variable.}
 
-\item{breakpoint_function_main}{A function to compute the main sorting
-variable. The default is set to \link{compute_breakpoints}.}
-
-\item{breakpoint_function_secondary}{A function to compute the secondary
+\item{breakpoint_function_main}{A function to compute the main
 sorting variable. The default is set to \link{compute_breakpoints}.}
 
+\item{breakpoint_function_secondary}{A function to compute the
+secondary sorting variable. The default is set to
+\link{compute_breakpoints}.}
+
 \item{min_portfolio_size}{An integer specifying the minimum number of
-portfolio constituents (default is set to \code{0}, effectively deactivating the
-check). Small portfolios' returns are set to zero.}
+portfolio constituents (default is set to \code{0}, effectively
+deactivating the check). Small portfolios' returns are set to zero.}
 
-\item{cap_weight}{A numeric value between 0 and 1 specifying the percentile
-at which market capitalization is capped per date when computing
-\code{ret_excess_vw_capped}. Defaults to \code{0.8}.}
+\item{cap_weight}{A numeric value between 0 and 1 specifying the
+percentile at which market capitalization is capped per date when
+computing \code{ret_excess_vw_capped}. Defaults to \code{0.8}.}
 
-\item{data_options}{A named list of \link{data_options} with characters, indicating
-the column names required to run this function. The required column names identify dates,
-the stocks, and returns. Defaults to \code{date = date}, \code{id = permno}, and \code{ret_excess = ret_excess}.}
+\item{data_options}{A named list of \link{data_options} with
+characters, indicating the column names required to run this
+function. The required column names identify dates, the stocks,
+and returns. Defaults to \code{date = date}, \code{id = permno}, and
+\code{ret_excess = ret_excess}.}
 
-\item{quiet}{A logical value indicating whether to suppress informational
-messages about missing values in the output panel (default is \code{FALSE}).}
+\item{quiet}{A logical value indicating whether to suppress
+informational messages about missing values in the output panel
+(default is \code{FALSE}).}
 }
 \value{
-A data frame with computed portfolio returns as a complete panel
-(all portfolio-date combinations), containing the following columns:
+A data frame with computed portfolio returns as a complete
+panel (all portfolio-date combinations), containing the following
+columns:
 \itemize{
 \item \code{portfolio}: The portfolio identifier.
 \item \code{date}: The date of the portfolio return.
-\item \code{ret_excess_vw}: The value-weighted excess return of the portfolio
-(only computed if the \code{sorting_data} contains \code{mktcap_lag}). \code{NA} if
-insufficient observations for that portfolio-date.
-\item \code{ret_excess_ew}: The equal-weighted excess return of the portfolio.
-\code{NA} if insufficient observations for that portfolio-date.
-\item \code{ret_excess_vw_capped}: The capped value-weighted excess return of the portfolio
-(only computed if the \code{sorting_data} contains \code{mktcap_lag}). Weights are
-computed using market capitalization capped at the \code{cap_weight}
-percentile per date. \code{NA} if insufficient observations for that
+\item \code{ret_excess_vw}: The value-weighted excess return of the
+portfolio (only computed if the \code{sorting_data} contains
+\code{mktcap_lag}). \code{NA} if insufficient observations for that
 portfolio-date.
+\item \code{ret_excess_ew}: The equal-weighted excess return of the
+portfolio. \code{NA} if insufficient observations for that
+portfolio-date.
+\item \code{ret_excess_vw_capped}: The capped value-weighted excess
+return of the portfolio (only computed if the \code{sorting_data}
+contains \code{mktcap_lag}). Weights are computed using market
+capitalization capped at the \code{cap_weight} percentile per date.
+\code{NA} if insufficient observations for that portfolio-date.
 }
 }
 \description{
-This function computes individual portfolio returns based on specified
-sorting variables and sorting methods. The portfolios can be rebalanced every
-period or on an annual frequency by specifying a rebalancing month, which is
-only applicable at a monthly return frequency. The function supports
-univariate and bivariate sorts, with the latter supporting dependent and
-independent sorting methods.
+This function computes individual portfolio returns based on
+specified sorting variables and sorting methods. The portfolios can
+be rebalanced every period or on an annual frequency by specifying a
+rebalancing month, which is only applicable at a monthly return
+frequency. The function supports univariate and bivariate sorts, with
+the latter supporting dependent and independent sorting methods.
 }
 \details{
-The function checks for consistency in the provided arguments. For
-univariate sorts, a single sorting variable and a corresponding number of
-portfolios must be provided. For bivariate sorts, two sorting variables and
-two corresponding numbers of portfolios (or percentiles) are required. The
-sorting method determines how portfolios are assigned and returns are
-computed. The function handles missing and extreme values appropriately
-based on the specified sorting method and rebalancing frequency.
+The function checks for consistency in the provided
+arguments. For univariate sorts, a single sorting variable and a
+corresponding number of portfolios must be provided. For bivariate
+sorts, two sorting variables and two corresponding numbers of
+portfolios (or percentiles) are required. The sorting method
+determines how portfolios are assigned and returns are computed.
+The function handles missing and extreme values appropriately based
+on the specified sorting method and rebalancing frequency.
 }
 \note{
-Ensure that the \code{sorting_data} contains all the required columns: The
-specified sorting variables and \code{ret_excess}. The function will stop and
-throw an error if any required columns are missing.
+Ensure that the \code{sorting_data} contains all the required
+columns: The specified sorting variables and \code{ret_excess}. The
+function will stop and throw an error if any required columns are
+missing.
 }
 \examples{
 set.seed(42)

@@ -11,6 +11,7 @@
 #'   (a descriptive name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "Fama-French").
 list_supported_types_ff <- function() {
+  # nolint start
   # data_sets_raw <- frenchdata::get_french_data_list()$files_list
   #
   # data_sets_types <- data_sets_raw |>
@@ -632,20 +633,23 @@ list_supported_types_ff <- function() {
     "4 Emerging Market Portfolios Formed on Book-to-Market and Investment (2 x 2)"
   ) |>
     dplyr::mutate(domain = "Fama-French")
+  # nolint end
 }
 
 #' List Supported Legacy Fama-French Dataset Types
 #'
 #' Returns a tibble with the legacy names of initially supported
-#' Fama-French dataset types, including their names and frequencies (daily, weekly, monthly).
-#' Each dataset type is associated with a specific Fama-French model (e.g., 3 factors, 5
-#' factors). Additionally, it annotates each dataset with the domain "Fama-French".
-#' Not included in the exported `list_supported_types()` function.
+#' Fama-French dataset types, including their names and frequencies (daily,
+#' weekly, monthly). Each dataset type is associated with a specific Fama-French
+#' model (e.g., 3 factors, 5 factors). Additionally, it annotates each dataset
+#' with the domain "Fama-French". Not included in the exported
+#' `list_supported_types()` function.
 #'
 #' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (a descriptive name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "Fama-French").
 list_supported_types_ff_legacy <- function() {
+  # nolint start
   tribble(
     ~type                                 ,
     ~dataset_name                         ,
@@ -685,6 +689,7 @@ list_supported_types_ff_legacy <- function() {
     "49 Industry Portfolios [Daily]"
   ) |>
     dplyr::mutate(domain = "Fama-French")
+  # nolint end
 }
 
 #' List Supported Global Q Dataset Types
@@ -699,6 +704,7 @@ list_supported_types_ff_legacy <- function() {
 #'   (the file name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "Global Q").
 list_supported_types_q <- function() {
+  # nolint start
   tribble(
     ~type                        ,
     ~dataset_name                ,
@@ -716,6 +722,7 @@ list_supported_types_q <- function() {
     "q5_factors_annual_2024"
   ) |>
     dplyr::mutate(domain = "Global Q")
+  # nolint end
 }
 
 #' List Supported Macro Predictor Dataset Types
@@ -730,6 +737,7 @@ list_supported_types_q <- function() {
 #'   (the file name of the dataset, which is the same for all types), and
 #'   `domain` (the domain to which the dataset belongs, always "Goyal-Welch").
 list_supported_types_macro_predictors <- function() {
+  # nolint start
   tribble(
     ~type                        ,
     ~dataset_name                ,
@@ -741,6 +749,7 @@ list_supported_types_macro_predictors <- function() {
     "PredictorData2022.xlsx"     ,
   ) |>
     dplyr::mutate(domain = "Goyal-Welch")
+  # nolint end
 }
 
 #' List Supported WRDS Dataset Types
@@ -752,6 +761,7 @@ list_supported_types_macro_predictors <- function() {
 #'   (the file name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "WRDS").
 list_supported_types_wrds <- function() {
+  # nolint start
   tribble(
     ~type                                           ,
     ~dataset_name                                   ,
@@ -771,13 +781,17 @@ list_supported_types_wrds <- function() {
     "trace.trace_enhanced"
   ) |>
     dplyr::mutate(domain = "WRDS")
+  # nolint end
 }
 
 #' List Supported Other Data Types
 #'
-#' Returns a tibble listing the supported other data types and their corresponding dataset names.
+#' Returns a tibble listing the supported other data types and their
+#' corresponding dataset names.
 #'
-#' @returns A tibble with columns \code{type} and \code{dataset_name}, where \code{type} indicates the code used to specify the data source and \code{dataset_name} provides the name of the data source.
+#' @returns A tibble with columns \code{type} and \code{dataset_name}, where
+#' \code{type} indicates the code used to specify the data source and
+#' \code{dataset_name} provides the name of the data source.
 list_supported_types_other <- function() {
   tibble(
     "type" = c(
@@ -819,10 +833,10 @@ list_supported_types_other <- function() {
 #' @param as_vector Logical indicating whether types should be returned as a
 #'   character vector instead of data frame.
 #'
-#' @returns A tibble aggregating all supported dataset types with columns: `type`
-#'   (the type of dataset), `dataset_name` (a descriptive name or file name of
-#'   the dataset), and `domain` (the domain to which the dataset belongs, e.g.,
-#'   "Global Q", "Fama-French", "Goyal-Welch").
+#' @returns A tibble aggregating all supported dataset types with columns:
+#'   `type` (the type of dataset), `dataset_name` (a descriptive name or file
+#'   name of the dataset), and `domain` (the domain to which the dataset
+#'   belongs, e.g., "Global Q", "Fama-French", "Goyal-Welch").
 #'
 #' @export
 #' @examples

@@ -13,34 +13,38 @@ download_data_factors_q(
 )
 }
 \arguments{
-\item{dataset}{The name of the dataset to download
-(e.g., "q5_factors_daily_2023.csv", "q5_factors_monthly_2023.csv").}
+\item{dataset}{The name of the dataset to download (e.g.,
+"q5_factors_daily_2023.csv", "q5_factors_monthly_2023.csv").}
 
-\item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
-specifying the start date for the data. If not provided, the full dataset is returned.}
+\item{start_date}{Optional. A character string or Date object in
+"YYYY-MM-DD" format specifying the start date for the data. If
+not provided, the full dataset is returned.}
 
-\item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD" format
-specifying the end date for the data. If not provided, the full dataset is returned.}
+\item{end_date}{Optional. A character string or Date object in
+"YYYY-MM-DD" format specifying the end date for the data. If not
+provided, the full dataset is returned.}
 
-\item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
+\item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset}
+instead.}
 
 \item{url}{The base URL from which to download the dataset files.}
 }
 \value{
-A tibble with processed factor data, including the date, risk-free
-rate, market excess return, and other factors, filtered by the specified
-date range.
+A tibble with processed factor data, including the date,
+risk-free rate, market excess return, and other factors,
+filtered by the specified date range.
 }
 \description{
-Downloads and processes Global Q factor data based on the specified dataset,
-date range, and source URL. The processing includes date conversion, renaming
-variables to a standardized format, scaling factor values, and filtering by
-the specified date range.
+Downloads and processes Global Q factor data based on the
+specified dataset, date range, and source URL. The processing
+includes date conversion, renaming variables to a standardized
+format, scaling factor values, and filtering by the specified
+date range.
 }
 \examples{
 \donttest{
-  download_data_factors_q("q5_factors_daily_2024", "2020-01-01", "2020-12-31")
-  download_data_factors_q("q5_factors_annual_2024")
+download_data_factors_q("q5_factors_daily_2024", "2020-01-01", "2020-12-31")
+download_data_factors_q("q5_factors_annual_2024")
 }
 }
 \seealso{

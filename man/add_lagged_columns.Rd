@@ -18,46 +18,48 @@ add_lagged_columns(
 \arguments{
 \item{df}{A data frame containing the variables to lag.}
 
-\item{cols}{A character vector specifying the names of the columns to be lagged.
-Each column produces a new column suffixed with \verb{_lag}.}
+\item{cols}{A character vector specifying the names of the columns to be
+lagged. Each column produces a new column suffixed with \verb{_lag}.}
 
-\item{lag}{An integer or a \code{lubridate::periods()} object, e.g., \code{months(1)},
-specifying the minimum lag (inclusive) to apply.}
+\item{lag}{An integer or a \code{lubridate::periods()} object, e.g.,
+\code{months(1)}, specifying the minimum lag (inclusive) to apply.}
 
-\item{max_lag}{An integer or a \code{lubridate::periods()} object specifying the
-maximum lag (inclusive) to apply. Defaults to \code{lag} (exact lag).}
+\item{max_lag}{An integer or a \code{lubridate::periods()} object specifying
+the maximum lag (inclusive) to apply. Defaults to \code{lag} (exact lag).}
 
-\item{by}{An optional character vector specifying grouping columns (e.g., a
-stock identifier). Lagged values are matched within groups. Defaults to \code{NULL}.}
+\item{by}{An optional character vector specifying grouping columns
+(e.g., a stock identifier). Lagged values are matched within groups.
+Defaults to \code{NULL}.}
 
-\item{drop_na}{A logical value. If \code{TRUE}, \code{NA} values in the source columns
-are excluded before matching, so the lookup skips over missing observations.
-Applied independently per column. Defaults to \code{FALSE}.}
+\item{drop_na}{A logical value. If \code{TRUE}, \code{NA} values in the source
+columns are excluded before matching, so the lookup skips over missing
+observations. Applied independently per column. Defaults to \code{FALSE}.}
 
-\item{ff_adjustment}{A logical value. If \code{TRUE}, only the last observation per
-year (within each group defined by \code{by}) is retained as a source for lagged
-values, following Fama-French conventions for annual accounting data.
-Defaults to \code{FALSE}.}
+\item{ff_adjustment}{A logical value. If \code{TRUE}, only the last
+observation per year (within each group defined by \code{by}) is retained
+as a source for lagged values, following Fama-French conventions for
+annual accounting data. Defaults to \code{FALSE}.}
 
-\item{data_options}{A named list of \link{data_options} with characters, indicating
-the column names required to run this function. The required column names identify
-dates. Defaults to \code{date = date}.}
+\item{data_options}{A named list of \link{data_options} with characters,
+indicating the column names required to run this function. The
+required column names identify dates. Defaults to \code{date = date}.}
 }
 \value{
-A data frame with the same rows as \code{df} and new columns appended,
-each suffixed with \verb{_lag}. Unmatched rows receive \code{NA} in the lagged columns.
+A data frame with the same rows as \code{df} and new columns
+appended, each suffixed with \verb{_lag}. Unmatched rows receive \code{NA} in
+the lagged columns.
 }
 \description{
 Appends lagged versions of specified columns to a data frame using a
 join-based approach.
 
-When \code{lag == max_lag} (the default), an equi-join is used: source dates are
-shifted forward by \code{lag} and matched exactly. When \code{lag < max_lag}, an
-inequality join is used: for each row, the most recent source value within the
-window \verb{[date - max_lag, date - lag]} is selected.
+When \code{lag == max_lag} (the default), an equi-join is used: source dates
+are shifted forward by \code{lag} and matched exactly. When \code{lag < max_lag},
+an inequality join is used: for each row, the most recent source value
+within the window \verb{[date - max_lag, date - lag]} is selected.
 
-The combination of \code{by} and date columns must be unique in \code{df}. If \code{by} is
-\code{NULL}, dates alone must be unique.
+The combination of \code{by} and date columns must be unique in \code{df}. If \code{by}
+is \code{NULL}, dates alone must be unique.
 }
 \examples{
 set.seed(42)

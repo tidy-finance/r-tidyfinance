@@ -11,9 +11,9 @@
 #'   username and password as environment variables `WRDS_USER` and
 #'   `WRDS_PASSWORD`, respectively, before using this function.
 #'
-#' @returns An object of class `DBIConnection` representing the connection to the
-#'   WRDS database. This object can be used with other DBI-compliant functions
-#'   to interact with the database.
+#' @returns An object of class `DBIConnection` representing the connection to
+#'   the WRDS database. This object can be used with other DBI-compliant
+#'   functions to interact with the database.
 #'
 #' @seealso [RPostgres::Postgres()], [DBI::dbDisconnect()] for more
 #'   information on managing database connections.
@@ -35,7 +35,10 @@ get_wrds_connection <- function() {
     !nzchar(Sys.getenv("WRDS_USER")) || !nzchar(Sys.getenv("WRDS_PASSWORD"))
   ) {
     cli::cli_inform(
-      "WRDS credentials not found. Please set them using {.fn set_wrds_credentials}."
+      paste(
+        "WRDS credentials not found. Please set them using",
+        "{.fn set_wrds_credentials}."
+      )
     )
   }
 
