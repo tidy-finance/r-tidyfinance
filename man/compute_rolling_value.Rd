@@ -108,7 +108,6 @@ df_resid |>
 \seealso{
 Other rolling and lagging functions: 
 \code{\link{add_lagged_columns}()},
-\code{\link{join_lagged_values}()},
-\code{\link{lag_column}()}
+\code{\link{join_lagged_values}()}
 }
 \concept{rolling and lagging functions}
