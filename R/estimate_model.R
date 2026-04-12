@@ -172,8 +172,8 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
   }
 
   if (return_multiple) {
-    return(result)
+    result
   } else {
-    return(result[[1]])
+    result[[1]]
   }
 }

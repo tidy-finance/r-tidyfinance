@@ -128,7 +128,7 @@ test_that("Daily data test: correctly handles daily data grouped into months", {
     mkt_excess = rnorm(732, 0, 0.02)
   )
 
-  data <- data %>%
+  data <- data |>
     mutate(date = lubridate::floor_date(date, "month"))
 
   result <- estimate_betas(

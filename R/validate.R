@@ -29,7 +29,7 @@ validate_dates <- function(start_date, end_date, use_default_range = FALSE) {
           "downloading large amounts of data."
         )
       ))
-      return(list(start_date = start_date, end_date = end_date))
+      list(start_date = start_date, end_date = end_date)
     } else {
       cli::cli_inform(
         paste(
@@ -37,7 +37,7 @@ validate_dates <- function(start_date, end_date, use_default_range = FALSE) {
           "Returning the full data set."
         )
       )
-      return(list(start_date = NULL, end_date = NULL))
+      list(start_date = NULL, end_date = NULL)
     }
   } else {
     start_date <- as.Date(start_date)
@@ -45,6 +45,6 @@ validate_dates <- function(start_date, end_date, use_default_range = FALSE) {
     if (start_date > end_date) {
       cli::cli_abort("{.arg start_date} cannot be after {.arg end_date}.")
     }
-    return(list(start_date = start_date, end_date = end_date))
+    list(start_date = start_date, end_date = end_date)
   }
 }

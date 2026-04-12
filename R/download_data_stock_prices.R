@@ -106,7 +106,8 @@ download_data_stock_prices <- function(
 
       processed_data[[j]] <- processed_data_symbol
     } else {
-      error_message <- httr2::resp_body_json(response)$chart$error
+      error_message <- # nolint: object_usage_linter.
+        httr2::resp_body_json(response)$chart$error
       cli::cli_warn(
         "Failed to retrieve data for symbol {symbols[j]} with",
         "status code {response$status_code} ({error_message$code}):",

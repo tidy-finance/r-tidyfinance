@@ -64,7 +64,7 @@ download_data_osap <- function(
       filter(between(date, start_date, end_date))
   }
 
-  return(processed_data)
+  processed_data
 }
 
 to_snake_case <- function(x) {

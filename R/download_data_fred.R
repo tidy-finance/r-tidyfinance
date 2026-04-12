@@ -109,5 +109,5 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
       filter(date >= start_date & date <= end_date)
   }
 
-  return(fred_processed)
+  fred_processed
 }

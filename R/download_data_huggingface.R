@@ -378,7 +378,7 @@ download_factor_library_ids <- function(ids) {
     dplyr::filter(is.na(.data$url))
 
   if (nrow(missing_urls) > 0) {
-    missing_keys <- missing_urls |>
+    missing_keys <- missing_urls |> # nolint: object_usage_linter
       dplyr::inner_join(
         id_grid |>
           dplyr::select("id", "sorting_variable", "sorting_variable_lag"),
