@@ -13,22 +13,27 @@ test_that("download_data_constituents works for a supported index", {
   expect_true(all(!is.na(constituents_data$name)))
 })
 
-test_that("download_data_constituents handles unavailable resource gracefully", {
-  mock_list_supported_indexes <- function() {
-    tibble::tibble(
-      index = c("SAMPLE_INDEX"),
-      url = c("http://nonexistent-url.example.com"),
-      skip = c(0)
-    )
-  }
-
-  with_mocked_bindings(
-    list_supported_indexes = mock_list_supported_indexes,
-    {
-      expect_message(
-        download_data_constituents(index = "SAMPLE_INDEX"),
-        regex = "The resource may not be available, or the URL may have changed"
+test_that(
+  paste("download_data_constituents handles unavailable resource gracefully"),
+  {
+    mock_list_supported_indexes <- function() {
+      tibble::tibble(
+        index = c("SAMPLE_INDEX"),
+        url = c("http://nonexistent-url.example.com"),
+        skip = c(0)
       )
     }
-  )
-})
+
+    with_mocked_bindings(
+      list_supported_indexes = mock_list_supported_indexes,
+      {
+        expect_message(
+          download_data_constituents(index = "SAMPLE_INDEX"),
+          regex = paste(
+            "The resource may not be available, or the URL may have changed"
+          )
+        )
+      }
+    )
+  }
+)

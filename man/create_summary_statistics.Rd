@@ -19,8 +19,8 @@ create_summary_statistics(
 to summarize. These variables must be either numeric, integer, or logical.}
 
 \item{by}{An optional unquoted variable name to group the data before
-summarizing. If \code{NULL} (the default), summary statistics are computed across
-all observations.}
+summarizing. If \code{NULL} (the default), summary statistics are computed
+across all observations.}
 
 \item{detail}{A logical flag indicating whether to compute detailed summary
 statistics including additional quantiles. Defaults to FALSE, which

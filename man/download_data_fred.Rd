@@ -7,11 +7,14 @@
 download_data_fred(series, start_date = NULL, end_date = NULL)
 }
 \arguments{
-\item{series}{A character vector specifying the FRED series ID to download.}
+\item{series}{A character vector specifying the FRED series ID to
+download.}
 
-\item{start_date}{The start date for filtering the data, in "YYYY-MM-DD" format.}
+\item{start_date}{The start date for filtering the data, in
+"YYYY-MM-DD" format.}
 
-\item{end_date}{The end date for filtering the data, in "YYYY-MM-DD" format.}
+\item{end_date}{The end date for filtering the data, in
+"YYYY-MM-DD" format.}
 }
 \value{
 A tibble containing the processed data with three columns:
@@ -22,17 +25,19 @@ A tibble containing the processed data with three columns:
 }
 }
 \description{
-Downloads a specified data series from the Federal Reserve Economic Data (FRED)
-website, processes the data, and returns it as a tibble.
+Downloads a specified data series from the Federal Reserve Economic
+Data (FRED) website, processes the data, and returns it as a tibble.
 }
 \details{
-Constructs the URL based on the provided FRED series ID, performs an HTTP GET
-request to download the data in CSV format, and processes it to a tidy tibble format. The
-resulting tibble includes the date, value, and the series ID.
+Constructs the URL based on the provided FRED series ID, performs
+an HTTP GET request to download the data in CSV format, and
+processes it to a tidy tibble format. The resulting tibble includes
+the date, value, and the series ID.
 
-This approach is inspired by \code{quantmod::getSymbolsFRED()} which uses a different wrapper around
-the same FRED download data site. If you want to systematically download FRED data via API,
-please consider using \code{fredr} package.
+This approach is inspired by \code{quantmod::getSymbolsFRED()} which
+uses a different wrapper around the same FRED download data site.
+If you want to systematically download FRED data via API, please
+consider using the \code{fredr} package.
 }
 \examples{
 \donttest{

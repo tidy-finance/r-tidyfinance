@@ -15,7 +15,7 @@ mock_breakpoint_function <- function(
   quantile(data[[sorting_variable]], probs = probs, na.rm = TRUE, names = FALSE)
 }
 
-# A breakpoint function that uses explicit percentiles (like breakpoint_options(percentiles = ...))
+# A breakpoint function that uses explicit percentiles
 mock_breakpoint_percentiles <- function(
   data,
   sorting_variable,
@@ -89,7 +89,7 @@ test_that("all portfolio buckets are populated with sufficient distinct data", {
   expect_equal(sort(unique(result)), 1:5)
 })
 
-test_that("higher sorting variable values get higher or equal portfolio indices", {
+test_that("higher sorting variable values get higher or equal portfolios", {
   data <- data.frame(id = 1:500, value = seq_len(500))
   result <- assign_portfolio(
     data,
@@ -153,7 +153,8 @@ test_that("two distinct values with 2 portfolios produces two groups", {
     breakpoint_function = mock_breakpoint_function
   )
   expect_true(all(result %in% c(1, 2)))
-  # Lower values should be in portfolio 1, higher in portfolio 2 (or equal due to all.inside)
+  # Lower values should be in portfolio 1, higher in portfolio 2
+  # (or equal due to all.inside)
   expect_true(all(result[data$value == 1] <= result[data$value == 2]))
 })
 
@@ -172,11 +173,12 @@ test_that("single-row data frame with constant variable triggers warning", {
 })
 
 
-test_that("warning is issued when clusters reduce the number of effective portfolios", {
+test_that("warning is issued when clusters reduce the number of portfolios", {
   # Data heavily clustered: only 2 distinct values but requesting 5 portfolios
   data <- data.frame(id = 1:100, value = rep(c(1, 100), each = 50))
 
-  # Mock that returns 6 breakpoints (for 5 portfolios) but clustering collapses them
+  # Mock that returns 6 breakpoints (for 5 portfolios) but clustering collapses
+  # them
   mock_bp_5 <- function(data, sorting_variable, bp_options, data_options) {
     c(1, 20, 40, 60, 80, 100)
   }

@@ -1,29 +1,33 @@
 #' Create Breakpoint Options for Portfolio Sorting
 #'
 #' Generates a structured list of options for defining breakpoints in
-#' portfolio sorting. It includes parameters for the number of portfolios, percentile
-#' thresholds, exchange-specific breakpoints, and smooth bunching, along with additional
-#' optional parameters.
+#' portfolio sorting. It includes parameters for the number of portfolios,
+#' percentile thresholds, exchange-specific breakpoints, and smooth
+#' bunching, along with additional optional parameters.
 #'
-#' @param n_portfolios Integer, optional. The number of portfolios to create. Must be a
-#'  positive integer. If not provided, defaults to `NULL`.
-#' @param percentiles Numeric vector, optional. A vector of percentile thresholds for
-#'  defining breakpoints. Each value should be between 0 and 1. If not provided, defaults
-#'  to `NULL`.
-#' @param breakpoint_exchanges Character, optional. A non-empty string specifying the
-#'  exchange for which the breakpoints apply. If not provided, defaults to `NULL`.
-#' @param smooth_bunching Logical, optional. Indicates whether smooth bunching should
-#'  be applied. Defaults to `FALSE`.
-#' @param min_size_threshold Numeric, optional. When set to a value between
-#'  0 and 1, stocks with market capitalization below this quantile are excluded from
-#'  breakpoint computation. The quantile is computed among `breakpoint_exchanges`
-#'  stocks if specified, otherwise among all stocks. Requires a market capitalization
-#'  column in the data (see \link{data_options}). Defaults to `NULL` (no size filtering).
-#' @param ... Additional optional arguments. These will be captured in the resulting
-#'  structure as a list.
+#' @param n_portfolios Integer, optional. The number of portfolios to
+#'  create. Must be a positive integer. If not provided, defaults to
+#'  `NULL`.
+#' @param percentiles Numeric vector, optional. A vector of percentile
+#'  thresholds for defining breakpoints. Each value should be between 0
+#'  and 1. If not provided, defaults to `NULL`.
+#' @param breakpoint_exchanges Character, optional. A non-empty string
+#'  specifying the exchange for which the breakpoints apply. If not
+#'  provided, defaults to `NULL`.
+#' @param smooth_bunching Logical, optional. Indicates whether smooth
+#'  bunching should be applied. Defaults to `FALSE`.
+#' @param min_size_threshold Numeric, optional. When set to a value
+#'  between 0 and 1, stocks with market capitalization below this quantile
+#'  are excluded from breakpoint computation. The quantile is computed
+#'  among `breakpoint_exchanges` stocks if specified, otherwise among all
+#'  stocks. Requires a market capitalization column in the data (see
+#'  \link{data_options}). Defaults to `NULL` (no size filtering).
+#' @param ... Additional optional arguments. These will be captured in the
+#'  resulting structure as a list.
 #'
-#' @returns A list of class `"tidyfinance_breakpoint_options"` containing the provided
-#' breakpoint options, including any additional arguments passed via `...`.
+#' @returns A list of class `"tidyfinance_breakpoint_options"` containing
+#' the provided breakpoint options, including any additional arguments
+#' passed via `...`.
 #'
 #' @family portfolio functions
 #' @export
@@ -90,7 +94,10 @@ breakpoint_options <- function(
         min_size_threshold >= 1)
   ) {
     cli::cli_abort(
-      "{.arg min_size_threshold} must be NULL or a single numeric value between 0 and 1 (exclusive)."
+      paste(
+        "{.arg min_size_threshold} must be NULL or a single numeric value",
+        "between 0 and 1 (exclusive)."
+      )
     )
   }
 

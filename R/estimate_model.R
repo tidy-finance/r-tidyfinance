@@ -68,26 +68,34 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
   invalid_outputs <- setdiff(output, valid_outputs)
   if (length(invalid_outputs) > 0) {
     cli::cli_abort(
-      "{.arg output} must contain one or more of {.val {valid_outputs}}, not {.val {invalid_outputs}}."
+      paste(
+        "{.arg output} must contain one or more of {.val {valid_outputs}},",
+        "not {.val {invalid_outputs}}."
+      )
     )
   }
 
   model_parts <- strsplit(model, "~", fixed = TRUE)[[1]]
-  response_var <- trimws(model_parts[1])
   independent_vars <- strsplit(trimws(model_parts[2]), "[ +]")[[1]]
   independent_vars <- independent_vars[nzchar(independent_vars)]
   independent_vars <- independent_vars[!independent_vars %in% c("-", "1")]
 
   if ("intercept" %in% independent_vars) {
     cli::cli_abort(
-      "None of the columns in {.arg model} may be called 'intercept'. Please rename the column and try again."
+      paste(
+        "None of the columns in {.arg model} may be called 'intercept'.",
+        "Please rename the column and try again."
+      )
     )
   }
 
   missing_vars <- independent_vars[!independent_vars %in% names(data)]
   if (length(missing_vars) > 0) {
     cli::cli_abort(
-      "The following independent variables are missing in the data: {toString(missing_vars)}."
+      paste(
+        "The following independent variables are missing in the data:",
+        "{toString(missing_vars)}."
+      )
     )
   }
 
@@ -164,8 +172,8 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
   }
 
   if (return_multiple) {
-    return(result)
+    result
   } else {
-    return(result[[1]])
+    result[[1]]
   }
 }

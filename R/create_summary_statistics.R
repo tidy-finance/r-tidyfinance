@@ -24,8 +24,8 @@
 #' @param ... Comma-separated list of unquoted variable names in the data frame
 #'   to summarize. These variables must be either numeric, integer, or logical.
 #' @param by An optional unquoted variable name to group the data before
-#'   summarizing. If `NULL` (the default), summary statistics are computed across
-#'   all observations.
+#'   summarizing. If `NULL` (the default), summary statistics are computed
+#'   across all observations.
 #' @param detail A logical flag indicating whether to compute detailed summary
 #'   statistics including additional quantiles. Defaults to FALSE, which
 #'   computes basic statistics (n, mean, sd, min, median, max). When TRUE,

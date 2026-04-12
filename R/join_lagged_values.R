@@ -2,26 +2,32 @@
 #'
 #' @description `r lifecycle::badge('experimental')`
 #'
-#' Joins lagged values of selected variables from one dataset (`new_data`)
-#' into another (`original_data`), based on date ranges defined by `min_lag`
-#' and `max_lag`. Unlike [add_lagged_columns()], this function supports joining
-#' across data frames with different date grids (e.g., monthly source data
-#' into quarterly target data).
+#' Joins lagged values of selected variables from one dataset
+#' (`new_data`) into another (`original_data`), based on date ranges
+#' defined by `min_lag` and `max_lag`. Unlike [add_lagged_columns()],
+#' this function supports joining across data frames with different
+#' date grids (e.g., monthly source data into quarterly target data).
 #'
 #' @param original_data A data frame containing the target panel data.
-#' @param new_data A data frame containing the source variables to lag and merge.
-#'  All columns besides `id_keys` and the date column will be lagged and joined.
-#' @param id_keys A character vector specifying the identifier column(s).
-#' @param min_lag A `lubridate::Period` specifying the lower lag bound (inclusive).
-#' @param max_lag A `lubridate::Period` specifying the upper lag bound (inclusive).
-#' @param ff_adjustment Logical; if `TRUE`, keeps only the last observation per
-#'  identifier and year before lagging (Fama–French convention). Defaults to `FALSE`.
-#' @param data_options A list of class `tidyfinance_data_options` (created via
-#'  [data_options()]) specifying column name mappings. The `date` element is used
-#'  to identify the date column. Uses [data_options()] defaults if `NULL`.
+#' @param new_data A data frame containing the source variables to lag
+#'  and merge. All columns besides `id_keys` and the date column will
+#'  be lagged and joined.
+#' @param id_keys A character vector specifying the identifier
+#'  column(s).
+#' @param min_lag A `lubridate::Period` specifying the lower lag bound
+#'  (inclusive).
+#' @param max_lag A `lubridate::Period` specifying the upper lag bound
+#'  (inclusive).
+#' @param ff_adjustment Logical; if `TRUE`, keeps only the last
+#'  observation per identifier and year before lagging (Fama–French
+#'  convention). Defaults to `FALSE`.
+#' @param data_options A list of class `tidyfinance_data_options`
+#'  (created via [data_options()]) specifying column name mappings.
+#'  The `date` element is used to identify the date column. Uses
+#'  [data_options()] defaults if `NULL`.
 #'
-#' @returns A data frame with all columns from `original_data` plus the lagged
-#'  columns from `new_data` (keeping their original names).
+#' @returns A data frame with all columns from `original_data` plus
+#'  the lagged columns from `new_data` (keeping their original names).
 #' @family rolling and lagging functions
 #' @export
 #'
@@ -61,7 +67,10 @@ join_lagged_values <- function(
 
   if (!is.character(id_keys)) {
     cli::cli_abort(
-      "{.arg id_keys} must be a character vector, not {.obj_type_friendly {id_keys}}."
+      paste(
+        "{.arg id_keys} must be a character vector,",
+        "not {.obj_type_friendly {id_keys}}."
+      )
     )
   }
   if (!id_date %in% names(original_data)) {
@@ -78,7 +87,10 @@ join_lagged_values <- function(
   missing_keys_original <- setdiff(id_keys, names(original_data))
   if (length(missing_keys_original) > 0) {
     cli::cli_abort(
-      "{.arg original_data} is missing id column{?s}: {.field {missing_keys_original}}."
+      paste(
+        "{.arg original_data} is missing id column{?s}:",
+        "{.field {missing_keys_original}}."
+      )
     )
   }
 
@@ -95,7 +107,10 @@ join_lagged_values <- function(
 
   if (length(new_column_names) == 0) {
     cli::cli_abort(
-      "{.arg new_data} must contain columns besides {.field {id_keys}} and {.field {id_date}}."
+      paste(
+        "{.arg new_data} must contain columns besides {.field {id_keys}} and",
+        "{.field {id_date}}."
+      )
     )
   }
 

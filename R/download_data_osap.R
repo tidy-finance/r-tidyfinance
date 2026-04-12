@@ -1,25 +1,33 @@
 #' Download and Process Open Source Asset Pricing Data
 #'
-#' Downloads the data from [Open Source Asset Pricing](https://www.openassetpricing.com/data/)
-#' from Google Sheets using a specified sheet ID, processes the data by converting column names to
-#' snake_case, and optionally filters the data based on a provided date range.
+#' Downloads the data from
+#' [Open Source Asset Pricing](https://www.openassetpricing.com/data/)
+#' from Google Sheets using a specified sheet ID, processes the data
+#' by converting column names to snake_case, and optionally filters
+#' the data based on a provided date range.
 #'
-#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
-#'   specifying the start date for the data. If not provided, the full dataset is returned.
-#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
-#'   specifying the end date for the data. If not provided, the full dataset is returned.
-#' @param sheet_id A character string representing the Google Sheet ID from which to download the data.
-#' Default is `"1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"`.
+#' @param start_date Optional. A character string or Date object in
+#'   "YYYY-MM-DD" format specifying the start date for the data. If
+#'   not provided, the full dataset is returned.
+#' @param end_date Optional. A character string or Date object in
+#'   "YYYY-MM-DD" format specifying the end date for the data. If not
+#'   provided, the full dataset is returned.
+#' @param sheet_id A character string representing the Google Sheet ID
+#'   from which to download the data. Default is
+#'   `"1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"`.
 #'
-#' @returns A tibble containing the processed data. The column names are converted to snake_case,
-#' and the data is filtered by the specified date range if `start_date` and `end_date` are provided.
+#' @returns A tibble containing the processed data. The column names
+#'   are converted to snake_case, and the data is filtered by the
+#'   specified date range if `start_date` and `end_date` are provided.
 #'
 #' @family download functions
 #' @export
 #'
 #' @examples
 #' \donttest{
-#'   osap <- download_data_osap(start_date = "2020-01-01", end_date = "2020-06-30")
+#'   osap <- download_data_osap(
+#'     start_date = "2020-01-01", end_date = "2020-06-30"
+#'   )
 #' }
 download_data_osap <- function(
   start_date = NULL,
@@ -56,7 +64,7 @@ download_data_osap <- function(
       filter(between(date, start_date, end_date))
   }
 
-  return(processed_data)
+  processed_data
 }
 
 to_snake_case <- function(x) {
@@ -65,5 +73,5 @@ to_snake_case <- function(x) {
   x <- tolower(x)
   x <- gsub("_+", "_", x)
   x <- gsub("^_|_$", "", x)
-  return(x)
+  x
 }

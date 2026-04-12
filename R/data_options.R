@@ -1,21 +1,28 @@
 #' Create Data Options
 #'
 #' Creates a list of data options used in financial data analysis,
-#' specifically for TidyFinance-related functions. It allows users to specify
-#' key parameters such as `id`, `date`, `exchange`, `mktcap_lag`, and `ret_excess`
-#' along with other additional options passed through `...`.
+#' specifically for TidyFinance-related functions. It allows users to
+#' specify key parameters such as `id`, `date`, `exchange`, `mktcap_lag`,
+#' and `ret_excess` along with other additional options passed through
+#' `...`.
 #'
-#' @param id A character string representing the identifier variable (e.g., "permno").
-#' @param date A character string representing the date variable (e.g., "date").
-#' @param exchange A character string representing the exchange variable (e.g., "exchange").
-#' @param mktcap_lag A character string representing the market capitalization lag variable
-#'  (e.g., "mktcap_lag").
-#' @param ret_excess A character string representing the excess return variable
-#'  (e.g., "ret_excess").
-#' @param portfolio A character string representing the portfolio variable (e.g., "portfolio").
-#' @param ... Additional arguments to be included in the data options list.
+#' @param id A character string representing the identifier variable
+#'  (e.g., "permno").
+#' @param date A character string representing the date variable (e.g.,
+#'  "date").
+#' @param exchange A character string representing the exchange variable
+#'  (e.g., "exchange").
+#' @param mktcap_lag A character string representing the market
+#'  capitalization lag variable (e.g., "mktcap_lag").
+#' @param ret_excess A character string representing the excess return
+#'  variable (e.g., "ret_excess").
+#' @param portfolio A character string representing the portfolio
+#'  variable (e.g., "portfolio").
+#' @param ... Additional arguments to be included in the data options
+#'  list.
 #'
-#' @returns A list of class `tidyfinance_data_options` containing the specified data options.
+#' @returns A list of class `tidyfinance_data_options` containing the
+#'  specified data options.
 #'
 #' @family portfolio functions
 #' @export

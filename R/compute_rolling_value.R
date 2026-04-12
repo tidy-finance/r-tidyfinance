@@ -31,7 +31,11 @@
 #' # Rolling standard deviation
 #' set.seed(42)
 #' df <- tibble(
-#'   date = seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 24),
+#'   date = seq.Date(
+#'     from = as.Date("2020-01-01"),
+#'     by = "month",
+#'     length.out = 24
+#'   ),
 #'   value = rnorm(24)
 #' )
 #'
@@ -49,7 +53,11 @@
 #' # Rolling last residual from a regression
 #' set.seed(42)
 #' df_reg <- tibble(
-#'   date = seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 60),
+#'   date = seq.Date(
+#'     from = as.Date("2020-01-01"),
+#'     by = "month",
+#'     length.out = 60
+#'   ),
 #'   ret_excess = rnorm(60, 0, 0.05),
 #'   mkt_excess = rnorm(60, 0, 0.04),
 #'   smb = rnorm(60, 0, 0.03),
@@ -60,7 +68,9 @@
 #'   mutate(
 #'     residual = compute_rolling_value(
 #'       pick(everything()),
-#'       .f = ~ last(lm(ret_excess ~ mkt_excess + smb + hml, data = .x)$residuals),
+#'       .f = \(x) {
+#'         last(lm(ret_excess ~ mkt_excess + smb + hml, data = x)$residuals)
+#'       },
 #'       period = "month",
 #'       periods = 24,
 #'       min_obs = 12
@@ -70,7 +80,11 @@
 #' # Rolling cumulative-return-to-SD ratio
 #' set.seed(42)
 #' df_resid <- tibble(
-#'   date = seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = 24),
+#'   date = seq.Date(
+#'     from = as.Date("2020-01-01"),
+#'     by = "month",
+#'     length.out = 24
+#'   ),
 #'   int_roll_residual = rnorm(24, 0, 0.02)
 #' )
 #'
@@ -100,7 +114,10 @@ compute_rolling_value <- function(
 
   if (!is.character(date_col) || length(date_col) != 1 || is.na(date_col)) {
     cli::cli_abort(
-      "{.field date} in {.arg data_options} must be a single non-missing string, not {.obj_type_friendly {date_col}}."
+      paste(
+        "{.field date} in {.arg data_options} must be a single non-missing",
+        "string, not {.obj_type_friendly {date_col}}."
+      )
     )
   }
 
@@ -109,12 +126,18 @@ compute_rolling_value <- function(
   }
   if (!inherits(data[[date_col]], "Date")) {
     cli::cli_abort(
-      "The {.field {date_col}} column must be of class {.cls Date}, not {.cls {class(data[[date_col]])}}."
+      paste(
+        "The {.field {date_col}} column must be of class {.cls Date},",
+        "not {.cls {class(data[[date_col]])}}."
+      )
     )
   }
   if (!is.character(period) || length(period) != 1) {
     cli::cli_abort(
-      "{.arg period} must be a single string, not {.obj_type_friendly {period}}."
+      paste(
+        "{.arg period} must be a single string,",
+        "not {.obj_type_friendly {period}}."
+      )
     )
   }
 

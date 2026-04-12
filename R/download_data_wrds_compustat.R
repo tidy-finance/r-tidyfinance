@@ -2,35 +2,47 @@
 #'
 #' Downloads financial data from the WRDS Compustat database for a
 #' given dataset, start date, and end date. It filters the data
-#' according to industry format, data format, and consolidation level, and
-#' returns the most current data for each reporting period. Additionally, the
-#' annual data also includes the calculated book equity (be),
-#' operating profitability (op), and investment (inv) for each company.
+#' according to industry format, data format, and consolidation level,
+#' and returns the most current data for each reporting period.
+#' Additionally, the annual data also includes the calculated book
+#' equity (be), operating profitability (op), and investment (inv)
+#' for each company.
 #'
-#' @param dataset The dataset to download ("compustat_annual" or "compustat_quarterly").
-#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
-#'   specifying the start date for the data. If not provided, a subset of the dataset is returned.
-#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
-#'   specifying the end date for the data. If not provided, a subset of the dataset is returned.
-#' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
-#' @param additional_columns Additional columns from the Compustat table
-#'   as a character vector.
-#' @param only_us A logical indicating whether only US firms should be returned
-#'   (i.e., excluding Canadian firms).
+#' @param dataset The dataset to download ("compustat_annual" or
+#'   "compustat_quarterly").
+#' @param start_date Optional. A character string or Date object in
+#'   "YYYY-MM-DD" format specifying the start date for the data. If
+#'   not provided, a subset of the dataset is returned.
+#' @param end_date Optional. A character string or Date object in
+#'   "YYYY-MM-DD" format specifying the end date for the data. If not
+#'   provided, a subset of the dataset is returned.
+#' @param type `r lifecycle::badge("deprecated")` Use `dataset`
+#'   instead.
+#' @param additional_columns Additional columns from the Compustat
+#'   table as a character vector.
+#' @param only_us A logical indicating whether only US firms should be
+#'   returned (i.e., excluding Canadian firms).
 #'
-#' @returns A data frame with financial data for the specified period, including
-#'   variables for book equity (be), operating profitability (op), investment
-#'   (inv), and others.
+#' @returns A data frame with financial data for the specified period,
+#'   including variables for book equity (be), operating profitability
+#'   (op), investment (inv), and others.
 #'
 #' @family WRDS functions
 #' @export
 #' @examples
 #' \dontrun{
-#'   download_data_wrds_compustat("compustat_annual", "2020-01-01", "2020-12-31")
-#'   download_data_wrds_compustat("compustat_quarterly", "2020-01-01", "2020-12-31")
+#' download_data_wrds_compustat("compustat_annual", "2020-01-01", "2020-12-31")
+#' download_data_wrds_compustat(
+#'   "compustat_quarterly",
+#'   "2020-01-01",
+#'   "2020-12-31"
+#' )
 #'
 #'   # Add additional columns
-#'   download_data_wrds_compustat("compustat_annual", additional_columns = c("aodo", "aldo"))
+#' download_data_wrds_compustat(
+#'   "compustat_annual",
+#'   additional_columns = c("aodo", "aldo")
+#' )
 #' }
 download_data_wrds_compustat <- function(
   dataset = NULL,
@@ -57,7 +69,8 @@ download_data_wrds_compustat <- function(
       what = "download_data_wrds_compustat(type)",
       details = paste0(
         "The `type` argument is deprecated. ",
-        "Use `dataset` instead (e.g., 'compustat_annual' instead of 'wrds_compustat_annual')."
+        "Use `dataset` instead (e.g., 'compustat_annual' instead of",
+        "'wrds_compustat_annual')."
       )
     )
     dataset <- sub("^wrds_", "", dataset)
@@ -110,7 +123,11 @@ download_data_wrds_compustat <- function(
         curcd,
         all_of(additional_columns_safe)
       ) |>
-      {\(x) if (has_pi) mutate(x, pi = sql('"pi"')) else x}() |>
+      # nolint start
+      {
+        \(x) if (has_pi) mutate(x, pi = sql('"pi"')) else x
+      }() |>
+      # nolint end
       collect()
 
     disconnect_connection(con)

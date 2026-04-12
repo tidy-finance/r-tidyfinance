@@ -7,7 +7,8 @@
 #' @param path The file path where the SQLite database should be saved.
 #' @param url The URL where the SQLite database is stored.
 #'
-#' @returns Invisible `NULL`. Side effect: downloads a file to the specified path.
+#' @returns Invisible `NULL`. Side effect: downloads a file to the specified
+#'   path.
 #'
 #' @family WRDS functions
 #' @export
@@ -30,7 +31,10 @@ create_wrds_dummy_database <- function(
 
   if (file.exists(path)) {
     response <- readline(
-      prompt = "The database file already exists at this path. Do you want to replace it? (Y/n): "
+      prompt = paste(
+        "The database file already exists at this path.",
+        "Do you want to replace it? (Y/n): "
+      )
     )
     if (tolower(response) != "y") {
       cli::cli_inform("Operation aborted by the user.")
@@ -39,12 +43,13 @@ create_wrds_dummy_database <- function(
   }
 
   handle_download_error(
-    function()
+    function() {
       suppressWarnings(utils::download.file(
         url = url,
         destfile = path,
         quiet = TRUE
       ))
+    }
   )
 
   if (file.exists(path)) {

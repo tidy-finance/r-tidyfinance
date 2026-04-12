@@ -15,7 +15,10 @@ check_supported_type <- function(type) {
   supported_types_legacy <- list_supported_types_ff_legacy()$type
   if (!any(type %in% c(supported_types, supported_types_legacy))) {
     cli::cli_abort(
-      "Unsupported {.arg type} specified. Call the function {.fn list_supported_types} to get all supported types."
+      paste(
+        "Unsupported {.arg type} specified. Call the function",
+        "{.fn list_supported_types} to get all supported types."
+      )
     )
   }
 }

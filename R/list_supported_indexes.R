@@ -1,14 +1,15 @@
 #' List Supported Indexes
 #'
 #' Returns a tibble containing information about supported financial indexes.
-#' Each index is associated with a URL that points to a CSV file containing the holdings of the index.
-#' Additionally, each index has a corresponding `skip` value, which indicates the number of lines
-#' to skip when reading the CSV file.
+#' Each index is associated with a URL that points to a CSV file containing the
+#' holdings of the index. Additionally, each index has a corresponding `skip`
+#' value, which indicates the number of lines to skip when reading the CSV file.
 #'
 #' @returns A tibble with three columns:
 #' \describe{
 #'   \item{index}{The name of the financial index (e.g., "DAX", "S&P 500").}
-#'   \item{url}{The URL to the CSV file containing the holdings data for the index.}
+#'   \item{url}{The URL to the CSV file containing the holdings data for the
+#'   index.}
 #'   \item{skip}{The number of lines to skip when reading the CSV file.}
 #' }
 #'
@@ -20,6 +21,7 @@
 #' print(supported_indexes)
 #'
 list_supported_indexes <- function() {
+  # nolint start
   tribble(
     ~index                                                                                                                                                                                    ,
     ~url                                                                                                                                                                                      ,
@@ -85,4 +87,5 @@ list_supported_indexes <- function() {
     "https://www.ishares.com/ch/professionelle-anleger/de/produkte/239774/ishares-sp-smallcap-600-etf/1495092304805.ajax?fileType=csv&fileName=IJR_holdings&dataType=fund"                    ,
                                                                                                                                                                                             9
   )
+  # nolint end
 }

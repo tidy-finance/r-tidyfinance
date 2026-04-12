@@ -48,7 +48,8 @@ test_that("Output structure: correct column names and number of rows", {
   result <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
 
   expect_true(all(c("date", "beta_mkt_excess") %in% colnames(result)))
-  expect_equal(nrow(result), 24) # Should match the number of unique date-permno pairs
+  # Should match the number of unique date-permno pairs
+  expect_equal(nrow(result), 24) #
 })
 
 test_that("Correctness: Known result test", {
@@ -107,7 +108,8 @@ test_that("Rolling window behavior: correct handling of boundary dates", {
   result <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
 
   expect_equal(nrow(result), 6)
-  # Check if the first couple of rows have NA values where the window size is not sufficient
+  # Check if the first couple of rows have NA values where the window size
+  # is not sufficient
   expect_true(all(is.na(result$beta_mkt_excess[1])))
 })
 
@@ -126,7 +128,7 @@ test_that("Daily data test: correctly handles daily data grouped into months", {
     mkt_excess = rnorm(732, 0, 0.02)
   )
 
-  data <- data %>%
+  data <- data |>
     mutate(date = lubridate::floor_date(date, "month"))
 
   result <- estimate_betas(
@@ -135,7 +137,8 @@ test_that("Daily data test: correctly handles daily data grouped into months", {
     lookback = months(6)
   )
 
-  expect_equal(nrow(result), length(unique(data$date)) * 2) # Check if rows match the expected number of date-permno combinations
+  # Check if rows match the expected number of date-permno combinations
+  expect_equal(nrow(result), length(unique(data$date)) * 2)
   expect_true(all(c("date", "beta_mkt_excess") %in% colnames(result)))
 })
 

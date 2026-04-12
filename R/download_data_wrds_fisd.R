@@ -22,8 +22,10 @@
 #' @export
 #' @examples
 #' \dontrun{
-#'   fisd <- download_data_wrds_fisd()
-#'   fisd_extended <- download_data_wrds_fisd(additional_columns = c("asset_backed", "defeased"))
+#' fisd <- download_data_wrds_fisd()
+#' fisd_extended <- download_data_wrds_fisd(
+#'   additional_columns = c("asset_backed", "defeased")
+#' )
 #' }
 download_data_wrds_fisd <- function(additional_columns = NULL) {
   con <- get_wrds_connection()

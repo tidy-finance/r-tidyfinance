@@ -20,8 +20,9 @@ test_that("basic lag join works with single id and single variable", {
 
   expect_true("x" %in% names(result))
   expect_equal(nrow(result), 4)
-  # Row with date 2020-01-01: looking for new_data where .lower <= date and date <= .upper
-  # new_data row date=2020-01-01 -> .lower=2020-02-01, .upper=2020-04-01 -> 2020-01-01 < .lower, no
+  # Row with date 2020-01-01: looking for new_data where .lower <= date and
+  # date <= .upper new_data row date=2020-01-01 -> .lower=2020-02-01,
+  # .upper=2020-04-01 -> 2020-01-01 < .lower, no
   # So first row should be NA (nothing lagged into it yet)
   expect_true(is.na(result$x[1]))
 })
@@ -51,7 +52,8 @@ test_that("multiple id keys are supported", {
   expect_true("val" %in% names(result))
   expect_equal(nrow(result), 4)
   # IDs should not bleed across groups
-  # For id1=2, id2="b", date=2020-03-01: should match new_data with id1=2, id2="b"
+  # For id1=2, id2="b", date=2020-03-01: should match new_data with
+  # id1=2, id2="b"
   row_2b_march <- result |>
     filter(id1 == 2, id2 == "b", date == as.Date("2020-03-01"))
   row_1a_march <- result |>
@@ -158,9 +160,6 @@ test_that("ff_adjustment picks latest date per year", {
 
   expect_true("x" %in% names(result))
   # With ff_adjustment, only the max-date row per (id, year) is kept
-  # Year 2020: keeps date=2020-12-01 (x=20), .lower=2021-06-01, .upper=2022-06-01
-  # Year 2021: keeps date=2021-03-01 (x=30), .lower=2021-09-01, .upper=2022-09-01
-  # For original date=2021-06-01: closest .lower <= 2021-06-01 -> 2021-06-01 == .lower of 2020 row, x=20
   expect_equal(result$x[1], 20)
 })
 
@@ -282,7 +281,8 @@ test_that("closest match is used within the lag window", {
   # 2020-02-01 -> .lower=2020-03-01, .upper=2020-09-01
   # 2020-03-01 -> .lower=2020-04-01, .upper=2020-10-01
   # 2020-04-01 -> .lower=2020-05-01, .upper=2020-11-01
-  # original date=2020-06-01: closest(.date >= .lower) picks the largest .lower <= 2020-06-01
+  # original date=2020-06-01: closest(.date >= .lower)
+  # picks the largest .lower <= 2020-06-01
   # That's .lower=2020-05-01 from date=2020-04-01, so x=40
   expect_equal(result$x[1], 40)
 })

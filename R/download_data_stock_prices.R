@@ -1,13 +1,16 @@
 #' Download Stock Data
 #'
-#' Downloads historical stock data from Yahoo Finance for given symbols and date range.
+#' Downloads historical stock data from Yahoo Finance for given symbols and date
+#' range.
 #'
-#' @param symbols A character vector of stock symbols to download data for. At least one
-#'   symbol must be provided.
-#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD" format
-#'   specifying the start date for the data. If not provided, a subset of the dataset is returned.
-#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD" format
-#'   specifying the end date for the data. If not provided, a subset of the dataset is returned.
+#' @param symbols A character vector of stock symbols to download data for. At
+#'   least one symbol must be provided.
+#' @param start_date Optional. A character string or Date object in "YYYY-MM-DD"
+#'   format specifying the start date for the data. If not provided, a subset of
+#'   the dataset is returned.
+#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD"
+#'   format specifying the end date for the data. If not provided, a subset of
+#'   the dataset is returned.
 #'
 #' @returns A tibble containing the downloaded stock data with columns: symbol,
 #'   date, volume, open, low, high, close, and adjusted_close.
@@ -27,7 +30,10 @@ download_data_stock_prices <- function(
 ) {
   if (!is.character(symbols) || anyNA(symbols)) {
     cli::cli_abort(
-      "{.arg symbols} must be character vector, not {.obj_type_friendly {symbols}}."
+      paste(
+        "{.arg symbols} must be character vector,",
+        "not {.obj_type_friendly {symbols}}."
+      )
     )
   }
 
@@ -100,9 +106,12 @@ download_data_stock_prices <- function(
 
       processed_data[[j]] <- processed_data_symbol
     } else {
-      error_message <- httr2::resp_body_json(response)$chart$error
+      error_message <- # nolint: object_usage_linter.
+        httr2::resp_body_json(response)$chart$error
       cli::cli_warn(
-        "Failed to retrieve data for symbol {symbols[j]} with status code {response$status_code} ({error_message$code}): {error_message$description}"
+        "Failed to retrieve data for symbol {symbols[j]} with",
+        "status code {response$status_code} ({error_message$code}):",
+        "{error_message$description}"
       )
     }
     cli::cli_progress_update()

@@ -34,10 +34,12 @@ factors_ff_3_monthly
 Why did we use the first day of a month here? This convention has the big advantage that you can easily add or subtract months or compute date differences. For instance, in the following code chunk, we subtract 3 months from the original date and then compute the difference in months:
 
 ```{r}
-factors_ff_3_monthly |> 
-  select(date) |> 
-  mutate(date_lag3 = date %m-% months(3),
-         date_difference = interval(date_lag3, date) %/% months(1))
+factors_ff_3_monthly |>
+  select(date) |>
+  mutate(
+    date_lag3 = date %m-% months(3),
+    date_difference = interval(date_lag3, date) %/% months(1)
+  )
 ```
 
 As another example, the `date` column is arguably straight forward for daily data, such as daily Fama-French factors:
@@ -50,9 +52,9 @@ factors_ff_3_daily
 Each row refers to a trading date, so `date` refers to the actual date. So computing date differences to the last row might yield an integer larger than 1. 
 
 ```{r}
-factors_ff_3_daily |> 
-  select(date) |> 
-  mutate(date_difference = interval(lag(date), date) %/% days(1)) 
+factors_ff_3_daily |>
+  select(date) |>
+  mutate(date_difference = interval(lag(date), date) %/% days(1))
 ```
 
 Similarly, working with daily CRSP data is straight-forward:
@@ -61,7 +63,7 @@ Similarly, working with daily CRSP data is straight-forward:
 #| output: false
 #| eval: false
 crsp_daily <- download_data("wrds_crsp_daily")
-crsp_daily |> 
+crsp_daily |>
   select(permno, date)
 ```
 
@@ -71,7 +73,7 @@ However, enforcing this consistency poses a challenge for monthly CRSP data. As 
 #| output: false
 #| eval: false
 crsp_monthly <- download_data("wrds_crsp_monthly")
-crsp_monthly |> 
+crsp_monthly |>
   select(permno, date, calculation_date)
 ```
 
@@ -81,7 +83,7 @@ A similar challenge arises with Compustat data. The `datadate` column of the ori
 #| output: false
 #| eval: false
 compustat_annual <- download_data("wrds_compustat_annual")
-compustat_annual |> 
+compustat_annual |>
   select(gvkey, date, datadate)
 ```
 
@@ -90,9 +92,8 @@ If you want to use year or month information in your application, you can simply
 ```{r}
 #| output: false
 #| eval: false
-compustat_annual |> 
-  mutate(year = year(date),
-         month = month(date)) |> 
+compustat_annual |>
+  mutate(year = year(date), month = month(date)) |>
   select(gvkey, date, datadate, year, month)
 ```
 
@@ -102,11 +103,9 @@ For completeness, you can do the same for quarterly Compustat data:
 #| output: false
 #| eval: false
 compustat_quarterly <- download_data("wrds_compustat_quarterly")
-compustat_quarterly |> 
-  select(gvkey, date, datadate) |> 
-  mutate(year = year(date),
-         month = month(date),
-         quarter = quarter(date))
+compustat_quarterly |>
+  select(gvkey, date, datadate) |>
+  mutate(year = year(date), month = month(date), quarter = quarter(date))
 ```
 
 ## Joining multiple data sources
@@ -116,8 +115,8 @@ As a first example, let us combine the Fama-French factors with monthly CRSP ret
 ```{r}
 #| output: false
 #| eval: false
-crsp_monthly |> 
-  left_join(factors_ff_3_monthly, join_by(date)) |> 
+crsp_monthly |>
+  left_join(factors_ff_3_monthly, join_by(date)) |>
   select(permno, date, risk_free, mkt_excess, smb, hml)
 ```
 
@@ -125,8 +124,8 @@ Similarly, the same logic applies to daily CRSP returns:
 ```{r}
 #| output: false
 #| eval: false
-crsp_daily |> 
-  left_join(factors_ff_3_daily, join_by(date)) |> 
+crsp_daily |>
+  left_join(factors_ff_3_daily, join_by(date)) |>
   select(permno, date, risk_free, mkt_excess, smb, hml)
 ```
 
@@ -138,9 +137,9 @@ Now, let us move to the involved case of joining CRSP with Compustat data. To ac
 #| output: false
 #| eval: false
 ccm_links <- download_data("wrds_ccm_links")
-crsp_monthly <- crsp_monthly |> 
-  left_join(ccm_links, join_by(permno), relationship = "many-to-many") |> 
-  filter(between(date, linkdt, linkenddt)) |> 
+crsp_monthly <- crsp_monthly |>
+  left_join(ccm_links, join_by(permno), relationship = "many-to-many") |>
+  filter(between(date, linkdt, linkenddt)) |>
   select(-c(linkdt, linkenddt))
 ```
 
@@ -149,9 +148,10 @@ So if you want to join information from Compustat for the **same date**, you jus
 ```{r}
 #| output: false
 #| eval: false
-crsp_monthly |> 
+crsp_monthly |>
   left_join(
-    compustat_annual, join_by(gvkey, date)
+    compustat_annual,
+    join_by(gvkey, date)
   )
 ```
 
@@ -160,10 +160,10 @@ If you want to lag the Compustat information by 6 months to incorporate the fact
 ```{r}
 #| output: false
 #| eval: false
-crsp_monthly |> 
+crsp_monthly |>
   left_join(
-    compustat_annual |> 
-      mutate(date = date %m+% months(6)), 
+    compustat_annual |>
+      mutate(date = date %m+% months(6)),
     join_by(gvkey, date)
   )
 ```
@@ -173,7 +173,7 @@ If you prefer to follow the Fama-French protocol for joining company fundamental
 ```{r}
 #| output: false
 #| eval: false
-crsp_monthly |> 
+crsp_monthly |>
   left_join(
     compustat_annual |>
       mutate(date = ymd(paste0(year(date) + 1, "0701"))),

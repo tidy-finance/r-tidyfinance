@@ -17,34 +17,40 @@ join_lagged_values(
 \arguments{
 \item{original_data}{A data frame containing the target panel data.}
 
-\item{new_data}{A data frame containing the source variables to lag and merge.
-All columns besides \code{id_keys} and the date column will be lagged and joined.}
+\item{new_data}{A data frame containing the source variables to lag
+and merge. All columns besides \code{id_keys} and the date column will
+be lagged and joined.}
 
-\item{id_keys}{A character vector specifying the identifier column(s).}
+\item{id_keys}{A character vector specifying the identifier
+column(s).}
 
-\item{min_lag}{A \code{lubridate::Period} specifying the lower lag bound (inclusive).}
+\item{min_lag}{A \code{lubridate::Period} specifying the lower lag bound
+(inclusive).}
 
-\item{max_lag}{A \code{lubridate::Period} specifying the upper lag bound (inclusive).}
+\item{max_lag}{A \code{lubridate::Period} specifying the upper lag bound
+(inclusive).}
 
-\item{ff_adjustment}{Logical; if \code{TRUE}, keeps only the last observation per
-identifier and year before lagging (Fama–French convention). Defaults to \code{FALSE}.}
+\item{ff_adjustment}{Logical; if \code{TRUE}, keeps only the last
+observation per identifier and year before lagging (Fama–French
+convention). Defaults to \code{FALSE}.}
 
-\item{data_options}{A list of class \code{tidyfinance_data_options} (created via
-\code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{date} element is used
-to identify the date column. Uses \code{\link[=data_options]{data_options()}} defaults if \code{NULL}.}
+\item{data_options}{A list of class \code{tidyfinance_data_options}
+(created via \code{\link[=data_options]{data_options()}}) specifying column name mappings.
+The \code{date} element is used to identify the date column. Uses
+\code{\link[=data_options]{data_options()}} defaults if \code{NULL}.}
 }
 \value{
-A data frame with all columns from \code{original_data} plus the lagged
-columns from \code{new_data} (keeping their original names).
+A data frame with all columns from \code{original_data} plus
+the lagged columns from \code{new_data} (keeping their original names).
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Joins lagged values of selected variables from one dataset (\code{new_data})
-into another (\code{original_data}), based on date ranges defined by \code{min_lag}
-and \code{max_lag}. Unlike \code{\link[=add_lagged_columns]{add_lagged_columns()}}, this function supports joining
-across data frames with different date grids (e.g., monthly source data
-into quarterly target data).
+Joins lagged values of selected variables from one dataset
+(\code{new_data}) into another (\code{original_data}), based on date ranges
+defined by \code{min_lag} and \code{max_lag}. Unlike \code{\link[=add_lagged_columns]{add_lagged_columns()}},
+this function supports joining across data frames with different
+date grids (e.g., monthly source data into quarterly target data).
 }
 \examples{
 set.seed(42)

@@ -1,14 +1,15 @@
 #' Set WRDS Credentials
 #'
 #' Prompts the user to input their WRDS (Wharton Research Data Services)
-#' username and password, and stores these credentials in a .Renviron file. The user can
-#' choose to store the .Renviron file in either the project directory or the home directory.
-#' If the .Renviron file already contains WRDS credentials, the user will be asked if they
-#' want to overwrite the existing credentials. Additionally, the user has the option
-#' to add the .Renviron file to the .gitignore file to prevent it from being tracked
-#' by version control.
+#' username and password, and stores these credentials in a .Renviron file. The
+#' user can choose to store the .Renviron file in either the project directory
+#' or the home directory. If the .Renviron file already contains WRDS
+#' credentials, the user will be asked if they want to overwrite the existing
+#' credentials. Additionally, the user has the option to add the .Renviron file
+#' to the .gitignore file to prevent it from being tracked by version control.
 #'
-#' @returns Invisibly returns TRUE. Displays messages to the user based on their input and actions taken.
+#' @returns Invisibly returns TRUE. Displays messages to the user based on their
+#'   input and actions taken.
 #'
 #' @family WRDS functions
 #' @export
@@ -20,7 +21,10 @@ set_wrds_credentials <- function() {
   wrds_user <- readline(prompt = "Enter your WRDS username: ")
   wrds_password <- readline(prompt = "Enter your WRDS password: ")
   location_choice <- readline(
-    prompt = "Where do you want to store the .Renviron file? Enter 'project' for project directory or 'home' for home directory: "
+    prompt = paste(
+      "Where do you want to store the .Renviron file?",
+      "Enter 'project' for project directory or 'home' for home directory: "
+    )
   )
 
   if (tolower(location_choice) == "project") {
@@ -31,20 +35,29 @@ set_wrds_credentials <- function() {
     gitignore_path <- file.path(Sys.getenv("HOME"), ".gitignore")
   } else {
     cli::cli_inform(
-      "Invalid choice. Please start again and enter {.str project} or {.str home}."
+      paste(
+        "Invalid choice.",
+        "Please start again and enter {.str project} or {.str home}."
+      )
     )
     return(invisible(TRUE))
   }
 
-  env_lines <- if (file.exists(renviron_path)) readLines(renviron_path) else
+  env_lines <- if (file.exists(renviron_path)) {
+    readLines(renviron_path)
+  } else {
     character()
+  }
 
   wrds_user_exists <- any(grepl("^WRDS_USER=", env_lines))
   wrds_password_exists <- any(grepl("^WRDS_PASSWORD=", env_lines))
 
   if (wrds_user_exists || wrds_password_exists) {
     overwrite_choice <- readline(
-      prompt = "Credentials already exist. Do you want to overwrite them? Enter 'yes' or 'no': "
+      prompt = paste(
+        "Credentials already exist. Do you want to overwrite them?",
+        "Enter 'yes' or 'no': "
+      )
     )
     if (tolower(overwrite_choice) != "yes") {
       cli::cli_inform(
@@ -56,7 +69,10 @@ set_wrds_credentials <- function() {
 
   if (file.exists(gitignore_path)) {
     add_gitignore <- readline(
-      prompt = "Do you want to add .Renviron to .gitignore? It is highly recommended! Enter 'yes' or 'no': "
+      prompt = paste(
+        "Do you want to add .Renviron to .gitignore?",
+        "It is highly recommended! Enter 'yes' or 'no': "
+      )
     )
     if (tolower(add_gitignore) == "yes") {
       gitignore_lines <- readLines(gitignore_path)
@@ -89,6 +105,9 @@ set_wrds_credentials <- function() {
   readRenviron(renviron_path)
 
   cli::cli_inform(
-    "WRDS credentials have been set and saved in {.file .Renviron} in your {.path {location_choice}} directory."
+    paste(
+      "WRDS credentials have been set and saved in {.file .Renviron} in your",
+      "{.path {location_choice}} directory."
+    )
   )
 }

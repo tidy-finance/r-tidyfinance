@@ -12,7 +12,8 @@ get_available_huggingface_files(organization, dataset)
 \item{dataset}{Character(1). Dataset name under the organization.}
 }
 \value{
-A tibble with columns: path (character), size (numeric) and url (character).
+A tibble with columns: path (character), size (numeric) and url
+(character).
 }
 \description{
 Query the Hugging Face Datasets API and return a tibble of files with a

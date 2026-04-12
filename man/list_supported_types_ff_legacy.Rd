@@ -13,8 +13,9 @@ dataset belongs, always "Fama-French").
 }
 \description{
 Returns a tibble with the legacy names of initially supported
-Fama-French dataset types, including their names and frequencies (daily, weekly, monthly).
-Each dataset type is associated with a specific Fama-French model (e.g., 3 factors, 5
-factors). Additionally, it annotates each dataset with the domain "Fama-French".
-Not included in the exported \code{list_supported_types()} function.
+Fama-French dataset types, including their names and frequencies (daily,
+weekly, monthly). Each dataset type is associated with a specific Fama-French
+model (e.g., 3 factors, 5 factors). Additionally, it annotates each dataset
+with the domain "Fama-French". Not included in the exported
+\code{list_supported_types()} function.
 }

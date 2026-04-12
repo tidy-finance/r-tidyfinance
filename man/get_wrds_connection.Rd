@@ -7,9 +7,9 @@
 get_wrds_connection()
 }
 \value{
-An object of class \code{DBIConnection} representing the connection to the
-WRDS database. This object can be used with other DBI-compliant functions
-to interact with the database.
+An object of class \code{DBIConnection} representing the connection to
+the WRDS database. This object can be used with other DBI-compliant
+functions to interact with the database.
 }
 \description{
 Establishes a connection to the Wharton Research Data Services

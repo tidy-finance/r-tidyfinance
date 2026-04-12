@@ -14,31 +14,37 @@ estimate_betas(
 )
 }
 \arguments{
-\item{data}{A data frame containing the data with a date identifier (defaults to \code{date}), a stock
-identifier (defaults to \code{permno}), and other variables used in the model.}
+\item{data}{A data frame containing the data with a date identifier
+(defaults to \code{date}), a stock identifier (defaults to \code{permno}),
+and other variables used in the model.}
 
-\item{model}{A formula representing the model to be estimated (e.g.,
-\code{ret_excess ~ mkt_excess + smb + hml}).}
+\item{model}{A formula representing the model to be estimated
+(e.g., \code{ret_excess ~ mkt_excess + smb + hml}).}
 
-\item{lookback}{A Period object specifying the number of months, days, hours, minutes, or
-seconds to look back when estimating the rolling model.}
+\item{lookback}{A Period object specifying the number of months,
+days, hours, minutes, or seconds to look back when estimating the
+rolling model.}
 
-\item{min_obs}{An integer specifying the minimum number of observations required to estimate
-the model. Defaults to 80\% of \code{lookback}.}
+\item{min_obs}{An integer specifying the minimum number of
+observations required to estimate the model. Defaults to 80\% of
+\code{lookback}.}
 
-\item{use_furrr}{A logical indicating whether to use the \code{furrr} package and its parallelization
-capabilities. Defaults to FALSE.}
+\item{use_furrr}{A logical indicating whether to use the \code{furrr}
+package and its parallelization capabilities. Defaults to FALSE.}
 
-\item{data_options}{A named list of \link{data_options} with characters, indicating the column
-names required to run this function. The required column names identify dates and the stocks.
+\item{data_options}{A named list of \link{data_options} with
+characters, indicating the column names required to run this
+function. The required column names identify dates and the stocks.
 Defaults to \code{date = date} and \code{id = permno}.}
 }
 \value{
-A data frame with the estimated betas for each time period.
+A data frame with the estimated betas for each time
+period.
 }
 \description{
 Estimates rolling betas for a given model using the provided data.
-It supports parallel processing for faster computation using the \code{furrr} package.
+It supports parallel processing for faster computation using the
+\code{furrr} package.
 }
 \examples{
 # Estimate monthly betas using monthly return data
@@ -54,7 +60,11 @@ data_monthly <- tibble::tibble(
 )
 
 estimate_betas(data_monthly,  "ret_excess ~ mkt_excess", months(3))
-estimate_betas(data_monthly,  "ret_excess ~ mkt_excess + smb + hml", months(6))
+estimate_betas(
+  data_monthly,
+  "ret_excess ~ mkt_excess + smb + hml",
+  months(6)
+)
 
 data_monthly |>
   dplyr::rename(id = permno) |>
@@ -76,7 +86,12 @@ data_daily <- data_daily |>
   dplyr::mutate(date = lubridate::floor_date(date, "month"))
 
 # Change settings via future::plan(strategy = "multisession", workers = 4)
-estimate_betas(data_daily, "ret_excess ~ mkt_excess", lubridate::days(90), use_furrr = TRUE)
+estimate_betas(
+  data_daily,
+  "ret_excess ~ mkt_excess",
+  lubridate::days(90),
+  use_furrr = TRUE
+)
 
 }
 \seealso{
