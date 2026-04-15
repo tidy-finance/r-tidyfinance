@@ -21,7 +21,7 @@
 #'  are excluded from breakpoint computation. The quantile is computed
 #'  among `breakpoint_exchanges` stocks if specified, otherwise among all
 #'  stocks. Requires a market capitalization column in the data (see
-#'  \link{data_options}). Defaults to `NULL` (no size filtering).
+#'  [data_options()]). Defaults to `NULL` (no size filtering).
 #' @param ... Additional optional arguments. These will be captured in the
 #'  resulting structure as a list.
 #'

@@ -6,7 +6,7 @@
 #'
 #' @param index A character string specifying the name of the financial
 #'  index for which to download constituent data. The index must be one
-#'  of the supported indexes listed by \link{list_supported_indexes}.
+#'  of the supported indexes listed by [list_supported_indexes()].
 #'
 #' @details
 #' The function retrieves the URL of the CSV file for the specified

@@ -15,7 +15,7 @@
 #'   computation.
 #' @param sorting_variable A string specifying the column name in `data`
 #'   to be used for determining breakpoints.
-#' @param breakpoint_options A named list of \link{breakpoint_options}
+#' @param breakpoint_options A named list of [breakpoint_options()]
 #'   for the breakpoints. The arguments include
 #'   \itemize{
 #'     \item `n_portfolios` An optional integer specifying the number of
@@ -42,7 +42,7 @@
 #'   quantile is computed among `breakpoint_exchanges` stocks if
 #'   specified, otherwise among all stocks. Requires a market
 #'   capitalization column in the data (column name determined by
-#'   \link{data_options}).
+#'   [data_options()]).
 #'   }
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'  [data_options()]) specifying column name mappings. The `exchange` element is
