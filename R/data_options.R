@@ -45,7 +45,6 @@ data_options <- function(
 ) {
   # Error handling for id
   if (!is.character(id) || length(id) != 1) {
-    # Corrected this to check the 'id' argument, not 'date'
     cli::cli_abort("{.arg id} must be a single character.")
   }
 
