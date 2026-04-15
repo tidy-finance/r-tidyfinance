@@ -8,7 +8,7 @@
 #'   `data` and `sorting_variable` as the first two arguments. Additional
 #'   arguments are passed with a named list [breakpoint_options()]. The
 #'   function needs to return an ascending vector of breakpoints. By default,
-#'   breakpoints are computed with [breakpoint_options()]. The default
+#'   breakpoints are computed with [compute_breakpoints()]. The default
 #'   column names can be modified using [data_options()].
 #'
 #' @param data A data frame containing the dataset for portfolio assignment.
@@ -18,7 +18,7 @@
 #' @param breakpoint_options An optional named list of arguments passed to
 #'   `breakpoint_function`.
 #' @param breakpoint_function A function to compute breakpoints. The default is
-#'   set to [breakpoint_options()].
+#'   set to [compute_breakpoints()].
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'  [data_options()]) specifying column name mappings. The `id` is used to 
 #'  specify the entity (i.e., firm), and the `date` element is used to specify 
