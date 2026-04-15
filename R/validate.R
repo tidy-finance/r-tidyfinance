@@ -8,7 +8,7 @@
 #' @param start_date A scalar coercible to `Date` via `as.Date()`, or `NULL`.
 #' @param end_date A scalar coercible to `Date` via `as.Date()`, or `NULL`.
 #' @param use_default_range A logical scalar. If `TRUE` and both date arguments
-#'   are `NULL`, a default two-year range is used instead of returning
+#'   are `NULL`, a default one-year range is used instead of returning
 #'   `NULL`. Defaults to `FALSE`.
 #'
 #' @returns A named list with elements `start_date` and `end_date`, both of

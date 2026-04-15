@@ -6,11 +6,11 @@
 #' @param symbols A character vector of stock symbols to download data for. At
 #'   least one symbol must be provided.
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD"
-#'   format specifying the start date for the data. If not provided, a subset of
-#'   the dataset is returned.
+#'   format specifying the start date for the data. If not provided, a one-year 
+#'   subset of the dataset is returned (see [validate_dates()]).
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD"
-#'   format specifying the end date for the data. If not provided, a subset of
-#'   the dataset is returned.
+#'   format specifying the end date for the data. If not provided, a one-year 
+#'   subset of the dataset is returned (see [validate_dates()]).
 #'
 #' @returns A tibble containing the downloaded stock data with columns: symbol,
 #'   date, volume, open, low, high, close, and adjusted_close.
@@ -36,10 +36,6 @@ download_data_stock_prices <- function(
       )
     )
   }
-
-  dates <- validate_dates(start_date, end_date)
-  start_date <- dates$start_date
-  end_date <- dates$end_date
 
   dates <- validate_dates(start_date, end_date, use_default_range = TRUE)
   start_date <- dates$start_date
