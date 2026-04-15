@@ -10,6 +10,8 @@
 #' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (a descriptive name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "Fama-French").
+#' 
+#' @family utility functions
 list_supported_types_ff <- function() {
   # nolint start
   # data_sets_raw <- frenchdata::get_french_data_list()$files_list
@@ -648,6 +650,8 @@ list_supported_types_ff <- function() {
 #' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (a descriptive name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "Fama-French").
+#' 
+#' @family utility functions
 list_supported_types_ff_legacy <- function() {
   # nolint start
   tribble(
@@ -736,6 +740,8 @@ list_supported_types_q <- function() {
 #' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (the file name of the dataset, which is the same for all types), and
 #'   `domain` (the domain to which the dataset belongs, always "Goyal-Welch").
+#' 
+#' @family utility functions
 list_supported_types_macro_predictors <- function() {
   # nolint start
   tribble(
@@ -760,6 +766,8 @@ list_supported_types_macro_predictors <- function() {
 #' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (the file name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "WRDS").
+#' 
+#' @family utility functions
 list_supported_types_wrds <- function() {
   # nolint start
   tribble(
@@ -792,6 +800,8 @@ list_supported_types_wrds <- function() {
 #' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (the name of the data source), and `domain` (the domain to which the
 #'   dataset belongs). 
+#' 
+#' @family utility functions
 list_supported_types_other <- function() {
   tibble(
     "type" = c(
@@ -838,6 +848,7 @@ list_supported_types_other <- function() {
 #'   name of the dataset), and `domain` (the domain to which the dataset
 #'   belongs, e.g., "Global Q", "Fama-French", "Goyal-Welch").
 #'
+#' @family utility functions
 #' @export
 #' @examples
 #' # List all supported types as a data frame

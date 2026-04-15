@@ -10,6 +10,9 @@
 #'   (character).
 #' @details Uses httr2 to perform HTTP requests. Requires internet access and
 #'   the dataset to be publicly accessible or accessible with appropriate auth.
+#' 
+#' @family utility functions
+#' 
 #' @examples
 #' \dontrun{
 #' get_available_huggingface_files("voigtstefan", "sp500")
@@ -126,7 +129,9 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'   contains 5-second aggregated orderbook snapshots filtered to the requested
 #'   date range. For `"factor_library"`, contains portfolio return data joined
 #'   with the full grid metadata for the matched portfolio IDs.
-#'
+#' 
+#' @family download functions
+#' 
 ##' @examples
 #' \dontrun{
 #'   download_data_huggingface(
