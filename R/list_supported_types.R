@@ -789,9 +789,9 @@ list_supported_types_wrds <- function() {
 #' Returns a tibble listing the supported other data types and their
 #' corresponding dataset names.
 #'
-#' @returns A tibble with columns \code{type} and \code{dataset_name}, where
-#' \code{type} indicates the code used to specify the data source and
-#' \code{dataset_name} provides the name of the data source.
+#' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
+#'   (the name of the data source), and `domain` (the domain to which the
+#'   dataset belongs). 
 list_supported_types_other <- function() {
   tibble(
     "type" = c(
