@@ -11,8 +11,8 @@
 #' @param percentiles Numeric vector, optional. A vector of percentile
 #'  thresholds for defining breakpoints. Each value should be between 0
 #'  and 1. If not provided, defaults to `NULL`.
-#' @param breakpoint_exchanges Character, optional. A non-empty string
-#'  specifying the exchange for which the breakpoints apply. If not
+#' @param breakpoint_exchanges Character vector, optional. A non-empty vector
+#'  specifying the exchange from which to compute the breakpoints. If not
 #'  provided, defaults to `NULL`.
 #' @param smooth_bunching Logical, optional. Indicates whether smooth
 #'  bunching should be applied. Defaults to `FALSE`.
