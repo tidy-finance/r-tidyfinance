@@ -242,7 +242,10 @@ download_data_wrds_crsp <- function(
       ) |>
         mutate(date = floor_date(date, "month")) |>
         group_by(date) |>
-        summarize(risk_free = mean(value, na.rm = TRUE) / 100 / 12, .groups = "drop")
+        summarize(
+          risk_free = mean(value, na.rm = TRUE) / 100 / 12,
+          .groups = "drop"
+        )
 
       crsp_monthly <- crsp_monthly |>
         left_join(risk_free_monthly, join_by(date)) |>
@@ -350,7 +353,10 @@ download_data_wrds_crsp <- function(
       ) |>
         mutate(date = floor_date(date, "month")) |>
         group_by(date) |>
-        summarize(risk_free = mean(value, na.rm = TRUE) / 100 / 12, .groups = "drop")
+        summarize(
+          risk_free = mean(value, na.rm = TRUE) / 100 / 12,
+          .groups = "drop"
+        )
 
       crsp_monthly <- crsp_monthly |>
         left_join(risk_free_monthly, join_by(date)) |>
