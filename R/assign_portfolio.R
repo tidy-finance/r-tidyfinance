@@ -19,11 +19,14 @@
 #'   `breakpoint_function`.
 #' @param breakpoint_function A function to compute breakpoints. The default is
 #'   set to \link{compute_breakpoints}.
-#' @param data_options A named list of \link{data_options} with characters,
-#'  indicating the column names required to run this function. The required
-#'  column names identify dates.  Defaults to `date = date` and `id = permno`.
+#' @param data_options A list of class `tidyfinance_data_options` (created via
+#'  [data_options()]) specifying column name mappings. The `id` is used to 
+#'  specify the entity (i.e., firm), and the `date` element is used to specify 
+#'  the date column. Uses [data_options()] default if `NULL`: `"id" = "permno"` 
+#'  and `"date" = "date"`. 
 #'
-#' @returns A vector of portfolio assignments for each row in the input `data`.
+#' @returns A vector of integer portfolio assignments for each row in the input
+#'  `data`.
 #'
 #' @family portfolio functions
 #' @export

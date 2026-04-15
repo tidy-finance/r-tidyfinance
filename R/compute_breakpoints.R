@@ -3,13 +3,13 @@
 #' @description `r lifecycle::badge('experimental')`
 #'
 #'   Computes breakpoints based on a specified sorting. It can
-#'   optionally filter the data by exchanges before computing the
-#'   breakpoints. The function requires either the number of portfolios
-#'   to be created or specific percentiles for the breakpoints, but not
-#'   both. The function also optionally handles cases where the sorting
-#'   variable clusters on the edges, by assigning all extreme values to
-#'   the edges and attempting to compute equally populated breakpoints
-#'   with the remaining values.
+#'   optionally filter the data by exchanges or lagged size quantiles 
+#'   before computing the breakpoints. The function requires either the
+#'   number of portfolios to be created or specific percentiles for the 
+#'   breakpoints, but not both. The function also optionally handles 
+#'   cases where the sorting variable clusters on the edges, by 
+#'   assigning all extreme values to the edges and attempting to compute
+#'   equally populated breakpoints with the remaining values.
 #'
 #' @param data A data frame containing the dataset for breakpoint
 #'   computation.
@@ -44,10 +44,11 @@
 #'   capitalization column in the data (column name determined by
 #'   \link{data_options}).
 #'   }
-#' @param data_options A named list of \link{data_options} with
-#'  characters, indicating the column names required to run this
-#'  function. The required column names identify dates. Defaults to
-#'  `exchange = exchange`.
+#' @param data_options A list of class `tidyfinance_data_options` (created via
+#'  [data_options()]) specifying column name mappings. The `exchange` element is
+#'  used to specify the exchange column, and `market_cap` is used to specify 
+#'  the market capitalization. Uses [data_options()] default if `NULL`: 
+#'  `"exchange" = "exchange"`, and `"mktcap_lag" = "mktcap_lag"`. 
 #'
 #' @note This function will stop and throw an error if both
 #'   `n_portfolios` and `percentiles` are provided or if neither is

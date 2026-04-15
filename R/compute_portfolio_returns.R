@@ -63,11 +63,13 @@
 #' @param cap_weight A numeric value between 0 and 1 specifying the
 #'   percentile at which market capitalization is capped per date when
 #'   computing `ret_excess_vw_capped`. Defaults to `0.8`.
-#' @param data_options A named list of \link{data_options} with
-#'   characters, indicating the column names required to run this
-#'   function. The required column names identify dates, the stocks,
-#'   and returns. Defaults to `date = date`, `id = permno`, and
-#'   `ret_excess = ret_excess`.
+#' @param data_options A list of class `tidyfinance_data_options` (created via
+#'  [data_options()]) specifying column name mappings. The `id` is used to 
+#'  specify the entity (i.e., firm), the `date` element is used to specify the
+#'  date column, the `ret_excess` element is used to specify the excess return 
+#'  column, and `market_cap` is used to specify the market capitalization. Uses 
+#'  [data_options()] default if `NULL`: `"id" = "permno"`, `"date" = "date"`, 
+#'  `"ret_excess" = "ret_excess"`, and `"mktcap_lag" = "mktcap_lag"`.  
 #' @param quiet A logical value indicating whether to suppress
 #'   informational messages about missing values in the output panel
 #'   (default is `FALSE`).
@@ -178,13 +180,13 @@ compute_portfolio_returns <- function(
     cli::cli_abort("'cap_weight' must be a single numeric value in [0, 1].")
   }
 
-  date_col <- data_options$date
   id_col <- data_options$id
+  date_col <- data_options$date
   ret_col <- data_options$ret_excess
   w_col <- data_options$mktcap_lag
   w_capped_col <- paste0(w_col, "_capped")
 
-  required_columns <- c(sorting_variables, date_col, id_col, ret_col)
+  required_columns <- c(sorting_variables, id_col, date_col, ret_col)
 
   missing_columns <- setdiff(required_columns, colnames(data))
   if (length(missing_columns) > 0L) {

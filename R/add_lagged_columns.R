@@ -29,9 +29,10 @@
 #'  observation per year (within each group defined by `by`) is retained
 #'  as a source for lagged values, following Fama-French conventions for
 #'  annual accounting data. Defaults to `FALSE`.
-#' @param data_options A named list of \link{data_options} with characters,
-#'   indicating the column names required to run this function. The
-#'   required column names identify dates. Defaults to `date = date`.
+#' @param data_options A list of class `tidyfinance_data_options` (created via
+#'  [data_options()]) specifying column name mappings. The `date` element is
+#'  used to specify the date column. Uses [data_options()] default if `NULL`:
+#'  `"date" = "date"`. 
 #'
 #' @returns A data frame with the same rows as `data` and new columns
 #'  appended, each suffixed with `_lag`. Unmatched rows receive `NA` in

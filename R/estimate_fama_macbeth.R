@@ -20,10 +20,10 @@
 #'   to use in the Newey-West covariance matrix estimation, and
 #'   `prewhite`, which indicates whether to apply a prewhitening
 #'   transformation. Default is an empty list.
-#' @param data_options A named list of \link{data_options} with
-#'   characters, indicating the column names required to run this
-#'   function. The required column names identify dates. Defaults to
-#'   `date = date`.
+#' @param data_options A list of class `tidyfinance_data_options` (created via
+#'  [data_options()]) specifying column name mappings. The `date` element is 
+#'  used to specify the date column. Uses [data_options()] default if `NULL`:
+#'  `"date" = "date"`. 
 #' @param detail A logical value indicating whether to return
 #'   additional summary statistics. If `FALSE` (default), the function
 #'   returns only the coefficient estimates. If `TRUE`, it returns a

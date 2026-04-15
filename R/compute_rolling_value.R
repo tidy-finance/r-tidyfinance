@@ -18,8 +18,9 @@
 #' @param min_obs Minimum number of non-missing rows required per window.
 #'   Defaults to `periods`.
 #' @param data_options A list of class `tidyfinance_data_options` (created via
-#'   [data_options()]) specifying column name mappings. The `date` element is
-#'   used to identify the date column. Uses [data_options()] defaults if `NULL`.
+#'  [data_options()]) specifying column name mappings. The `date` element is
+#'  used to specify the date column. Uses [data_options()] defaults if `NULL`:
+#'  `"date" = "date"`.
 #'
 #' @returns A numeric vector aligned with the rows of `data`.
 #' @family rolling and lagging functions

@@ -24,7 +24,7 @@
 #' @param data_options A list of class `tidyfinance_data_options`
 #'  (created via [data_options()]) specifying column name mappings.
 #'  The `date` element is used to identify the date column. Uses
-#'  [data_options()] defaults if `NULL`.
+#'  [data_options()] defaults if `NULL`: `"date" = "date"`.
 #'
 #' @returns A data frame with all columns from `original_data` plus
 #'  the lagged columns from `new_data` (keeping their original names).
