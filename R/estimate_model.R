@@ -11,7 +11,7 @@
 #' @param data A data frame containing the dependent variable and one or more
 #'   independent variables.
 #' @param model A character that describes the model to be estimated (e.g.,
-#'   `"ret_excess ~ mkt_excess + hmb + sml"`).
+#'   `"ret_excess ~ mkt_excess + hml + smb"`).
 #' @param min_obs The minimum number of observations required to estimate the
 #'   model. Defaults to 1.
 #' @param output A character vector specifying what to return. Must contain one
