@@ -30,8 +30,8 @@
 #'   in `data`. If `NULL`, no filtering is applied.
 #'     \item `smooth_bunching` An optional logical parameter specifying
 #'   if to attempt smoothing non-extreme portfolios if the sorting
-#'   variable bunches on the extremes (TRUE, the default), or not
-#'   (FALSE). In some cases, smoothing will not result in equal-sized
+#'   variable bunches on the extremes (TRUE), or not (FALSE, the default).
+#'   In some cases, smoothing will not result in equal-sized
 #'   portfolios off the edges due to multiple clusters. If sufficiently
 #'   large bunching is detected, `percentiles` is ignored and
 #'   equally-spaced portfolios are returned for these cases with a
@@ -51,7 +51,7 @@
 #'  `"exchange" = "exchange"`, and `"mktcap_lag" = "mktcap_lag"`. 
 #'
 #' @note This function will stop and throw an error if both
-#'   `n_portfolios` and `percentiles` are provided or if neither is
+#'   `n_portfolios` and `percentiles` are provided or missing simultaneously.
 #'
 #' @returns A vector of breakpoints of the desired length.
 #'
