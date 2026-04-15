@@ -5,10 +5,12 @@
 #'
 #' @param series A character vector specifying the FRED series ID to
 #'   download.
-#' @param start_date The start date for filtering the data, in
-#'   "YYYY-MM-DD" format.
-#' @param end_date The end date for filtering the data, in
-#'   "YYYY-MM-DD" format.
+#' @param start_date Optional. A character string or Date object in
+#'   "YYYY-MM-DD" format specifying the start date for the data. If not
+#'   provided, the full dataset is returned.
+#' @param end_date Optional. A character string or Date object in
+#'   "YYYY-MM-DD" format specifying the end date for the data. If not
+#'   provided, the full dataset is returned.
 #'
 #' @details
 #' Constructs the URL based on the provided FRED series ID, performs
