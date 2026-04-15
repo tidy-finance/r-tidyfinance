@@ -2,7 +2,7 @@
 #'
 #' Downloads and processes Fama-French factor data based on the
 #' specified dataset name and date range. The function requires the
-#' 'frenchdata' package to download the data. It processes the raw data
+#' `frenchdata` package to download the data. It processes the raw data
 #' into a structured format, including date conversion, scaling factor
 #' values, and filtering by the specified date range.
 #'
