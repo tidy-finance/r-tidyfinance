@@ -21,7 +21,7 @@
 #' @param additional_columns Additional columns from the Compustat
 #'   table as a character vector.
 #' @param only_us A logical indicating whether only US firms should be
-#'   returned (i.e., excluding Canadian firms).
+#'   returned.
 #'
 #' @returns A data frame with financial data for the specified period,
 #'   including variables for book equity (be), operating profitability
