@@ -9,10 +9,10 @@
 #' an inequality join is used: for each row, the most recent source value
 #' within the window `[date - max_lag, date - lag]` is selected.
 #'
-#' The combination of `by` and date columns must be unique in `df`. If `by`
+#' The combination of `by` and date columns must be unique in `data`. If `by`
 #' is `NULL`, dates alone must be unique.
 #'
-#' @param df A data frame containing the variables to lag.
+#' @param data A data frame containing the variables to lag.
 #' @param cols A character vector specifying the names of the columns to be
 #'  lagged. Each column produces a new column suffixed with `_lag`.
 #' @param lag An integer or a `lubridate::periods()` object, e.g.,
@@ -33,7 +33,7 @@
 #'   indicating the column names required to run this function. The
 #'   required column names identify dates. Defaults to `date = date`.
 #'
-#' @returns A data frame with the same rows as `df` and new columns
+#' @returns A data frame with the same rows as `data` and new columns
 #'  appended, each suffixed with `_lag`. Unmatched rows receive `NA` in
 #'  the lagged columns.
 #'
@@ -70,7 +70,7 @@
 #' )
 #'
 add_lagged_columns <- function(
-  df,
+  data,
   cols,
   lag,
   max_lag = lag,
@@ -85,9 +85,9 @@ add_lagged_columns <- function(
 
   date_col <- data_options$date
 
-  if (!date_col %in% names(df)) {
+  if (!date_col %in% names(data)) {
     cli::cli_abort(
-      "{.arg df} must contain the date column {.field {date_col}}."
+      "{.arg data} must contain the date column {.field {date_col}}."
     )
   }
 
@@ -100,29 +100,29 @@ add_lagged_columns <- function(
     )
   }
 
-  missing_cols <- setdiff(cols, names(df))
+  missing_cols <- setdiff(cols, names(data))
   if (length(missing_cols) > 0) {
     cli::cli_abort(
-      "{.arg df} is missing column{?s}: {.field {missing_cols}}."
+      "{.arg data} is missing column{?s}: {.field {missing_cols}}."
     )
   }
 
   if (!is.null(by)) {
-    missing_by <- setdiff(by, names(df))
+    missing_by <- setdiff(by, names(data))
     if (length(missing_by) > 0) {
       cli::cli_abort(
-        "{.arg df} is missing grouping column{?s}: {.field {missing_by}}."
+        "{.arg data} is missing grouping column{?s}: {.field {missing_by}}."
       )
     }
   }
 
   join_cols <- c(by, date_col)
 
-  if (anyDuplicated(df[join_cols])) {
+  if (anyDuplicated(data[join_cols])) {
     cli::cli_abort(
       paste(
         "The combination of {.arg by}",
-        "and date columns must be unique in {.arg df}."
+        "and date columns must be unique in {.arg data}."
       )
     )
   }
@@ -130,12 +130,12 @@ add_lagged_columns <- function(
   exact_lag <- (lag == max_lag)
 
   if (!exact_lag) {
-    df[[".upper"]] <- df[[date_col]] - lag
-    df[[".lower"]] <- df[[date_col]] - max_lag
+    data[[".upper"]] <- data[[date_col]] - lag
+    data[[".lower"]] <- data[[date_col]] - max_lag
   }
 
   for (col in cols) {
-    lagged <- df[c(join_cols, col)]
+    lagged <- data[c(join_cols, col)]
 
     if (drop_na) {
       lagged <- lagged[!is.na(lagged[[col]]), ]
@@ -154,12 +154,12 @@ add_lagged_columns <- function(
       lagged[[date_col]] <- lagged[[date_col]] + lag
       names(lagged)[names(lagged) == col] <- lag_col_name
 
-      df <- dplyr::left_join(df, lagged, by = join_cols)
+      data <- dplyr::left_join(data, lagged, by = join_cols)
     } else {
       names(lagged)[names(lagged) == date_col] <- ".src_date"
       names(lagged)[names(lagged) == col] <- lag_col_name
 
-      df <- df |>
+      data <- data |>
         dplyr::left_join(
           lagged,
           by = dplyr::join_by(!!!rlang::syms(by), closest(.upper >= .src_date))
@@ -177,9 +177,9 @@ add_lagged_columns <- function(
   }
 
   if (!exact_lag) {
-    df[[".upper"]] <- NULL
-    df[[".lower"]] <- NULL
+    data[[".upper"]] <- NULL
+    data[[".lower"]] <- NULL
   }
 
-  df
+  data
 }
