@@ -17,11 +17,10 @@
 #'   on the specified sorting method and rebalancing frequency.
 #'
 #' @param data A data frame containing the dataset for portfolio
-#'   assignment and return computation. Following CRSP naming
-#'   conventions, the panel data must identify individual stocks with
-#'   `permno` and the time point with `date`. It must contain columns
-#'   for the sorting variables and `ret_excess`. Additionally,
-#'   `mktcap_lag` is needed for value-weighted returns.
+#'   assignment and return computation. The panel data must include individual 
+#'   stock identifiers and the time point. It must contain columns for the 
+#'   sorting variables and excess returns. Additionally, `mktcap_lag`
+#'   is needed for value-weighted returns.
 #' @param sorting_variables A character vector specifying the column
 #'   names in `data` to be used for sorting and determining
 #'   portfolio assignments. For univariate sorts, provide a single
@@ -49,20 +48,21 @@
 #' @param breakpoint_options_main A named list of
 #'   [breakpoint_options()] passed to `breakpoint_function` for the
 #'   main sorting variable.
-#' @param breakpoint_function_main A function to compute the main
-#'   sorting variable. The default is set to [compute_breakpoints()].
+#' @param breakpoint_function_main A function to compute the breakpoints for 
+#'   the main sorting variable. The default is set to [compute_breakpoints()].
 #' @param breakpoint_options_secondary An optional named list of
 #'   [breakpoint_options()] passed to `breakpoint_function` for the
 #'   secondary sorting variable.
 #' @param breakpoint_function_secondary A function to compute the
-#'   secondary sorting variable. The default is set to
+#'   breakpoints for the secondary sorting variable. The default is set to
 #'   [compute_breakpoints()].
 #' @param min_portfolio_size An integer specifying the minimum number of
 #'   portfolio constituents (default is set to `0`, effectively
 #'   deactivating the check). Small portfolios' returns are set to zero.
 #' @param cap_weight A numeric value between 0 and 1 specifying the
 #'   percentile at which market capitalization is capped per date when
-#'   computing `ret_excess_vw_capped`. Defaults to `0.8`.
+#'   computing capped value-weighted excess returns 
+#'   (i.e., `ret_excess_vw_capped`). Defaults to `0.8`.
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'  [data_options()]) specifying column name mappings. The `id` is used to 
 #'  specify the entity (i.e., firm), the `date` element is used to specify the
@@ -87,17 +87,19 @@
 #'     \item `portfolio`: The portfolio identifier.
 #'     \item `date`: The date of the portfolio return.
 #'     \item `ret_excess_vw`: The value-weighted excess return of the
-#'      portfolio (only computed if the `data` contains
+#'      portfolio (only computed if the `data` contains a lagged market
+#'      capitalization column specified by `data_options()`, which defaults to
 #'      `mktcap_lag`). `NA` if insufficient observations for that
 #'      portfolio-date.
 #'     \item `ret_excess_ew`: The equal-weighted excess return of the
 #'      portfolio. `NA` if insufficient observations for that
 #'      portfolio-date.
 #'     \item `ret_excess_vw_capped`: The capped value-weighted excess
-#'      return of the portfolio (only computed if the `data`
-#'      contains `mktcap_lag`). Weights are computed using market
-#'      capitalization capped at the `cap_weight` percentile per date.
-#'      `NA` if insufficient observations for that portfolio-date.
+#'      return of the portfolio (only computed if the `data` contains a lagged 
+#'      market capitalization column specified by `data_options()`, which 
+#'      defaults to `mktcap_lag`). Weights are computed using market
+#'      capitalization capped at the `cap_weight` (default at 0.8) percentile 
+#'      per date. `NA` if insufficient observations for that portfolio-date.
 #'   }
 #'
 #' @export
