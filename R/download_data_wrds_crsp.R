@@ -32,8 +32,10 @@
 #'
 #' @returns A data frame containing CRSP stock returns, adjusted for
 #'   delistings, along with calculated market capitalization and
-#'   excess returns over the risk-free rate. The structure of the
-#'   returned data frame depends on the selected dataset.
+#'   excess returns over the risk-free rate sourced from the
+#'   3-Month Treasury Bill Secondary Market Rate (DTB3) via FRED.
+#'   The structure of the returned data frame depends on the selected
+#'   dataset.
 #'
 #' @examples
 #' \dontrun{
@@ -233,18 +235,21 @@ download_data_wrds_crsp <- function(
           prc_adj = if_else(is.infinite(prc_adj), NA_real_, prc_adj)
         )
 
-      factors_ff_3_monthly <- download_data_factors_ff(
-        dataset = "Fama/French 3 Factors",
+      risk_free_monthly <- download_data_fred(
+        "DTB3",
         start_date = start_date,
         end_date = end_date
-      )
+      ) |>
+        mutate(date = floor_date(date, "month")) |>
+        group_by(date) |>
+        summarize(risk_free = mean(value, na.rm = TRUE) / 100 / 12, .groups = "drop")
 
       crsp_monthly <- crsp_monthly |>
-        left_join(factors_ff_3_monthly, join_by(date)) |>
+        left_join(risk_free_monthly, join_by(date)) |>
         mutate(
           ret_excess = ret_adj - risk_free
         ) |>
-        select(-risk_free, -mkt_excess, -hml, -smb)
+        select(-risk_free)
 
       processed_data <- crsp_monthly |>
         tidyr::drop_na(ret_excess, mktcap)
@@ -338,18 +343,21 @@ download_data_wrds_crsp <- function(
           )
         )
 
-      factors_ff_3_monthly <- download_data_factors_ff(
-        dataset = "Fama/French 3 Factors",
+      risk_free_monthly <- download_data_fred(
+        "DTB3",
         start_date = start_date,
         end_date = end_date
-      )
+      ) |>
+        mutate(date = floor_date(date, "month")) |>
+        group_by(date) |>
+        summarize(risk_free = mean(value, na.rm = TRUE) / 100 / 12, .groups = "drop")
 
       crsp_monthly <- crsp_monthly |>
-        left_join(factors_ff_3_monthly, join_by(date)) |>
+        left_join(risk_free_monthly, join_by(date)) |>
         mutate(
           ret_excess = ret - risk_free
         ) |>
-        select(-risk_free, -mkt_excess, -hml, -smb)
+        select(-risk_free)
 
       processed_data <- crsp_monthly |>
         tidyr::drop_na(ret_excess, mktcap)
@@ -382,11 +390,15 @@ download_data_wrds_crsp <- function(
         distinct(permno) |>
         pull()
 
-      factors_ff_3_daily <- download_data_factors_ff(
-        dataset = "Fama/French 3 Factors [Daily]",
+      risk_free_daily <- download_data_fred(
+        "DTB3",
         start_date = start_date,
         end_date = end_date
-      )
+      ) |>
+        arrange(date) |>
+        tidyr::fill(value, .direction = "down") |>
+        mutate(risk_free = value / 100 / 252) |>
+        select(date, risk_free)
 
       batches <- ceiling(length(permnos) / batch_size)
 
@@ -444,11 +456,7 @@ download_data_wrds_crsp <- function(
             select(-dlstdt)
 
           crsp_daily_sub <- crsp_daily_sub |>
-            left_join(
-              factors_ff_3_daily |>
-                select(date, risk_free),
-              join_by(date)
-            ) |>
+            left_join(risk_free_daily, join_by(date)) |>
             mutate(
               ret_excess = ret - risk_free
             ) |>
@@ -521,11 +529,15 @@ download_data_wrds_crsp <- function(
         distinct(permno) |>
         pull()
 
-      factors_ff_3_daily <- download_data_factors_ff(
-        dataset = "Fama/French 3 Factors [Daily]",
+      risk_free_daily <- download_data_fred(
+        "DTB3",
         start_date = start_date,
         end_date = end_date
-      )
+      ) |>
+        arrange(date) |>
+        tidyr::fill(value, .direction = "down") |>
+        mutate(risk_free = value / 100 / 252) |>
+        select(date, risk_free)
 
       batches <- ceiling(length(permnos) / batch_size)
 
@@ -571,11 +583,7 @@ download_data_wrds_crsp <- function(
 
         if (nrow(crsp_daily_sub) > 0) {
           crsp_daily_sub <- crsp_daily_sub |>
-            left_join(
-              factors_ff_3_daily |>
-                select(date, risk_free),
-              join_by(date)
-            ) |>
+            left_join(risk_free_daily, join_by(date)) |>
             mutate(
               ret_excess = ret - risk_free
             ) |>
