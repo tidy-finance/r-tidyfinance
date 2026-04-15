@@ -8,7 +8,7 @@
 #' `mktcap_lag`, `ret_excess`, `portfolio`, along with other additional options
 #' passed through `...`.
 #'
-#' @param id A character string representing the identifier variable
+#' @param id A character string representing the entity variable
 #'  (defaults to "permno").
 #' @param date A character string representing the date variable (defaults to 
 #'  "date").
