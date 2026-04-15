@@ -8,8 +8,8 @@
 #' @param data A data frame containing the data for the regression. It
 #'   must include a column representing the time periods (defaults to
 #'   `date`) and the variables specified in the `model`.
-#' @param model A formula representing the regression model to be
-#'   estimated in each cross-section.
+#' @param model A character that describes the model to be estimated in each
+#'  cross-section (e.g., `"ret_excess ~ beta + bm + log_mktcap"`).
 #' @param vcov A character string indicating the type of standard
 #'   errors to compute. Options are `"iid"` for independent and
 #'   identically distributed errors or `"newey-west"` for Newey-West

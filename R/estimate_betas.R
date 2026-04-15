@@ -7,8 +7,8 @@
 #' @param data A data frame containing the data with a date identifier
 #'  (defaults to `date`), a stock identifier (defaults to `permno`),
 #'  and other variables used in the model.
-#' @param model A formula representing the model to be estimated
-#'   (e.g., `ret_excess ~ mkt_excess + smb + hml`).
+#' @param model A character that describes the model to be estimated (e.g.,
+#'   `"ret_excess ~ mkt_excess + hmb + sml"`).
 #' @param lookback A Period object specifying the number of months,
 #'  days, hours, minutes, or seconds to look back when estimating the
 #'  rolling model.
