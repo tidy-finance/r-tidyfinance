@@ -1,25 +1,23 @@
 #' Download Data from WRDS Compustat
 #'
-#' Downloads financial data from the WRDS Compustat database for a
-#' given dataset, start date, and end date. It filters the data
-#' according to industry format, data format, and consolidation level,
-#' and returns the most current data for each reporting period.
-#' Additionally, the annual data also includes the calculated book
-#' equity (be), operating profitability (op), and investment (inv)
-#' for each company.
+#' Downloads financial data from the WRDS Compustat database for a given
+#' dataset, start date, and end date. It filters the data according to
+#' industry format, data format, and consolidation level, and returns the
+#' most current data for each reporting period. Additionally, the annual
+#' data also includes the calculated book equity (be), operating
+#' profitability (op), and investment (inv) for each company.
 #'
 #' @param dataset The dataset to download ("compustat_annual" or
 #'   "compustat_quarterly").
 #' @param start_date Optional. A character string or Date object in
-#'   "YYYY-MM-DD" format specifying the start date for the data. If
-#'   not provided, a subset of the dataset is returned.
+#'   "YYYY-MM-DD" format specifying the start date for the data. If not
+#'   provided, a subset of the dataset is returned.
 #' @param end_date Optional. A character string or Date object in
 #'   "YYYY-MM-DD" format specifying the end date for the data. If not
 #'   provided, a subset of the dataset is returned.
-#' @param type `r lifecycle::badge("deprecated")` Use `dataset`
-#'   instead.
-#' @param additional_columns Additional columns from the Compustat
-#'   table as a character vector.
+#' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
+#' @param additional_columns Additional columns from the Compustat table
+#'   as a character vector.
 #' @param only_us A logical indicating whether only US firms should be
 #'   returned.
 #'
@@ -29,6 +27,7 @@
 #'
 #' @family WRDS functions
 #' @export
+#'
 #' @examples
 #' \dontrun{
 #' download_data_wrds_compustat("compustat_annual", "2020-01-01", "2020-12-31")

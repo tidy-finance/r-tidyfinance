@@ -1,6 +1,5 @@
 #' Add Lagged Columns via Join
 #'
-#' @description
 #' Appends lagged versions of specified columns to a data frame using a
 #' join-based approach.
 #'
@@ -14,29 +13,29 @@
 #'
 #' @param data A data frame containing the variables to lag.
 #' @param cols A character vector specifying the names of the columns to be
-#'  lagged. Each column produces a new column suffixed with `_lag`.
+#'   lagged. Each column produces a new column suffixed with `_lag`.
 #' @param lag An integer or a `lubridate::periods()` object, e.g.,
-#'  `months(1)`, specifying the minimum lag (inclusive) to apply.
+#'   `months(1)`, specifying the minimum lag (inclusive) to apply.
 #' @param max_lag An integer or a `lubridate::periods()` object specifying
-#'  the maximum lag (inclusive) to apply. Defaults to `lag` (exact lag).
+#'   the maximum lag (inclusive) to apply. Defaults to `lag` (exact lag).
 #' @param by An optional character vector specifying grouping columns
-#'  (e.g., a stock identifier). Lagged values are matched within groups.
-#'  Defaults to `NULL`.
+#'   (e.g., a stock identifier). Lagged values are matched within groups.
+#'   Defaults to `NULL`.
 #' @param drop_na A logical value. If `TRUE`, `NA` values in the source
-#'  columns are excluded before matching, so the lookup skips over missing
-#'  observations. Applied independently per column. Defaults to `FALSE`.
-#' @param ff_adjustment A logical value. If `TRUE`, only the last
-#'  observation per year (within each group defined by `by`) is retained
-#'  as a source for lagged values, following Fama-French conventions for
-#'  annual accounting data. Defaults to `FALSE`.
+#'   columns are excluded before matching, so the lookup skips over missing
+#'   observations. Applied independently per column. Defaults to `FALSE`.
+#' @param ff_adjustment A logical value. If `TRUE`, only the last observation
+#'   per year (within each group defined by `by`) is retained as a source for
+#'   lagged values, following Fama-French conventions for annual accounting
+#'   data. Defaults to `FALSE`.
 #' @param data_options A list of class `tidyfinance_data_options` (created via
-#'  [data_options()]) specifying column name mappings. The `date` element is
-#'  used to specify the date column. Uses [data_options()] default if `NULL`:
-#'  `"date" = "date"`. 
+#'   [data_options()]) specifying column name mappings. The `date` element is
+#'   used to specify the date column. Uses [data_options()] default if `NULL`:
+#'   `"date" = "date"`.
 #'
-#' @returns A data frame with the same rows as `data` and new columns
-#'  appended, each suffixed with `_lag`. Unmatched rows receive `NA` in
-#'  the lagged columns.
+#' @returns A data frame with the same rows as `data` and new columns appended,
+#'   each suffixed with `_lag`. Unmatched rows receive `NA` in the lagged 
+#'   columns.
 #'
 #' @family rolling and lagging functions
 #' @export

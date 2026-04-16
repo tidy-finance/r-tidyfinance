@@ -13,6 +13,7 @@
 #'
 #' @family WRDS functions
 #' @export
+#'
 #' @examples
 #' \dontrun{
 #' set_wrds_credentials()

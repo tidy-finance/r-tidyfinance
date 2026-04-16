@@ -4,25 +4,25 @@
 #'
 #' Applies an arbitrary summary function over rolling time-period windows.
 #' Each window is defined by `period` and `periods`. The function `.f`
-#' receives the complete-cases subset of each window and must return a
-#' single scalar. Windows with fewer than `min_obs` complete rows
-#' return `NA_real_`.
+#' receives the complete-cases subset of each window and must return a single
+#' scalar. Windows with fewer than `min_obs` complete rows return `NA_real_`.
 #'
 #' @param data A data frame with a date column of class `Date`, named according
 #'   to `data_options$date` (default `"date"`).
-#' @param .f A function applied to each window. Receives a data-frame
-#'   slice (complete cases only) and must return a single scalar value.
+#' @param .f A function applied to each window. Receives a data-frame slice 
+#'   (complete cases only) and must return a single scalar value.
 #' @param period A string specifying the period for rolling windows
 #'   (e.g., `"month"`, `"quarter"`, `"year"`).
 #' @param periods Number of periods to include in the rolling window.
 #' @param min_obs Minimum number of non-missing rows required per window.
 #'   Defaults to `periods`.
 #' @param data_options A list of class `tidyfinance_data_options` (created via
-#'  [data_options()]) specifying column name mappings. The `date` element is
-#'  used to specify the date column. Uses [data_options()] defaults if `NULL`:
-#'  `"date" = "date"`.
+#'   [data_options()]) specifying column name mappings. The `date` element is
+#'   used to specify the date column. Uses [data_options()] default if `NULL`:
+#'   `"date" = "date"`.
 #'
 #' @returns A numeric vector aligned with the rows of `data`.
+#'
 #' @family rolling and lagging functions
 #' @export
 #'

@@ -1,40 +1,40 @@
-# Main function -----------------------------------------------------------
 #' Download and Process Data Based on Domain and Dataset
 #'
 #' Downloads and processes data based on the specified domain (e.g.,
-#' Fama-French factors, Global Q factors, or macro predictors),
-#' dataset, and date range. This function checks if the specified
-#' domain is supported and then delegates to the appropriate function
-#' for downloading and processing the data.
+#' Fama-French factors, Global Q factors, or macro predictors), dataset,
+#' and date range. This function checks if the specified domain is supported
+#' and then delegates to the appropriate function for downloading and
+#' processing the data.
 #'
 #' @param domain The domain of the dataset to download (e.g.,
 #'   "famafrench", "globalq", "macro_predictors", "wrds",
 #'   "constituents", "fred", "stock_prices", "osap", "tidyfinance").
-#' @param dataset Optional. The specific dataset to download within
-#'   the domain.
+#' @param dataset Optional. The specific dataset to download within the
+#'   domain.
 #' @param start_date Optional. A character string or Date object in
-#'   "YYYY-MM-DD" format specifying the start date for the data. If
-#'   not provided, the full dataset or a subset is returned, depending
-#'   on the dataset type.
+#'   "YYYY-MM-DD" format specifying the start date for the data. If not
+#'   provided, the full dataset or a subset is returned, depending on the
+#'   dataset type.
 #' @param end_date Optional. A character string or Date object in
 #'   "YYYY-MM-DD" format specifying the end date for the data. If not
-#'   provided, the full dataset or a subset is returned, depending on
-#'   the dataset type.
+#'   provided, the full dataset or a subset is returned, depending on the
+#'   dataset type.
 #' @param type `r lifecycle::badge("deprecated")` Use `domain` and
 #'   `dataset` instead.
-#' @param ... Additional arguments passed to specific download
-#'   functions depending on the `domain`. For instance, if `domain` is
+#' @param ... Additional arguments passed to specific download functions
+#'   depending on the `domain`. For instance, if `domain` is
 #'   `"constituents"`, arguments are passed to
-#'   `download_data_constituents()`. If `domain` is `"tidyfinance"`
-#'   and `dataset` is `"factor_library"`, arguments are used to filter
-#'   the portfolio grid (e.g., `sorting_variable`, `rebalancing`,
-#'   `fill_all`); see `download_data_huggingface()` for details.
+#'   `download_data_constituents()`. If `domain` is `"tidyfinance"` and
+#'   `dataset` is `"factor_library"`, arguments are used to filter the
+#'   portfolio grid (e.g., `sorting_variable`, `rebalancing`, `fill_all`);
+#'   see `download_data_huggingface()` for details.
 #'
 #' @returns A tibble with processed data, including dates and the relevant
 #'   financial metrics, filtered by the specified date range.
 #'
 #' @family download functions
 #' @export
+#'
 #' @examples
 #' \donttest{
 #' download_data(

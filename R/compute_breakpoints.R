@@ -2,58 +2,54 @@
 #'
 #' @description `r lifecycle::badge('experimental')`
 #'
-#'   Computes breakpoints based on a specified sorting. It can
-#'   optionally filter the data by exchanges or lagged size quantiles 
-#'   before computing the breakpoints. The function requires either the
-#'   number of portfolios to be created or specific percentiles for the 
-#'   breakpoints, but not both. The function also optionally handles 
-#'   cases where the sorting variable clusters on the edges, by 
-#'   assigning all extreme values to the edges and attempting to compute
-#'   equally populated breakpoints with the remaining values.
+#' Computes breakpoints based on a specified sorting. It can optionally filter
+#' the data by exchanges or lagged size quantiles before computing the
+#' breakpoints. The function requires either the number of portfolios to be
+#' created or specific percentiles for the breakpoints, but not both. The
+#' function also optionally handles cases where the sorting variable clusters
+#' on the edges, by assigning all extreme values to the edges and attempting
+#' to compute equally populated breakpoints with the remaining values.
 #'
-#' @param data A data frame containing the dataset for breakpoint
-#'   computation.
-#' @param sorting_variable A string specifying the column name in `data`
-#'   to be used for determining breakpoints.
-#' @param breakpoint_options A named list of [breakpoint_options()]
-#'   for the breakpoints. The arguments include
+#' @param data A data frame containing the dataset for breakpoint computation.
+#' @param sorting_variable A character string specifying the column name in 
+#'   `data` to be used for determining breakpoints.
+#' @param breakpoint_options A named list of [breakpoint_options()] for the 
+#'   breakpoints. The arguments include
 #'   \itemize{
 #'     \item `n_portfolios` An optional integer specifying the number of
-#'   equally sized portfolios to create. This parameter is mutually
-#'   exclusive with `percentiles`.
+#'       equally sized portfolios to create. This parameter is mutually
+#'       exclusive with `percentiles`.
 #'     \item `percentiles` An optional numeric vector specifying the
-#'   percentiles for determining the breakpoints of the portfolios. This
-#'   parameter is mutually exclusive with `n_portfolios`.
-#'     \item `breakpoint_exchanges` An optional character vector
-#'   specifying exchange names to filter the data before computing
-#'   breakpoints. Exchanges must be stored in a column named `exchange`
-#'   in `data`. If `NULL`, no filtering is applied.
-#'     \item `smooth_bunching` An optional logical parameter specifying
-#'   if to attempt smoothing non-extreme portfolios if the sorting
-#'   variable bunches on the extremes (TRUE), or not (FALSE, the default).
-#'   In some cases, smoothing will not result in equal-sized
-#'   portfolios off the edges due to multiple clusters. If sufficiently
-#'   large bunching is detected, `percentiles` is ignored and
-#'   equally-spaced portfolios are returned for these cases with a
-#'   warning.
-#'     \item `min_size_threshold` An optional numeric value between 0
-#'   and 1 (exclusive). When set, stocks with market capitalization
-#'   below this quantile are excluded from breakpoint computation. The
-#'   quantile is computed among `breakpoint_exchanges` stocks if
-#'   specified, otherwise among all stocks. Requires a market
-#'   capitalization column in the data (column name determined by
-#'   [data_options()]).
+#'       percentiles for determining the breakpoints of the portfolios.
+#'       This parameter is mutually exclusive with `n_portfolios`.
+#'     \item `breakpoint_exchanges` An optional character vector specifying
+#'       exchange names to filter the data before computing breakpoints.
+#'       Exchanges must be stored in a column named `exchange` in `data`.
+#'       If `NULL`, no filtering is applied.
+#'     \item `smooth_bunching` An optional logical parameter specifying if
+#'       to attempt smoothing non-extreme portfolios if the sorting variable
+#'       bunches on the extremes (`TRUE`), or not (`FALSE`, the default).
+#'       In some cases, smoothing will not result in equal-sized portfolios
+#'       off the edges due to multiple clusters. If sufficiently large
+#'       bunching is detected, `percentiles` is ignored and equally-spaced
+#'       portfolios are returned for these cases with a warning.
+#'     \item `min_size_threshold` An optional numeric value between 0 and
+#'       1 (exclusive). When set, stocks with market capitalization below
+#'       this quantile are excluded from breakpoint computation. The quantile
+#'       is computed among `breakpoint_exchanges` stocks if specified,
+#'       otherwise among all stocks. Requires a market capitalization column
+#'       in the data (column name determined by [data_options()]).
 #'   }
 #' @param data_options A list of class `tidyfinance_data_options` (created via
-#'  [data_options()]) specifying column name mappings. The `exchange` element is
-#'  used to specify the exchange column, and `market_cap` is used to specify 
-#'  the market capitalization. Uses [data_options()] default if `NULL`: 
-#'  `"exchange" = "exchange"`, and `"mktcap_lag" = "mktcap_lag"`. 
+#'   [data_options()]) specifying column name mappings. The `exchange` element
+#'   is used to specify the exchange column, and `mktcap_lag` is used to
+#'   specify the market capitalization. Uses [data_options()] default if
+#'   `NULL`: `"exchange" = "exchange"` and `"mktcap_lag" = "mktcap_lag"`.
 #'
-#' @note This function will stop and throw an error if both
-#'   `n_portfolios` and `percentiles` are provided or missing simultaneously.
+#' @note This function will stop and throw an error if both `n_portfolios` and
+#'   `percentiles` are provided or missing simultaneously.
 #'
-#' @returns A vector of breakpoints of the desired length.
+#' @returns A numeric vector of breakpoints of the desired length.
 #'
 #' @family portfolio functions
 #' @export

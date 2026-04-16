@@ -1,24 +1,27 @@
-#' List parquet files in a Hugging Face dataset
+#' List Parquet Files in a Hugging Face Dataset
 #'
 #' Query the Hugging Face Datasets API and return a tibble of files with a
 #' `.parquet` suffix. The function follows pagination links returned in the
-#' response `Link` header and returns path, size and a resolved URL.
+#' response `Link` header and returns path, size, and a resolved URL.
+#'
+#' @details
+#' Uses httr2 to perform HTTP requests. Requires internet access and the
+#' dataset to be publicly accessible or accessible with appropriate
+#' authentication.
 #'
 #' @param organization Character(1). Hugging Face organization or user name.
 #' @param dataset Character(1). Dataset name under the organization.
-#' @return A tibble with columns: path (character), size (numeric) and url
-#'   (character).
-#' @details Uses httr2 to perform HTTP requests. Requires internet access and
-#'   the dataset to be publicly accessible or accessible with appropriate auth.
-#' 
+#'
+#' @returns A tibble with columns: `path` (character), `size` (numeric), and
+#'   `url` (character).
+#'
 #' @family utility functions
-#' 
+#' @export
+#'
 #' @examples
 #' \dontrun{
 #' get_available_huggingface_files("voigtstefan", "sp500")
 #' }
-#'
-#' @export
 get_available_huggingface_files <- function(organization, dataset) {
   api_url <- paste0(
     "https://huggingface.co/api/datasets/",
@@ -95,44 +98,48 @@ get_available_huggingface_files <- function(organization, dataset) {
 #' design.
 #'
 #' Supported columns and their defaults for `...`:
+#'   \itemize{
+#'     \item `sorting_variable`: **Required.** The firm characteristic used
+#'       to sort stocks into portfolios (e.g., `"me"` for market equity,
+#'       `"bm"` for book-to-market). No default is applied.
+#'     \item `exclude_size` (defaults to `0.2`): Fraction of the smallest
+#'       stocks (by market cap) excluded from the portfolio universe. `0.2`
+#'       drops the bottom 20%.
+#'     \item `exclude_financials` (defaults to `FALSE`): Whether to drop
+#'       financial-sector stocks (SIC 6000-6999) from the universe.
+#'     \item `exclude_utilities` (default: `FALSE`): Whether to drop
+#'       utility-sector stocks (SIC 4900-4999) from the universe.
+#'     \item `exclude_negative_earnings` (defaults to `FALSE`): Whether to
+#'       drop firms with negative earnings before sorting.
+#'     \item `sorting_variable_lag` (defaults to `"6m"`): Lag applied to the
+#'       sorting variable before portfolio assignment (e.g., `"6m"` = 6-month
+#'       lag).
+#'     \item `rebalancing` (defaults to `"monthly"`): How frequently portfolios
+#'       are reformed: `"monthly"` or `"annual"`.
+#'     \item `breakpoints_main` (defaults to `10`): Number of quantile groups
+#'       (e.g., `10` for decile portfolios).
+#'     \item `sorting_method` (defaults to `"univariate"`): Whether portfolios
+#'       are formed on a single sort (`"univariate"`) or a sequential double
+#'       sort (`"sequential"`).
+#'     \item `breakpoints_secondary` (defaults to `NA`): Number of groups for
+#'       the secondary sort variable; only relevant when
+#'       `sorting_method = "sequential"`.
+#'     \item `breakpoints_exchanges` (defaults to: `"NYSE"`): Exchange(s) used
+#'       to compute breakpoints. `"NYSE"` uses only NYSE-listed stocks to
+#'       define quantile cutoffs (the conventional Fama-French approach).
+#'     \item `weighting_scheme` (defaults to `"VW"`): Return weighting within
+#'       portfolios: `"VW"` for value-weighted or `"EW"` for equal-weighted.
+#'   }
 #'
-#' - `sorting_variable`: **Required.** The firm characteristic used to sort
-#'   stocks into portfolios (e.g., `"me"` for market equity, `"bm"` for
-#'   book-to-market). No default is applied.
-#' - `exclude_size` (default: `0.2`): Fraction of the smallest stocks (by
-#'   market cap) excluded from the portfolio universe. `0.2` drops the bottom
-#'   20%.
-#' - `exclude_financials` (default: `FALSE`): Whether to drop financial-sector
-#'   stocks (SIC 6000-6999) from the universe.
-#' - `exclude_utilities` (default: `FALSE`): Whether to drop utility-sector
-#'   stocks (SIC 4900-4999) from the universe.
-#' - `exclude_negative_earnings` (default: `FALSE`): Whether to drop firms with
-#'   negative earnings before sorting.
-#' - `sorting_variable_lag` (default: `"6m"`): Lag applied to the sorting
-#'   variable before portfolio assignment (e.g., `"6m"` = 6-month lag).
-#' - `rebalancing` (default: `"monthly"`): How frequently portfolios are
-#'   reformed: `"monthly"` or `"annual"`.
-#' - `breakpoints_main` (default: `10`): Number of quantile groups (e.g., `10`
-#'   for decile portfolios).
-#' - `sorting_method` (default: `"univariate"`): Whether portfolios are formed
-#'   on a single sort (`"univariate"`) or a sequential double sort
-#'   (`"sequential"`).
-#' - `breakpoints_secondary` (default: `NA`): Number of groups for the secondary
-#'   sort variable; only relevant when `sorting_method = "sequential"`.
-#' - `breakpoints_exchanges` (default: `"NYSE"`): Exchange(s) used to compute
-#'   breakpoints. `"NYSE"` uses only NYSE-listed stocks to define quantile
-#'   cutoffs (the conventional Fama-French approach).
-#' - `weighting_scheme` (default: `"VW"`): Return weighting within portfolios:
-#'   `"VW"` for value-weighted or `"EW"` for equal-weighted.
-#'
-#' @return A tibble with the downloaded data. For `"high_frequency_sp500"`,
+#' @returns A tibble with the downloaded data. For `"high_frequency_sp500"`,
 #'   contains 5-second aggregated orderbook snapshots filtered to the requested
 #'   date range. For `"factor_library"`, contains portfolio return data joined
 #'   with the full grid metadata for the matched portfolio IDs.
-#' 
+#'
 #' @family download functions
-#' 
-##' @examples
+#' @export
+#'
+#' @examples
 #' \dontrun{
 #'   download_data_huggingface(
 #'     "high_frequency_sp500", "2007-07-26", "2007-07-27"
@@ -146,8 +153,6 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'     "factor_library", sorting_variable = "ag", fill_all = TRUE
 #'   )
 #' }
-#'
-#' @export
 download_data_huggingface <- function(
   dataset = NULL,
   start_date = "2007-06-27",

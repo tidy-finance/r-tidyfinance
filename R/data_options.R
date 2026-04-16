@@ -1,30 +1,29 @@
 #' Create Data Options
 #'
-#' Creates a list of data options of class `tidyfinance_data_options` used for 
+#' Creates a list of data options of class `tidyfinance_data_options` used for
 #' TidyFinance-related functions. These options map the specific data variables
-#' to the TidyFinance naming conventions, allowing functions to flexibly work 
-#' with different datasets by specifying the relevant column names. The 
-#' function accepts key parameters such as `id`, `date`, `exchange`, 
-#' `mktcap_lag`, `ret_excess`, `portfolio`, along with other additional options
-#' passed through `...`.
+#' to the TidyFinance naming conventions, allowing functions to flexibly work
+#' with different datasets by specifying the relevant column names. The
+#' function accepts key parameters such as `id`, `date`, `exchange`,
+#' `mktcap_lag`, `ret_excess`, `portfolio`, along with other additional
+#' options passed through `...`.
 #'
-#' @param id A character string representing the entity variable
-#'  (defaults to "permno").
-#' @param date A character string representing the date variable (defaults to 
-#'  "date").
+#' @param id A character string representing the entity variable (defaults to
+#'   `"permno"`).
+#' @param date A character string representing the date variable (defaults to
+#'   `"date"`).
 #' @param exchange A character string representing the exchange variable
-#'  (defaults to "exchange").
-#' @param mktcap_lag A character string representing the market
-#'  capitalization lag variable (defaults to "mktcap_lag").
-#' @param ret_excess A character string representing the excess return
-#'  variable (defaults to "ret_excess").
-#' @param portfolio A character string representing the portfolio
-#'  variable (defaults to "portfolio").
-#' @param ... Additional arguments to be included in the data options
-#'  list.
+#'   (defaults to `"exchange"`).
+#' @param mktcap_lag A character string representing the market capitalization
+#'   lag variable (defaults to `"mktcap_lag"`).
+#' @param ret_excess A character string representing the excess return variable
+#'   (defaults to `"ret_excess"`).
+#' @param portfolio A character string representing the portfolio variable
+#'   (defaults to `"portfolio"`).
+#' @param ... Additional arguments to be included in the data options list.
 #'
-#' @returns A list of class `tidyfinance_data_options` containing the
-#'  specified data options.
+#' @returns A list of class `tidyfinance_data_options` containing the specified
+#'   data options.
 #'
 #' @family portfolio functions
 #' @export
