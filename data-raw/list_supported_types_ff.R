@@ -1,7 +1,7 @@
 # This script generates the hardcoded tibble used in list_supported_types_ff().
 # Run this script if the list of available Fama-French datasets needs to be
-# updated. The output of datapasta::tribble_paste() should replace the tribble()
-# call in R/list_supported_types.R.
+# updated. The output of datapasta::tribble_paste() should replace the
+# tribble() call in R/list_supported_types.R.
 #
 # Requires: frenchdata, dplyr, datapasta
 
