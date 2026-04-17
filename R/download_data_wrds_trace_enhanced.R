@@ -26,7 +26,7 @@
 #'
 #'   Dick-Nielsen, J. (2014). How to clean enhanced TRACE data. Working Paper.
 #'   \doi{10.2139/ssrn.2337908}
-#' 
+#'
 #' @family WRDS functions
 #' @export
 #'

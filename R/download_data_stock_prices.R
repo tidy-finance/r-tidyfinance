@@ -6,10 +6,10 @@
 #' @param symbols A character vector of stock symbols to download data for. At
 #'   least one symbol must be provided.
 #' @param start_date Optional. A character string or Date object in "YYYY-MM-DD"
-#'   format specifying the start date for the data. If not provided, a one-year 
+#'   format specifying the start date for the data. If not provided, a one-year
 #'   subset of the dataset is returned (see [validate_dates()]).
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD"
-#'   format specifying the end date for the data. If not provided, a one-year 
+#'   format specifying the end date for the data. If not provided, a one-year
 #'   subset of the dataset is returned (see [validate_dates()]).
 #'
 #' @returns A tibble containing the downloaded stock data with columns: symbol,

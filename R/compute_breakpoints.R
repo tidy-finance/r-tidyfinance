@@ -11,9 +11,9 @@
 #' to compute equally populated breakpoints with the remaining values.
 #'
 #' @param data A data frame containing the dataset for breakpoint computation.
-#' @param sorting_variable A character string specifying the column name in 
+#' @param sorting_variable A character string specifying the column name in
 #'   `data` to be used for determining breakpoints.
-#' @param breakpoint_options A named list of [breakpoint_options()] for the 
+#' @param breakpoint_options A named list of [breakpoint_options()] for the
 #'   breakpoints. The arguments include
 #'   \itemize{
 #'     \item `n_portfolios` An optional integer specifying the number of
