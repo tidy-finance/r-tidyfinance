@@ -16,7 +16,8 @@
 #'   `use_default_range = FALSE`).
 #'
 #' @keywords internal
-#' @noRd
+#' @family utility functions
+#'
 validate_dates <- function(start_date, end_date, use_default_range = FALSE) {
   if (is.null(start_date) || is.null(end_date)) {
     if (use_default_range) {
