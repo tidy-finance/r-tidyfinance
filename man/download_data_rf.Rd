@@ -37,10 +37,10 @@ weekends and holidays.
 For monthly rates, the function splices two FRED series at
 2001-07-01:
 \itemize{
-\item \strong{Pre-2001}: TB3MS (3-month T-bill, monthly). The annualised
+\item \strong{Before 2001-07-01}: TB3MS (3-month T-bill, monthly). The annualised
 discount rate \code{d} is converted to a monthly holding-period return
 via \code{(1 + d * 90/360 / (1 - d * 90/360))^(1/3) - 1}.
-\item \strong{From 2001}: DTB4WK (4-week T-bill, daily). The last non-NA
+\item \strong{From 2001-07-01}: DTB4WK (4-week T-bill, daily). The last non-NA
 observation per calendar month is taken and the annualised
 discount rate \code{d} is converted via
 \code{(1 + d * 28/360 / (1 - d * 28/360))^(365/28/12) - 1}.
