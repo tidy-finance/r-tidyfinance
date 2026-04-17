@@ -14,37 +14,35 @@ estimate_fama_macbeth(
 )
 }
 \arguments{
-\item{data}{A data frame containing the data for the regression. It
-must include a column representing the time periods (defaults to
-\code{date}) and the variables specified in the \code{model}.}
+\item{data}{A data frame containing the data for the regression. It must
+include a column representing the time periods (defaults to \code{date}) and
+the variables specified in the \code{model}.}
 
-\item{model}{A formula representing the regression model to be
-estimated in each cross-section.}
+\item{model}{A character string describing the model to be estimated in
+each cross-section (e.g., \code{"ret_excess ~ beta + bm + log_mktcap"}).}
 
-\item{vcov}{A character string indicating the type of standard
-errors to compute. Options are \code{"iid"} for independent and
-identically distributed errors or \code{"newey-west"} for Newey-West
-standard errors. Default is \code{"newey-west"}.}
+\item{vcov}{A character string indicating the type of standard errors to
+compute. Options are \code{"iid"} for independent and identically distributed
+errors or \code{"newey-west"} for Newey-West standard errors. Default is
+\code{"newey-west"}.}
 
-\item{vcov_options}{A list of additional arguments to be passed to
-the \code{NeweyWest()} function when \code{vcov = "newey-west"}. These can
-include options such as \code{lag}, which specifies the number of lags
-to use in the Newey-West covariance matrix estimation, and
-\code{prewhite}, which indicates whether to apply a prewhitening
-transformation. Default is an empty list.}
+\item{vcov_options}{A list of additional arguments to be passed to the
+\code{NeweyWest()} function when \code{vcov = "newey-west"}. These can include
+options such as \code{lag}, which specifies the number of lags to use in the
+Newey-West covariance matrix estimation, and \code{prewhite}, which indicates
+whether to apply a prewhitening transformation. Default is an empty list.}
 
-\item{data_options}{A named list of \link{data_options} with
-characters, indicating the column names required to run this
-function. The required column names identify dates. Defaults to
-\code{date = date}.}
+\item{data_options}{A list of class \code{tidyfinance_data_options} (created via
+\code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{date} element is
+used to specify the date column. Uses \code{\link[=data_options]{data_options()}} default if \code{NULL}:
+\code{"date" = "date"}.}
 
-\item{detail}{A logical value indicating whether to return
-additional summary statistics. If \code{FALSE} (default), the function
-returns only the coefficient estimates. If \code{TRUE}, it returns a
-list with two elements: \code{coefficients} (the usual estimates
-table) and \code{summary_statistics} (a one-row tibble with the
-average cross-sectional R-squared and the average number of
-observations per cross-section).}
+\item{detail}{A logical value indicating whether to return additional
+summary statistics. If \code{FALSE} (default), the function returns only the
+coefficient estimates. If \code{TRUE}, it returns a list with two elements:
+\code{coefficients} (the usual estimates table) and \code{summary_statistics} (a
+one-row tibble with the average cross-sectional R-squared and the average
+number of observations per cross-section).}
 }
 \value{
 If \code{detail = FALSE} (default), a tibble with columns
@@ -61,9 +59,8 @@ observation count).}
 }
 \description{
 Estimates Fama-MacBeth regressions by first running cross-sectional
-regressions for each time period and then aggregating the results
-over time to obtain average risk premia and corresponding
-t-statistics.
+regressions for each time period and then aggregating the results over time
+to obtain average risk premia and corresponding t-statistics.
 }
 \examples{
 set.seed(1234)

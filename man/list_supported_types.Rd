@@ -7,23 +7,23 @@
 list_supported_types(domain = NULL, as_vector = FALSE)
 }
 \arguments{
-\item{domain}{A character vector to filter for domain specific types
-(e.g. c("WRDS", "Fama-French"))}
+\item{domain}{A character vector to filter for domain-specific types
+(e.g., c("WRDS", "Fama-French"))}
 
-\item{as_vector}{Logical indicating whether types should be returned as a
-character vector instead of data frame.}
+\item{as_vector}{Logical indicating whether types should be returned as
+a character vector instead of a data frame.}
 }
 \value{
 A tibble aggregating all supported dataset types with columns:
-\code{type} (the type of dataset), \code{dataset_name} (a descriptive name or file
-name of the dataset), and \code{domain} (the domain to which the dataset
-belongs, e.g., "Global Q", "Fama-French", "Goyal-Welch").
+\code{type} (the type of dataset), \code{dataset_name} (a descriptive name or
+file name of the dataset), and \code{domain} (the domain to which the
+dataset belongs, e.g., "Global Q", "Fama-French", "Goyal-Welch").
 }
 \description{
-Aggregates and returns a comprehensive tibble of all supported
-dataset types from different domains. It includes various datasets across
-different frequencies (daily, weekly, monthly, quarterly, annual) and models
-(e.g., q5 factors, Fama-French 3 and 5 factors, macro predictors).
+Aggregates and returns a comprehensive tibble of all supported dataset
+types from different domains. It includes various datasets across
+different frequencies (daily, weekly, monthly, quarterly, annual) and
+models (e.g., q5 factors, Fama-French 3 and 5 factors, macro predictors).
 }
 \examples{
 # List all supported types as a data frame
@@ -35,3 +35,20 @@ list_supported_types(domain = "WRDS")
 # List supported types as a vector
 list_supported_types(as_vector = TRUE)
 }
+\seealso{
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{get_available_huggingface_files}()},
+\code{\link{list_supported_indexes}()},
+\code{\link{list_supported_types_ff}()},
+\code{\link{list_supported_types_ff_legacy}()},
+\code{\link{list_supported_types_macro_predictors}()},
+\code{\link{list_supported_types_other}()},
+\code{\link{list_supported_types_wrds}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()},
+\code{\link{validate_dates}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}

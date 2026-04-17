@@ -22,27 +22,30 @@ breakpoints.}
 \item{breakpoint_options}{An optional named list of arguments passed to
 \code{breakpoint_function}.}
 
-\item{breakpoint_function}{A function to compute breakpoints. The default is
-set to \link{compute_breakpoints}.}
+\item{breakpoint_function}{A function to compute breakpoints. The default
+is set to \code{\link[=compute_breakpoints]{compute_breakpoints()}}.}
 
-\item{data_options}{A named list of \link{data_options} with characters,
-indicating the column names required to run this function. The required
-column names identify dates.  Defaults to \code{date = date} and \code{id = permno}.}
+\item{data_options}{A list of class \code{tidyfinance_data_options} (created via
+\code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{id} element is
+used to specify the entity (i.e., firm), and the \code{date} element is used
+to specify the date column. Uses \code{\link[=data_options]{data_options()}} default if \code{NULL}:
+\code{"id" = "permno"} and \code{"date" = "date"}.}
 }
 \value{
-A vector of portfolio assignments for each row in the input \code{data}.
+A vector of integer portfolio assignments for each row in the
+input \code{data}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Assigns data points to portfolios based on a specified
-sorting variable and the selected function to compute breakpoints. Users
-can specify a function to compute breakpoints. The function must take
-\code{data} and \code{sorting_variable} as the first two arguments. Additional
-arguments are passed with a named list \link{breakpoint_options}. The
-function needs to return an ascending vector of breakpoints. By default,
-breakpoints are computed with \link{compute_breakpoints}. The default
-column names can be modified using \link{data_options}.
+Assigns data points to portfolios based on a specified sorting variable and
+the selected function to compute breakpoints. Users can specify a function
+to compute breakpoints. The function must take \code{data} and
+\code{sorting_variable} as the first two arguments. Additional arguments are
+passed with a named list \code{\link[=breakpoint_options]{breakpoint_options()}}. The function needs to
+return an ascending vector of breakpoints. By default, breakpoints are
+computed with \code{\link[=compute_breakpoints]{compute_breakpoints()}}. The default column names can be
+modified using \code{\link[=data_options]{data_options()}}.
 }
 \examples{
 set.seed(42)

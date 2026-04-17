@@ -15,37 +15,38 @@ data_options(
 )
 }
 \arguments{
-\item{id}{A character string representing the identifier variable
-(e.g., "permno").}
+\item{id}{A character string representing the entity variable (defaults to
+\code{"permno"}).}
 
-\item{date}{A character string representing the date variable (e.g.,
-"date").}
+\item{date}{A character string representing the date variable (defaults to
+\code{"date"}).}
 
 \item{exchange}{A character string representing the exchange variable
-(e.g., "exchange").}
+(defaults to \code{"exchange"}).}
 
-\item{mktcap_lag}{A character string representing the market
-capitalization lag variable (e.g., "mktcap_lag").}
+\item{mktcap_lag}{A character string representing the market capitalization
+lag variable (defaults to \code{"mktcap_lag"}).}
 
-\item{ret_excess}{A character string representing the excess return
-variable (e.g., "ret_excess").}
+\item{ret_excess}{A character string representing the excess return variable
+(defaults to \code{"ret_excess"}).}
 
-\item{portfolio}{A character string representing the portfolio
-variable (e.g., "portfolio").}
+\item{portfolio}{A character string representing the portfolio variable
+(defaults to \code{"portfolio"}).}
 
-\item{...}{Additional arguments to be included in the data options
-list.}
+\item{...}{Additional arguments to be included in the data options list.}
 }
 \value{
-A list of class \code{tidyfinance_data_options} containing the
-specified data options.
+A list of class \code{tidyfinance_data_options} containing the specified
+data options.
 }
 \description{
-Creates a list of data options used in financial data analysis,
-specifically for TidyFinance-related functions. It allows users to
-specify key parameters such as \code{id}, \code{date}, \code{exchange}, \code{mktcap_lag},
-and \code{ret_excess} along with other additional options passed through
-\code{...}.
+Creates a list of data options of class \code{tidyfinance_data_options} used for
+TidyFinance-related functions. These options map the specific data variables
+to the TidyFinance naming conventions, allowing functions to flexibly work
+with different datasets by specifying the relevant column names. The
+function accepts key parameters such as \code{id}, \code{date}, \code{exchange},
+\code{mktcap_lag}, \code{ret_excess}, \code{portfolio}, along with other additional
+options passed through \code{...}.
 }
 \examples{
 data_options(

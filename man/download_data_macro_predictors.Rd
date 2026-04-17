@@ -56,6 +56,7 @@ Other download functions:
 \code{\link{download_data_factors_ff}()},
 \code{\link{download_data_factors_q}()},
 \code{\link{download_data_fred}()},
+\code{\link{download_data_huggingface}()},
 \code{\link{download_data_osap}()},
 \code{\link{download_data_stock_prices}()}
 }

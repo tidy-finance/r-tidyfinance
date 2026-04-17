@@ -18,29 +18,29 @@ download_data(
 "famafrench", "globalq", "macro_predictors", "wrds",
 "constituents", "fred", "stock_prices", "osap", "tidyfinance").}
 
-\item{dataset}{Optional. The specific dataset to download within
-the domain.}
+\item{dataset}{Optional. The specific dataset to download within the
+domain.}
 
 \item{start_date}{Optional. A character string or Date object in
-"YYYY-MM-DD" format specifying the start date for the data. If
-not provided, the full dataset or a subset is returned, depending
-on the dataset type.}
+"YYYY-MM-DD" format specifying the start date for the data. If not
+provided, the full dataset or a subset is returned, depending on the
+dataset type.}
 
 \item{end_date}{Optional. A character string or Date object in
 "YYYY-MM-DD" format specifying the end date for the data. If not
-provided, the full dataset or a subset is returned, depending on
-the dataset type.}
+provided, the full dataset or a subset is returned, depending on the
+dataset type.}
 
 \item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{domain} and
 \code{dataset} instead.}
 
-\item{...}{Additional arguments passed to specific download
-functions depending on the \code{domain}. For instance, if \code{domain} is
+\item{...}{Additional arguments passed to specific download functions
+depending on the \code{domain}. For instance, if \code{domain} is
 \code{"constituents"}, arguments are passed to
-\code{download_data_constituents()}. If \code{domain} is \code{"tidyfinance"}
-and \code{dataset} is \code{"factor_library"}, arguments are used to filter
-the portfolio grid (e.g., \code{sorting_variable}, \code{rebalancing},
-\code{fill_all}); see \code{download_data_huggingface()} for details.}
+\code{download_data_constituents()}. If \code{domain} is \code{"tidyfinance"} and
+\code{dataset} is \code{"factor_library"}, arguments are used to filter the
+portfolio grid (e.g., \code{sorting_variable}, \code{rebalancing}, \code{fill_all});
+see \code{download_data_huggingface()} for details.}
 }
 \value{
 A tibble with processed data, including dates and the relevant
@@ -48,10 +48,10 @@ financial metrics, filtered by the specified date range.
 }
 \description{
 Downloads and processes data based on the specified domain (e.g.,
-Fama-French factors, Global Q factors, or macro predictors),
-dataset, and date range. This function checks if the specified
-domain is supported and then delegates to the appropriate function
-for downloading and processing the data.
+Fama-French factors, Global Q factors, or macro predictors), dataset,
+and date range. This function checks if the specified domain is supported
+and then delegates to the appropriate function for downloading and
+processing the data.
 }
 \examples{
 \donttest{
@@ -85,6 +85,7 @@ Other download functions:
 \code{\link{download_data_factors_ff}()},
 \code{\link{download_data_factors_q}()},
 \code{\link{download_data_fred}()},
+\code{\link{download_data_huggingface}()},
 \code{\link{download_data_macro_predictors}()},
 \code{\link{download_data_osap}()},
 \code{\link{download_data_stock_prices}()}

@@ -7,11 +7,28 @@
 list_supported_types_wrds()
 }
 \value{
-A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
-(the file name of the dataset), and \code{domain} (the domain to which the
-dataset belongs, always "WRDS").
+A tibble with columns: \code{type} (the type of dataset),
+\code{dataset_name} (the file name of the dataset), and \code{domain} (the
+domain to which the dataset belongs, always "WRDS").
 }
 \description{
-Returns a tibble with the supported dataset types provided via
-WRDS. Additionally, it annotates each dataset with the domain "WRDS".
+Returns a tibble with the supported dataset types provided via WRDS.
+Additionally, it annotates each dataset with the domain "WRDS".
 }
+\seealso{
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{get_available_huggingface_files}()},
+\code{\link{list_supported_indexes}()},
+\code{\link{list_supported_types}()},
+\code{\link{list_supported_types_ff}()},
+\code{\link{list_supported_types_ff_legacy}()},
+\code{\link{list_supported_types_macro_predictors}()},
+\code{\link{list_supported_types_other}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()},
+\code{\link{validate_dates}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}
