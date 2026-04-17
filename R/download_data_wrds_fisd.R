@@ -13,7 +13,7 @@
 #'   as a character vector.
 #'
 #' @returns A data frame containing a subset of FISD data with fields related
-#'   to the bond's characteristics and issuer information. This includes 
+#'   to the bond's characteristics and issuer information. This includes
 #'   complete CUSIP, maturity date, offering amount, offering date, dated date,
 #'   interest frequency, coupon, last interest date, issue ID, issuer ID, SIC
 #'   code of the issuer.

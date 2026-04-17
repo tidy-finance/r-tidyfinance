@@ -9,14 +9,14 @@
 #'   variables used in the model.
 #' @param model A character string describing the model to be estimated (e.g.,
 #'   `"ret_excess ~ mkt_excess + hml + smb"`).
-#' @param lookback A Period object specifying the number of months, days, 
+#' @param lookback A Period object specifying the number of months, days,
 #'   hours, minutes, or seconds to look back when estimating the rolling model.
 #' @param min_obs An integer specifying the minimum number of observations
 #'   required to estimate the model. Defaults to 80% of `lookback`.
 #' @param use_furrr A logical indicating whether to use the `furrr` package
 #'   and its parallelization capabilities. Defaults to `FALSE`.
 #' @param data_options A list of class `tidyfinance_data_options` (created via
-#'   [data_options()]) specifying column name mappings. The `id` is used to 
+#'   [data_options()]) specifying column name mappings. The `id` is used to
 #'   specify the entity (i.e., firm), and the `date` element is used to specify
 #'   the date column. Uses [data_options()] default if `NULL`:
 #'   `"id" = "permno"` and `"date" = "date"`.

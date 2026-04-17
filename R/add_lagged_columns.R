@@ -34,7 +34,7 @@
 #'   `"date" = "date"`.
 #'
 #' @returns A data frame with the same rows as `data` and new columns appended,
-#'   each suffixed with `_lag`. Unmatched rows receive `NA` in the lagged 
+#'   each suffixed with `_lag`. Unmatched rows receive `NA` in the lagged
 #'   columns.
 #'
 #' @family rolling and lagging functions
