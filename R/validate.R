@@ -15,8 +15,8 @@
 #'   class `Date` (or `NULL` when no dates are provided and
 #'   `use_default_range = FALSE`).
 #'
-#' @keywords internal
 #' @family utility functions
+#' @export
 #'
 validate_dates <- function(start_date, end_date, use_default_range = FALSE) {
   if (is.null(start_date) || is.null(end_date)) {
