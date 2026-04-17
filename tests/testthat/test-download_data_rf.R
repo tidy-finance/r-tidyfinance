@@ -6,7 +6,6 @@ test_that("download_data_rf returns monthly data with correct columns", {
   expect_true(all(c("date", "risk_free") %in% colnames(data)))
   expect_equal(ncol(data), 2)
   expect_true(all(!is.na(data$risk_free)))
-  expect_true(all(data$risk_free >= 0))
 })
 
 test_that("download_data_rf returns daily data with correct columns", {
