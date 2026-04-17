@@ -43,4 +43,3 @@ Other utility functions:
 \code{\link{winsorize}()}
 }
 \concept{utility functions}
-\keyword{internal}

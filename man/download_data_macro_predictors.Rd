@@ -49,6 +49,11 @@ specified date range.
 }
 
 }
+\references{
+Welch, I., & Goyal, A. (2008). A comprehensive look at the empirical
+performance of equity premium prediction. \emph{Review of Financial Studies},
+21(4), 1455-1508. \doi{10.1093/rfs/hhm014}
+}
 \seealso{
 Other download functions: 
 \code{\link{download_data}()},

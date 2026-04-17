@@ -58,9 +58,10 @@ observation count).}
 }
 }
 \description{
-Estimates Fama-MacBeth regressions by first running cross-sectional
-regressions for each time period and then aggregating the results over time
-to obtain average risk premia and corresponding t-statistics.
+Estimates Fama-MacBeth regressions (Fama and MacBeth, 1973) by first running
+cross-sectional regressions for each time period and then aggregating the
+results over time to obtain average risk premia and corresponding
+t-statistics.
 }
 \examples{
 set.seed(1234)
@@ -103,6 +104,16 @@ data |>
     data_options = data_options(date = "month")
  )
 
+}
+\references{
+Fama, E. F., & MacBeth, J. D. (1973). Risk, return, and equilibrium:
+Empirical tests. \emph{Journal of Political Economy}, 81(3), 607-636.
+\doi{10.1086/260061}
+
+Newey, W. K., & West, K. D. (1987). A simple, positive semi-definite,
+heteroskedasticity and autocorrelation consistent covariance matrix.
+\emph{Econometrica}, 55(3), 703-708.
+\doi{10.2307/1913610}
 }
 \seealso{
 Other estimation functions: 
