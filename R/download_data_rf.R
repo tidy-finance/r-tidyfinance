@@ -110,9 +110,9 @@ download_data_rf <- function(
       select(date, risk_free)
   }
 
-  if (!is.null(start_date) && !is.null(end_date)) {
+  if (!is.null(start_date)) {
     risk_free_data <- risk_free_data |>
-      filter(date >= start_date & date <= end_date)
+      filter(between(date, start_date, end_date))
   }
 
   risk_free_data
