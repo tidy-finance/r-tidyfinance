@@ -18,7 +18,7 @@
 #'
 #' @details
 #' For monthly rates, the function splices two FRED series at
-#' 2001-01-01:
+#' 2001-07-01:
 #' - **Pre-2001**: TB3MS (3-month T-bill, monthly). The annualised
 #'   discount rate `d` is converted to a monthly holding-period return
 #'   via `(1 + d * 90/360 / (1 - d * 90/360))^(1/3) - 1`.
@@ -65,7 +65,7 @@ download_data_rf <- function(
   end_date <- dates$end_date
 
   if (frequency == "monthly") {
-    splice_date <- as.Date("2001-01-01")
+    splice_date <- as.Date("2001-07-01")
 
     fred_tb3ms <- suppressMessages(download_data_fred("TB3MS"))
     fred_dtb4wk <- suppressMessages(download_data_fred("DTB4WK"))
@@ -73,8 +73,7 @@ download_data_rf <- function(
     rf_tb3ms <- fred_tb3ms |>
       tidyr::drop_na(value) |>
       mutate(
-        ret_3m = (value / 100) * (90 / 360) /
-          (1 - (value / 100) * (90 / 360)),
+        ret_3m = (value / 100) * (90 / 360) / (1 - (value / 100) * (90 / 360)),
         risk_free = (1 + ret_3m)^(1 / 3) - 1
       ) |>
       select(date, risk_free)
@@ -86,8 +85,7 @@ download_data_rf <- function(
       slice_tail(n = 1) |>
       ungroup() |>
       mutate(
-        ret_4wk = (value / 100) * (28 / 360) /
-          (1 - (value / 100) * (28 / 360)),
+        ret_4wk = (value / 100) * (28 / 360) / (1 - (value / 100) * (28 / 360)),
         risk_free = (1 + ret_4wk)^(365 / 28 / 12) - 1
       ) |>
       select(date, risk_free)
@@ -104,8 +102,7 @@ download_data_rf <- function(
       arrange(date) |>
       tidyr::fill(value, .direction = "down") |>
       mutate(
-        ret_3m = (value / 100) * (90 / 360) /
-          (1 - (value / 100) * (90 / 360)),
+        ret_3m = (value / 100) * (90 / 360) / (1 - (value / 100) * (90 / 360)),
         risk_free = (1 + ret_3m)^(1 / 63) - 1
       ) |>
       select(date, risk_free)
