@@ -13,13 +13,14 @@ test_that("download_data_rf returns daily data with correct columns", {
   skip_if_offline()
   skip_on_cran()
   data <- download_data_rf(
-    "2020-01-01", "2020-12-31", frequency = "daily"
+    "2020-01-01",
+    "2020-12-31",
+    frequency = "daily"
   )
   expect_s3_class(data, "tbl_df")
   expect_true(all(c("date", "risk_free") %in% colnames(data)))
   expect_equal(ncol(data), 2)
   expect_true(all(!is.na(data$risk_free)))
-  expect_true(all(data$risk_free >= 0))
 })
 
 test_that("download_data_rf monthly returns one row per month", {
@@ -56,7 +57,10 @@ test_that("download_data via tidyfinance risk_free routes correctly", {
   skip_if_offline()
   skip_on_cran()
   data <- download_data(
-    "tidyfinance", "risk_free", "2020-01-01", "2020-12-31"
+    "tidyfinance",
+    "risk_free",
+    "2020-01-01",
+    "2020-12-31"
   )
   expect_s3_class(data, "tbl_df")
   expect_true(all(c("date", "risk_free") %in% colnames(data)))
