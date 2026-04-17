@@ -1,8 +1,9 @@
 #' Estimate Fama-MacBeth Regressions
 #'
-#' Estimates Fama-MacBeth regressions by first running cross-sectional
-#' regressions for each time period and then aggregating the results over time
-#' to obtain average risk premia and corresponding t-statistics.
+#' Estimates Fama-MacBeth regressions (Fama and MacBeth, 1973) by first running
+#' cross-sectional regressions for each time period and then aggregating the
+#' results over time to obtain average risk premia and corresponding
+#' t-statistics.
 #'
 #' @param data A data frame containing the data for the regression. It must
 #'   include a column representing the time periods (defaults to `date`) and
@@ -40,6 +41,16 @@
 #'       cross-sectional R-squared) and `n_obs` (mean cross-sectional
 #'       observation count).}
 #'   }
+#'
+#' @references
+#'   Fama, E. F., & MacBeth, J. D. (1973). Risk, return, and equilibrium:
+#'   Empirical tests. *Journal of Political Economy*, 81(3), 607-636.
+#'   \doi{10.1086/260061}
+#'
+#'   Newey, W. K., & West, K. D. (1987). A simple, positive semi-definite,
+#'   heteroskedasticity and autocorrelation consistent covariance matrix.
+#'   *Econometrica*, 55(3), 703-708.
+#'   \doi{10.2307/1913610}
 #'
 #' @family estimation functions
 #' @export
