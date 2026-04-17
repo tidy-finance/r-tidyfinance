@@ -8,9 +8,7 @@
 #'
 #' @param data A data frame containing portfolio returns. The data frame must
 #'   include columns for the portfolio identifier, date, and return
-#'   measurements. The portfolio column should indicate different portfolios,
-#'   and there should be columns for return measurements prefixed with
-#'   "ret_excess".
+#'   measurements (as specified in `data_options`).
 #' @param direction A character string specifying the direction of the
 #'   long-short return calculation. It can be either `"top_minus_bottom"` or
 #'   `"bottom_minus_top"`. Default is `"top_minus_bottom"`. If set to

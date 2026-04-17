@@ -24,8 +24,8 @@
 #'       This parameter is mutually exclusive with `n_portfolios`.
 #'     \item `breakpoint_exchanges` An optional character vector specifying
 #'       exchange names to filter the data before computing breakpoints.
-#'       Exchanges must be stored in a column named `exchange` in `data`.
-#'       If `NULL`, no filtering is applied.
+#'       Exchanges must be stored in a column given by `data_options` (defaults
+#'       to `exchange`). If `NULL`, no filtering is applied.
 #'     \item `smooth_bunching` An optional logical parameter specifying if
 #'       to attempt smoothing non-extreme portfolios if the sorting variable
 #'       bunches on the extremes (`TRUE`), or not (`FALSE`, the default).
@@ -38,7 +38,7 @@
 #'       this quantile are excluded from breakpoint computation. The quantile
 #'       is computed among `breakpoint_exchanges` stocks if specified,
 #'       otherwise among all stocks. Requires a market capitalization column
-#'       in the data (column name determined by [data_options()]).
+#'       in the data (column name determined by `data_options``).
 #'   }
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'   [data_options()]) specifying column name mappings. The `exchange` element

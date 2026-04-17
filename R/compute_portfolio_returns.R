@@ -2,9 +2,9 @@
 #'
 #' Computes individual portfolio returns based on specified sorting variables
 #' and sorting methods. The portfolios can be rebalanced every period or on an
-#' annual frequency by specifying a rebalancing month, which is only
-#' applicable at a monthly return frequency. The function supports univariate
-#' and bivariate sorts, with the latter supporting dependent and independent
+#' annual frequency by specifying a rebalancing month, which is only applicable
+#' at a monthly return frequency. The function supports univariate and
+#' bivariate sorts, with the latter supporting dependent and independent
 #' sorting methods.
 #'
 #' @details
@@ -19,8 +19,8 @@
 #' @param data A data frame containing the dataset for portfolio assignment
 #'   and return computation. The panel data must include individual stock
 #'   identifiers and the time point. It must contain columns for the sorting
-#'   variables and excess returns. Additionally, `mktcap_lag` is needed for
-#'   value-weighted returns (also see parameter `data_options`).
+#'   variables and excess returns. Additionally, lagged market capitalization
+#'   is needed for value-weighted returns (also see parameter `data_options`).
 #' @param sorting_variables A character vector specifying the column names in
 #'   `data` to be used for sorting and determining portfolio assignments. For
 #'   univariate sorts, provide a single variable. For bivariate sorts, provide
@@ -71,8 +71,9 @@
 #'   messages about missing values in the output panel (default is `FALSE`).
 #'
 #' @note Ensure that `data` contains all required columns: the specified
-#'   sorting variables and `ret_excess`. The function will stop and throw an
-#'   error if any required columns are missing.
+#'   sorting variables and excess returns (see options and defaults set in
+#'   `data_options`). The function will stop and throw an error if any required
+#'   columns are missing.
 #'
 #' @returns A data frame with computed portfolio returns as a complete panel
 #'   (all portfolio-date combinations), containing the following columns:
