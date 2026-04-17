@@ -18,7 +18,10 @@ data_sets_types <- data_sets_raw |>
     type = gsub("[[:punct:]]", "", type),
     type = gsub(" ", "_", type),
     type = tolower(type),
-    type = if_else(!grepl("weekly|daily", type), paste0(type, "_monthly"), type),
+    type = if_else(
+      !grepl("weekly|daily", type), 
+      paste0(type, "_monthly"), 
+      type),
     type = gsub("booktomarket", "bm", type),
     type = gsub("operating_profitability", "op", type),
     type = gsub("ex_dividend", "exdividend", type),
