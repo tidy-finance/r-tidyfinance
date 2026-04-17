@@ -8,8 +8,8 @@
 #' credentials. Additionally, the user has the option to add the .Renviron file
 #' to the .gitignore file to prevent it from being tracked by version control.
 #'
-#' @returns Invisibly returns TRUE. Displays messages to the user based on their
-#'   input and actions taken.
+#' @returns Invisibly returns `TRUE`. Displays messages to the user based on 
+#'   their input and actions taken.
 #'
 #' @family WRDS functions
 #' @export
