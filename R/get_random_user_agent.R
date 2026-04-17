@@ -1,4 +1,4 @@
-#' Get a random user agent string
+#' Get a Random User Agent String
 #'
 #' Selects and returns a random user agent string from a predefined list
 #' covering common browsers and operating systems (Windows, macOS, Linux,

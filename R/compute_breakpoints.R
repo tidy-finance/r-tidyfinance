@@ -38,7 +38,7 @@
 #'       this quantile are excluded from breakpoint computation. The quantile
 #'       is computed among `breakpoint_exchanges` stocks if specified,
 #'       otherwise among all stocks. Requires a market capitalization column
-#'       in the data (column name determined by `data_options``).
+#'       in the data (column name determined by `data_options`).
 #'   }
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'   [data_options()]) specifying column name mappings. The `exchange` element

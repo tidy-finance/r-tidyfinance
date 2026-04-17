@@ -697,15 +697,16 @@ list_supported_types_ff_legacy <- function() {
 
 #' List Supported Global Q Dataset Types
 #'
-#' Returns a tibble with the supported Global Q dataset types,
-#' including their names and frequencies (daily, weekly, weekly week-to-week,
-#' monthly, quarterly, annual). Each dataset type is associated with the Global
-#' Q model, specifically the q5 factors model for the year 2023. Additionally,
+#' Returns a tibble with the supported Global Q dataset types, including
+#' their names and frequencies (daily, weekly, weekly week-to-week, monthly,
+#' quarterly, annual). Each dataset type is associated with the Global Q
+#' model, specifically the q5 factors model for the year 2023. Additionally,
 #' it annotates each dataset with the domain "Global Q".
 #'
-#' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
-#'   (the file name of the dataset), and `domain` (the domain to which the
-#'   dataset belongs, always "Global Q").
+#' @returns A tibble with columns: `type` (the type of dataset),
+#'   `dataset_name` (the file name of the dataset), and `domain` (the
+#'   domain to which the dataset belongs, always "Global Q").
+#'
 list_supported_types_q <- function() {
   # nolint start
   tribble(
@@ -730,15 +731,16 @@ list_supported_types_q <- function() {
 
 #' List Supported Macro Predictor Dataset Types
 #'
-#' Returns a tibble with the supported macro predictor dataset
-#' types provided by Goyal-Welch, including their frequencies (monthly,
-#' quarterly, annual). All dataset types reference the same source file
-#' "PredictorData2022.xlsx" for the year 2022. Additionally, it annotates each
-#' dataset with the domain "Goyal-Welch".
+#' Returns a tibble with the supported macro predictor dataset types
+#' provided by Goyal-Welch, including their frequencies (monthly, quarterly,
+#' annual). All dataset types reference the same source file,
+#' "PredictorData2022.xlsx" for the year 2022. Additionally, it annotates
+#' each dataset with the domain "Goyal-Welch".
 #'
-#' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
-#'   (the file name of the dataset, which is the same for all types), and
-#'   `domain` (the domain to which the dataset belongs, always "Goyal-Welch").
+#' @returns A tibble with columns: `type` (the type of dataset),
+#'   `dataset_name` (the file name of the dataset, which is the same for
+#'   all types), and `domain` (the domain to which the dataset belongs,
+#'   always "Goyal-Welch").
 #'
 #' @family utility functions
 list_supported_types_macro_predictors <- function() {
@@ -759,12 +761,12 @@ list_supported_types_macro_predictors <- function() {
 
 #' List Supported WRDS Dataset Types
 #'
-#' Returns a tibble with the supported dataset types provided via
-#' WRDS. Additionally, it annotates each dataset with the domain "WRDS".
+#' Returns a tibble with the supported dataset types provided via WRDS.
+#' Additionally, it annotates each dataset with the domain "WRDS".
 #'
-#' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
-#'   (the file name of the dataset), and `domain` (the domain to which the
-#'   dataset belongs, always "WRDS").
+#' @returns A tibble with columns: `type` (the type of dataset),
+#'   `dataset_name` (the file name of the dataset), and `domain` (the
+#'   domain to which the dataset belongs, always "WRDS").
 #'
 #' @family utility functions
 list_supported_types_wrds <- function() {
@@ -832,20 +834,20 @@ list_supported_types_other <- function() {
 
 #' List All Supported Dataset Types
 #'
-#' Aggregates and returns a comprehensive tibble of all supported
-#' dataset types from different domains. It includes various datasets across
-#' different frequencies (daily, weekly, monthly, quarterly, annual) and models
-#' (e.g., q5 factors, Fama-French 3 and 5 factors, macro predictors).
+#' Aggregates and returns a comprehensive tibble of all supported dataset
+#' types from different domains. It includes various datasets across
+#' different frequencies (daily, weekly, monthly, quarterly, annual) and
+#' models (e.g., q5 factors, Fama-French 3 and 5 factors, macro predictors).
 #'
-#' @param domain A character vector to filter for domain specific types
-#'   (e.g. c("WRDS", "Fama-French"))
-#' @param as_vector Logical indicating whether types should be returned as a
-#'   character vector instead of data frame.
+#' @param domain A character vector to filter for domain-specific types
+#'   (e.g., c("WRDS", "Fama-French"))
+#' @param as_vector Logical indicating whether types should be returned as
+#'   a character vector instead of a data frame.
 #'
 #' @returns A tibble aggregating all supported dataset types with columns:
-#'   `type` (the type of dataset), `dataset_name` (a descriptive name or file
-#'   name of the dataset), and `domain` (the domain to which the dataset
-#'   belongs, e.g., "Global Q", "Fama-French", "Goyal-Welch").
+#'   `type` (the type of dataset), `dataset_name` (a descriptive name or
+#'   file name of the dataset), and `domain` (the domain to which the
+#'   dataset belongs, e.g., "Global Q", "Fama-French", "Goyal-Welch").
 #'
 #' @family utility functions
 #' @export

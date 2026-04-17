@@ -2,8 +2,8 @@
 #'
 #' Establishes a connection to the Wharton Research Data Services (WRDS)
 #' database using the `RPostgres` package. It requires that the `RPostgres`
-#' package is installed and that valid WRDS credentials are set as
-#' environment variables.
+#' package be installed and that valid WRDS credentials be set as environment
+#' variables.
 #'
 #' @details The function checks if the `RPostgres` package is installed
 #'   before attempting to establish a connection. It uses the host, dbname,

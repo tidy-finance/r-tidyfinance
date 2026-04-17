@@ -27,7 +27,7 @@
 #'   summarizing. If `NULL` (the default), summary statistics are computed
 #'   across all observations.
 #' @param detail A logical flag indicating whether to compute detailed summary
-#'   statistics including additional quantiles. Defaults to `FALSE`, which
+#'   statistics, including additional quantiles. Defaults to `FALSE`, which
 #'   computes basic statistics (n, mean, sd, min, median, max). When `TRUE`,
 #'   additional quantiles (1%, 5%, 10%, 25%, 75%, 90%, 95%, 99%) are computed.
 #' @param drop_na A logical flag indicating whether to drop missing values for
@@ -35,8 +35,8 @@
 #'
 #' @returns A tibble with summary statistics for each selected variable. If `by`
 #'   is specified, the output includes the grouping variable as well. Each row
-#'   represents a variable (and a group if `by` is used), and columns include
-#'   the computed statistics.
+#'   represents a variable (and a group if `by` is used), and each column
+#'   contains the computed statistics.
 #'
 #' @family utility functions
 #' @export

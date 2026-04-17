@@ -2,7 +2,7 @@
 #'
 #' Removes the values in a numeric vector that are beyond the specified
 #' quantiles, effectively trimming the distribution based on the `cut`
-#' parameter. This process reduces the length of the vector, excluding extreme
+#' parameter. This process reduces the vector's length by excluding extreme
 #' values from both tails of the distribution.
 #'
 #' @param x A numeric vector to be trimmed.

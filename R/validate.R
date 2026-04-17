@@ -1,4 +1,4 @@
-#' Validate and coerce date range arguments
+#' Validate and Coerce Date Range Arguments
 #'
 #' Checks that `start_date` and `end_date` are a valid pair, coerces them to
 #' `Date`, and handles the case where both are `NULL`. When both are `NULL` and

@@ -2,8 +2,8 @@
 #'
 #' Checks if a given dataset type is supported by verifying against a list of
 #' all supported dataset types from different domains. If the specified type is
-#' not supported, it stops execution and returns an error message listing all
-#' supported types.
+#' not supported, execution stops and an error message listing all supported
+#' types is returned.
 #'
 #' @param type A character string specifying the dataset type to check.
 #'

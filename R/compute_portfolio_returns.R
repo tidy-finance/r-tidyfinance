@@ -12,7 +12,7 @@
 #' univariate sorts, a single sorting variable and a corresponding number of
 #' portfolios must be provided. For bivariate sorts, two sorting variables and
 #' two corresponding numbers of portfolios (or percentiles) are required. The
-#' sorting method determines how portfolios are assigned and returns are
+#' sorting method determines how portfolios are assigned and how returns are
 #' computed. The function handles missing and extreme values appropriately
 #' based on the specified sorting method and rebalancing frequency.
 #'
@@ -20,7 +20,7 @@
 #'   and return computation. The panel data must include individual stock
 #'   identifiers and the time point. It must contain columns for the sorting
 #'   variables and excess returns. Additionally, lagged market capitalization
-#'   is needed for value-weighted returns (also see parameter `data_options`).
+#'   is required for value-weighted returns (see parameter `data_options`).
 #' @param sorting_variables A character vector specifying the column names in
 #'   `data` to be used for sorting and determining portfolio assignments. For
 #'   univariate sorts, provide a single variable. For bivariate sorts, provide
@@ -35,7 +35,7 @@
 #'     \item `"bivariate-independent"`: For two independent sorting variables.
 #'   }
 #'   For bivariate sorts, the portfolio returns are averaged over the
-#'   controlling sorting variable (i.e., the second sorting variable) and only
+#'   controlling sorting variable (i.e., the second sorting variable), and only
 #'   portfolio returns for the main sorting variable (given as the first
 #'   element of `sorting_variables`) are returned.
 #' @param rebalancing_month An integer between 1 and 12 specifying the month
@@ -520,8 +520,8 @@ compute_portfolio_returns <- function(
 #'
 #' @param data A grouped data frame.
 #' @param ret_col Column name for excess returns.
-#' @param w_col Column name for market capitalisation weights.
-#' @param w_capped_col Column name for capped market capitalisation weights.
+#' @param w_col Column name for market capitalization weights.
+#' @param w_capped_col Column name for capped market capitalization weights.
 #' @param min_portfolio_size Minimum number of stocks per portfolio-date.
 #'
 #' @returns An ungrouped data frame with columns `ret_excess_vw`,
