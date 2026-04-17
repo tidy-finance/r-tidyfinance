@@ -20,7 +20,7 @@
 #'   date/time) and trade-specific information (i.e., price/yield, volume,
 #'   counterparty, and reporting side).
 #'
-#' #' @references
+#' @references
 #'   Dick-Nielsen, J. (2009). Liquidity biases in TRACE. *Journal of Fixed
 #'   Income*, 19(2), 43-55. \doi{10.3905/jfi.2009.19.2.043}
 #'
