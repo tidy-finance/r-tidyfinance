@@ -22,13 +22,12 @@ test_that("download_data_rf returns daily data with correct columns", {
   expect_true(all(data$risk_free >= 0))
 })
 
-test_that("download_data_rf monthly uses TB3MS pre-2001 and DTB4WK post", {
+test_that("download_data_rf monthly returns one row per month", {
   skip_if_offline()
   skip_on_cran()
-  pre <- download_data_rf("1990-01-01", "2000-12-31")
-  post <- download_data_rf("2001-01-01", "2020-12-31")
-  expect_true(nrow(pre) > 0)
-  expect_true(nrow(post) > 0)
+  data <- download_data_rf("2010-01-01", "2010-12-31")
+  expect_equal(nrow(data), 12)
+  expect_s3_class(data$date, "Date")
 })
 
 test_that("download_data_rf uses correct splice date boundary", {

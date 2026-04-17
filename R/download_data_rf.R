@@ -71,6 +71,7 @@ download_data_rf <- function(
     fred_dtb4wk <- suppressMessages(download_data_fred("DTB4WK"))
 
     rf_tb3ms <- fred_tb3ms |>
+      tidyr::drop_na(value) |>
       mutate(
         ret_3m = (value / 100) * (90 / 360) /
           (1 - (value / 100) * (90 / 360)),
