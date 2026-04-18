@@ -3,9 +3,9 @@
 #' @description `r lifecycle::badge('experimental')`
 #'
 #' Applies an arbitrary summary function over rolling time-period windows.
-#' Each window is defined by `period` and `periods`. The function `.f`
-#' receives the complete-cases subset of each window and must return a single
-#' scalar. Windows with fewer than `min_obs` complete rows return `NA_real_`.
+#' Each window spans `periods` units of `period` (e.g., 12 months). Before
+#' calling `.f`, rows with any missing values are dropped from the window;
+#' if fewer than `min_obs` rows remain, the result is `NA_real_` instead.
 #'
 #' @param data A data frame with a date column of class `Date`, named according
 #'   to `data_options$date` (default `"date"`).

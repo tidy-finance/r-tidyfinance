@@ -40,9 +40,9 @@ A numeric vector aligned with the rows of \code{data}.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Applies an arbitrary summary function over rolling time-period windows.
-Each window is defined by \code{period} and \code{periods}. The function \code{.f}
-receives the complete-cases subset of each window and must return a single
-scalar. Windows with fewer than \code{min_obs} complete rows return \code{NA_real_}.
+Each window spans \code{periods} units of \code{period} (e.g., 12 months). Before
+calling \code{.f}, rows with any missing values are dropped from the window;
+if fewer than \code{min_obs} rows remain, the result is \code{NA_real_} instead.
 }
 \examples{
 library(dplyr)
