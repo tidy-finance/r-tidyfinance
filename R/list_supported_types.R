@@ -799,6 +799,7 @@ list_supported_types_other <- function() {
       "constituents",
       "fred",
       "osap",
+      "risk_free",
       "high_frequency_sp500",
       "factor_library"
     ),
@@ -807,6 +808,7 @@ list_supported_types_other <- function() {
       "various",
       "various",
       "Open Source Asset Pricing",
+      "Risk-Free Rate",
       "High Frequency S&P 500",
       "Factor Library"
     ),
@@ -815,6 +817,7 @@ list_supported_types_other <- function() {
       "Index Constituents",
       "FRED",
       "Open Source Asset Pricing",
+      "tidyfinance",
       "tidyfinance",
       "tidyfinance"
     )

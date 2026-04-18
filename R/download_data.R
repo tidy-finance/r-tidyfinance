@@ -9,7 +9,8 @@
 #'
 #' @param domain The domain of the dataset to download (e.g.,
 #'   "famafrench", "globalq", "macro_predictors", "wrds",
-#'   "constituents", "fred", "stock_prices", "osap", "tidyfinance").
+#'   "constituents", "fred", "stock_prices", "osap",
+#'   "tidyfinance").
 #' @param dataset Optional. The specific dataset to download within
 #'   the domain.
 #' @param start_date Optional. A character string or Date object in
@@ -47,6 +48,12 @@
 #' download_data("constituents", index = "DAX")
 #' download_data("fred", series = c("GDP", "CPIAUCNS"))
 #' download_data("stock_prices", symbols = c("AAPL", "MSFT"))
+#' download_data(
+#'   "tidyfinance",
+#'   "risk_free",
+#'   "2020-01-01",
+#'   "2020-12-31"
+#' )
 #' download_data(
 #'   "tidyfinance",
 #'   "high_frequency_sp500",
@@ -150,12 +157,20 @@ download_data <- function(
       ...
     )
   } else if (domain == "tidyfinance") {
-    processed_data <- download_data_huggingface(
-      dataset = dataset,
-      start_date = start_date,
-      end_date = end_date,
-      ...
-    )
+    if (!is.null(dataset) && dataset == "risk_free") {
+      processed_data <- download_data_risk_free(
+        start_date = start_date,
+        end_date = end_date,
+        ...
+      )
+    } else {
+      processed_data <- download_data_huggingface(
+        dataset = dataset,
+        start_date = start_date,
+        end_date = end_date,
+        ...
+      )
+    }
   } else {
     cli::cli_abort("Unsupported domain: {.val {domain}}")
   }
