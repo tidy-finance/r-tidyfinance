@@ -16,7 +16,8 @@ download_data(
 \arguments{
 \item{domain}{The domain of the dataset to download (e.g.,
 "famafrench", "globalq", "macro_predictors", "wrds",
-"constituents", "fred", "stock_prices", "osap", "tidyfinance").}
+"constituents", "fred", "stock_prices", "osap",
+"tidyfinance").}
 
 \item{dataset}{Optional. The specific dataset to download within the
 domain.}
@@ -67,6 +68,12 @@ download_data("fred", series = c("GDP", "CPIAUCNS"))
 download_data("stock_prices", symbols = c("AAPL", "MSFT"))
 download_data(
   "tidyfinance",
+  "risk_free",
+  "2020-01-01",
+  "2020-12-31"
+)
+download_data(
+  "tidyfinance",
   "high_frequency_sp500",
   "2007-07-26",
   "2007-07-27"
@@ -88,6 +95,7 @@ Other download functions:
 \code{\link{download_data_huggingface}()},
 \code{\link{download_data_macro_predictors}()},
 \code{\link{download_data_osap}()},
+\code{\link{download_data_risk_free}()},
 \code{\link{download_data_stock_prices}()}
 }
 \concept{download functions}

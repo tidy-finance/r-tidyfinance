@@ -49,6 +49,12 @@
 #' download_data("stock_prices", symbols = c("AAPL", "MSFT"))
 #' download_data(
 #'   "tidyfinance",
+#'   "risk_free",
+#'   "2020-01-01",
+#'   "2020-12-31"
+#' )
+#' download_data(
+#'   "tidyfinance",
 #'   "high_frequency_sp500",
 #'   "2007-07-26",
 #'   "2007-07-27"
@@ -150,12 +156,20 @@ download_data <- function(
       ...
     )
   } else if (domain == "tidyfinance") {
-    processed_data <- download_data_huggingface(
-      dataset = dataset,
-      start_date = start_date,
-      end_date = end_date,
-      ...
-    )
+    if (!is.null(dataset) && dataset == "risk_free") {
+      processed_data <- download_data_risk_free(
+        start_date = start_date,
+        end_date = end_date,
+        ...
+      )
+    } else {
+      processed_data <- download_data_huggingface(
+        dataset = dataset,
+        start_date = start_date,
+        end_date = end_date,
+        ...
+      )
+    }
   } else {
     cli::cli_abort("Unsupported domain: {.val {domain}}")
   }

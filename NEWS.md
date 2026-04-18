@@ -2,6 +2,13 @@
 
 ## New features
 
+- Added `download_data_risk_free()` to download and process risk-free rate
+  data from FRED, splicing TB3MS (pre-2001) with DTB4WK (from 2001
+  onwards) for monthly data, and using DTB3 for daily data. Also
+  accessible via `download_data("tidyfinance", "risk_free")`.
+- Updated `download_data_wrds_crsp()` to use `download_data_risk_free()`
+  (FRED-based) instead of the Kenneth French risk-free rate when
+  computing excess returns.
 - Added only_us paramter to download_data_wrds_compustat()
 - Added new parameters for common CRSP transformation tasks (`add_ccm_links`, `adjust_volume`) to `download_data_wrds_crsp()`.
 - Added `prc_adj` to `"crsp_monthly"` version `"v1"`.
