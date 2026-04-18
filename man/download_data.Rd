@@ -16,8 +16,7 @@ download_data(
 \arguments{
 \item{domain}{The domain of the dataset to download (e.g.,
 "famafrench", "globalq", "macro_predictors", "wrds",
-"constituents", "fred", "stock_prices", "osap",
-"tidyfinance").}
+"constituents", "fred", "stock_prices", "osap", "tidyfinance").}
 
 \item{dataset}{Optional. The specific dataset to download within the
 domain.}
