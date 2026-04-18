@@ -2,7 +2,13 @@
 
 ## New features
 
-- Replaced Kenneth French risk-free rate with the 3-Month Treasury Bill Secondary Market Rate (DTB3) from FRED in `download_data_wrds_crsp()` for calculating excess returns. Monthly rates are computed as the average daily DTB3 within each month divided by 1200; daily rates are computed as forward-filled DTB3 divided by 25200.
+- Added `download_data_rf()` to download and process risk-free rate
+  data from FRED, splicing TB3MS (pre-2001) with DTB4WK (from 2001
+  onwards) for monthly data, and using DTB3 for daily data. Also
+  accessible via `download_data("tidyfinance", "risk_free")`.
+- Updated `download_data_wrds_crsp()` to use `download_data_rf()`
+  (FRED-based) instead of the Kenneth French risk-free rate when
+  computing excess returns.
 
 - Added only_us paramter to download_data_wrds_compustat()
 - Added new parameters for common CRSP transformation tasks (`add_ccm_links`, `adjust_volume`) to `download_data_wrds_crsp()`.

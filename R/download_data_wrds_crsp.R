@@ -32,10 +32,9 @@
 #'
 #' @returns A data frame containing CRSP stock returns, adjusted for
 #'   delistings, along with calculated market capitalization and
-#'   excess returns over the risk-free rate sourced from the
-#'   3-Month Treasury Bill Secondary Market Rate (DTB3) via FRED.
-#'   The structure of the returned data frame depends on the selected
-#'   dataset.
+#'   excess returns over the risk-free rate sourced from FRED via
+#'   [download_data_rf()]. The structure of the returned data frame
+#'   depends on the selected dataset.
 #'
 #' @examples
 #' \dontrun{
@@ -235,17 +234,10 @@ download_data_wrds_crsp <- function(
           prc_adj = if_else(is.infinite(prc_adj), NA_real_, prc_adj)
         )
 
-      risk_free_monthly <- download_data_fred(
-        "DTB3",
+      risk_free_monthly <- download_data_rf(
         start_date = start_date,
         end_date = end_date
-      ) |>
-        mutate(date = floor_date(date, "month")) |>
-        group_by(date) |>
-        summarize(
-          risk_free = mean(value, na.rm = TRUE) / 100 / 12,
-          .groups = "drop"
-        )
+      )
 
       crsp_monthly <- crsp_monthly |>
         left_join(risk_free_monthly, join_by(date)) |>
@@ -346,17 +338,10 @@ download_data_wrds_crsp <- function(
           )
         )
 
-      risk_free_monthly <- download_data_fred(
-        "DTB3",
+      risk_free_monthly <- download_data_rf(
         start_date = start_date,
         end_date = end_date
-      ) |>
-        mutate(date = floor_date(date, "month")) |>
-        group_by(date) |>
-        summarize(
-          risk_free = mean(value, na.rm = TRUE) / 100 / 12,
-          .groups = "drop"
-        )
+      )
 
       crsp_monthly <- crsp_monthly |>
         left_join(risk_free_monthly, join_by(date)) |>
@@ -396,15 +381,11 @@ download_data_wrds_crsp <- function(
         distinct(permno) |>
         pull()
 
-      risk_free_daily <- download_data_fred(
-        "DTB3",
+      risk_free_daily <- download_data_rf(
         start_date = start_date,
-        end_date = end_date
-      ) |>
-        arrange(date) |>
-        tidyr::fill(value, .direction = "down") |>
-        mutate(risk_free = value / 100 / 252) |>
-        select(date, risk_free)
+        end_date = end_date,
+        frequency = "daily"
+      )
 
       batches <- ceiling(length(permnos) / batch_size)
 
@@ -535,15 +516,11 @@ download_data_wrds_crsp <- function(
         distinct(permno) |>
         pull()
 
-      risk_free_daily <- download_data_fred(
-        "DTB3",
+      risk_free_daily <- download_data_rf(
         start_date = start_date,
-        end_date = end_date
-      ) |>
-        arrange(date) |>
-        tidyr::fill(value, .direction = "down") |>
-        mutate(risk_free = value / 100 / 252) |>
-        select(date, risk_free)
+        end_date = end_date,
+        frequency = "daily"
+      )
 
       batches <- ceiling(length(permnos) / batch_size)
 
