@@ -1,11 +1,12 @@
 #' Download Risk-Free Rate Data
 #'
-#' Downloads and processes risk-free rate data from FRED. For monthly
-#' data, splices the 3-Month Treasury Bill Secondary Market Rate
-#' (TB3MS, pre-2001) with the 4-Week Treasury Bill Secondary Market
-#' Rate (DTB4WK, from 2001 onwards). For daily data, uses the 3-Month
-#' Treasury Bill Secondary Market Rate (DTB3) forward-filled to cover
-#' weekends and holidays.
+#' Downloads and processes risk-free rate data from FRED. Splices the
+#' 3-Month Treasury Bill Secondary Market Rate (pre-2001) with the
+#' 4-Week Treasury Bill Secondary Market Rate (from 2001 onwards). For
+#' monthly data, the monthly TB3MS series is spliced with the daily
+#' DTB4WK series aggregated to month-end. For daily data, the daily
+#' DTB3 series is spliced with the daily DTB4WK series, both at the
+#' business-day frequency provided by FRED.
 #'
 #' @param start_date Optional. A character string or Date object in
 #'   "YYYY-MM-DD" format specifying the start date for the data. If
@@ -14,24 +15,33 @@
 #'   "YYYY-MM-DD" format specifying the end date for the data. If not
 #'   provided, the full dataset is returned.
 #' @param frequency A character string, either `"monthly"` (default)
-#'   or `"daily"`, specifying the frequency of the returned data.
+#'   or `"daily"`, specifying the frequency of the returned data. Daily
+#'   data starts in 1954-01-04 because of availabiity of DTB3, while
+#'   monthly data starts in 1934-01-01.
 #'
 #' @details
-#' For monthly rates, the function splices two FRED series at
-#' 2001-07-01:
-#' - **Pre-2001**: TB3MS (3-month T-bill, monthly). The annualised
-#'   discount rate `d` is converted to a monthly holding-period return
-#'   via `(1 + d * 90/360 / (1 - d * 90/360))^(1/3) - 1`.
-#' - **From 2001**: DTB4WK (4-week T-bill, daily). The last non-NA
-#'   observation per calendar month is taken and the annualised
-#'   discount rate `d` is converted via
-#'   `(1 + d * 28/360 / (1 - d * 28/360))^(365/28/12) - 1`.
+#' Both series are quoted as annualised bank discount rates on a
+#' 360-day basis. Given an annualised discount rate `d` and a T-bill
+#' with `n` days to maturity, the holding-period return is
+#' `HPR = d * n/360 / (1 - d * n/360)`, which is then converted to the
+#' target period length via `(1 + HPR)^(target/source) - 1`.
 #'
-#' For daily rates, DTB3 (3-month T-bill, daily) is forward-filled and
-#' the annualised discount rate `d` is converted to a daily
-#' holding-period return via
-#' `(1 + d * 90/360 / (1 - d * 90/360))^(1/63) - 1`,
-#' where 63 is the approximate number of trading days per quarter.
+#' The series are spliced at 2001-07-01:
+#' - **Pre-2001**: TB3MS (monthly) or DTB3 (daily), 3-month T-bill
+#'   with n = 90. Monthly conversion uses exponent `1/3`; daily
+#'   conversion uses exponent `1/63` (approx. trading days per
+#'   quarter).
+#' - **From 2001**: DTB4WK, 4-week T-bill with n = 28. For monthly
+#'   data, the last non-NA observation per calendar month is taken
+#'   and the exponent is `365/(28*12)`. For daily data, observations
+#'   are used as-is and the exponent is `1/20` (approx. trading days
+#'   per 4-week period).
+#'
+#' Business-day gaps in the daily series (e.g. holidays) are handled
+#' by forward-filling the most recent available rate.
+#'
+#' Monthly data starts in 1934-01-01 (TB3MS). Daily data starts in
+#' 1954-01-04 due to the availability of DTB3.
 #'
 #' @returns A tibble with two columns:
 #' \describe{
@@ -96,16 +106,36 @@ download_data_risk_free <- function(
     ) |>
       arrange(date)
   } else {
-    risk_free_data <- suppressMessages(
-      download_data_fred("DTB3")
-    ) |>
+    splice_date <- as.Date("2001-07-31")
+
+    fred_dtb3 <- suppressMessages(download_data_fred("DTB3"))
+    fred_dtb4wk <- suppressMessages(download_data_fred("DTB4WK"))
+
+    rf_dtb3 <- fred_dtb3 |>
       arrange(date) |>
       tidyr::fill(value, .direction = "down") |>
+      tidyr::drop_na(value) |>
       mutate(
         ret_3m = (value / 100) * (90 / 360) / (1 - (value / 100) * (90 / 360)),
         risk_free = (1 + ret_3m)^(1 / 63) - 1
       ) |>
       select(date, risk_free)
+
+    rf_dtb4wk <- fred_dtb4wk |>
+      arrange(date) |>
+      tidyr::fill(value, .direction = "down") |>
+      tidyr::drop_na(value) |>
+      mutate(
+        ret_4wk = (value / 100) * (28 / 360) / (1 - (value / 100) * (28 / 360)),
+        risk_free = (1 + ret_4wk)^(1 / 20) - 1
+      ) |>
+      select(date, risk_free)
+
+    risk_free_data <- bind_rows(
+      rf_dtb3 |> filter(date < splice_date),
+      rf_dtb4wk |> filter(date >= splice_date)
+    ) |>
+      arrange(date)
   }
 
   if (!is.null(start_date)) {
