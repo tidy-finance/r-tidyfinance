@@ -41,6 +41,6 @@ Other download functions:
 \code{\link{download_data_fred}()},
 \code{\link{download_data_macro_predictors}()},
 \code{\link{download_data_osap}()},
-\code{\link{download_data_rf}()}
+\code{\link{download_data_risk_free}()}
 }
 \concept{download functions}

@@ -158,7 +158,7 @@ download_data <- function(
     )
   } else if (domain == "tidyfinance") {
     if (!is.null(dataset) && dataset == "risk_free") {
-      processed_data <- download_data_rf(
+      processed_data <- download_data_risk_free(
         start_date = start_date,
         end_date = end_date,
         ...

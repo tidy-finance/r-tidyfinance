@@ -53,7 +53,7 @@ trading volume data should be adjusted according to Gao & Ritter
 A data frame containing CRSP stock returns, adjusted for
 delistings, along with calculated market capitalization and
 excess returns over the risk-free rate sourced from FRED via
-\code{\link[=download_data_rf]{download_data_rf()}}. The structure of the returned data frame
+\code{\link[=download_data_risk_free]{download_data_risk_free()}}. The structure of the returned data frame
 depends on the selected dataset.
 }
 \description{

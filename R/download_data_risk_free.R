@@ -44,12 +44,12 @@
 #'
 #' @examples
 #' \donttest{
-#'   download_data_rf("2020-01-01", "2020-12-31")
-#'   download_data_rf(
+#'   download_data_risk_free("2020-01-01", "2020-12-31")
+#'   download_data_risk_free(
 #'     "2020-01-01", "2020-12-31", frequency = "daily"
 #'   )
 #' }
-download_data_rf <- function(
+download_data_risk_free <- function(
   start_date = NULL,
   end_date = NULL,
   frequency = "monthly"
