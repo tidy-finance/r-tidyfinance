@@ -7,11 +7,28 @@
 list_supported_types_other()
 }
 \value{
-A tibble with columns \code{type} and \code{dataset_name}, where
-\code{type} indicates the code used to specify the data source and
-\code{dataset_name} provides the name of the data source.
+A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
+(the name of the data source), and \code{domain} (the domain to which the
+dataset belongs).
 }
 \description{
 Returns a tibble listing the supported other data types and their
 corresponding dataset names.
 }
+\seealso{
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{get_available_huggingface_files}()},
+\code{\link{list_supported_indexes}()},
+\code{\link{list_supported_types}()},
+\code{\link{list_supported_types_ff}()},
+\code{\link{list_supported_types_ff_legacy}()},
+\code{\link{list_supported_types_macro_predictors}()},
+\code{\link{list_supported_types_wrds}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()},
+\code{\link{validate_dates}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}

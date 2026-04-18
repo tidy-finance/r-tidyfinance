@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_data_huggingface.R
 \name{get_available_huggingface_files}
 \alias{get_available_huggingface_files}
-\title{List parquet files in a Hugging Face dataset}
+\title{List Parquet Files in a Hugging Face Dataset}
 \usage{
 get_available_huggingface_files(organization, dataset)
 }
@@ -12,21 +12,38 @@ get_available_huggingface_files(organization, dataset)
 \item{dataset}{Character(1). Dataset name under the organization.}
 }
 \value{
-A tibble with columns: path (character), size (numeric) and url
-(character).
+A tibble with columns: \code{path} (character), \code{size} (numeric), and
+\code{url} (character).
 }
 \description{
 Query the Hugging Face Datasets API and return a tibble of files with a
 \code{.parquet} suffix. The function follows pagination links returned in the
-response \code{Link} header and returns path, size and a resolved URL.
+response \code{Link} header and returns path, size, and a resolved URL.
 }
 \details{
-Uses httr2 to perform HTTP requests. Requires internet access and
-the dataset to be publicly accessible or accessible with appropriate auth.
+Uses httr2 to perform HTTP requests. Requires internet access and the
+dataset to be publicly accessible or accessible with appropriate
+authentication.
 }
 \examples{
 \dontrun{
 get_available_huggingface_files("voigtstefan", "sp500")
 }
-
 }
+\seealso{
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{list_supported_indexes}()},
+\code{\link{list_supported_types}()},
+\code{\link{list_supported_types_ff}()},
+\code{\link{list_supported_types_ff_legacy}()},
+\code{\link{list_supported_types_macro_predictors}()},
+\code{\link{list_supported_types_other}()},
+\code{\link{list_supported_types_wrds}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()},
+\code{\link{validate_dates}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}

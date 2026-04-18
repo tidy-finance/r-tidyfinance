@@ -47,12 +47,22 @@ download_data_factors_q("q5_factors_daily_2024", "2020-01-01", "2020-12-31")
 download_data_factors_q("q5_factors_annual_2024")
 }
 }
+\references{
+Hou, K., Xue, C., & Zhang, L. (2015). Digesting anomalies: An investment
+approach. \emph{Review of Financial Studies}, 28(3), 650-705.
+\doi{10.1093/rfs/hhu068}
+
+Hou, K., Mo, H., Xue, C., & Zhang, L. (2019). Which factors?
+\emph{Review of Finance}, 23(1), 1-35.
+\doi{10.1093/rof/rfy032}
+}
 \seealso{
 Other download functions: 
 \code{\link{download_data}()},
 \code{\link{download_data_constituents}()},
 \code{\link{download_data_factors_ff}()},
 \code{\link{download_data_fred}()},
+\code{\link{download_data_huggingface}()},
 \code{\link{download_data_macro_predictors}()},
 \code{\link{download_data_osap}()},
 \code{\link{download_data_risk_free}()},

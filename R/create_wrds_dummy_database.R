@@ -12,6 +12,7 @@
 #'
 #' @family WRDS functions
 #' @export
+#'
 #' @examples
 #' path <- paste0(tempdir(), "/tidy_finance_r.sqlite")
 #' create_wrds_dummy_database(path)

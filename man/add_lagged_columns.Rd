@@ -5,7 +5,7 @@
 \title{Add Lagged Columns via Join}
 \usage{
 add_lagged_columns(
-  df,
+  data,
   cols,
   lag,
   max_lag = lag,
@@ -16,7 +16,7 @@ add_lagged_columns(
 )
 }
 \arguments{
-\item{df}{A data frame containing the variables to lag.}
+\item{data}{A data frame containing the variables to lag.}
 
 \item{cols}{A character vector specifying the names of the columns to be
 lagged. Each column produces a new column suffixed with \verb{_lag}.}
@@ -35,30 +35,32 @@ Defaults to \code{NULL}.}
 columns are excluded before matching, so the lookup skips over missing
 observations. Applied independently per column. Defaults to \code{FALSE}.}
 
-\item{ff_adjustment}{A logical value. If \code{TRUE}, only the last
-observation per year (within each group defined by \code{by}) is retained
-as a source for lagged values, following Fama-French conventions for
-annual accounting data. Defaults to \code{FALSE}.}
+\item{ff_adjustment}{A logical value. If \code{TRUE}, only the last observation
+per year (within each group defined by \code{by}) is retained as a source for
+lagged values, following Fama-French conventions for annual accounting
+data. Defaults to \code{FALSE}.}
 
-\item{data_options}{A named list of \link{data_options} with characters,
-indicating the column names required to run this function. The
-required column names identify dates. Defaults to \code{date = date}.}
+\item{data_options}{A list of class \code{tidyfinance_data_options} (created via
+\code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{date} element is
+used to specify the date column. Uses \code{\link[=data_options]{data_options()}} default if \code{NULL}:
+\code{"date" = "date"}.}
 }
 \value{
-A data frame with the same rows as \code{df} and new columns
-appended, each suffixed with \verb{_lag}. Unmatched rows receive \code{NA} in
-the lagged columns.
+A data frame with the same rows as \code{data} and new columns appended,
+each suffixed with \verb{_lag}. Unmatched rows receive \code{NA} in the lagged
+columns.
 }
 \description{
 Appends lagged versions of specified columns to a data frame using a
 join-based approach.
-
+}
+\details{
 When \code{lag == max_lag} (the default), an equi-join is used: source dates
 are shifted forward by \code{lag} and matched exactly. When \code{lag < max_lag},
 an inequality join is used: for each row, the most recent source value
 within the window \verb{[date - max_lag, date - lag]} is selected.
 
-The combination of \code{by} and date columns must be unique in \code{df}. If \code{by}
+The combination of \code{by} and date columns must be unique in \code{data}. If \code{by}
 is \code{NULL}, dates alone must be unique.
 }
 \examples{

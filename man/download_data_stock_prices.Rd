@@ -11,12 +11,12 @@ download_data_stock_prices(symbols, start_date = NULL, end_date = NULL)
 least one symbol must be provided.}
 
 \item{start_date}{Optional. A character string or Date object in "YYYY-MM-DD"
-format specifying the start date for the data. If not provided, a subset of
-the dataset is returned.}
+format specifying the start date for the data. If not provided, a one-year
+subset of the dataset is returned (see \code{\link[=validate_dates]{validate_dates()}}).}
 
 \item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD"
-format specifying the end date for the data. If not provided, a subset of
-the dataset is returned.}
+format specifying the end date for the data. If not provided, a one-year
+subset of the dataset is returned (see \code{\link[=validate_dates]{validate_dates()}}).}
 }
 \value{
 A tibble containing the downloaded stock data with columns: symbol,
@@ -39,6 +39,7 @@ Other download functions:
 \code{\link{download_data_factors_ff}()},
 \code{\link{download_data_factors_q}()},
 \code{\link{download_data_fred}()},
+\code{\link{download_data_huggingface}()},
 \code{\link{download_data_macro_predictors}()},
 \code{\link{download_data_osap}()},
 \code{\link{download_data_risk_free}()}

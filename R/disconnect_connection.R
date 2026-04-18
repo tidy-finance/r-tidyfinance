@@ -5,7 +5,7 @@
 #' @param con A database connection object created by DBI::dbConnect or any
 #'   similar function that establishes a connection to a database.
 #'
-#' @returns `TRUE`, invisibly. Throws an error if disconnection fails.
+#' @returns `TRUE`, invisibly. Throws an error if the disconnection fails.
 #'
 #' @family WRDS functions
 #' @export

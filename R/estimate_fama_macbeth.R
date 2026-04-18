@@ -1,36 +1,34 @@
 #' Estimate Fama-MacBeth Regressions
 #'
-#' Estimates Fama-MacBeth regressions by first running cross-sectional
-#' regressions for each time period and then aggregating the results
-#' over time to obtain average risk premia and corresponding
+#' Estimates Fama-MacBeth regressions (Fama and MacBeth, 1973) by first running
+#' cross-sectional regressions for each time period and then aggregating the
+#' results over time to obtain average risk premia and corresponding
 #' t-statistics.
 #'
-#' @param data A data frame containing the data for the regression. It
-#'   must include a column representing the time periods (defaults to
-#'   `date`) and the variables specified in the `model`.
-#' @param model A formula representing the regression model to be
-#'   estimated in each cross-section.
-#' @param vcov A character string indicating the type of standard
-#'   errors to compute. Options are `"iid"` for independent and
-#'   identically distributed errors or `"newey-west"` for Newey-West
-#'   standard errors. Default is `"newey-west"`.
-#' @param vcov_options A list of additional arguments to be passed to
-#'   the `NeweyWest()` function when `vcov = "newey-west"`. These can
-#'   include options such as `lag`, which specifies the number of lags
-#'   to use in the Newey-West covariance matrix estimation, and
-#'   `prewhite`, which indicates whether to apply a prewhitening
-#'   transformation. Default is an empty list.
-#' @param data_options A named list of \link{data_options} with
-#'   characters, indicating the column names required to run this
-#'   function. The required column names identify dates. Defaults to
-#'   `date = date`.
-#' @param detail A logical value indicating whether to return
-#'   additional summary statistics. If `FALSE` (default), the function
-#'   returns only the coefficient estimates. If `TRUE`, it returns a
-#'   list with two elements: `coefficients` (the usual estimates
-#'   table) and `summary_statistics` (a one-row tibble with the
-#'   average cross-sectional R-squared and the average number of
-#'   observations per cross-section).
+#' @param data A data frame containing the data for the regression. It must
+#'   include a column representing the time periods (defaults to `date`) and
+#'   the variables specified in the `model`.
+#' @param model A character string describing the model to be estimated in
+#'   each cross-section (e.g., `"ret_excess ~ beta + bm + log_mktcap"`).
+#' @param vcov A character string indicating the type of standard errors to
+#'   compute. Options are `"iid"` for independent and identically distributed
+#'   errors or `"newey-west"` for Newey-West standard errors. Default is
+#'   `"newey-west"`.
+#' @param vcov_options A list of additional arguments to be passed to the
+#'   `NeweyWest()` function when `vcov = "newey-west"`. These can include
+#'   options such as `lag`, which specifies the number of lags to use in the
+#'   Newey-West covariance matrix estimation, and `prewhite`, which indicates
+#'   whether to apply a prewhitening transformation. Default is an empty list.
+#' @param data_options A list of class `tidyfinance_data_options` (created via
+#'   [data_options()]) specifying column name mappings. The `date` element is
+#'   used to specify the date column. Uses [data_options()] default if `NULL`:
+#'   `"date" = "date"`.
+#' @param detail A logical value indicating whether to return additional
+#'   summary statistics. If `FALSE` (default), the function returns only the
+#'   coefficient estimates. If `TRUE`, it returns a list with two elements:
+#'   `coefficients` (the usual estimates table) and `summary_statistics` (a
+#'   one-row tibble with the average cross-sectional R-squared and the average
+#'   number of observations per cross-section).
 #'
 #' @returns If `detail = FALSE` (default), a tibble with columns
 #'   `factor`, `risk_premium`, `n` (number of time periods),
@@ -43,6 +41,16 @@
 #'       cross-sectional R-squared) and `n_obs` (mean cross-sectional
 #'       observation count).}
 #'   }
+#'
+#' @references
+#'   Fama, E. F., & MacBeth, J. D. (1973). Risk, return, and equilibrium:
+#'   Empirical tests. *Journal of Political Economy*, 81(3), 607-636.
+#'   \doi{10.1086/260061}
+#'
+#'   Newey, W. K., & West, K. D. (1987). A simple, positive semi-definite,
+#'   heteroskedasticity and autocorrelation consistent covariance matrix.
+#'   *Econometrica*, 55(3), 703-708.
+#'   \doi{10.2307/1913610}
 #'
 #' @family estimation functions
 #' @export

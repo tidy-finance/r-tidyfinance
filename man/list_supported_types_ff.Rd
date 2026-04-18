@@ -7,14 +7,31 @@
 list_supported_types_ff()
 }
 \value{
-A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
-(a descriptive name of the dataset), and \code{domain} (the domain to which the
-dataset belongs, always "Fama-French").
+A tibble with columns: \code{type} (the type of dataset),
+\code{dataset_name} (a descriptive name of the dataset), and \code{domain} (the
+domain to which the dataset belongs, always "Fama-French").
 }
 \description{
-Returns a tibble with the supported Fama-French dataset types,
-including their names and frequencies (daily, weekly, monthly). Each dataset
-type is associated with a specific Fama-French model (e.g., 3 factors, 5
+Returns a tibble with the supported Fama-French dataset types, including
+their names and frequencies (daily, weekly, monthly). Each dataset type
+is associated with a specific Fama-French model (e.g., 3 factors, 5
 factors). Additionally, it annotates each dataset with the domain
 "Fama-French".
 }
+\seealso{
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{get_available_huggingface_files}()},
+\code{\link{list_supported_indexes}()},
+\code{\link{list_supported_types}()},
+\code{\link{list_supported_types_ff_legacy}()},
+\code{\link{list_supported_types_macro_predictors}()},
+\code{\link{list_supported_types_other}()},
+\code{\link{list_supported_types_wrds}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()},
+\code{\link{validate_dates}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}
