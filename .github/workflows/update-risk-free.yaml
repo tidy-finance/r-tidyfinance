@@ -1,0 +1,48 @@
+name: Update Risk-Free Rate on HuggingFace
+
+on:
+  schedule:
+    - cron: "0 4 1 * *"  # 04:00 UTC on the 1st of each month
+  workflow_dispatch:
+
+jobs:
+  update-risk-free:
+    runs-on: ubuntu-latest
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Install R package dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::devtools
+          needs: check
+
+      - name: Generate parquet files
+        run: Rscript -e 'devtools::load_all("."); source("data-raw/update-risk-free.R")'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install huggingface_hub CLI
+        run: pip install --upgrade "huggingface_hub[cli]"
+
+      - name: Upload parquet files to HuggingFace
+        run: |
+          huggingface-cli upload tidy-finance/risk-free \
+            /tmp/risk_free_monthly.parquet risk_free_monthly.parquet \
+            --repo-type=dataset \
+            --commit-message="Update monthly risk-free rate ($(date -u +%Y-%m-%d))"
+          huggingface-cli upload tidy-finance/risk-free \
+            /tmp/risk_free_daily.parquet risk_free_daily.parquet \
+            --repo-type=dataset \
+            --commit-message="Update daily risk-free rate ($(date -u +%Y-%m-%d))"
