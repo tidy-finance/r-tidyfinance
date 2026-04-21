@@ -480,8 +480,8 @@ compute_portfolio_returns <- function(
 
   portfolio_returns <- portfolio_returns[!is.na(portfolio_returns$portfolio), ]
 
-  # When rebalancing annually, dates before the first rebalancing month cannot
-  # receive portfolio assignments, so exclude them from the complete panel
+  # When rebalancing annually, dates before the first rebalancing month
+  # cannot receive portfolio assignments, so exclude them from the panel
   if (!is.null(rebalancing_month)) {
     matching_dates <- all_dates[month(all_dates) == rebalancing_month]
     if (length(matching_dates) == 0L) {
