@@ -38,15 +38,15 @@ jobs:
           python-version: "3.x"
 
       - name: Install huggingface_hub CLI
-        run: pip install --upgrade "huggingface_hub[cli]"
+        run: pip install --upgrade huggingface_hub
 
       - name: Upload parquet files to HuggingFace
         run: |
-          huggingface-cli upload tidy-finance/risk-free \
+          hf upload tidy-finance/risk-free \
             /tmp/risk_free_monthly.parquet risk_free_monthly.parquet \
             --repo-type=dataset \
             --commit-message="Update monthly risk-free rate ($(date -u +%Y-%m-%d))"
-          huggingface-cli upload tidy-finance/risk-free \
+          hf upload tidy-finance/risk-free \
             /tmp/risk_free_daily.parquet risk_free_daily.parquet \
             --repo-type=dataset \
             --commit-message="Update daily risk-free rate ($(date -u +%Y-%m-%d))"
