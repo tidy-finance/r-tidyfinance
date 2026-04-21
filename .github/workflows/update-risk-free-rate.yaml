@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  update-risk-free-rate:
+  update-risk-free:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +46,7 @@ jobs:
 
           token = os.environ["HF_TOKEN"]
           api = HfApi(token=token)
-          repo_id = "tidy-finance/risk-free-rate"
+          repo_id = "tidy-finance/risk-free"
 
           for freq in ("monthly", "daily"):
               local_path = f"/tmp/tidyfinance-risk-free-{freq}.parquet"

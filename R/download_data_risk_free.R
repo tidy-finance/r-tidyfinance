@@ -1,7 +1,7 @@
 #' Download Risk-Free Rate Data
 #'
 #' Downloads pre-processed risk-free rate data from the
-#' `tidy-finance/risk-free-rate` dataset on HuggingFace. The dataset is
+#' `tidy-finance/risk-free` dataset on HuggingFace. The dataset is
 #' updated monthly via a scheduled GitHub Actions workflow that splices the
 #' 3-Month Treasury Bill Secondary Market Rate (pre-2001) with the 4-Week
 #' Treasury Bill Secondary Market Rate (from 2001 onwards) sourced from FRED.
@@ -77,7 +77,7 @@ download_data_risk_free <- function(
   end_date <- dates$end_date
 
   url <- paste0(
-    "https://huggingface.co/datasets/tidy-finance/risk-free-rate/",
+    "https://huggingface.co/datasets/tidy-finance/risk-free/",
     "resolve/main/",
     frequency,
     ".parquet"

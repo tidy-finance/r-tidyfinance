@@ -21,7 +21,7 @@ provided, the full dataset is returned.}
 
 \item{frequency}{A character string, either \code{"monthly"} (default)
 or \code{"daily"}, specifying the frequency of the returned data. Daily
-data starts in 1954-01-04 because of availabiity of DTB3, while
+data starts in 1954-01-04 because of availability of DTB3, while
 monthly data starts in 1934-01-01.}
 }
 \value{
@@ -32,13 +32,15 @@ A tibble with two columns:
 }
 }
 \description{
-Downloads and processes risk-free rate data from FRED. Splices the
-3-Month Treasury Bill Secondary Market Rate (pre-2001) with the
-4-Week Treasury Bill Secondary Market Rate (from 2001 onwards). For
-monthly data, the monthly TB3MS series is spliced with the daily
-DTB4WK series aggregated to month-end. For daily data, the daily
-DTB3 series is spliced with the daily DTB4WK series, both at the
-business-day frequency provided by FRED.
+Downloads pre-processed risk-free rate data from the
+\code{tidy-finance/risk-free} dataset on HuggingFace. The dataset is
+updated monthly via a scheduled GitHub Actions workflow that splices the
+3-Month Treasury Bill Secondary Market Rate (pre-2001) with the 4-Week
+Treasury Bill Secondary Market Rate (from 2001 onwards) sourced from FRED.
+For monthly data, the monthly TB3MS series is spliced with the daily DTB4WK
+series aggregated to month-end. For daily data, the daily DTB3 series is
+spliced with the daily DTB4WK series, both at the business-day frequency
+provided by FRED.
 }
 \details{
 Both series are quoted as annualised bank discount rates on a
