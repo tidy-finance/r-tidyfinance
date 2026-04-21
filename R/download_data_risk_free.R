@@ -1,12 +1,14 @@
 #' Download Risk-Free Rate Data
 #'
-#' Downloads and processes risk-free rate data from FRED. Splices the
-#' 3-Month Treasury Bill Secondary Market Rate (pre-2001) with the
-#' 4-Week Treasury Bill Secondary Market Rate (from 2001 onwards). For
-#' monthly data, the monthly TB3MS series is spliced with the daily
-#' DTB4WK series aggregated to month-end. For daily data, the daily
-#' DTB3 series is spliced with the daily DTB4WK series, both at the
-#' business-day frequency provided by FRED.
+#' Downloads pre-processed risk-free rate data from the
+#' `tidy-finance/risk-free-rate` dataset on HuggingFace. The dataset is
+#' updated monthly via a scheduled GitHub Actions workflow that splices the
+#' 3-Month Treasury Bill Secondary Market Rate (pre-2001) with the 4-Week
+#' Treasury Bill Secondary Market Rate (from 2001 onwards) sourced from FRED.
+#' For monthly data, the monthly TB3MS series is spliced with the daily DTB4WK
+#' series aggregated to month-end. For daily data, the daily DTB3 series is
+#' spliced with the daily DTB4WK series, both at the business-day frequency
+#' provided by FRED.
 #'
 #' @param start_date Optional. A character string or Date object in
 #'   "YYYY-MM-DD" format specifying the start date for the data. If
@@ -16,7 +18,7 @@
 #'   provided, the full dataset is returned.
 #' @param frequency A character string, either `"monthly"` (default)
 #'   or `"daily"`, specifying the frequency of the returned data. Daily
-#'   data starts in 1954-01-04 because of availabiity of DTB3, while
+#'   data starts in 1954-01-04 because of availability of DTB3, while
 #'   monthly data starts in 1934-01-01.
 #'
 #' @details
@@ -74,69 +76,23 @@ download_data_risk_free <- function(
   start_date <- dates$start_date
   end_date <- dates$end_date
 
-  if (frequency == "monthly") {
-    splice_date <- as.Date("2001-07-01")
+  url <- paste0(
+    "https://huggingface.co/datasets/tidy-finance/risk-free-rate/",
+    "resolve/main/",
+    frequency,
+    ".parquet"
+  )
 
-    fred_tb3ms <- suppressMessages(download_data_fred("TB3MS"))
-    fred_dtb4wk <- suppressMessages(download_data_fred("DTB4WK"))
-
-    rf_tb3ms <- fred_tb3ms |>
-      tidyr::drop_na(value) |>
-      mutate(
-        ret_3m = (value / 100) * (90 / 360) / (1 - (value / 100) * (90 / 360)),
-        risk_free = (1 + ret_3m)^(1 / 3) - 1
-      ) |>
-      select(date, risk_free)
-
-    rf_dtb4wk <- fred_dtb4wk |>
-      tidyr::drop_na(value) |>
-      mutate(date = floor_date(date, "month")) |>
-      group_by(date) |>
-      slice_tail(n = 1) |>
-      ungroup() |>
-      mutate(
-        ret_4wk = (value / 100) * (28 / 360) / (1 - (value / 100) * (28 / 360)),
-        risk_free = (1 + ret_4wk)^(365 / 28 / 12) - 1
-      ) |>
-      select(date, risk_free)
-
-    risk_free_data <- bind_rows(
-      rf_tb3ms |> filter(date < splice_date),
-      rf_dtb4wk |> filter(date >= splice_date)
-    ) |>
-      arrange(date)
-  } else {
-    splice_date <- as.Date("2001-07-31")
-
-    fred_dtb3 <- suppressMessages(download_data_fred("DTB3"))
-    fred_dtb4wk <- suppressMessages(download_data_fred("DTB4WK"))
-
-    rf_dtb3 <- fred_dtb3 |>
-      arrange(date) |>
-      tidyr::fill(value, .direction = "down") |>
-      tidyr::drop_na(value) |>
-      mutate(
-        ret_3m = (value / 100) * (90 / 360) / (1 - (value / 100) * (90 / 360)),
-        risk_free = (1 + ret_3m)^(1 / 63) - 1
-      ) |>
-      select(date, risk_free)
-
-    rf_dtb4wk <- fred_dtb4wk |>
-      arrange(date) |>
-      tidyr::fill(value, .direction = "down") |>
-      tidyr::drop_na(value) |>
-      mutate(
-        ret_4wk = (value / 100) * (28 / 360) / (1 - (value / 100) * (28 / 360)),
-        risk_free = (1 + ret_4wk)^(1 / 20) - 1
-      ) |>
-      select(date, risk_free)
-
-    risk_free_data <- bind_rows(
-      rf_dtb3 |> filter(date < splice_date),
-      rf_dtb4wk |> filter(date >= splice_date)
-    ) |>
-      arrange(date)
-  }
+  risk_free_data <- tryCatch(
+    arrow::read_parquet(url),
+    error = function(e) {
+      cli::cli_abort(c(
+        "Failed to download risk-free rate data from HuggingFace.",
+        "i" = "URL attempted: {url}",
+        "x" = conditionMessage(e)
+      ))
+    }
+  )
 
   if (!is.null(start_date)) {
     risk_free_data <- risk_free_data |>
