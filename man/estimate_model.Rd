@@ -10,8 +10,8 @@ estimate_model(data, model, min_obs = 1, output = "coefficients")
 \item{data}{A data frame containing the dependent variable and one or more
 independent variables.}
 
-\item{model}{A character that describes the model to estimate (e.g.
-\code{"ret_excess ~ mkt_excess + hmb + sml"}).}
+\item{model}{A character that describes the model to be estimated (e.g.,
+\code{"ret_excess ~ mkt_excess + hml + smb"}).}
 
 \item{min_obs}{The minimum number of observations required to estimate the
 model. Defaults to 1.}

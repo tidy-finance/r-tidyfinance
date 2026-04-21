@@ -13,7 +13,7 @@
 #'
 #' The basic set of summary statistics includes the count of non-NA values (n),
 #' mean, standard deviation (sd), minimum (min), median (q50), and maximum
-#' (max). If `detail` is TRUE, the function also computes the 1st, 5th, 10th,
+#' (max). If `detail` is `TRUE`, the function also computes the 1st, 5th, 10th,
 #' 25th, 75th, 90th, 95th, and 99th percentiles.
 #'
 #' Summary statistics are computed for each variable specified in `...`. If a
@@ -27,16 +27,16 @@
 #'   summarizing. If `NULL` (the default), summary statistics are computed
 #'   across all observations.
 #' @param detail A logical flag indicating whether to compute detailed summary
-#'   statistics including additional quantiles. Defaults to FALSE, which
-#'   computes basic statistics (n, mean, sd, min, median, max). When TRUE,
+#'   statistics, including additional quantiles. Defaults to `FALSE`, which
+#'   computes basic statistics (n, mean, sd, min, median, max). When `TRUE`,
 #'   additional quantiles (1%, 5%, 10%, 25%, 75%, 90%, 95%, 99%) are computed.
 #' @param drop_na A logical flag indicating whether to drop missing values for
-#'   each variable (default is FALSE).
+#'   each variable (default is `FALSE`).
 #'
 #' @returns A tibble with summary statistics for each selected variable. If `by`
 #'   is specified, the output includes the grouping variable as well. Each row
-#'   represents a variable (and a group if `by` is used), and columns include
-#'   the computed statistics.
+#'   represents a variable (and a group if `by` is used), and each column
+#'   contains the computed statistics.
 #'
 #' @family utility functions
 #' @export

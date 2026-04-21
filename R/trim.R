@@ -2,13 +2,13 @@
 #'
 #' Removes the values in a numeric vector that are beyond the specified
 #' quantiles, effectively trimming the distribution based on the `cut`
-#' parameter. This process reduces the length of the vector, excluding extreme
+#' parameter. This process reduces the vector's length by excluding extreme
 #' values from both tails of the distribution.
 #'
 #' @param x A numeric vector to be trimmed.
 #' @param cut The proportion of data to be trimmed from both ends of the
 #'   distribution. For example, a `cut` of 0.05 will remove the lowest and
-#'   highest 5% of the data. Must be between \[0, 0.5\].
+#'   highest 5% of the data. Must be in \[0, 0.5\].
 #'
 #' @returns A numeric vector with the extreme values removed.
 #'

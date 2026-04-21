@@ -7,14 +7,32 @@
 list_supported_types_macro_predictors()
 }
 \value{
-A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
-(the file name of the dataset, which is the same for all types), and
-\code{domain} (the domain to which the dataset belongs, always "Goyal-Welch").
+A tibble with columns: \code{type} (the type of dataset),
+\code{dataset_name} (the file name of the dataset, which is the same for
+all types), and \code{domain} (the domain to which the dataset belongs,
+always "Goyal-Welch").
 }
 \description{
-Returns a tibble with the supported macro predictor dataset
-types provided by Goyal-Welch, including their frequencies (monthly,
-quarterly, annual). All dataset types reference the same source file
-"PredictorData2022.xlsx" for the year 2022. Additionally, it annotates each
-dataset with the domain "Goyal-Welch".
+Returns a tibble with the supported macro predictor dataset types
+provided by Goyal-Welch, including their frequencies (monthly, quarterly,
+annual). All dataset types reference the same source file,
+"PredictorData2022.xlsx" for the year 2022. Additionally, it annotates
+each dataset with the domain "Goyal-Welch".
 }
+\seealso{
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{get_available_huggingface_files}()},
+\code{\link{list_supported_indexes}()},
+\code{\link{list_supported_types}()},
+\code{\link{list_supported_types_ff}()},
+\code{\link{list_supported_types_ff_legacy}()},
+\code{\link{list_supported_types_other}()},
+\code{\link{list_supported_types_wrds}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()},
+\code{\link{validate_dates}()},
+\code{\link{winsorize}()}
+}
+\concept{utility functions}

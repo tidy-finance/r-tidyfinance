@@ -17,6 +17,7 @@
 #'
 #' @family WRDS functions
 #' @export
+#'
 #' @examples
 #' \dontrun{
 #'   ccm_links <- download_data_wrds_ccm_links(linktype = "LU", linkprim = "P")

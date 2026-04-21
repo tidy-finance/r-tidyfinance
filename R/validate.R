@@ -1,4 +1,4 @@
-#' Validate and coerce date range arguments
+#' Validate and Coerce Date Range Arguments
 #'
 #' Checks that `start_date` and `end_date` are a valid pair, coerces them to
 #' `Date`, and handles the case where both are `NULL`. When both are `NULL` and
@@ -8,15 +8,16 @@
 #' @param start_date A scalar coercible to `Date` via `as.Date()`, or `NULL`.
 #' @param end_date A scalar coercible to `Date` via `as.Date()`, or `NULL`.
 #' @param use_default_range A logical scalar. If `TRUE` and both date arguments
-#'   are `NULL`, a default two-year range is used instead of returning
+#'   are `NULL`, a default one-year range is used instead of returning
 #'   `NULL`. Defaults to `FALSE`.
 #'
 #' @returns A named list with elements `start_date` and `end_date`, both of
 #'   class `Date` (or `NULL` when no dates are provided and
 #'   `use_default_range = FALSE`).
 #'
-#' @keywords internal
-#' @noRd
+#' @family utility functions
+#' @export
+#'
 validate_dates <- function(start_date, end_date, use_default_range = FALSE) {
   if (is.null(start_date) || is.null(end_date)) {
     if (use_default_range) {

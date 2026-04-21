@@ -1,33 +1,46 @@
 #' Download and Process Fama-French Factor Data
 #'
-#' Downloads and processes Fama-French factor data based on the
-#' specified dataset name and date range. The function requires the
-#' 'frenchdata' package to download the data. It processes the raw data
-#' into a structured format, including date conversion, scaling factor
-#' values, and filtering by the specified date range.
+#' Downloads and processes Fama-French factor data based on the specified
+#' dataset name and date range. The function requires the `frenchdata`
+#' package to download the data. It processes the raw data into a structured
+#' format, including date conversion, scaling factor values, and filtering by
+#' the specified date range.
 #'
 #' If there are multiple tables in the raw Fama-French data (e.g.,
-#' value-weighted and equal-weighted returns), then the function only
-#' returns the first table because these are the most popular. Please
-#' use the `frenchdata` package directly if you need less commonly used
-#' tables.
+#' value-weighted and equal-weighted returns), then the function only returns
+#' the first table because these are the most popular. Please use the
+#' `frenchdata` package directly if you need less commonly used tables.
 #'
-#' @param dataset The name of the Fama-French dataset to download
-#'   (e.g., "Fama/French 3 Factors").
+#' @param dataset The name of the Fama-French dataset to download (e.g.,
+#'   "Fama/French 3 Factors").
 #' @param start_date Optional. A character string or Date object in
 #'   "YYYY-MM-DD" format specifying the start date for the data. If not
 #'   provided, the full dataset is returned.
-#' @param end_date Optional. A character string or Date object in
-#'   "YYYY-MM-DD" format specifying the end date for the data. If not
-#'   provided, the full dataset is returned.
+#' @param end_date Optional. A character string or Date object in "YYYY-MM-DD"
+#'   format specifying the end date for the data. If not provided, the full
+#'   dataset is returned.
 #' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #'
-#' @returns A tibble with processed factor data, including the date,
-#'   risk-free rate, market excess return, and other factors, filtered
-#'   by the specified date range.
+#' @returns A tibble with processed factor data, including the date, risk-free
+#'   rate, market excess return, and other factors, filtered by the specified
+#'   date range.
+#'
+#' @references
+#'   Fama, E. F., & French, K. R. (1993). Common risk factors in the returns on
+#'   stocks and bonds. *Journal of Financial Economics*, 33(1), 3-56.
+#'   \doi{10.1016/0304-405X(93)90023-5}
+#'
+#'   Fama, E. F., & French, K. R. (2015). A five-factor asset pricing model.
+#'   *Journal of Financial Economics*, 116(1), 1-22.
+#'   \doi{10.1016/j.jfineco.2014.10.010}
+#'
+#'   Carhart, M. M. (1997). On persistence in mutual fund performance.
+#'   *Journal of Finance*, 52(1), 57-82.
+#'   \doi{10.1111/j.1540-6261.1997.tb03808.x}
 #'
 #' @family download functions
 #' @export
+#'
 #' @examples
 #' \donttest{
 #'   download_data_factors_ff(
@@ -151,8 +164,18 @@ download_data_factors_ff <- function(
 #'   risk-free rate, market excess return, and other factors,
 #'   filtered by the specified date range.
 #'
+#' @references
+#'   Hou, K., Xue, C., & Zhang, L. (2015). Digesting anomalies: An investment
+#'   approach. *Review of Financial Studies*, 28(3), 650-705.
+#'   \doi{10.1093/rfs/hhu068}
+#'
+#'   Hou, K., Mo, H., Xue, C., & Zhang, L. (2019). Which factors?
+#'   *Review of Finance*, 23(1), 1-35.
+#'   \doi{10.1093/rof/rfy032}
+#'
 #' @family download functions
 #' @export
+#'
 #' @examples
 #' \donttest{
 #' download_data_factors_q("q5_factors_daily_2024", "2020-01-01", "2020-12-31")

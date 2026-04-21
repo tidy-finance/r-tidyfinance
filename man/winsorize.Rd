@@ -11,7 +11,7 @@ winsorize(x, cut)
 
 \item{cut}{The proportion of data to be winsorized from both ends of the
 distribution. For example, a \code{cut} of 0.05 will winsorize the lowest and
-highest 5\% of the data. Must be inside [0, 0.5].}
+highest 5\% of the data. Must be in [0, 0.5].}
 }
 \value{
 A numeric vector with the extreme values replaced by the
@@ -31,9 +31,17 @@ winsorized_data <- winsorize(data, 0.05)
 \seealso{
 Other utility functions: 
 \code{\link{create_summary_statistics}()},
+\code{\link{get_available_huggingface_files}()},
 \code{\link{list_supported_indexes}()},
+\code{\link{list_supported_types}()},
+\code{\link{list_supported_types_ff}()},
+\code{\link{list_supported_types_ff_legacy}()},
+\code{\link{list_supported_types_macro_predictors}()},
+\code{\link{list_supported_types_other}()},
+\code{\link{list_supported_types_wrds}()},
 \code{\link{list_tidy_finance_chapters}()},
 \code{\link{open_tidy_finance_website}()},
-\code{\link{trim}()}
+\code{\link{trim}()},
+\code{\link{validate_dates}()}
 }
 \concept{utility functions}

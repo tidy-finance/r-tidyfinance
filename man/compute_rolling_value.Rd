@@ -17,8 +17,8 @@ compute_rolling_value(
 \item{data}{A data frame with a date column of class \code{Date}, named according
 to \code{data_options$date} (default \code{"date"}).}
 
-\item{.f}{A function applied to each window. Receives a data-frame
-slice (complete cases only) and must return a single scalar value.}
+\item{.f}{A function applied to each window. Receives a data-frame slice
+(complete cases only) and must return a single scalar value.}
 
 \item{period}{A string specifying the period for rolling windows
 (e.g., \code{"month"}, \code{"quarter"}, \code{"year"}).}
@@ -30,7 +30,8 @@ Defaults to \code{periods}.}
 
 \item{data_options}{A list of class \code{tidyfinance_data_options} (created via
 \code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{date} element is
-used to identify the date column. Uses \code{\link[=data_options]{data_options()}} defaults if \code{NULL}.}
+used to specify the date column. Uses \code{\link[=data_options]{data_options()}} default if \code{NULL}:
+\code{"date" = "date"}.}
 }
 \value{
 A numeric vector aligned with the rows of \code{data}.
@@ -39,10 +40,9 @@ A numeric vector aligned with the rows of \code{data}.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Applies an arbitrary summary function over rolling time-period windows.
-Each window is defined by \code{period} and \code{periods}. The function \code{.f}
-receives the complete-cases subset of each window and must return a
-single scalar. Windows with fewer than \code{min_obs} complete rows
-return \code{NA_real_}.
+Each window spans \code{periods} units of \code{period} (e.g., 12 months). Before
+calling \code{.f}, rows with any missing values are dropped from the window;
+if fewer than \code{min_obs} rows remain, the result is \code{NA_real_} instead.
 }
 \examples{
 library(dplyr)

@@ -18,35 +18,32 @@ download_data_wrds_compustat(
 "compustat_quarterly").}
 
 \item{start_date}{Optional. A character string or Date object in
-"YYYY-MM-DD" format specifying the start date for the data. If
-not provided, a subset of the dataset is returned.}
-
-\item{end_date}{Optional. A character string or Date object in
-"YYYY-MM-DD" format specifying the end date for the data. If not
+"YYYY-MM-DD" format specifying the start date for the data. If not
 provided, a subset of the dataset is returned.}
 
-\item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset}
-instead.}
+\item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD"
+format specifying the end date for the data. If not provided, a subset of
+the dataset is returned.}
 
-\item{additional_columns}{Additional columns from the Compustat
-table as a character vector.}
+\item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
 
-\item{only_us}{A logical indicating whether only US firms should be
-returned (i.e., excluding Canadian firms).}
+\item{additional_columns}{Additional columns from the Compustat table as a
+character vector.}
+
+\item{only_us}{A logical indicating whether only US firms should be returned.}
 }
 \value{
 A data frame with financial data for the specified period,
-including variables for book equity (be), operating profitability
-(op), investment (inv), and others.
+including variables for book equity (be), operating profitability (op),
+investment (inv), and others.
 }
 \description{
-Downloads financial data from the WRDS Compustat database for a
-given dataset, start date, and end date. It filters the data
-according to industry format, data format, and consolidation level,
-and returns the most current data for each reporting period.
-Additionally, the annual data also includes the calculated book
-equity (be), operating profitability (op), and investment (inv)
-for each company.
+Downloads financial data from the WRDS Compustat database for a given
+dataset, start date, and end date. It filters the data according to industry
+format, data format, and consolidation level, and returns the most current
+data for each reporting period. Additionally, the annual data also includes
+the calculated book equity (be), operating profitability (op), and
+investment (inv) for each company following Fama & French (1993, 2015).
 }
 \examples{
 \dontrun{
@@ -63,6 +60,15 @@ download_data_wrds_compustat(
   additional_columns = c("aodo", "aldo")
 )
 }
+}
+\references{
+Fama, E. F., & French, K. R. (1993). Common risk factors in the returns on
+stocks and bonds. \emph{Journal of Financial Economics}, 33(1), 3-56.
+\doi{10.1016/0304-405X(93)90023-5}
+
+Fama, E. F., & French, K. R. (2015). A five-factor asset pricing model.
+\emph{Journal of Financial Economics}, 116(1), 1-22.
+\doi{10.1016/j.jfineco.2014.10.010}
 }
 \seealso{
 Other WRDS functions: 
