@@ -308,6 +308,33 @@ test_that("univariate annual: works with rebalancing_month = 1", {
   )
 })
 
+test_that("annual rebalancing: output dates start at rebalancing_month", {
+  data <- make_panel(n_months = 24) # starts 2020-01
+  result <- compute_portfolio_returns(
+    data,
+    "size",
+    "univariate",
+    rebalancing_month = 7,
+    breakpoint_options_main = breakpoint_options(n_portfolios = 5)
+  )
+  expect_true(min(result$date) >= as.Date("2020-07-01"))
+})
+
+test_that("annual rebalancing: error when no dates match rebalancing_month", {
+  # Data spans only 6 months starting in January — month 9 never appears
+  data <- make_panel(n_months = 6) # 2020-01 through 2020-06
+  expect_error(
+    compute_portfolio_returns(
+      data,
+      "size",
+      "univariate",
+      rebalancing_month = 9,
+      breakpoint_options_main = breakpoint_options(n_portfolios = 5)
+    ),
+    "rebalancing_month"
+  )
+})
+
 test_that("univariate annual: works with rebalancing_month = 12", {
   data <- make_panel(n_months = 36)
   expect_no_error(
