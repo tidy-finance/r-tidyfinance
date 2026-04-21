@@ -126,15 +126,23 @@ compute_daily_rf <- function() {
 message("Computing monthly risk-free rates...")
 monthly_rf <- compute_monthly_rf()
 message(
-  "Monthly data: ", nrow(monthly_rf), " rows from ",
-  min(monthly_rf$date), " to ", max(monthly_rf$date)
+  "Monthly data: ",
+  nrow(monthly_rf),
+  " rows from ",
+  min(monthly_rf$date),
+  " to ",
+  max(monthly_rf$date)
 )
 
 message("Computing daily risk-free rates...")
 daily_rf <- compute_daily_rf()
 message(
-  "Daily data: ", nrow(daily_rf), " rows from ",
-  min(daily_rf$date), " to ", max(daily_rf$date)
+  "Daily data: ",
+  nrow(daily_rf),
+  " rows from ",
+  min(daily_rf$date),
+  " to ",
+  max(daily_rf$date)
 )
 
 message("Saving parquet files to /tmp/...")
