@@ -7,7 +7,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/update-risk-free.yaml"
-      - "data-raw/update-risk-free.R"
+      - "data-raw/update_risk_free.R"
 
 jobs:
   update-risk-free:
@@ -30,7 +30,7 @@ jobs:
           needs: check
 
       - name: Generate parquet files
-        run: Rscript -e 'devtools::load_all("."); source("data-raw/update-risk-free.R")'
+        run: Rscript -e 'devtools::load_all("."); source("data-raw/update_risk_free.R")'
 
       - name: Set up Python
         uses: actions/setup-python@v5
