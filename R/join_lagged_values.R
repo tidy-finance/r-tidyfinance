@@ -1,33 +1,33 @@
-#' Join lagged variable values over a date range
+#' Join Lagged Variable Values over a Date Range
 #'
 #' @description `r lifecycle::badge('experimental')`
 #'
-#' Joins lagged values of selected variables from one dataset
-#' (`new_data`) into another (`original_data`), based on date ranges
-#' defined by `min_lag` and `max_lag`. Unlike [add_lagged_columns()],
-#' this function supports joining across data frames with different
-#' date grids (e.g., monthly source data into quarterly target data).
+#' Joins lagged values of selected variables from one dataset (`new_data`)
+#' into another (`original_data`), based on date ranges defined by `min_lag`
+#' and `max_lag`. Unlike [add_lagged_columns()], this function supports
+#' joining across data frames with different date grids (e.g., monthly source
+#' data into quarterly target data).
 #'
 #' @param original_data A data frame containing the target panel data.
-#' @param new_data A data frame containing the source variables to lag
-#'  and merge. All columns besides `id_keys` and the date column will
-#'  be lagged and joined.
-#' @param id_keys A character vector specifying the identifier
-#'  column(s).
+#' @param new_data A data frame containing the source variables to lag and
+#'   merge. All columns besides `id_keys` and the date column will be lagged
+#'   and joined.
+#' @param id_keys A character vector specifying the identifier column(s).
 #' @param min_lag A `lubridate::Period` specifying the lower lag bound
-#'  (inclusive).
+#'   (inclusive).
 #' @param max_lag A `lubridate::Period` specifying the upper lag bound
-#'  (inclusive).
-#' @param ff_adjustment Logical; if `TRUE`, keeps only the last
-#'  observation per identifier and year before lagging (Fama–French
-#'  convention). Defaults to `FALSE`.
-#' @param data_options A list of class `tidyfinance_data_options`
-#'  (created via [data_options()]) specifying column name mappings.
-#'  The `date` element is used to identify the date column. Uses
-#'  [data_options()] defaults if `NULL`.
+#'   (inclusive).
+#' @param ff_adjustment Logical; if `TRUE`, keeps only the last observation
+#'   per identifier and year before lagging (Fama-French convention). Defaults
+#'   to `FALSE`.
+#' @param data_options A list of class `tidyfinance_data_options` (created via
+#'   [data_options()]) specifying column name mappings. The `date` element is
+#'   used to identify the date column. Uses [data_options()] default if
+#'   `NULL`: `"date" = "date"`.
 #'
-#' @returns A data frame with all columns from `original_data` plus
-#'  the lagged columns from `new_data` (keeping their original names).
+#' @returns A data frame with all columns from `original_data` plus the
+#'   lagged columns from `new_data` (keeping their original names).
+#'
 #' @family rolling and lagging functions
 #' @export
 #'

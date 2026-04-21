@@ -53,34 +53,36 @@ design.
 
 Supported columns and their defaults for \code{...}:
 \itemize{
-\item \code{sorting_variable}: \strong{Required.} The firm characteristic used to sort
-stocks into portfolios (e.g., \code{"me"} for market equity, \code{"bm"} for
-book-to-market). No default is applied.
-\item \code{exclude_size} (default: \code{0.2}): Fraction of the smallest stocks (by
-market cap) excluded from the portfolio universe. \code{0.2} drops the bottom
-20\%.
-\item \code{exclude_financials} (default: \code{FALSE}): Whether to drop financial-sector
-stocks (SIC 6000-6999) from the universe.
-\item \code{exclude_utilities} (default: \code{FALSE}): Whether to drop utility-sector
-stocks (SIC 4900-4999) from the universe.
-\item \code{exclude_negative_earnings} (default: \code{FALSE}): Whether to drop firms with
-negative earnings before sorting.
-\item \code{sorting_variable_lag} (default: \code{"6m"}): Lag applied to the sorting
-variable before portfolio assignment (e.g., \code{"6m"} = 6-month lag).
-\item \code{rebalancing} (default: \code{"monthly"}): How frequently portfolios are
-reformed: \code{"monthly"} or \code{"annual"}.
-\item \code{breakpoints_main} (default: \code{10}): Number of quantile groups (e.g., \code{10}
-for decile portfolios).
-\item \code{sorting_method} (default: \code{"univariate"}): Whether portfolios are formed
-on a single sort (\code{"univariate"}) or a sequential double sort
-(\code{"sequential"}).
-\item \code{breakpoints_secondary} (default: \code{NA}): Number of groups for the secondary
-sort variable; only relevant when \code{sorting_method = "sequential"}.
-\item \code{breakpoints_exchanges} (default: \code{"NYSE"}): Exchange(s) used to compute
-breakpoints. \code{"NYSE"} uses only NYSE-listed stocks to define quantile
-cutoffs (the conventional Fama-French approach).
-\item \code{weighting_scheme} (default: \code{"VW"}): Return weighting within portfolios:
-\code{"VW"} for value-weighted or \code{"EW"} for equal-weighted.
+\item \code{sorting_variable}: \strong{Required.} The firm characteristic used
+to sort stocks into portfolios (e.g., \code{"me"} for market equity,
+\code{"bm"} for book-to-market). No default is applied.
+\item \code{exclude_size} (defaults to \code{0.2}): Fraction of the smallest
+stocks (by market cap) excluded from the portfolio universe. \code{0.2}
+drops the bottom 20\%.
+\item \code{exclude_financials} (defaults to \code{FALSE}): Whether to drop
+financial-sector stocks (SIC 6000-6999) from the universe.
+\item \code{exclude_utilities} (default: \code{FALSE}): Whether to drop
+utility-sector stocks (SIC 4900-4999) from the universe.
+\item \code{exclude_negative_earnings} (defaults to \code{FALSE}): Whether to
+drop firms with negative earnings before sorting.
+\item \code{sorting_variable_lag} (defaults to \code{"6m"}): Lag applied to the
+sorting variable before portfolio assignment (e.g., \code{"6m"} = 6-month
+lag).
+\item \code{rebalancing} (defaults to \code{"monthly"}): How frequently portfolios
+are reformed: \code{"monthly"} or \code{"annual"}.
+\item \code{breakpoints_main} (defaults to \code{10}): Number of quantile groups
+(e.g., \code{10} for decile portfolios).
+\item \code{sorting_method} (defaults to \code{"univariate"}): Whether portfolios
+are formed on a single sort (\code{"univariate"}) or a sequential double
+sort (\code{"sequential"}).
+\item \code{breakpoints_secondary} (defaults to \code{NA}): Number of groups for
+the secondary sort variable; only relevant when
+\code{sorting_method = "sequential"}.
+\item \code{breakpoints_exchanges} (defaults to: \code{"NYSE"}): Exchange(s) used
+to compute breakpoints. \code{"NYSE"} uses only NYSE-listed stocks to
+define quantile cutoffs (the conventional Fama-French approach).
+\item \code{weighting_scheme} (defaults to \code{"VW"}): Return weighting within
+portfolios: \code{"VW"} for value-weighted or \code{"EW"} for equal-weighted.
 }
 }
 \examples{
@@ -97,5 +99,17 @@ cutoffs (the conventional Fama-French approach).
     "factor_library", sorting_variable = "ag", fill_all = TRUE
   )
 }
-
 }
+\seealso{
+Other download functions: 
+\code{\link{download_data}()},
+\code{\link{download_data_constituents}()},
+\code{\link{download_data_factors_ff}()},
+\code{\link{download_data_factors_q}()},
+\code{\link{download_data_fred}()},
+\code{\link{download_data_macro_predictors}()},
+\code{\link{download_data_osap}()},
+\code{\link{download_data_risk_free}()},
+\code{\link{download_data_stock_prices}()}
+}
+\concept{download functions}

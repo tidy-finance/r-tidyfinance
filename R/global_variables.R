@@ -219,6 +219,8 @@ utils::globalVariables(
     "url",
     "path",
     "size",
-    "id"
+    "id",
+    "ret_3m",
+    "ret_4wk"
   )
 )

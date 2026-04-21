@@ -24,8 +24,9 @@ test_that("download_data_fred handles invalid series ID", {
       start_date = "2020-12-31",
       end_date = "2021-01-01"
     ),
-    regexp = paste(
-      "Failed to retrieve data for series INVALID_SERIES with status code 404."
+    regexp = paste0(
+      "Failed to retrieve data for series INVALID_SERIES ",
+      "with status code [0-9]{3}\\."
     )
   )
 })

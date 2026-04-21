@@ -1,39 +1,43 @@
 #' Download Data from WRDS CRSP
 #'
-#' Downloads and processes stock return data from the CRSP database
-#' for a specified period. Users can choose between monthly and daily
-#' datasets. The function also adjusts returns for delisting and
-#' calculates market capitalization and excess returns over the
-#' risk-free rate.
+#' Downloads and processes stock return data from the CRSP database for a
+#' specified period. Users can choose between monthly and daily datasets.
+#' The function also adjusts returns for delisting and calculates market
+#' capitalization and excess returns over the risk-free rate.
 #'
 #' @param dataset A string specifying the CRSP dataset to download:
 #'   "crsp_monthly" or "crsp_daily".
 #' @param start_date Optional. A character string or Date object in
-#'   "YYYY-MM-DD" format specifying the start date for the data. If
-#'   not provided, a subset of the dataset is returned.
+#'   "YYYY-MM-DD" format specifying the start date for the data. If not
+#'   provided, a subset of the dataset is returned.
 #' @param end_date Optional. A character string or Date object in
 #'   "YYYY-MM-DD" format specifying the end date for the data. If not
 #'   provided, a subset of the dataset is returned.
-#' @param type `r lifecycle::badge("deprecated")` Use `dataset`
-#'   instead.
+#' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #' @param batch_size An optional integer specifying the batch size for
 #'   processing daily data, with a default of 500.
-#' @param version An optional character specifying which CRSP version
-#'   to use. "v2" (the default) uses the updated second version of
-#'   CRSP, and "v1" downloads the legacy version of CRSP.
-#' @param additional_columns Additional columns from the CRSP monthly
-#'   or daily data as a character vector.
-#' @param add_ccm_links A logical indicating whether CRSP-Compustat
-#'   links should be added automatically using
-#'   [download_data_wrds_ccm_links()].
-#' @param adjust_volume A logical indicating whether daily CRSP
-#'   trading volume data should be adjusted according to Gao & Ritter
-#'   (2010).
+#' @param version An optional character specifying which CRSP version to
+#'   use. "v2" (the default) uses the updated second version of CRSP, and
+#'   "v1" downloads the legacy version of CRSP.
+#' @param additional_columns Additional columns from the CRSP monthly or
+#'   daily data as a character vector.
+#' @param add_ccm_links A logical indicating whether CRSP-Compustat links
+#'   should be added automatically using [download_data_wrds_ccm_links()].
+#' @param adjust_volume A logical indicating whether daily CRSP trading
+#'   volume data should be adjusted according to Gao & Ritter (2010).
 #'
 #' @returns A data frame containing CRSP stock returns, adjusted for
-#'   delistings, along with calculated market capitalization and
-#'   excess returns over the risk-free rate. The structure of the
-#'   returned data frame depends on the selected dataset.
+#'   delistings, along with calculated market capitalization and excess returns
+#'   over the risk-free rate. The structure of the returned data frame depends
+#'   on the selected dataset.
+#'
+#' @references
+#'   Gao, X., & Ritter, J. R. (2010). The marketing of seasoned equity
+#'   offerings. *Journal of Financial Economics*, 97(1), 33-52.
+#'   \doi{10.1016/j.jfineco.2010.03.007}
+#'
+#' @family WRDS functions
+#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -53,17 +57,9 @@
 #'   "crsp_monthly",
 #'   "2020-11-01",
 #'   "2020-12-31",
-#'    additional_columns = c("mthvol", "mthvolflg")
+#'   additional_columns = c("mthvol", "mthvolflg")
 #' )
 #' }
-#'
-#' @references
-#'   Gao, X., & Ritter, J. R. (2010). The marketing of seasoned equity offerings
-#'   *Journal of Financial Economics*, 97(1), 33–52.
-#'   \doi{10.1016/j.jfineco.2010.03.007}
-#'
-#' @family WRDS functions
-#' @export
 download_data_wrds_crsp <- function(
   dataset = NULL,
   start_date = NULL,
@@ -233,18 +229,17 @@ download_data_wrds_crsp <- function(
           prc_adj = if_else(is.infinite(prc_adj), NA_real_, prc_adj)
         )
 
-      factors_ff_3_monthly <- download_data_factors_ff(
-        dataset = "Fama/French 3 Factors",
+      risk_free_monthly <- download_data_risk_free(
         start_date = start_date,
         end_date = end_date
       )
 
       crsp_monthly <- crsp_monthly |>
-        left_join(factors_ff_3_monthly, join_by(date)) |>
+        left_join(risk_free_monthly, join_by(date)) |>
         mutate(
           ret_excess = ret_adj - risk_free
         ) |>
-        select(-risk_free, -mkt_excess, -hml, -smb)
+        select(-risk_free)
 
       processed_data <- crsp_monthly |>
         tidyr::drop_na(ret_excess, mktcap)
@@ -338,18 +333,17 @@ download_data_wrds_crsp <- function(
           )
         )
 
-      factors_ff_3_monthly <- download_data_factors_ff(
-        dataset = "Fama/French 3 Factors",
+      risk_free_monthly <- download_data_risk_free(
         start_date = start_date,
         end_date = end_date
       )
 
       crsp_monthly <- crsp_monthly |>
-        left_join(factors_ff_3_monthly, join_by(date)) |>
+        left_join(risk_free_monthly, join_by(date)) |>
         mutate(
           ret_excess = ret - risk_free
         ) |>
-        select(-risk_free, -mkt_excess, -hml, -smb)
+        select(-risk_free)
 
       processed_data <- crsp_monthly |>
         tidyr::drop_na(ret_excess, mktcap)
@@ -382,10 +376,10 @@ download_data_wrds_crsp <- function(
         distinct(permno) |>
         pull()
 
-      factors_ff_3_daily <- download_data_factors_ff(
-        dataset = "Fama/French 3 Factors [Daily]",
+      risk_free_daily <- download_data_risk_free(
         start_date = start_date,
-        end_date = end_date
+        end_date = end_date,
+        frequency = "daily"
       )
 
       batches <- ceiling(length(permnos) / batch_size)
@@ -444,11 +438,7 @@ download_data_wrds_crsp <- function(
             select(-dlstdt)
 
           crsp_daily_sub <- crsp_daily_sub |>
-            left_join(
-              factors_ff_3_daily |>
-                select(date, risk_free),
-              join_by(date)
-            ) |>
+            left_join(risk_free_daily, join_by(date)) |>
             mutate(
               ret_excess = ret - risk_free
             ) |>
@@ -521,10 +511,10 @@ download_data_wrds_crsp <- function(
         distinct(permno) |>
         pull()
 
-      factors_ff_3_daily <- download_data_factors_ff(
-        dataset = "Fama/French 3 Factors [Daily]",
+      risk_free_daily <- download_data_risk_free(
         start_date = start_date,
-        end_date = end_date
+        end_date = end_date,
+        frequency = "daily"
       )
 
       batches <- ceiling(length(permnos) / batch_size)
@@ -571,11 +561,7 @@ download_data_wrds_crsp <- function(
 
         if (nrow(crsp_daily_sub) > 0) {
           crsp_daily_sub <- crsp_daily_sub |>
-            left_join(
-              factors_ff_3_daily |>
-                select(date, risk_free),
-              join_by(date)
-            ) |>
+            left_join(risk_free_daily, join_by(date)) |>
             mutate(
               ret_excess = ret - risk_free
             ) |>

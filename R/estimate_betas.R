@@ -1,28 +1,27 @@
 #' Estimate Rolling Betas
 #'
-#' Estimates rolling betas for a given model using the provided data.
-#' It supports parallel processing for faster computation using the
-#' `furrr` package.
+#' Estimates rolling betas for a given model using the provided data. It
+#' supports parallel processing for faster computation using the `furrr`
+#' package.
 #'
 #' @param data A data frame containing the data with a date identifier
-#'  (defaults to `date`), a stock identifier (defaults to `permno`),
-#'  and other variables used in the model.
-#' @param model A formula representing the model to be estimated
-#'   (e.g., `ret_excess ~ mkt_excess + smb + hml`).
-#' @param lookback A Period object specifying the number of months,
-#'  days, hours, minutes, or seconds to look back when estimating the
-#'  rolling model.
-#' @param min_obs An integer specifying the minimum number of
-#'  observations required to estimate the model. Defaults to 80% of
-#'  `lookback`.
-#' @param use_furrr A logical indicating whether to use the `furrr`
-#'  package and its parallelization capabilities. Defaults to FALSE.
-#' @param data_options A named list of \link{data_options} with
-#'  characters, indicating the column names required to run this
-#'  function. The required column names identify dates and the stocks.
-#'  Defaults to `date = date` and `id = permno`.
-#' @returns A data frame with the estimated betas for each time
-#'  period.
+#'   (defaults to `date`), a stock identifier (defaults to `permno`), and other
+#'   variables used in the model.
+#' @param model A character string describing the model to be estimated (e.g.,
+#'   `"ret_excess ~ mkt_excess + hml + smb"`).
+#' @param lookback A Period object specifying the number of months, days,
+#'   hours, minutes, or seconds to look back when estimating the rolling model.
+#' @param min_obs An integer specifying the minimum number of observations
+#'   required to estimate the model. Defaults to 80% of `lookback`.
+#' @param use_furrr A logical indicating whether to use the `furrr` package
+#'   and its parallelization capabilities. Defaults to `FALSE`.
+#' @param data_options A list of class `tidyfinance_data_options` (created via
+#'   [data_options()]) specifying column name mappings. The `id` is used to
+#'   specify the entity (i.e., firm), and the `date` element is used to specify
+#'   the date column. Uses [data_options()] default if `NULL`:
+#'   `"id" = "permno"` and `"date" = "date"`.
+#'
+#' @returns A data frame with the estimated betas for each time period.
 #'
 #' @family estimation functions
 #' @export

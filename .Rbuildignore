@@ -11,3 +11,4 @@
 ^Meta$
 ^\.github$
 .lintr
+^data-raw$

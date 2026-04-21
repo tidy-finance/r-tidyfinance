@@ -1,6 +1,6 @@
-#' Handle download errors gracefully
+#' Handle Download Errors Gracefully
 #'
-#' Wraps a download function in a `tryCatch` block. On error, emits an
+#' Wraps a download function in a `tryCatch` block. On error, it emits an
 #' informational message and returns `fallback` instead of stopping.
 #'
 #' @param download_function A function to call for downloading or processing a

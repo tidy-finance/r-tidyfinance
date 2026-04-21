@@ -12,37 +12,36 @@ download_data_factors_ff(
 )
 }
 \arguments{
-\item{dataset}{The name of the Fama-French dataset to download
-(e.g., "Fama/French 3 Factors").}
+\item{dataset}{The name of the Fama-French dataset to download (e.g.,
+"Fama/French 3 Factors").}
 
 \item{start_date}{Optional. A character string or Date object in
 "YYYY-MM-DD" format specifying the start date for the data. If not
 provided, the full dataset is returned.}
 
-\item{end_date}{Optional. A character string or Date object in
-"YYYY-MM-DD" format specifying the end date for the data. If not
-provided, the full dataset is returned.}
+\item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD"
+format specifying the end date for the data. If not provided, the full
+dataset is returned.}
 
 \item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
 }
 \value{
-A tibble with processed factor data, including the date,
-risk-free rate, market excess return, and other factors, filtered
-by the specified date range.
+A tibble with processed factor data, including the date, risk-free
+rate, market excess return, and other factors, filtered by the specified
+date range.
 }
 \description{
-Downloads and processes Fama-French factor data based on the
-specified dataset name and date range. The function requires the
-'frenchdata' package to download the data. It processes the raw data
-into a structured format, including date conversion, scaling factor
-values, and filtering by the specified date range.
+Downloads and processes Fama-French factor data based on the specified
+dataset name and date range. The function requires the \code{frenchdata}
+package to download the data. It processes the raw data into a structured
+format, including date conversion, scaling factor values, and filtering by
+the specified date range.
 }
 \details{
 If there are multiple tables in the raw Fama-French data (e.g.,
-value-weighted and equal-weighted returns), then the function only
-returns the first table because these are the most popular. Please
-use the \code{frenchdata} package directly if you need less commonly used
-tables.
+value-weighted and equal-weighted returns), then the function only returns
+the first table because these are the most popular. Please use the
+\code{frenchdata} package directly if you need less commonly used tables.
 }
 \examples{
 \donttest{
@@ -54,14 +53,29 @@ tables.
   )
 }
 }
+\references{
+Fama, E. F., & French, K. R. (1993). Common risk factors in the returns on
+stocks and bonds. \emph{Journal of Financial Economics}, 33(1), 3-56.
+\doi{10.1016/0304-405X(93)90023-5}
+
+Fama, E. F., & French, K. R. (2015). A five-factor asset pricing model.
+\emph{Journal of Financial Economics}, 116(1), 1-22.
+\doi{10.1016/j.jfineco.2014.10.010}
+
+Carhart, M. M. (1997). On persistence in mutual fund performance.
+\emph{Journal of Finance}, 52(1), 57-82.
+\doi{10.1111/j.1540-6261.1997.tb03808.x}
+}
 \seealso{
 Other download functions: 
 \code{\link{download_data}()},
 \code{\link{download_data_constituents}()},
 \code{\link{download_data_factors_q}()},
 \code{\link{download_data_fred}()},
+\code{\link{download_data_huggingface}()},
 \code{\link{download_data_macro_predictors}()},
 \code{\link{download_data_osap}()},
+\code{\link{download_data_risk_free}()},
 \code{\link{download_data_stock_prices}()}
 }
 \concept{download functions}
