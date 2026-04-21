@@ -506,7 +506,7 @@ compute_portfolio_returns <- function(
       paste0(
         "Returning a complete panel with {n_missing} missing value{?s} ",
         "in factor returns due to insufficient observations ",
-        "(n() < {min_portfolio_size})."
+        "(n() <= {min_portfolio_size})."
       )
     )
   }
