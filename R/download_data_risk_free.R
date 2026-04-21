@@ -78,7 +78,7 @@ download_data_risk_free <- function(
 
   url <- paste0(
     "https://huggingface.co/datasets/tidy-finance/risk-free/",
-    "resolve/main/",
+    "resolve/main/risk_free_",
     frequency,
     ".parquet"
   )
