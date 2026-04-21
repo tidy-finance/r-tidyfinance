@@ -52,7 +52,7 @@ test_that("download_data_risk_free errors when start_date after end_date", {
   )
 })
 
-test_that("download_data_risk_free returns filtered rows for a date range (mocked)", {
+test_that("download_data_risk_free returns filtered rows for date range", {
   mock_data <- tibble::tibble(
     date = seq.Date(as.Date("2020-01-01"), as.Date("2020-12-01"), by = "month"),
     risk_free = runif(12, 0, 0.01)
@@ -72,7 +72,7 @@ test_that("download_data_risk_free returns filtered rows for a date range (mocke
   )
 })
 
-test_that("download_data_risk_free aborts with clear message on download failure (mocked)", {
+test_that("download_data_risk_free aborts with clear message on failure", {
   with_mocked_bindings(
     read_parquet = function(file, ...) stop("connection refused"),
     .package = "arrow",
