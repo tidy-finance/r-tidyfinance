@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: "0 4 1 * *"  # 04:00 UTC on the 1st of each month
   workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/update-risk-free.yaml"
+      - "data-raw/update-risk-free.R"
 
 jobs:
   update-risk-free:

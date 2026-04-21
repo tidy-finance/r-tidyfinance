@@ -1,8 +1,7 @@
 # Script to download risk-free rate data from FRED, process it, and save
 # pre-computed parquet files for upload to HuggingFace.
 #
-# Run by the GitHub Actions workflow:
-#   .github/workflows/update-risk-free.yaml
+# Run by the GitHub Actions workflow: .github/workflows/update-risk-free.yaml
 #
 # The resulting files are uploaded to:
 #   https://huggingface.co/datasets/tidy-finance/risk-free
