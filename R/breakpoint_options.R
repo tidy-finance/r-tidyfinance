@@ -52,7 +52,9 @@ breakpoint_options <- function(
   # Error handling for n_portfolios
   if (
     !is.null(n_portfolios) &&
-      (!is.numeric(n_portfolios) || n_portfolios <= 0 || n_portfolios %% 1 != 0)
+      (!is.numeric(n_portfolios) || 
+        n_portfolios <= 0 || 
+        n_portfolios %% 1 != 0)
   ) {
     cli::cli_abort("{.arg n_portfolios} must be a positive integer.")
   }
