@@ -1,4 +1,5 @@
 test_that("validate_dates returns NULL dates with message when both are NULL and use_default_range = FALSE", {
+  # nolint: line_length_linter
   expect_message(
     result <- validate_dates(NULL, NULL, use_default_range = FALSE),
     "Returning the full data set"
@@ -8,6 +9,7 @@ test_that("validate_dates returns NULL dates with message when both are NULL and
 })
 
 test_that("validate_dates returns Date range with message when both are NULL and use_default_range = TRUE", {
+  # nolint: line_length_linter
   expect_message(
     result <- validate_dates(NULL, NULL, use_default_range = TRUE),
     "No.*start_date.*or.*end_date"
@@ -18,7 +20,9 @@ test_that("validate_dates returns Date range with message when both are NULL and
 })
 
 test_that("validate_dates default range spans approximately two years", {
-  suppressMessages(result <- validate_dates(NULL, NULL, use_default_range = TRUE))
+  suppressMessages(
+    result <- validate_dates(NULL, NULL, use_default_range = TRUE)
+  )
   diff_days <- as.numeric(result$end_date - result$start_date)
   expect_true(diff_days > 300 && diff_days < 750)
 })

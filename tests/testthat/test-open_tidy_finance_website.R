@@ -36,10 +36,14 @@ test_that("open_tidy_finance_website opens chapter page for a valid chapter", {
       open_tidy_finance_website("beta-estimation")
     }
   )
-  expect_equal(browsed_url, "https://www.tidy-finance.org/r/beta-estimation.html")
+  expect_equal(
+    browsed_url,
+    "https://www.tidy-finance.org/r/beta-estimation.html"
+  )
 })
 
 test_that("open_tidy_finance_website falls back to main page for invalid chapter", {
+  # nolint: line_length_linter
   browsed_url <- NULL
   with_mocked_bindings(
     browseURL = function(url, ...) {

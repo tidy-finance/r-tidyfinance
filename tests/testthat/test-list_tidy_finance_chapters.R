@@ -27,6 +27,7 @@ test_that("list_tidy_finance_chapters values are unique", {
 })
 
 test_that("list_tidy_finance_chapters values use lowercase and hyphens (no spaces)", {
+  # nolint: line_length_linter
   result <- list_tidy_finance_chapters()
   expect_true(all(!grepl(" ", result)))
   expect_true(all(grepl("^[a-z0-9-]+$", result)))

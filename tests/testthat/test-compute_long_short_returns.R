@@ -1,6 +1,14 @@
-make_portfolio_returns_data <- function(n_portfolios = 5, n_months = 6, seed = 42) {
+make_portfolio_returns_data <- function(
+  n_portfolios = 5,
+  n_months = 6,
+  seed = 42
+) {
   set.seed(seed)
-  dates <- seq.Date(from = as.Date("2020-01-01"), by = "month", length.out = n_months)
+  dates <- seq.Date(
+    from = as.Date("2020-01-01"),
+    by = "month",
+    length.out = n_months
+  )
   data <- expand.grid(portfolio = seq_len(n_portfolios), date = dates)
   data$ret_excess_vw <- rnorm(nrow(data), 0, 0.05)
   data$ret_excess_ew <- rnorm(nrow(data), 0, 0.05)
@@ -57,8 +65,16 @@ test_that("bottom_minus_top is the negative of top_minus_bottom", {
   data <- make_portfolio_returns_data(n_months = 3)
   result_tmb <- compute_long_short_returns(data, direction = "top_minus_bottom")
   result_bmt <- compute_long_short_returns(data, direction = "bottom_minus_top")
-  expect_equal(result_bmt$ret_excess_vw, -result_tmb$ret_excess_vw, tolerance = 1e-10)
-  expect_equal(result_bmt$ret_excess_ew, -result_tmb$ret_excess_ew, tolerance = 1e-10)
+  expect_equal(
+    result_bmt$ret_excess_vw,
+    -result_tmb$ret_excess_vw,
+    tolerance = 1e-10
+  )
+  expect_equal(
+    result_bmt$ret_excess_ew,
+    -result_tmb$ret_excess_ew,
+    tolerance = 1e-10
+  )
 })
 
 test_that("compute_long_short_returns output dates are sorted", {
@@ -83,7 +99,11 @@ test_that("compute_long_short_returns uses custom data_options", {
     month = as.Date("2020-01-01"),
     ret_vw = c(0.01, 0.03, 0.05)
   )
-  custom_opts <- data_options(portfolio = "port", date = "month", ret_excess = "ret_vw")
+  custom_opts <- data_options(
+    portfolio = "port",
+    date = "month",
+    ret_excess = "ret_vw"
+  )
   result <- compute_long_short_returns(data, data_options = custom_opts)
   expect_true("month" %in% colnames(result))
   expect_true("ret_vw" %in% colnames(result))
