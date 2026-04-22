@@ -3,10 +3,8 @@
 #' Creates a list of data options of class `tidyfinance_data_options` used for
 #' TidyFinance-related functions. These options map the specific data variables
 #' to the TidyFinance naming conventions, allowing functions to flexibly work
-#' with different datasets by specifying the relevant column names. The
-#' function accepts key parameters such as `id`, `date`, `exchange`,
-#' `mktcap_lag`, `ret_excess`, `portfolio`, along with other additional
-#' options passed through `...`.
+#' with different datasets by specifying the relevant column names. Additional
+#' options can be passed through `...`.
 #'
 #' @param id A character string representing the entity variable (defaults to
 #'   `"permno"`).
@@ -20,6 +18,14 @@
 #'   (defaults to `"ret_excess"`).
 #' @param portfolio A character string representing the portfolio variable
 #'   (defaults to `"portfolio"`).
+#' @param siccd A character string representing the Standard Industrial
+#'   Classification code variable (defaults to `"siccd"`).
+#' @param price A character string representing the (adjusted) price variable
+#'   (defaults to `"prc_adj"`).
+#' @param listing_age A character string representing the listing age variable
+#'   (defaults to `"listing_age"`).
+#' @param be A character string representing the book equity variable (defaults
+#'   to `"be"`).
 #' @param ... Additional arguments to be included in the data options list.
 #'
 #' @returns A list of class `tidyfinance_data_options` containing the specified
@@ -42,6 +48,10 @@ data_options <- function(
   mktcap_lag = "mktcap_lag",
   ret_excess = "ret_excess",
   portfolio = "portfolio",
+  siccd = "siccd",
+  price = "prc_adj",
+  listing_age = "listing_age",
+  be = "be",
   ...
 ) {
   # Error handling for id
@@ -74,6 +84,26 @@ data_options <- function(
     cli::cli_abort("{.arg portfolio} must be a single character")
   }
 
+  # Error handling for siccd
+  if (!is.character(siccd) || length(siccd) != 1) {
+    cli::cli_abort("{.arg siccd} must be a single character")
+  }
+
+  # Error handling for price
+  if (!is.character(price) || length(price) != 1) {
+    cli::cli_abort("{.arg price} must be a single character")
+  }
+
+  # Error handling for listing_age
+  if (!is.character(listing_age) || length(listing_age) != 1) {
+    cli::cli_abort("{.arg listing_age} must be a single character")
+  }
+
+  # Error handling for be
+  if (!is.character(be) || length(be) != 1) {
+    cli::cli_abort("{.arg be} must be a single character")
+  }
+
   # Create the list structure with class attribute
   structure(
     list(
@@ -83,6 +113,10 @@ data_options <- function(
       "mktcap_lag" = mktcap_lag,
       "ret_excess" = ret_excess,
       "portfolio" = portfolio,
+      "siccd" = siccd,
+      "price" = price,
+      "listing_age" = listing_age,
+      "be" = be,
       ...
     ),
     class = "tidyfinance_data_options"
