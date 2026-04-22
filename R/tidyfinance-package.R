@@ -11,12 +11,12 @@
 #' @importFrom purrr partial map map_dbl
 #' @importFrom stats quantile setNames weighted.mean as.formula na.omit ave
 #' @importFrom utils read.csv
-#' @importFrom tidyr pivot_longer unnest nest
+#' @importFrom tidyr pivot_longer unnest nest fill drop_na
 #' @importFrom rlang := enquo syms quo_is_null
 #' @importFrom jsonlite fromJSON
 #' @importFrom stringr str_match
 #' @importFrom frenchdata download_french_data get_french_data_list
-#' @importFrom arrow read_parquet
+#' @importFrom arrow read_parquet write_parquet
 #' @importFrom RPostgres Postgres
 #' @importFrom sandwich NeweyWest
 #' @importFrom dbplyr translate_sql
