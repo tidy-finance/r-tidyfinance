@@ -78,7 +78,7 @@ breakpoint_options <- function(
   }
 
   # Error handling for smooth_bunching
-  if (!is.logical(smooth_bunching) || length(smooth_bunching) != 1) {
+  if (!is.logical(smooth_bunching) || length(smooth_bunching) != 1 || is.na(smooth_bunching)) {
     cli::cli_abort(
       "{.arg smooth_bunching} must be a single logical value (TRUE or FALSE)."
     )
