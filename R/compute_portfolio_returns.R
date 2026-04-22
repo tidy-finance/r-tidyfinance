@@ -142,6 +142,10 @@ compute_portfolio_returns <- function(
   data_options = NULL,
   quiet = FALSE
 ) {
+  if (!is.logical(quiet) || length(quiet) != 1 || is.na(quiet)) {
+    cli::cli_abort("{.arg quiet} must be a single logical.")
+  }
+
   if (is.null(data_options)) {
     data_options <- data_options()
   }

@@ -40,6 +40,10 @@ filter_sorting_data <- function(
   data_options = NULL,
   quiet = FALSE
 ) {
+  if (!is.logical(quiet) || length(quiet) != 1 || is.na(quiet)) {
+    cli::cli_abort("{.arg quiet} must be a single logical.")
+  }
+
   if (is.null(filter_options)) {
     filter_options <- filter_options()
   }
