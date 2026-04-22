@@ -46,9 +46,33 @@ test_that("download_data_risk_free errors on invalid frequency", {
 })
 
 test_that("download_data_risk_free errors when start_date after end_date", {
+  skip_if_offline()
+  skip_on_cran()
   expect_error(
     download_data_risk_free("2021-12-31", "2020-01-01"),
     regexp = "`start_date` cannot be after `end_date`"
+  )
+})
+
+test_that("download_data_risk_free returns filtered rows for date range", {
+  skip_if_offline()
+  skip_on_cran()
+  result <- download_data_risk_free("2020-03-01", "2020-06-30")
+  expect_equal(nrow(result), 4)
+  expect_true(all(result$date >= as.Date("2020-03-01")))
+  expect_true(all(result$date <= as.Date("2020-06-30")))
+})
+
+test_that("download_data_risk_free aborts with clear message on failure", {
+  with_mocked_bindings(
+    read_parquet = function(file, ...) stop("connection refused"),
+    .package = "arrow",
+    {
+      expect_error(
+        download_data_risk_free("2020-01-01", "2020-12-31"),
+        regexp = "Failed to download risk-free rate data from HuggingFace"
+      )
+    }
   )
 })
 
