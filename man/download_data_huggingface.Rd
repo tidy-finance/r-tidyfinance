@@ -75,15 +75,16 @@ are reformed: \code{"monthly"} or \code{"annual"}.
 \item \code{sorting_method} (defaults to \code{"univariate"}): Whether portfolios
 are formed on a single sort (\code{"univariate"}) or a sequential double
 sort (\code{"sequential"}).
-\item \code{breakpoints_secondary} (defaults to \code{NA}): Number of groups for
-the secondary sort variable; only relevant when
-\code{sorting_method = "sequential"}.
+\item \code{breakpoints_secondary} (defaults to \code{NA} for univariate sorts):
+Number of groups for the secondary sort variable. Required when
+\code{sorting_method} is not \code{"univariate"}.
 \item \code{breakpoints_exchanges} (defaults to: \code{"NYSE"}): Exchange(s) used
 to compute breakpoints. \code{"NYSE"} uses only NYSE-listed stocks to
 define quantile cutoffs (the conventional Fama-French approach).
 \item \code{breakpoints_min_size} (defaults to \code{NA}): Minimum market-cap
 threshold (in USD) applied when computing breakpoints. \code{NA} means no
-minimum-size screen is applied.
+minimum-size screen is applied. Pass \code{NULL} to remove this filter
+entirely and include all portfolios regardless of size screen.
 \item \code{weighting_scheme} (defaults to \code{"VW"}): Return weighting within
 portfolios: \code{"VW"} for value-weighted or \code{"EW"} for equal-weighted.
 }
