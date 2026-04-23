@@ -29,9 +29,11 @@ the portfolio grid. Each argument takes the form \code{column = value}, where
 \code{value} may be a vector to match multiple levels. Optionally pass
 \code{fill_all = TRUE} to leave unspecified columns unrestricted (default:
 \code{FALSE}, i.e. unspecified columns are fixed at the defaults listed below).
-Passing an unrecognised column name raises an error listing the supported
-names. Ignored when \code{dataset != "factor_library"}. See the Details section
-for supported columns and their defaults.}
+Passing \code{NULL} for any parameter removes that filter entirely, returning
+all values for that column (e.g., \code{exclude_size = NULL} includes all size
+groups). Passing an unrecognised column name raises an error listing the
+supported names. Ignored when \code{dataset != "factor_library"}. See the
+Details section for supported columns and their defaults.}
 }
 \value{
 A tibble with the downloaded data. For \code{"high_frequency_sp500"},
@@ -75,16 +77,18 @@ are reformed: \code{"monthly"} or \code{"annual"}.
 \item \code{sorting_method} (defaults to \code{"univariate"}): Whether portfolios
 are formed on a single sort (\code{"univariate"}) or a sequential double
 sort (\code{"sequential"}).
-\item \code{breakpoints_secondary} (defaults to \code{NA} for univariate sorts):
-Number of groups for the secondary sort variable. Required when
-\code{sorting_method} is not \code{"univariate"}.
+\item \code{breakpoints_secondary} (defaults to \code{NULL}; treated as \code{NA} for
+univariate sorts): Number of groups for the secondary sort variable.
+Required when \code{sorting_method} is not \code{"univariate"}. Note: explicitly
+passing \code{NA} with a non-univariate \code{sorting_method} is not equivalent
+to the default — it bypasses the validation and filters to portfolios
+where \code{breakpoints_secondary} is \code{NA}, likely returning no results.
 \item \code{breakpoints_exchanges} (defaults to: \code{"NYSE"}): Exchange(s) used
 to compute breakpoints. \code{"NYSE"} uses only NYSE-listed stocks to
 define quantile cutoffs (the conventional Fama-French approach).
 \item \code{breakpoints_min_size} (defaults to \code{NA}): Minimum market-cap
 threshold (in USD) applied when computing breakpoints. \code{NA} means no
-minimum-size screen is applied. Pass \code{NULL} to remove this filter
-entirely and include all portfolios regardless of size screen.
+minimum-size screen is applied.
 \item \code{weighting_scheme} (defaults to \code{"VW"}): Return weighting within
 portfolios: \code{"VW"} for value-weighted or \code{"EW"} for equal-weighted.
 }
