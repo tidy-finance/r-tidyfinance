@@ -330,7 +330,7 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
       sorting_variable = stringr::str_replace(.data$sorting_variable, "sv_", "")
     )
 
-  filters <- Filter(Negate(is.null), filters)
+  filters <- purrr::compact(filters)
 
   for (col in names(filters)) {
     result <- dplyr::filter(result, .data[[col]] %in% filters[[col]])
