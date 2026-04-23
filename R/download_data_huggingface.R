@@ -264,7 +264,8 @@ check_supported_dataset_huggingface <- function(dataset) {
 #'     \item{`rebalancing`}{`"monthly"`}
 #'     \item{`breakpoints_main`}{`10`}
 #'     \item{`sorting_method`}{`"univariate"`}
-#'     \item{`breakpoints_secondary`}{`NA` for univariate sorts; required otherwise}
+#'     \item{`breakpoints_secondary`}{`NA` for univariate sorts;
+#'       required otherwise}
 #'     \item{`breakpoints_exchanges`}{`"NYSE"`}
 #'     \item{`breakpoints_min_size`}{`NA`}
 #'     \item{`weighting_scheme`}{`"VW"`}
@@ -317,7 +318,10 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
       if (!all(sorting_methods == "univariate")) {
         cli::cli_abort(c(
           "{.arg breakpoints_secondary} must be specified for bivariate sorts.",
-          "i" = "Provide a value for {.arg breakpoints_secondary} or use {.code fill_all = TRUE} to skip all defaults."
+          "i" = paste(
+            "Provide a value for {.arg breakpoints_secondary} or",
+            "use {.code fill_all = TRUE} to skip all defaults."
+          )
         ))
       }
       filters["breakpoints_secondary"] <- list(NA_real_)
