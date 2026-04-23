@@ -144,7 +144,7 @@ test_that(
         )
 
         expect_identical(ids_default, ids_explicit_null)
-        expect_length(ids_default, 2L)
+        expect_length(ids_default, 1L)
       }
     )
   }

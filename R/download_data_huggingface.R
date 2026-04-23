@@ -303,7 +303,7 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
   if (!fill_all) {
     for (col in names(defaults)) {
       if (!col %in% names(filters)) {
-        filters[[col]] <- defaults[[col]]
+        filters[col] <- list(defaults[[col]])
       }
     }
   }
@@ -318,7 +318,7 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
       sorting_variable = stringr::str_replace(.data$sorting_variable, "sv_", "")
     )
 
-  filters <- Filter(Negate(is.null), filters)
+  filters <- lapply(filters, function(x) if (is.null(x)) NA_real_ else x)
 
   for (col in names(filters)) {
     result <- dplyr::filter(result, .data[[col]] %in% filters[[col]])
