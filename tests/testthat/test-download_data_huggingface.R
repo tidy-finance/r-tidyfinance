@@ -109,8 +109,8 @@ test_that(
 
 test_that(
   paste(
-    "filter_factor_library_grid(): explicit NULL equals omitted argument",
-    "and neither returns empty results"
+    "filter_factor_library_grid(): omitted breakpoints_min_size defaults to",
+    "NA (standard portfolio); explicit NULL removes the filter"
   ),
   {
     grid_rows <- tibble::tibble(
@@ -143,8 +143,8 @@ test_that(
           breakpoints_min_size = NULL
         )
 
-        expect_identical(ids_default, ids_explicit_null)
         expect_length(ids_default, 1L)
+        expect_length(ids_explicit_null, 2L)
       }
     )
   }

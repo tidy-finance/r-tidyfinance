@@ -121,15 +121,16 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'     \item `sorting_method` (defaults to `"univariate"`): Whether portfolios
 #'       are formed on a single sort (`"univariate"`) or a sequential double
 #'       sort (`"sequential"`).
-#'     \item `breakpoints_secondary` (defaults to `NULL`): Number of groups for
-#'       the secondary sort variable; only relevant when
-#'       `sorting_method = "sequential"`.
+#'     \item `breakpoints_secondary` (defaults to `NA` for univariate sorts):
+#'       Number of groups for the secondary sort variable. Required when
+#'       `sorting_method` is not `"univariate"`.
 #'     \item `breakpoints_exchanges` (defaults to: `"NYSE"`): Exchange(s) used
 #'       to compute breakpoints. `"NYSE"` uses only NYSE-listed stocks to
 #'       define quantile cutoffs (the conventional Fama-French approach).
-#'     \item `breakpoints_min_size` (defaults to `NULL`): Minimum market-cap
-#'       threshold (in USD) applied when computing breakpoints. `NULL` means no
-#'       minimum-size screen is applied.
+#'     \item `breakpoints_min_size` (defaults to `NA`): Minimum market-cap
+#'       threshold (in USD) applied when computing breakpoints. `NA` means no
+#'       minimum-size screen is applied. Pass `NULL` to remove this filter
+#'       entirely and include all portfolios regardless of size screen.
 #'     \item `weighting_scheme` (defaults to `"VW"`): Return weighting within
 #'       portfolios: `"VW"` for value-weighted or `"EW"` for equal-weighted.
 #'   }
@@ -259,9 +260,9 @@ check_supported_dataset_huggingface <- function(dataset) {
 #'     \item{`rebalancing`}{`"monthly"`}
 #'     \item{`breakpoints_main`}{`10`}
 #'     \item{`sorting_method`}{`"univariate"`}
-#'     \item{`breakpoints_secondary`}{`NULL`}
+#'     \item{`breakpoints_secondary`}{`NA` for univariate sorts; required otherwise}
 #'     \item{`breakpoints_exchanges`}{`"NYSE"`}
-#'     \item{`breakpoints_min_size`}{`NULL`}
+#'     \item{`breakpoints_min_size`}{`NA`}
 #'     \item{`weighting_scheme`}{`"VW"`}
 #'   }
 #'   Each value can be a vector to match multiple levels.
@@ -287,7 +288,7 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
     sorting_method = "univariate",
     breakpoints_secondary = NULL,
     breakpoints_exchanges = "NYSE",
-    breakpoints_min_size = NULL,
+    breakpoints_min_size = NA_real_,
     weighting_scheme = "VW"
   )
 
@@ -306,6 +307,17 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
         filters[col] <- list(defaults[[col]])
       }
     }
+
+    if (is.null(filters[["breakpoints_secondary"]])) {
+      sorting_methods <- filters[["sorting_method"]]
+      if (!all(sorting_methods == "univariate")) {
+        cli::cli_abort(c(
+          "{.arg breakpoints_secondary} must be specified for bivariate sorts.",
+          "i" = "Provide a value for {.arg breakpoints_secondary} or use {.code fill_all = TRUE} to skip all defaults."
+        ))
+      }
+      filters["breakpoints_secondary"] <- list(NA_real_)
+    }
   }
 
   result <- get_available_huggingface_files(
@@ -318,7 +330,7 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
       sorting_variable = stringr::str_replace(.data$sorting_variable, "sv_", "")
     )
 
-  filters <- lapply(filters, function(x) if (is.null(x)) NA_real_ else x)
+  filters <- Filter(Negate(is.null), filters)
 
   for (col in names(filters)) {
     result <- dplyr::filter(result, .data[[col]] %in% filters[[col]])
