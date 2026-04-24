@@ -166,6 +166,10 @@ Other portfolio functions:
 \code{\link{breakpoint_options}()},
 \code{\link{compute_breakpoints}()},
 \code{\link{compute_long_short_returns}()},
-\code{\link{data_options}()}
+\code{\link{compute_portfolio_sort}()},
+\code{\link{data_options}()},
+\code{\link{filter_options}()},
+\code{\link{filter_sorting_data}()},
+\code{\link{portfolio_sort_options}()}
 }
 \concept{portfolio functions}
