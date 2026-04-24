@@ -244,6 +244,24 @@ test_that("filter_sorting_data applies positive_earnings filter correctly", {
 
 test_that(
   paste0(
+    "filter_sorting_data emits a message mentioning ",
+    "positive_earnings when quiet = FALSE and rows are removed"
+  ),
+  {
+    data <- make_sorting_data()
+    expect_message(
+      filter_sorting_data(
+        data,
+        filter_options = filter_options(positive_earnings = TRUE),
+        quiet = FALSE
+      ),
+      "positive_earnings"
+    )
+  }
+)
+
+test_that(
+  paste0(
     "filter_sorting_data errors when earnings ",
     "column is missing for positive_earnings"
   ),
