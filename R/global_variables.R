@@ -224,6 +224,7 @@ utils::globalVariables(
     "ret_4wk",
     "listing_age",
     "first_crsp_date",
-    ".size_cutoff"
+    ".size_cutoff",
+    "ib"
   )
 )

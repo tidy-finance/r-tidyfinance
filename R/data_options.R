@@ -160,7 +160,12 @@ data_options <- function(
 
   # Error handling for earnings
   if (!is.character(earnings) || length(earnings) != 1) {
-    cli::cli_abort("{.arg earnings} must be a single character")
+    cli::cli_abort(
+      paste0(
+        "{.arg earnings} must be a string indicating the column ",
+        "name for the earnings variable."
+      )
+    )
   }
 
   # Create the list structure with class attribute

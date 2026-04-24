@@ -33,63 +33,87 @@ test_that("filter_sorting_data preserves all columns", {
   expect_equal(colnames(result), colnames(data))
 })
 
-test_that("filter_sorting_data removes financials when exclude_financials = TRUE", {
-  data <- make_sorting_data()
-  n_financials <- sum(data$siccd >= 6000 & data$siccd <= 6799, na.rm = TRUE)
-  result <- filter_sorting_data(
-    data,
-    filter_options = filter_options(exclude_financials = TRUE),
-    quiet = TRUE
-  )
-  expect_equal(nrow(result), nrow(data) - n_financials)
-  expect_true(all(
-    is.na(result$siccd) | result$siccd < 6000 | result$siccd > 6799
-  ))
-})
-
-test_that("filter_sorting_data removes utility firms when exclude_utilities = TRUE", {
-  data <- make_sorting_data()
-  n_utilities <- sum(data$siccd >= 4900 & data$siccd <= 4999, na.rm = TRUE)
-  result <- filter_sorting_data(
-    data,
-    filter_options = filter_options(exclude_utilities = TRUE),
-    quiet = TRUE
-  )
-  expect_equal(nrow(result), nrow(data) - n_utilities)
-  expect_true(all(
-    is.na(result$siccd) | result$siccd < 4900 | result$siccd > 4999
-  ))
-})
-
-test_that("filter_sorting_data removes financials and utilities when both excluded", {
-  data <- make_sorting_data()
-  n_fin_or_util <- sum(
-    (data$siccd >= 6000 & data$siccd <= 6799) |
-      (data$siccd >= 4900 & data$siccd <= 4999),
-    na.rm = TRUE
-  )
-  result <- filter_sorting_data(
-    data,
-    filter_options = filter_options(
-      exclude_financials = TRUE,
-      exclude_utilities = TRUE
-    ),
-    quiet = TRUE
-  )
-  expect_equal(nrow(result), nrow(data) - n_fin_or_util)
-})
-
-test_that("filter_sorting_data errors when siccd missing for financial exclusion", {
-  data <- make_sorting_data()
-  data$siccd <- NULL
-  expect_error(
-    filter_sorting_data(
+test_that(
+  paste0(
+    "filter_sorting_data removes ",
+    "financials when exclude_financials = TRUE"
+  ),
+  {
+    data <- make_sorting_data()
+    n_financials <- sum(data$siccd >= 6000 & data$siccd <= 6799, na.rm = TRUE)
+    result <- filter_sorting_data(
       data,
-      filter_options = filter_options(exclude_financials = TRUE)
-    ),
-    "siccd"
-  )
-})
+      filter_options = filter_options(exclude_financials = TRUE),
+      quiet = TRUE
+    )
+    expect_equal(nrow(result), nrow(data) - n_financials)
+    expect_true(all(
+      is.na(result$siccd) | result$siccd < 6000 | result$siccd > 6799
+    ))
+  }
+)
+
+test_that(
+  paste0(
+    "filter_sorting_data removes utility ",
+    "firms when exclude_utilities = TRUE"
+  ),
+  {
+    data <- make_sorting_data()
+    n_utilities <- sum(data$siccd >= 4900 & data$siccd <= 4999, na.rm = TRUE)
+    result <- filter_sorting_data(
+      data,
+      filter_options = filter_options(exclude_utilities = TRUE),
+      quiet = TRUE
+    )
+    expect_equal(nrow(result), nrow(data) - n_utilities)
+    expect_true(all(
+      is.na(result$siccd) | result$siccd < 4900 | result$siccd > 4999
+    ))
+  }
+)
+
+test_that(
+  paste0(
+    "filter_sorting_data removes financials ",
+    "and utilities when both excluded"
+  ),
+  {
+    data <- make_sorting_data()
+    n_fin_or_util <- sum(
+      (data$siccd >= 6000 & data$siccd <= 6799) |
+        (data$siccd >= 4900 & data$siccd <= 4999),
+      na.rm = TRUE
+    )
+    result <- filter_sorting_data(
+      data,
+      filter_options = filter_options(
+        exclude_financials = TRUE,
+        exclude_utilities = TRUE
+      ),
+      quiet = TRUE
+    )
+    expect_equal(nrow(result), nrow(data) - n_fin_or_util)
+  }
+)
+
+test_that(
+  paste0(
+    "filter_sorting_data errors when ",
+    "siccd missing for financial exclusion"
+  ),
+  {
+    data <- make_sorting_data()
+    data$siccd <- NULL
+    expect_error(
+      filter_sorting_data(
+        data,
+        filter_options = filter_options(exclude_financials = TRUE)
+      ),
+      "siccd"
+    )
+  }
+)
 
 test_that("filter_sorting_data applies min_stock_price filter correctly", {
   data <- make_sorting_data()
@@ -127,17 +151,23 @@ test_that("filter_sorting_data applies min_size_quantile filter correctly", {
   expect_true(nrow(result) <= nrow(data) * 0.55)
 })
 
-test_that("filter_sorting_data errors when mktcap_lag missing for min_size_quantile", {
-  data <- make_sorting_data()
-  data$mktcap_lag <- NULL
-  expect_error(
-    filter_sorting_data(
-      data,
-      filter_options = filter_options(min_size_quantile = 0.2)
-    ),
-    "mktcap_lag"
-  )
-})
+test_that(
+  paste0(
+    "filter_sorting_data errors when ",
+    "mktcap_lag missing for min_size_quantile"
+  ),
+  {
+    data <- make_sorting_data()
+    data$mktcap_lag <- NULL
+    expect_error(
+      filter_sorting_data(
+        data,
+        filter_options = filter_options(min_size_quantile = 0.2)
+      ),
+      "mktcap_lag"
+    )
+  }
+)
 
 test_that("filter_sorting_data applies min_listing_age filter correctly", {
   data <- make_sorting_data()
@@ -164,29 +194,41 @@ test_that("filter_sorting_data errors when listing_age column is missing", {
   )
 })
 
-test_that("filter_sorting_data applies positive_book_equity filter correctly", {
-  data <- make_sorting_data()
-  n_nonpositive <- sum(!is.na(data$be) & data$be <= 0)
-  result <- filter_sorting_data(
-    data,
-    filter_options = filter_options(positive_book_equity = TRUE),
-    quiet = TRUE
-  )
-  expect_equal(nrow(result), nrow(data) - n_nonpositive)
-  expect_true(all(result$be > 0, na.rm = TRUE))
-})
-
-test_that("filter_sorting_data errors when be missing for positive_book_equity", {
-  data <- make_sorting_data()
-  data$be <- NULL
-  expect_error(
-    filter_sorting_data(
+test_that(
+  paste0(
+    "filter_sorting_data applies ",
+    "positive_book_equity filter correctly"
+  ),
+  {
+    data <- make_sorting_data()
+    n_nonpositive <- sum(!is.na(data$be) & data$be <= 0)
+    result <- filter_sorting_data(
       data,
-      filter_options = filter_options(positive_book_equity = TRUE)
-    ),
-    "be"
-  )
-})
+      filter_options = filter_options(positive_book_equity = TRUE),
+      quiet = TRUE
+    )
+    expect_equal(nrow(result), nrow(data) - n_nonpositive)
+    expect_true(all(result$be > 0))
+  }
+)
+
+test_that(
+  paste0(
+    "filter_sorting_data errors when ",
+    "be missing for positive_book_equity"
+  ),
+  {
+    data <- make_sorting_data()
+    data$be <- NULL
+    expect_error(
+      filter_sorting_data(
+        data,
+        filter_options = filter_options(positive_book_equity = TRUE)
+      ),
+      "be"
+    )
+  }
+)
 
 test_that("filter_sorting_data applies positive_earnings filter correctly", {
   data <- make_sorting_data()
@@ -197,14 +239,13 @@ test_that("filter_sorting_data applies positive_earnings filter correctly", {
     quiet = TRUE
   )
   expect_equal(nrow(result), nrow(data) - n_nonpositive)
-  expect_true(all(result$ib > 0, na.rm = TRUE))
+  expect_true(all(result$ib > 0))
 })
 
 test_that(
-  paste(
+  paste0(
     "filter_sorting_data errors when earnings ",
-    "
-    column is missing for positive_earnings"
+    "column is missing for positive_earnings"
   ),
   {
     data <- make_sorting_data()
@@ -219,16 +260,22 @@ test_that(
   }
 )
 
-test_that("filter_sorting_data emits a message when quiet=FALSE and rows removed", {
-  data <- make_sorting_data()
-  expect_message(
-    filter_sorting_data(
-      data,
-      filter_options = filter_options(exclude_financials = TRUE),
-      quiet = FALSE
+test_that(
+  paste0(
+    "filter_sorting_data emits a message ",
+    "when quiet=FALSE and rows removed"
+  ),
+  {
+    data <- make_sorting_data()
+    expect_message(
+      filter_sorting_data(
+        data,
+        filter_options = filter_options(exclude_financials = TRUE),
+        quiet = FALSE
+      )
     )
-  )
-})
+  }
+)
 
 test_that("filter_sorting_data suppresses messages when quiet = TRUE", {
   data <- make_sorting_data()
