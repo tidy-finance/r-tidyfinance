@@ -123,7 +123,7 @@
 #'
 #' # Bivariate dependent sorting with annual rebalancing
 #' compute_portfolio_returns(
-#'   data, c("size", "mktcap_lag"), "bivariate-independent", 7,
+#'   data, c("size", "mktcap_lag"), "bivariate-dependent", 7,
 #'   breakpoint_options_main = breakpoint_options(n_portfolios = 5),
 #'   breakpoint_options_secondary = breakpoint_options(n_portfolios = 3),
 #' )
