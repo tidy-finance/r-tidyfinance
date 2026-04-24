@@ -64,7 +64,7 @@ Other portfolio functions:
 \code{\link{compute_breakpoints}()},
 \code{\link{compute_long_short_returns}()},
 \code{\link{compute_portfolio_returns}()},
-\code{\link{compute_portfolio_sort}()},
+\code{\link{implement_portfolio_sort}()},
 \code{\link{data_options}()},
 \code{\link{filter_sorting_data}()},
 \code{\link{portfolio_sort_options}()}

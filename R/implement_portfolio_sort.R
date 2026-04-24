@@ -1,4 +1,4 @@
-#' Compute Portfolio Sort
+#' Implement Portfolio Sort
 #'
 #' A convenience wrapper that combines sample construction filtering and
 #' portfolio return computation into a single call. Equivalent to calling
@@ -39,7 +39,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' compute_portfolio_sort(
+#' implement_portfolio_sort(
 #'   data = crsp_monthly,
 #'   sorting_variables = "bm",
 #'   sorting_method = "univariate",
@@ -53,7 +53,7 @@
 #' )
 #' }
 #'
-compute_portfolio_sort <- function(
+implement_portfolio_sort <- function(
   data,
   sorting_variables,
   sorting_method,

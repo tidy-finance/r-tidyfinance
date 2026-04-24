@@ -2,7 +2,7 @@
 #'
 #' Creates a list of options of class `tidyfinance_portfolio_sort_options` that
 #' bundles sample construction filters and breakpoint specifications for use
-#' with [compute_portfolio_sort()].
+#' with [implement_portfolio_sort()].
 #'
 #' @param filter_options A list of class `tidyfinance_filter_options` created
 #'   by [filter_options()], or `NULL` (the default, which applies no filters).

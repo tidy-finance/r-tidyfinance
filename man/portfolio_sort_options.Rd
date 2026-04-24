@@ -33,7 +33,7 @@ the specified options.
 \description{
 Creates a list of options of class \code{tidyfinance_portfolio_sort_options} that
 bundles sample construction filters and breakpoint specifications for use
-with \code{\link[=compute_portfolio_sort]{compute_portfolio_sort()}}.
+with \code{\link[=implement_portfolio_sort]{implement_portfolio_sort()}}.
 }
 \examples{
 portfolio_sort_options(
@@ -49,7 +49,7 @@ Other portfolio functions:
 \code{\link{compute_breakpoints}()},
 \code{\link{compute_long_short_returns}()},
 \code{\link{compute_portfolio_returns}()},
-\code{\link{compute_portfolio_sort}()},
+\code{\link{implement_portfolio_sort}()},
 \code{\link{data_options}()},
 \code{\link{filter_options}()},
 \code{\link{filter_sorting_data}()}
