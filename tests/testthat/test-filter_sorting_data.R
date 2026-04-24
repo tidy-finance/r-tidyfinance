@@ -4,14 +4,17 @@ make_sorting_data <- function(seed = 42) {
     permno = 1:30,
     date = rep(as.Date("2020-01-01"), 30),
     siccd = c(
-      rep(6200L, 5),  # financial (SIC 6000–6799)
-      rep(4950L, 5),  # utility  (SIC 4900–4999)
-      rep(5000L, 5),  # retail   (neutral)
-      rep(7000L, 5),  # services (neutral)
-      rep(1000L, 10)  # other    (neutral)
+      rep(6200L, 5), # financial (SIC 6000–6799)
+      rep(4950L, 5), # utility  (SIC 4900–4999)
+      rep(5000L, 5), # retail   (neutral)
+      rep(7000L, 5), # services (neutral)
+      rep(1000L, 10) # other    (neutral)
     ),
     prc_adj = c(rep(0.5, 10), rep(5, 10), rep(20, 10)),
-    mktcap_lag = c(seq(100, 500, length.out = 15), seq(5000, 10000, length.out = 15)),
+    mktcap_lag = c(
+      seq(100, 500, length.out = 15),
+      seq(5000, 10000, length.out = 15)
+    ),
     listing_age = c(rep(6L, 10), rep(24L, 20)),
     be = c(rep(-1, 5), rep(0.5, 5), rep(1, 20))
   )
@@ -66,7 +69,10 @@ test_that("filter_sorting_data removes both financials and utilities when both a
   )
   result <- filter_sorting_data(
     data,
-    filter_options = filter_options(exclude_financials = TRUE, exclude_utilities = TRUE),
+    filter_options = filter_options(
+      exclude_financials = TRUE,
+      exclude_utilities = TRUE
+    ),
     quiet = TRUE
   )
   expect_equal(nrow(result), nrow(data) - n_fin_or_util)

@@ -70,7 +70,10 @@ compute_portfolio_sort <- function(
     cli::cli_abort("{.arg quiet} must be a single logical.")
   }
 
-  if (!is.null(data_options) && !inherits(data_options, "tidyfinance_data_options")) {
+  if (
+    !is.null(data_options) &&
+      !inherits(data_options, "tidyfinance_data_options")
+  ) {
     cli::cli_abort(
       "{.arg data_options} must be {.val NULL} or of class {.cls tidyfinance_data_options}."
     )
