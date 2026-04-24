@@ -91,20 +91,35 @@ portfolio return computation into a single call. Equivalent to calling
 \code{\link[=filter_sorting_data]{filter_sorting_data()}} followed by \code{\link[=compute_portfolio_returns]{compute_portfolio_returns()}}.
 }
 \examples{
-\dontrun{
+
+set.seed(123)
+data <- data.frame(
+  permno = 1:500,
+  date = rep(
+    seq.Date(
+      from = as.Date("2020-01-01"),
+      by = "month",
+      length.out = 100
+    ),
+    each = 10
+  ),
+  mktcap_lag = runif(500, 100, 1000),
+  ret_excess = rnorm(500),
+  prc_adj = runif(500, 0.5, 50),
+  size = runif(500, 50, 150)
+)
 implement_portfolio_sort(
-  data = crsp_monthly,
-  sorting_variables = "bm",
+  data = data,
+  sorting_variables = "size",
   sorting_method = "univariate",
   portfolio_sort_options = portfolio_sort_options(
     filter_options = filter_options(
-      exclude_financials = TRUE,
       min_stock_price = 1
     ),
-    breakpoint_options_main = breakpoint_options(n_portfolios = 10)
+    breakpoint_options_main = breakpoint_options(n_portfolios = 5)
   )
 )
-}
+
 
 }
 \seealso{

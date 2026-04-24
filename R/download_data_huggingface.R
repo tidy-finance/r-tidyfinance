@@ -87,9 +87,11 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'   `value` may be a vector to match multiple levels. Optionally pass
 #'   `fill_all = TRUE` to leave unspecified columns unrestricted (default:
 #'   `FALSE`, i.e. unspecified columns are fixed at the defaults listed below).
-#'   Passing an unrecognised column name raises an error listing the supported
-#'   names. Ignored when `dataset != "factor_library"`. See the Details section
-#'   for supported columns and their defaults.
+#'   Passing `NULL` for any parameter removes that filter entirely, returning
+#'   all values for that column (e.g., `exclude_size = NULL` includes all size
+#'   groups). Passing an unrecognised column name raises an error listing the
+#'   supported names. Ignored when `dataset != "factor_library"`. See the
+#'   Details section for supported columns and their defaults.
 #'
 #' @details
 #' **Note on `dataset = "factor_library"` defaults:** The defaults below reflect
@@ -121,14 +123,14 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'     \item `sorting_method` (defaults to `"univariate"`): Whether portfolios
 #'       are formed on a single sort (`"univariate"`) or a sequential double
 #'       sort (`"sequential"`).
-#'     \item `breakpoints_secondary` (defaults to `NA`): Number of groups for
-#'       the secondary sort variable; only relevant when
-#'       `sorting_method = "sequential"`.
+#'     \item `breakpoints_secondary` (defaults to `NULL`): Number of groups for
+#'       the secondary sort variable.
+#'       Required when `sorting_method` is not `"univariate"`.
 #'     \item `breakpoints_exchanges` (defaults to: `"NYSE"`): Exchange(s) used
 #'       to compute breakpoints. `"NYSE"` uses only NYSE-listed stocks to
 #'       define quantile cutoffs (the conventional Fama-French approach).
-#'     \item `breakpoints_min_size` (defaults to `NA`): Minimum market-cap
-#'       threshold (in USD) applied when computing breakpoints. `NA` means no
+#'     \item `breakpoints_min_size` (defaults to `NULL`): Minimum market-cap
+#'       threshold (in USD) applied when computing breakpoints. `NULL` means no
 #'       minimum-size screen is applied.
 #'     \item `weighting_scheme` (defaults to `"VW"`): Return weighting within
 #'       portfolios: `"VW"` for value-weighted or `"EW"` for equal-weighted.
@@ -259,9 +261,10 @@ check_supported_dataset_huggingface <- function(dataset) {
 #'     \item{`rebalancing`}{`"monthly"`}
 #'     \item{`breakpoints_main`}{`10`}
 #'     \item{`sorting_method`}{`"univariate"`}
-#'     \item{`breakpoints_secondary`}{`NA`}
+#'     \item{`breakpoints_secondary`}{`NULL` for univariate sorts;
+#'       required otherwise}
 #'     \item{`breakpoints_exchanges`}{`"NYSE"`}
-#'     \item{`breakpoints_min_size`}{`NA`}
+#'     \item{`breakpoints_min_size`}{`NULL`}
 #'     \item{`weighting_scheme`}{`"VW"`}
 #'   }
 #'   Each value can be a vector to match multiple levels.
@@ -285,7 +288,7 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
     rebalancing = "monthly",
     breakpoints_main = 10,
     sorting_method = "univariate",
-    breakpoints_secondary = NA_real_,
+    breakpoints_secondary = NULL,
     breakpoints_exchanges = "NYSE",
     breakpoints_min_size = NA_real_,
     weighting_scheme = "VW"
@@ -303,8 +306,22 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
   if (!fill_all) {
     for (col in names(defaults)) {
       if (!col %in% names(filters)) {
-        filters[[col]] <- defaults[[col]]
+        filters[col] <- list(defaults[[col]])
       }
+    }
+
+    if (is.null(filters[["breakpoints_secondary"]])) {
+      sorting_methods <- filters[["sorting_method"]]
+      if (!all(sorting_methods == "univariate")) {
+        cli::cli_abort(c(
+          "{.arg breakpoints_secondary} must be specified for bivariate sorts.",
+          "i" = paste(
+            "Provide a value for {.arg breakpoints_secondary} or",
+            "use {.code fill_all = TRUE} to skip all defaults."
+          )
+        ))
+      }
+      filters["breakpoints_secondary"] <- list(NA_real_)
     }
   }
 
@@ -317,6 +334,8 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
     dplyr::mutate(
       sorting_variable = stringr::str_replace(.data$sorting_variable, "sv_", "")
     )
+
+  filters <- purrr::compact(filters)
 
   for (col in names(filters)) {
     result <- dplyr::filter(result, .data[[col]] %in% filters[[col]])
