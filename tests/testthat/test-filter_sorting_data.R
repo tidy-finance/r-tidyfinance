@@ -32,7 +32,8 @@ test_that("filter_sorting_data preserves all columns", {
   expect_equal(colnames(result), colnames(data))
 })
 
-test_that("filter_sorting_data removes financial firms when exclude_financials = TRUE", {
+test_that(
+  "filter_sorting_data removes financials when exclude_financials = TRUE", {
   data <- make_sorting_data()
   n_financials <- sum(data$siccd >= 6000 & data$siccd <= 6799, na.rm = TRUE)
   result <- filter_sorting_data(
@@ -46,7 +47,8 @@ test_that("filter_sorting_data removes financial firms when exclude_financials =
   ))
 })
 
-test_that("filter_sorting_data removes utility firms when exclude_utilities = TRUE", {
+test_that(
+  "filter_sorting_data removes utility firms when exclude_utilities = TRUE", {
   data <- make_sorting_data()
   n_utilities <- sum(data$siccd >= 4900 & data$siccd <= 4999, na.rm = TRUE)
   result <- filter_sorting_data(
@@ -60,7 +62,8 @@ test_that("filter_sorting_data removes utility firms when exclude_utilities = TR
   ))
 })
 
-test_that("filter_sorting_data removes both financials and utilities when both are excluded", {
+test_that(
+  "filter_sorting_data removes financials and utilities when both excluded", {
   data <- make_sorting_data()
   n_fin_or_util <- sum(
     (data$siccd >= 6000 & data$siccd <= 6799) |
@@ -78,7 +81,8 @@ test_that("filter_sorting_data removes both financials and utilities when both a
   expect_equal(nrow(result), nrow(data) - n_fin_or_util)
 })
 
-test_that("filter_sorting_data errors when siccd column is missing for financial exclusion", {
+test_that(
+  "filter_sorting_data errors when siccd missing for financial exclusion", {
   data <- make_sorting_data()
   data$siccd <- NULL
   expect_error(
@@ -103,7 +107,8 @@ test_that("filter_sorting_data applies min_stock_price filter correctly", {
   expect_true(all(result$prc_adj >= threshold, na.rm = TRUE))
 })
 
-test_that("filter_sorting_data errors when price column is missing for min_stock_price", {
+test_that(
+  "filter_sorting_data errors when price missing for min_stock_price", {
   data <- make_sorting_data()
   data$prc_adj <- NULL
   expect_error(
@@ -126,7 +131,8 @@ test_that("filter_sorting_data applies min_size_quantile filter correctly", {
   expect_true(nrow(result) <= nrow(data) * 0.55)
 })
 
-test_that("filter_sorting_data errors when mktcap_lag column is missing for min_size_quantile", {
+test_that(
+  "filter_sorting_data errors when mktcap_lag missing for min_size_quantile", {
   data <- make_sorting_data()
   data$mktcap_lag <- NULL
   expect_error(
@@ -175,7 +181,8 @@ test_that("filter_sorting_data applies positive_book_equity filter correctly", {
   expect_true(all(result$be > 0, na.rm = TRUE))
 })
 
-test_that("filter_sorting_data errors when be column is missing for positive_book_equity", {
+test_that(
+  "filter_sorting_data errors when be missing for positive_book_equity", {
   data <- make_sorting_data()
   data$be <- NULL
   expect_error(
@@ -187,7 +194,8 @@ test_that("filter_sorting_data errors when be column is missing for positive_boo
   )
 })
 
-test_that("filter_sorting_data emits a message when quiet = FALSE and rows are removed", {
+test_that(
+  "filter_sorting_data emits a message when quiet=FALSE and rows removed", {
   data <- make_sorting_data()
   expect_message(
     filter_sorting_data(

@@ -87,7 +87,10 @@ filter_options <- function(
         min_size_quantile >= 1
     ) {
       cli::cli_abort(
-        "{.arg min_size_quantile} must be a single numeric strictly between 0 and 1."
+        paste0(
+          "{.arg min_size_quantile} must be a single numeric ",
+          "strictly between 0 and 1."
+        )
       )
     }
   }
@@ -101,7 +104,10 @@ filter_options <- function(
         min_listing_age < 0
     ) {
       cli::cli_abort(
-        "{.arg min_listing_age} must be a single non-negative integer or numeric."
+        paste0(
+          "{.arg min_listing_age} must be a single ",
+          "non-negative integer or numeric."
+        )
       )
     }
   }

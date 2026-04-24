@@ -57,70 +57,100 @@ data_options <- function(
   # Error handling for id
   if (!is.character(id) || length(id) != 1) {
     cli::cli_abort(
-      "{.arg id} must be a string indicating the column name for the entity variable."
+      paste0(
+        "{.arg id} must be a string indicating the column name ",
+        "for the entity variable."
+      )
     )
   }
 
   # Error handling for date
   if (!is.character(date) || length(date) != 1) {
     cli::cli_abort(
-      "{.arg date} must be a string indicating the column name for the date variable."
+      paste0(
+        "{.arg date} must be a string indicating the column name ",
+        "for the date variable."
+      )
     )
   }
 
   # Error handling for exchange
   if (!is.character(exchange) || length(exchange) != 1) {
     cli::cli_abort(
-      "{.arg exchange} must be a string indicating the column name for the exchange variable."
+      paste0(
+        "{.arg exchange} must be a string indicating the column name ",
+        "for the exchange variable."
+      )
     )
   }
 
   # Error handling for mktcap_lag
   if (!is.character(mktcap_lag) || length(mktcap_lag) != 1) {
     cli::cli_abort(
-      "{.arg mktcap_lag} must be a string indicating the column name for the market capitalization lag variable."
+      paste0(
+        "{.arg mktcap_lag} must be a string indicating the column name ",
+        "for the market capitalization lag variable."
+      )
     )
   }
 
   # Error handling for ret_excess
   if (!is.character(ret_excess) || length(ret_excess) != 1) {
     cli::cli_abort(
-      "{.arg ret_excess} must be a string indicating the column name for the excess return variable."
+      paste0(
+        "{.arg ret_excess} must be a string indicating the column name ",
+        "for the excess return variable."
+      )
     )
   }
 
   # Error handling for portfolio
   if (!is.character(portfolio) || length(portfolio) != 1) {
     cli::cli_abort(
-      "{.arg portfolio} must be a string indicating the column name for the portfolio variable."
+      paste0(
+        "{.arg portfolio} must be a string indicating the column name ",
+        "for the portfolio variable."
+      )
     )
   }
 
   # Error handling for siccd
   if (!is.character(siccd) || length(siccd) != 1) {
     cli::cli_abort(
-      "{.arg siccd} must be a string indicating the column name for the Standard Industrial Classification code variable."
+      paste0(
+        "{.arg siccd} must be a string indicating the column name for ",
+        "the Standard Industrial Classification code variable."
+      )
     )
   }
 
   # Error handling for price
   if (!is.character(price) || length(price) != 1) {
     cli::cli_abort(
-      "{.arg price} must be a string indicating the column name for the (adjusted) price variable."
+      paste0(
+        "{.arg price} must be a string indicating the column name ",
+        "for the (adjusted) price variable."
+      )
     )
   }
 
   # Error handling for listing_age
   if (!is.character(listing_age) || length(listing_age) != 1) {
     cli::cli_abort(
-      "{.arg listing_age} must be a string indicating the column name for the listing age variable."
+      paste0(
+        "{.arg listing_age} must be a string indicating the column name ",
+        "for the listing age variable."
+      )
     )
   }
 
   # Error handling for be
   if (!is.character(be) || length(be) != 1) {
     cli::cli_abort(
-      "{.arg be} must be a string indicating the column name for the book equity variable."
+      paste0(
+        "{.arg be} must be a string indicating the column name ",
+        "for the book equity variable."
+      )
     )
   }
 

@@ -75,21 +75,28 @@ compute_portfolio_sort <- function(
       !inherits(data_options, "tidyfinance_data_options")
   ) {
     cli::cli_abort(
-      "{.arg data_options} must be {.val NULL} or of class {.cls tidyfinance_data_options}."
+      paste0(
+        "{.arg data_options} must be {.val NULL} or of class ",
+        "{.cls tidyfinance_data_options}."
+      )
     )
   }
 
   # Validate portfolio_sort_options
   if (!inherits(portfolio_sort_options, "tidyfinance_portfolio_sort_options")) {
     cli::cli_abort(
-      "{.arg portfolio_sort_options} must be of class {.cls tidyfinance_portfolio_sort_options}."
+      paste0(
+        "{.arg portfolio_sort_options} must be of class ",
+        "{.cls tidyfinance_portfolio_sort_options}."
+      )
     )
   }
 
   # Extract components from portfolio_sort_options
   filter_options <- portfolio_sort_options$filter_options
   breakpoint_options_main <- portfolio_sort_options$breakpoint_options_main
-  breakpoint_options_secondary <- portfolio_sort_options$breakpoint_options_secondary
+  breakpoint_options_secondary <-
+    portfolio_sort_options$breakpoint_options_secondary
 
   # Apply sample construction filters
   data <- filter_sorting_data(
