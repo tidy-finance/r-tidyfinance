@@ -34,8 +34,9 @@ input.
 Applies sample construction filters to a data frame before portfolio
 sorting. Filters are applied in a fixed order: financials exclusion,
 utilities exclusion, minimum stock price, minimum size quantile, minimum
-listing age, and positive book equity. An informational message is emitted
-for each filter that actually removes at least one observation.
+listing age, positive book equity, and positive earnings. An informational
+message is emitted for each filter that actually removes at least one
+observation.
 }
 \examples{
 \dontrun{
@@ -56,9 +57,9 @@ Other portfolio functions:
 \code{\link{compute_breakpoints}()},
 \code{\link{compute_long_short_returns}()},
 \code{\link{compute_portfolio_returns}()},
-\code{\link{implement_portfolio_sort}()},
 \code{\link{data_options}()},
 \code{\link{filter_options}()},
+\code{\link{implement_portfolio_sort}()},
 \code{\link{portfolio_sort_options}()}
 }
 \concept{portfolio functions}

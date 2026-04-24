@@ -11,6 +11,7 @@ filter_options(
   min_size_quantile = NULL,
   min_listing_age = NULL,
   positive_book_equity = FALSE,
+  positive_earnings = FALSE,
   ...
 )
 }
@@ -36,6 +37,9 @@ the minimum number of months a stock must have been listed in CRSP.
 
 \item{positive_book_equity}{A logical indicating whether to retain only
 observations with strictly positive book equity. Defaults to \code{FALSE}.}
+
+\item{positive_earnings}{A logical indicating whether to retain only
+observations with strictly positive earnings. Defaults to \code{FALSE}.}
 
 \item{...}{Additional arguments to be included in the filter options list.}
 }
@@ -64,9 +68,9 @@ Other portfolio functions:
 \code{\link{compute_breakpoints}()},
 \code{\link{compute_long_short_returns}()},
 \code{\link{compute_portfolio_returns}()},
-\code{\link{implement_portfolio_sort}()},
 \code{\link{data_options}()},
 \code{\link{filter_sorting_data}()},
+\code{\link{implement_portfolio_sort}()},
 \code{\link{portfolio_sort_options}()}
 }
 \concept{portfolio functions}

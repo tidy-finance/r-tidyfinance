@@ -83,7 +83,7 @@ implement_portfolio_sort(
 
 }
 \seealso{
-Other portfolio functions:
+Other portfolio functions: 
 \code{\link{assign_portfolio}()},
 \code{\link{breakpoint_options}()},
 \code{\link{compute_breakpoints}()},

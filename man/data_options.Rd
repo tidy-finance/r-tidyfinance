@@ -15,6 +15,7 @@ data_options(
   price = "prc_adj",
   listing_age = "listing_age",
   be = "be",
+  earnings = "ib",
   ...
 )
 }
@@ -49,6 +50,10 @@ Classification code variable (defaults to \code{"siccd"}).}
 \item{be}{A character string representing the book equity variable (defaults
 to \code{"be"}).}
 
+\item{earnings}{A character string representing the earnings variable
+(defaults to \code{"ib"}, the Compustat income before extraordinary items
+column).}
+
 \item{...}{Additional arguments to be included in the data options list.}
 }
 \value{
@@ -77,9 +82,9 @@ Other portfolio functions:
 \code{\link{compute_breakpoints}()},
 \code{\link{compute_long_short_returns}()},
 \code{\link{compute_portfolio_returns}()},
-\code{\link{implement_portfolio_sort}()},
 \code{\link{filter_options}()},
 \code{\link{filter_sorting_data}()},
+\code{\link{implement_portfolio_sort}()},
 \code{\link{portfolio_sort_options}()}
 }
 \concept{portfolio functions}
