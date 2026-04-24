@@ -123,17 +123,14 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'     \item `sorting_method` (defaults to `"univariate"`): Whether portfolios
 #'       are formed on a single sort (`"univariate"`) or a sequential double
 #'       sort (`"sequential"`).
-#'     \item `breakpoints_secondary` (defaults to `NULL`; treated as `NA` for
-#'       univariate sorts): Number of groups for the secondary sort variable.
-#'       Required when `sorting_method` is not `"univariate"`. Note: explicitly
-#'       passing `NA` with a non-univariate `sorting_method` is not equivalent
-#'       to the default — it bypasses the validation and filters to portfolios
-#'       where `breakpoints_secondary` is `NA`, likely returning no results.
+#'     \item `breakpoints_secondary` (defaults to `NULL`): Number of groups for
+#'       the secondary sort variable.
+#'       Required when `sorting_method` is not `"univariate"`.
 #'     \item `breakpoints_exchanges` (defaults to: `"NYSE"`): Exchange(s) used
 #'       to compute breakpoints. `"NYSE"` uses only NYSE-listed stocks to
 #'       define quantile cutoffs (the conventional Fama-French approach).
-#'     \item `breakpoints_min_size` (defaults to `NA`): Minimum market-cap
-#'       threshold (in USD) applied when computing breakpoints. `NA` means no
+#'     \item `breakpoints_min_size` (defaults to `NULL`): Minimum market-cap
+#'       threshold (in USD) applied when computing breakpoints. `NULL` means no
 #'       minimum-size screen is applied.
 #'     \item `weighting_scheme` (defaults to `"VW"`): Return weighting within
 #'       portfolios: `"VW"` for value-weighted or `"EW"` for equal-weighted.
@@ -264,10 +261,10 @@ check_supported_dataset_huggingface <- function(dataset) {
 #'     \item{`rebalancing`}{`"monthly"`}
 #'     \item{`breakpoints_main`}{`10`}
 #'     \item{`sorting_method`}{`"univariate"`}
-#'     \item{`breakpoints_secondary`}{`NA` for univariate sorts;
+#'     \item{`breakpoints_secondary`}{`NULL` for univariate sorts;
 #'       required otherwise}
 #'     \item{`breakpoints_exchanges`}{`"NYSE"`}
-#'     \item{`breakpoints_min_size`}{`NA`}
+#'     \item{`breakpoints_min_size`}{`NULL`}
 #'     \item{`weighting_scheme`}{`"VW"`}
 #'   }
 #'   Each value can be a vector to match multiple levels.

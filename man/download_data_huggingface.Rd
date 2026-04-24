@@ -77,17 +77,14 @@ are reformed: \code{"monthly"} or \code{"annual"}.
 \item \code{sorting_method} (defaults to \code{"univariate"}): Whether portfolios
 are formed on a single sort (\code{"univariate"}) or a sequential double
 sort (\code{"sequential"}).
-\item \code{breakpoints_secondary} (defaults to \code{NULL}; treated as \code{NA} for
-univariate sorts): Number of groups for the secondary sort variable.
-Required when \code{sorting_method} is not \code{"univariate"}. Note: explicitly
-passing \code{NA} with a non-univariate \code{sorting_method} is not equivalent
-to the default — it bypasses the validation and filters to portfolios
-where \code{breakpoints_secondary} is \code{NA}, likely returning no results.
+\item \code{breakpoints_secondary} (defaults to \code{NULL}): Number of groups for
+the secondary sort variable.
+Required when \code{sorting_method} is not \code{"univariate"}.
 \item \code{breakpoints_exchanges} (defaults to: \code{"NYSE"}): Exchange(s) used
 to compute breakpoints. \code{"NYSE"} uses only NYSE-listed stocks to
 define quantile cutoffs (the conventional Fama-French approach).
-\item \code{breakpoints_min_size} (defaults to \code{NA}): Minimum market-cap
-threshold (in USD) applied when computing breakpoints. \code{NA} means no
+\item \code{breakpoints_min_size} (defaults to \code{NULL}): Minimum market-cap
+threshold (in USD) applied when computing breakpoints. \code{NULL} means no
 minimum-size screen is applied.
 \item \code{weighting_scheme} (defaults to \code{"VW"}): Return weighting within
 portfolios: \code{"VW"} for value-weighted or \code{"EW"} for equal-weighted.
