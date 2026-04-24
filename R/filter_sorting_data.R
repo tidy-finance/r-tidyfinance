@@ -25,7 +25,13 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' data <- data.frame(
+#'   permno = 1:5,
+#'   date = as.Date("2020-01-01"),
+#'   siccd = c(6100, 2000, 4950, 3000, 6500),
+#'   prc_adj = c(5, 0.5, 15, 20, 10)
+#' )
+#'
 #' data |>
 #'   filter_sorting_data(
 #'     filter_options = filter_options(
@@ -33,7 +39,6 @@
 #'       min_stock_price = 1
 #'     )
 #'   )
-#' }
 #'
 filter_sorting_data <- function(
   data,
