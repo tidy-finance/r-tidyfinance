@@ -3,8 +3,9 @@
 #' Applies sample construction filters to a data frame before portfolio
 #' sorting. Filters are applied in a fixed order: financials exclusion,
 #' utilities exclusion, minimum stock price, minimum size quantile, minimum
-#' listing age, and positive book equity. An informational message is emitted
-#' for each filter that actually removes at least one observation.
+#' listing age, positive book equity, and positive earnings. An informational
+#' message is emitted for each filter that actually removes at least one
+#' observation.
 #'
 #' @param data A data frame containing the stock-level panel data to be
 #'   filtered.
@@ -198,6 +199,28 @@ filter_sorting_data <- function(
     if (!quiet && n_dropped > 0) {
       cli::cli_inform(
         "Filter 'positive_book_equity': removed {n_dropped} observation{?s}."
+      )
+    }
+  }
+
+  # positive_earnings
+  if (isTRUE(filter_options$positive_earnings)) {
+    col_earn <- data_options$earnings
+    if (!col_earn %in% colnames(data)) {
+      cli::cli_abort(c(
+        "Column {.val {col_earn}} not found in {.arg data}.",
+        "i" = "Set {.arg data_options$earnings} to the correct column name."
+      ))
+    }
+    n_before <- nrow(data)
+    data <- data |>
+      dplyr::filter(
+        !is.na(.data[[col_earn]]) & .data[[col_earn]] > 0
+      )
+    n_dropped <- n_before - nrow(data)
+    if (!quiet && n_dropped > 0) {
+      cli::cli_inform(
+        "Filter 'positive_earnings': removed {n_dropped} observation{?s}."
       )
     }
   }

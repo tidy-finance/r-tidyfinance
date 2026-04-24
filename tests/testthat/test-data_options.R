@@ -20,6 +20,7 @@ test_that("data_options has correct default values", {
   expect_equal(opts$price, "prc_adj")
   expect_equal(opts$listing_age, "listing_age")
   expect_equal(opts$be, "be")
+  expect_equal(opts$earnings, "ib")
 })
 
 test_that("data_options accepts custom column names for core columns", {
@@ -44,12 +45,14 @@ test_that("data_options accepts custom column names for filter-related columns",
     siccd = "sic_code",
     price = "adj_price",
     listing_age = "age_months",
-    be = "book_equity"
+    be = "book_equity",
+    earnings = "ni"
   )
   expect_equal(opts$siccd, "sic_code")
   expect_equal(opts$price, "adj_price")
   expect_equal(opts$listing_age, "age_months")
   expect_equal(opts$be, "book_equity")
+  expect_equal(opts$earnings, "ni")
 })
 
 test_that("data_options stores extra arguments via ...", {
@@ -98,4 +101,9 @@ test_that("data_options errors for non-character listing_age", {
 
 test_that("data_options errors for non-character be", {
   expect_error(data_options(be = 1.0), "be")
+})
+
+test_that("data_options errors for non-character earnings", {
+  expect_error(data_options(earnings = 1.0), "earnings")
+  expect_error(data_options(earnings = c("ib", "ni")), "earnings")
 })

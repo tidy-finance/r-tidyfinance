@@ -13,7 +13,8 @@ make_sorting_data <- function(seed = 42) {
     prc_adj = c(rep(0.5, 10), rep(5, 10), rep(20, 10)),
     mktcap_lag = c(seq(100, 500, length.out = 15), seq(5000, 10000, length.out = 15)),
     listing_age = c(rep(6L, 10), rep(24L, 20)),
-    be = c(rep(-1, 5), rep(0.5, 5), rep(1, 20))
+    be = c(rep(-1, 5), rep(0.5, 5), rep(1, 20)),
+    ib = c(rep(-2, 5), rep(0.3, 5), rep(1, 20))
   )
 }
 
@@ -178,6 +179,30 @@ test_that("filter_sorting_data errors when be column is missing for positive_boo
       filter_options = filter_options(positive_book_equity = TRUE)
     ),
     "be"
+  )
+})
+
+test_that("filter_sorting_data applies positive_earnings filter correctly", {
+  data <- make_sorting_data()
+  n_nonpositive <- sum(!is.na(data$ib) & data$ib <= 0)
+  result <- filter_sorting_data(
+    data,
+    filter_options = filter_options(positive_earnings = TRUE),
+    quiet = TRUE
+  )
+  expect_equal(nrow(result), nrow(data) - n_nonpositive)
+  expect_true(all(result$ib > 0, na.rm = TRUE))
+})
+
+test_that("filter_sorting_data errors when earnings column is missing for positive_earnings", {
+  data <- make_sorting_data()
+  data$ib <- NULL
+  expect_error(
+    filter_sorting_data(
+      data,
+      filter_options = filter_options(positive_earnings = TRUE)
+    ),
+    "ib"
   )
 })
 

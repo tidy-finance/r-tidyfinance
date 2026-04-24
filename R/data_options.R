@@ -26,6 +26,9 @@
 #'   (defaults to `"listing_age"`).
 #' @param be A character string representing the book equity variable (defaults
 #'   to `"be"`).
+#' @param earnings A character string representing the earnings variable
+#'   (defaults to `"ib"`, the Compustat income before extraordinary items
+#'   column).
 #' @param ... Additional arguments to be included in the data options list.
 #'
 #' @returns A list of class `tidyfinance_data_options` containing the specified
@@ -52,6 +55,7 @@ data_options <- function(
   price = "prc_adj",
   listing_age = "listing_age",
   be = "be",
+  earnings = "ib",
   ...
 ) {
   # Error handling for id
@@ -104,6 +108,11 @@ data_options <- function(
     cli::cli_abort("{.arg be} must be a single character")
   }
 
+  # Error handling for earnings
+  if (!is.character(earnings) || length(earnings) != 1) {
+    cli::cli_abort("{.arg earnings} must be a single character")
+  }
+
   # Create the list structure with class attribute
   structure(
     list(
@@ -117,6 +126,7 @@ data_options <- function(
       "price" = price,
       "listing_age" = listing_age,
       "be" = be,
+      "earnings" = earnings,
       ...
     ),
     class = "tidyfinance_data_options"

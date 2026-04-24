@@ -16,17 +16,20 @@ test_that("filter_options has correct defaults", {
   expect_null(opts$min_size_quantile)
   expect_null(opts$min_listing_age)
   expect_false(opts$positive_book_equity)
+  expect_false(opts$positive_earnings)
 })
 
 test_that("filter_options accepts non-default logical flags", {
   opts <- filter_options(
     exclude_financials = TRUE,
     exclude_utilities = TRUE,
-    positive_book_equity = TRUE
+    positive_book_equity = TRUE,
+    positive_earnings = TRUE
   )
   expect_true(opts$exclude_financials)
   expect_true(opts$exclude_utilities)
   expect_true(opts$positive_book_equity)
+  expect_true(opts$positive_earnings)
 })
 
 test_that("filter_options accepts valid numeric thresholds", {
@@ -87,4 +90,10 @@ test_that("filter_options errors for non-logical positive_book_equity", {
   expect_error(filter_options(positive_book_equity = "TRUE"), "positive_book_equity")
   expect_error(filter_options(positive_book_equity = NA), "positive_book_equity")
   expect_error(filter_options(positive_book_equity = 1), "positive_book_equity")
+})
+
+test_that("filter_options errors for non-logical positive_earnings", {
+  expect_error(filter_options(positive_earnings = "TRUE"), "positive_earnings")
+  expect_error(filter_options(positive_earnings = NA), "positive_earnings")
+  expect_error(filter_options(positive_earnings = 1), "positive_earnings")
 })
