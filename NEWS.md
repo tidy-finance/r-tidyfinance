@@ -2,6 +2,8 @@
 
 ## New features
 
+- Added `implement_portfolio_sort()` as a convenience wrapper that combines sample construction filtering 
+  and portfolio return computation into a single call
 - Added `download_data_risk_free()` to download and process risk-free rate
   data from FRED, splicing TB3MS (pre-2001) with DTB4WK (from 2001
   onwards) for monthly data, and using DTB3 for daily data. Also

@@ -129,6 +129,11 @@ download_data_wrds_crsp <- function(
         colnames(msf_db)[-which(colnames(msf_db) %in% colnames(msenames_db))]
       )
 
+      first_crsp_date <- msenames_db |>
+        group_by(permno) |>
+        summarise(first_crsp_date = min(namedt)) |>
+        collect()
+
       crsp_monthly <- msf_db |>
         filter(between(date, start_date, end_date)) |>
         select(all_of(msf_db_columns)) |>
@@ -166,6 +171,18 @@ download_data_wrds_crsp <- function(
         )
 
       disconnect_connection(con)
+
+      crsp_monthly <- crsp_monthly |>
+        left_join(first_crsp_date, by = "permno") |>
+        mutate(
+          listing_age = pmax(
+            as.integer(
+              lubridate::interval(first_crsp_date, date) %/% months(1)
+            ),
+            0L
+          )
+        ) |>
+        select(-first_crsp_date)
 
       crsp_monthly <- crsp_monthly |>
         mutate(
@@ -254,6 +271,11 @@ download_data_wrds_crsp <- function(
         ]
       )
 
+      first_crsp_date <- stksecurityinfohist_db |>
+        group_by(permno) |>
+        summarise(first_crsp_date = min(secinfostartdt)) |>
+        collect()
+
       crsp_monthly <- msf_db |>
         filter(between(mthcaldt, start_date, end_date)) |>
         select(all_of(msf_db_columns)) |>
@@ -291,6 +313,18 @@ download_data_wrds_crsp <- function(
         )
 
       disconnect_connection(con)
+
+      crsp_monthly <- crsp_monthly |>
+        left_join(first_crsp_date, by = "permno") |>
+        mutate(
+          listing_age = pmax(
+            as.integer(
+              lubridate::interval(first_crsp_date, date) %/% months(1)
+            ),
+            0L
+          )
+        ) |>
+        select(-first_crsp_date)
 
       crsp_monthly <- crsp_monthly |>
         mutate(

@@ -11,6 +11,11 @@ data_options(
   mktcap_lag = "mktcap_lag",
   ret_excess = "ret_excess",
   portfolio = "portfolio",
+  siccd = "siccd",
+  price = "prc_adj",
+  listing_age = "listing_age",
+  be = "be",
+  earnings = "ib",
   ...
 )
 }
@@ -33,6 +38,22 @@ lag variable (defaults to \code{"mktcap_lag"}).}
 \item{portfolio}{A character string representing the portfolio variable
 (defaults to \code{"portfolio"}).}
 
+\item{siccd}{A character string representing the Standard Industrial
+Classification code variable (defaults to \code{"siccd"}).}
+
+\item{price}{A character string representing the (adjusted) price variable
+(defaults to \code{"prc_adj"}).}
+
+\item{listing_age}{A character string representing the listing age variable
+(defaults to \code{"listing_age"}).}
+
+\item{be}{A character string representing the book equity variable (defaults
+to \code{"be"}).}
+
+\item{earnings}{A character string representing the earnings variable
+(defaults to \code{"ib"}, the Compustat income before extraordinary items
+column).}
+
 \item{...}{Additional arguments to be included in the data options list.}
 }
 \value{
@@ -43,10 +64,8 @@ data options.
 Creates a list of data options of class \code{tidyfinance_data_options} used for
 TidyFinance-related functions. These options map the specific data variables
 to the TidyFinance naming conventions, allowing functions to flexibly work
-with different datasets by specifying the relevant column names. The
-function accepts key parameters such as \code{id}, \code{date}, \code{exchange},
-\code{mktcap_lag}, \code{ret_excess}, \code{portfolio}, along with other additional
-options passed through \code{...}.
+with different datasets by specifying the relevant column names. Additional
+options can be passed through \code{...}.
 }
 \examples{
 data_options(
@@ -62,6 +81,10 @@ Other portfolio functions:
 \code{\link{breakpoint_options}()},
 \code{\link{compute_breakpoints}()},
 \code{\link{compute_long_short_returns}()},
-\code{\link{compute_portfolio_returns}()}
+\code{\link{compute_portfolio_returns}()},
+\code{\link{filter_options}()},
+\code{\link{filter_sorting_data}()},
+\code{\link{implement_portfolio_sort}()},
+\code{\link{portfolio_sort_options}()}
 }
 \concept{portfolio functions}

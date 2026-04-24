@@ -20,10 +20,12 @@
 #' @param breakpoint_function A function to compute breakpoints. The default
 #'   is set to [compute_breakpoints()].
 #' @param data_options A list of class `tidyfinance_data_options` (created via
-#'   [data_options()]) specifying column name mappings. The `id` element is
-#'   used to specify the entity (i.e., firm), and the `date` element is used
-#'   to specify the date column. Uses [data_options()] default if `NULL`:
-#'   `"id" = "permno"` and `"date" = "date"`.
+#'   [data_options()]) specifying column name mappings. Passed through to
+#'   `breakpoint_function`. When using the default [compute_breakpoints()],
+#'   the `exchange` element is used to specify the exchange column, and
+#'   `mktcap_lag` is used to specify the market capitalization column. Uses
+#'   [data_options()] default if `NULL`: `"exchange" = "exchange"` and
+#'   `"mktcap_lag" = "mktcap_lag"`.
 #'
 #' @returns A vector of integer portfolio assignments for each row in the
 #'   input `data`.

@@ -5,7 +5,8 @@
 #' format, data format, and consolidation level, and returns the most current
 #' data for each reporting period. Additionally, the annual data also includes
 #' the calculated book equity (be), operating profitability (op), and
-#' investment (inv) for each company following Fama & French (1993, 2015).
+#' investment (inv) for each company following Fama & French (1993, 2015), as
+#' well as income before extraordinary items (ib).
 #'
 #' @param dataset The dataset to download ("compustat_annual" or
 #'   "compustat_quarterly").
@@ -126,6 +127,7 @@ download_data_wrds_compustat <- function(
         cogs,
         xint,
         xsga,
+        ib,
         curcd,
         all_of(additional_columns_safe)
       ) |>

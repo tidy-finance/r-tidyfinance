@@ -26,10 +26,12 @@ breakpoints.}
 is set to \code{\link[=compute_breakpoints]{compute_breakpoints()}}.}
 
 \item{data_options}{A list of class \code{tidyfinance_data_options} (created via
-\code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{id} element is
-used to specify the entity (i.e., firm), and the \code{date} element is used
-to specify the date column. Uses \code{\link[=data_options]{data_options()}} default if \code{NULL}:
-\code{"id" = "permno"} and \code{"date" = "date"}.}
+\code{\link[=data_options]{data_options()}}) specifying column name mappings. Passed through to
+\code{breakpoint_function}. When using the default \code{\link[=compute_breakpoints]{compute_breakpoints()}},
+the \code{exchange} element is used to specify the exchange column, and
+\code{mktcap_lag} is used to specify the market capitalization column. Uses
+\code{\link[=data_options]{data_options()}} default if \code{NULL}: \code{"exchange" = "exchange"} and
+\code{"mktcap_lag" = "mktcap_lag"}.}
 }
 \value{
 A vector of integer portfolio assignments for each row in the
@@ -73,6 +75,10 @@ Other portfolio functions:
 \code{\link{compute_breakpoints}()},
 \code{\link{compute_long_short_returns}()},
 \code{\link{compute_portfolio_returns}()},
-\code{\link{data_options}()}
+\code{\link{data_options}()},
+\code{\link{filter_options}()},
+\code{\link{filter_sorting_data}()},
+\code{\link{implement_portfolio_sort}()},
+\code{\link{portfolio_sort_options}()}
 }
 \concept{portfolio functions}
