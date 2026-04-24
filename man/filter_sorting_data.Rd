@@ -17,7 +17,29 @@ filtered.}
 
 \item{filter_options}{A list of class \code{tidyfinance_filter_options} created
 by \code{\link[=filter_options]{filter_options()}}. If \code{NULL} (the default), the defaults from
-\code{\link[=filter_options]{filter_options()}} are used (i.e., no filters are applied).}
+\code{\link[=filter_options]{filter_options()}} are used (i.e., no filters are applied). The arguments
+accepted by \code{\link[=filter_options]{filter_options()}} include
+\itemize{
+\item \code{exclude_financials} A logical indicating whether to exclude
+financial firms (SIC codes 6000–6799). Defaults to \code{FALSE}.
+\item \code{exclude_utilities} A logical indicating whether to exclude
+utility firms (SIC codes 4900–4999). Defaults to \code{FALSE}.
+\item \code{min_stock_price} A single positive numeric specifying the
+minimum stock price required to include an observation. \code{NULL} (the
+default) applies no price filter.
+\item \code{min_size_quantile} A single numeric strictly between 0 and 1
+specifying the minimum cross-sectional size quantile (based on lagged
+market cap) required to include an observation. \code{NULL} (the default)
+applies no size quantile filter.
+\item \code{min_listing_age} A single non-negative integer or numeric
+specifying the minimum number of months a stock must have been listed
+in CRSP. \code{NULL} (the default) applies no listing age filter.
+\item \code{positive_book_equity} A logical indicating whether to retain
+only observations with strictly positive book equity. Defaults to
+\code{FALSE}.
+\item \code{positive_earnings} A logical indicating whether to retain only
+observations with strictly positive earnings. Defaults to \code{FALSE}.
+}}
 
 \item{data_options}{A list of class \code{tidyfinance_data_options} created by
 \code{\link[=data_options]{data_options()}}. If \code{NULL} (the default), the defaults from
@@ -39,7 +61,13 @@ message is emitted for each filter that actually removes at least one
 observation.
 }
 \examples{
-\dontrun{
+data <- data.frame(
+  permno = 1:5,
+  date = as.Date("2020-01-01"),
+  siccd = c(6100, 2000, 4950, 3000, 6500),
+  prc_adj = c(5, 0.5, 15, 20, 10)
+)
+
 data |>
   filter_sorting_data(
     filter_options = filter_options(
@@ -47,7 +75,6 @@ data |>
       min_stock_price = 1
     )
   )
-}
 
 }
 \seealso{

@@ -13,16 +13,58 @@ portfolio_sort_options(
 }
 \arguments{
 \item{filter_options}{A list of class \code{tidyfinance_filter_options} created
-by \code{\link[=filter_options]{filter_options()}}, or \code{NULL} (the default, which applies no filters).}
+by \code{\link[=filter_options]{filter_options()}}, or \code{NULL} (the default, which applies no filters).
+The arguments accepted by \code{\link[=filter_options]{filter_options()}} include
+\itemize{
+\item \code{exclude_financials} A logical indicating whether to exclude
+financial firms (SIC codes 6000–6799). Defaults to \code{FALSE}.
+\item \code{exclude_utilities} A logical indicating whether to exclude
+utility firms (SIC codes 4900–4999). Defaults to \code{FALSE}.
+\item \code{min_stock_price} A single positive numeric specifying the
+minimum stock price required to include an observation. \code{NULL} (the
+default) applies no price filter.
+\item \code{min_size_quantile} A single numeric strictly between 0 and 1
+specifying the minimum cross-sectional size quantile (based on lagged
+market cap) required to include an observation. \code{NULL} (the default)
+applies no size quantile filter.
+\item \code{min_listing_age} A single non-negative integer or numeric
+specifying the minimum number of months a stock must have been listed
+in CRSP. \code{NULL} (the default) applies no listing age filter.
+\item \code{positive_book_equity} A logical indicating whether to retain
+only observations with strictly positive book equity. Defaults to
+\code{FALSE}.
+\item \code{positive_earnings} A logical indicating whether to retain only
+observations with strictly positive earnings. Defaults to \code{FALSE}.
+}}
 
 \item{breakpoint_options_main}{A list of class
 \code{tidyfinance_breakpoint_options} created by \code{\link[=breakpoint_options]{breakpoint_options()}},
-specifying breakpoints for the primary sorting variable.}
+specifying breakpoints for the primary sorting variable. The arguments
+accepted by \code{\link[=breakpoint_options]{breakpoint_options()}} include
+\itemize{
+\item \code{n_portfolios} An optional integer specifying the number of
+equally sized portfolios to create. This parameter is mutually
+exclusive with \code{percentiles}.
+\item \code{percentiles} An optional numeric vector specifying the
+percentiles for determining the breakpoints of the portfolios.
+This parameter is mutually exclusive with \code{n_portfolios}.
+\item \code{breakpoint_exchanges} An optional character vector specifying
+exchange names to filter the data before computing breakpoints.
+Exchanges must be stored in a column given by \code{data_options} (defaults
+to \code{exchange}). If \code{NULL}, no filtering is applied.
+\item \code{smooth_bunching} An optional logical parameter specifying if
+to attempt smoothing non-extreme portfolios if the sorting variable
+bunches on the extremes (\code{TRUE}), or not (\code{FALSE}, the default).
+\item \code{min_size_threshold} An optional numeric value between 0 and
+1 (exclusive). When set, stocks with market capitalization below
+this quantile are excluded from breakpoint computation.
+}}
 
 \item{breakpoint_options_secondary}{A list of class
 \code{tidyfinance_breakpoint_options} created by \code{\link[=breakpoint_options]{breakpoint_options()}},
 specifying breakpoints for the secondary sorting variable, or \code{NULL}
-(the default) for univariate sorts.}
+(the default) for univariate sorts. The arguments accepted by
+\code{\link[=breakpoint_options]{breakpoint_options()}} are the same as for \code{breakpoint_options_main}.}
 
 \item{...}{Additional arguments to be included in the options list.}
 }

@@ -14,7 +14,26 @@
 #'   rebalancing.
 #' @param portfolio_sort_options A list of class
 #'   `tidyfinance_portfolio_sort_options` created by
-#'   [portfolio_sort_options()], bundling filter and breakpoint specifications.
+#'   [portfolio_sort_options()], bundling filter and breakpoint
+#'   specifications. The arguments accepted by [portfolio_sort_options()]
+#'   include
+#'   \itemize{
+#'     \item `filter_options` A list of class `tidyfinance_filter_options`
+#'       created by [filter_options()], or `NULL` (the default, which applies
+#'       no filters). Options include `exclude_financials`,
+#'       `exclude_utilities`, `min_stock_price`, `min_size_quantile`,
+#'       `min_listing_age`, `positive_book_equity`, and `positive_earnings`.
+#'     \item `breakpoint_options_main` A list of class
+#'       `tidyfinance_breakpoint_options` created by [breakpoint_options()],
+#'       specifying breakpoints for the primary sorting variable. Options
+#'       include `n_portfolios`, `percentiles`, `breakpoint_exchanges`,
+#'       `smooth_bunching`, and `min_size_threshold`.
+#'     \item `breakpoint_options_secondary` A list of class
+#'       `tidyfinance_breakpoint_options` created by [breakpoint_options()],
+#'       specifying breakpoints for the secondary sorting variable, or `NULL`
+#'       (the default) for univariate sorts. Options are the same as for
+#'       `breakpoint_options_main`.
+#'   }
 #' @param breakpoint_function_main The function used to compute breakpoints for
 #'   the main sorting variable. Defaults to [compute_breakpoints()].
 #' @param breakpoint_function_secondary The function used to compute breakpoints

@@ -11,7 +11,29 @@
 #'   filtered.
 #' @param filter_options A list of class `tidyfinance_filter_options` created
 #'   by [filter_options()]. If `NULL` (the default), the defaults from
-#'   [filter_options()] are used (i.e., no filters are applied).
+#'   [filter_options()] are used (i.e., no filters are applied). The arguments
+#'   accepted by [filter_options()] include
+#'   \itemize{
+#'     \item `exclude_financials` A logical indicating whether to exclude
+#'       financial firms (SIC codes 6000–6799). Defaults to `FALSE`.
+#'     \item `exclude_utilities` A logical indicating whether to exclude
+#'       utility firms (SIC codes 4900–4999). Defaults to `FALSE`.
+#'     \item `min_stock_price` A single positive numeric specifying the
+#'       minimum stock price required to include an observation. `NULL` (the
+#'       default) applies no price filter.
+#'     \item `min_size_quantile` A single numeric strictly between 0 and 1
+#'       specifying the minimum cross-sectional size quantile (based on lagged
+#'       market cap) required to include an observation. `NULL` (the default)
+#'       applies no size quantile filter.
+#'     \item `min_listing_age` A single non-negative integer or numeric
+#'       specifying the minimum number of months a stock must have been listed
+#'       in CRSP. `NULL` (the default) applies no listing age filter.
+#'     \item `positive_book_equity` A logical indicating whether to retain
+#'       only observations with strictly positive book equity. Defaults to
+#'       `FALSE`.
+#'     \item `positive_earnings` A logical indicating whether to retain only
+#'       observations with strictly positive earnings. Defaults to `FALSE`.
+#'   }
 #' @param data_options A list of class `tidyfinance_data_options` created by
 #'   [data_options()]. If `NULL` (the default), the defaults from
 #'   [data_options()] are used.
