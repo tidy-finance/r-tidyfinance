@@ -34,9 +34,17 @@
 #'     \item `positive_earnings` A logical indicating whether to retain only
 #'       observations with strictly positive earnings. Defaults to `FALSE`.
 #'   }
-#' @param data_options A list of class `tidyfinance_data_options` created by
-#'   [data_options()]. If `NULL` (the default), the defaults from
-#'   [data_options()] are used.
+#' @param data_options A list of class `tidyfinance_data_options` (created via
+#'   [data_options()]) specifying column name mappings. The `siccd` element is
+#'   used to specify the SIC code column, `price` is used to specify the
+#'   (adjusted) price column, `mktcap_lag` is used to specify the market
+#'   capitalization column, `date` is used to specify the date column,
+#'   `listing_age` is used to specify the listing age column, `be` is used to
+#'   specify the book equity column, and `earnings` is used to specify the
+#'   earnings column. Uses [data_options()] default if `NULL`:
+#'   `"siccd" = "siccd"`, `"price" = "prc_adj"`,
+#'   `"mktcap_lag" = "mktcap_lag"`, `"date" = "date"`,
+#'   `"listing_age" = "listing_age"`, `"be" = "be"`, and `"earnings" = "ib"`.
 #' @param quiet A logical indicating whether informational messages should be
 #'   suppressed. Defaults to `FALSE`.
 #'

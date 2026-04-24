@@ -44,9 +44,15 @@
 #' @param cap_weight A numeric between 0 and 1 specifying the quantile at which
 #'   portfolio weights are capped for the capped value-weighted return.
 #'   Defaults to `0.8`.
-#' @param data_options A list of class `tidyfinance_data_options` created by
-#'   [data_options()]. If `NULL` (the default), the defaults from
-#'   [data_options()] are used.
+#' @param data_options A list of class `tidyfinance_data_options` (created via
+#'   [data_options()]) specifying column name mappings. All elements are
+#'   forwarded to [filter_sorting_data()] and [compute_portfolio_returns()].
+#'   Uses [data_options()] default if `NULL`: `"id" = "permno"`,
+#'   `"date" = "date"`, `"exchange" = "exchange"`,
+#'   `"mktcap_lag" = "mktcap_lag"`, `"ret_excess" = "ret_excess"`,
+#'   `"siccd" = "siccd"`, `"price" = "prc_adj"`,
+#'   `"listing_age" = "listing_age"`, `"be" = "be"`, and
+#'   `"earnings" = "ib"`.
 #' @param quiet A logical indicating whether informational messages should be
 #'   suppressed. Defaults to `FALSE`.
 #'

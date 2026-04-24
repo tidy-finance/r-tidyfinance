@@ -68,9 +68,15 @@ Defaults to \code{0L}.}
 portfolio weights are capped for the capped value-weighted return.
 Defaults to \code{0.8}.}
 
-\item{data_options}{A list of class \code{tidyfinance_data_options} created by
-\code{\link[=data_options]{data_options()}}. If \code{NULL} (the default), the defaults from
-\code{\link[=data_options]{data_options()}} are used.}
+\item{data_options}{A list of class \code{tidyfinance_data_options} (created via
+\code{\link[=data_options]{data_options()}}) specifying column name mappings. All elements are
+forwarded to \code{\link[=filter_sorting_data]{filter_sorting_data()}} and \code{\link[=compute_portfolio_returns]{compute_portfolio_returns()}}.
+Uses \code{\link[=data_options]{data_options()}} default if \code{NULL}: \code{"id" = "permno"},
+\code{"date" = "date"}, \code{"exchange" = "exchange"},
+\code{"mktcap_lag" = "mktcap_lag"}, \code{"ret_excess" = "ret_excess"},
+\code{"siccd" = "siccd"}, \code{"price" = "prc_adj"},
+\code{"listing_age" = "listing_age"}, \code{"be" = "be"}, and
+\code{"earnings" = "ib"}.}
 
 \item{quiet}{A logical indicating whether informational messages should be
 suppressed. Defaults to \code{FALSE}.}

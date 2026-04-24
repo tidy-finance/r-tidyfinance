@@ -41,9 +41,17 @@ only observations with strictly positive book equity. Defaults to
 observations with strictly positive earnings. Defaults to \code{FALSE}.
 }}
 
-\item{data_options}{A list of class \code{tidyfinance_data_options} created by
-\code{\link[=data_options]{data_options()}}. If \code{NULL} (the default), the defaults from
-\code{\link[=data_options]{data_options()}} are used.}
+\item{data_options}{A list of class \code{tidyfinance_data_options} (created via
+\code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{siccd} element is
+used to specify the SIC code column, \code{price} is used to specify the
+(adjusted) price column, \code{mktcap_lag} is used to specify the market
+capitalization column, \code{date} is used to specify the date column,
+\code{listing_age} is used to specify the listing age column, \code{be} is used to
+specify the book equity column, and \code{earnings} is used to specify the
+earnings column. Uses \code{\link[=data_options]{data_options()}} default if \code{NULL}:
+\code{"siccd" = "siccd"}, \code{"price" = "prc_adj"},
+\code{"mktcap_lag" = "mktcap_lag"}, \code{"date" = "date"},
+\code{"listing_age" = "listing_age"}, \code{"be" = "be"}, and \code{"earnings" = "ib"}.}
 
 \item{quiet}{A logical indicating whether informational messages should be
 suppressed. Defaults to \code{FALSE}.}
