@@ -40,7 +40,8 @@ test_that("data_options accepts custom column names for core columns", {
   expect_equal(opts$portfolio, "port")
 })
 
-test_that("data_options accepts custom column names for filter-related columns", {
+test_that(
+  "data_options accepts custom column names for filter-related columns", {
   opts <- data_options(
     siccd = "sic_code",
     price = "adj_price",

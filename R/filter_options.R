@@ -50,16 +50,19 @@ filter_options <- function(
 ) {
   # Error handling for exclude_financials
   if (
-    !is.logical(exclude_financials) || 
-      length(exclude_financials) != 1 || 
-      is.na(exclude_financials)) {
+    !is.logical(exclude_financials) ||
+      length(exclude_financials) != 1 ||
+      is.na(exclude_financials)
+  ) {
     cli::cli_abort("{.arg exclude_financials} must be a single logical.")
   }
 
   # Error handling for exclude_utilities
-  if (!is.logical(exclude_utilities) || 
-    length(exclude_utilities) != 1 || 
-    is.na(exclude_utilities)) {
+  if (
+    !is.logical(exclude_utilities) ||
+      length(exclude_utilities) != 1 ||
+      is.na(exclude_utilities)
+  ) {
     cli::cli_abort("{.arg exclude_utilities} must be a single logical.")
   }
 
@@ -87,7 +90,10 @@ filter_options <- function(
         min_size_quantile >= 1
     ) {
       cli::cli_abort(
-        "{.arg min_size_quantile} must be a single numeric strictly between 0 and 1."
+        paste0(
+          "{.arg min_size_quantile} must be a single numeric ",
+          "strictly between 0 and 1."
+        )
       )
     }
   }
@@ -101,22 +107,29 @@ filter_options <- function(
         min_listing_age < 0
     ) {
       cli::cli_abort(
-        "{.arg min_listing_age} must be a single non-negative integer or numeric."
+        paste0(
+          "{.arg min_listing_age} must be a single ",
+          "non-negative integer or numeric."
+        )
       )
     }
   }
 
   # Error handling for positive_book_equity
-  if (!is.logical(positive_book_equity) ||
-    length(positive_book_equity) != 1 ||
-    is.na(positive_book_equity)) {
+  if (
+    !is.logical(positive_book_equity) ||
+      length(positive_book_equity) != 1 ||
+      is.na(positive_book_equity)
+  ) {
     cli::cli_abort("{.arg positive_book_equity} must be a single logical.")
   }
 
   # Error handling for positive_earnings
-  if (!is.logical(positive_earnings) ||
-    length(positive_earnings) != 1 ||
-    is.na(positive_earnings)) {
+  if (
+    !is.logical(positive_earnings) ||
+      length(positive_earnings) != 1 ||
+      is.na(positive_earnings)
+  ) {
     cli::cli_abort("{.arg positive_earnings} must be a single logical.")
   }
 

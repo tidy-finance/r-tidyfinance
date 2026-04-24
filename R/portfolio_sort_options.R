@@ -39,7 +39,10 @@ portfolio_sort_options <- function(
       !inherits(filter_options, "tidyfinance_filter_options")
   ) {
     cli::cli_abort(
-      "{.arg filter_options} must be {.val NULL} or of class {.cls tidyfinance_filter_options}."
+      paste0(
+        "{.arg filter_options} must be {.val NULL} or of class ",
+        "{.cls tidyfinance_filter_options}."
+      )
     )
   }
 
@@ -50,7 +53,10 @@ portfolio_sort_options <- function(
 
   if (!inherits(breakpoint_options_main, "tidyfinance_breakpoint_options")) {
     cli::cli_abort(
-      "{.arg breakpoint_options_main} must be of class {.cls tidyfinance_breakpoint_options}."
+      paste0(
+        "{.arg breakpoint_options_main} must be of class ",
+        "{.cls tidyfinance_breakpoint_options}."
+      )
     )
   }
 
@@ -60,7 +66,10 @@ portfolio_sort_options <- function(
       !inherits(breakpoint_options_secondary, "tidyfinance_breakpoint_options")
   ) {
     cli::cli_abort(
-      "{.arg breakpoint_options_secondary} must be {.val NULL} or of class {.cls tidyfinance_breakpoint_options}."
+      paste0(
+        "{.arg breakpoint_options_secondary} must be {.val NULL} or of class ",
+        "{.cls tidyfinance_breakpoint_options}."
+      )
     )
   }
 

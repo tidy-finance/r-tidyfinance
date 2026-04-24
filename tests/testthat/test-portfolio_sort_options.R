@@ -1,4 +1,5 @@
-test_that("portfolio_sort_options returns object of class tidyfinance_portfolio_sort_options", {
+test_that(
+  "portfolio_sort_options returns tidyfinance_portfolio_sort_options", {
   opts <- portfolio_sort_options(
     breakpoint_options_main = breakpoint_options(n_portfolios = 5)
   )
@@ -63,7 +64,8 @@ test_that("portfolio_sort_options errors when filter_options has wrong class", {
   )
 })
 
-test_that("portfolio_sort_options errors when breakpoint_options_main has wrong class", {
+test_that(
+  "portfolio_sort_options errors when breakpoint_options_main wrong class", {
   expect_error(
     portfolio_sort_options(
       breakpoint_options_main = list(n_portfolios = 5)
@@ -72,14 +74,16 @@ test_that("portfolio_sort_options errors when breakpoint_options_main has wrong 
   )
 })
 
-test_that("portfolio_sort_options errors when breakpoint_options_main is missing", {
+test_that(
+  "portfolio_sort_options errors when breakpoint_options_main is missing", {
   expect_error(
     portfolio_sort_options(),
     "breakpoint_options_main"
   )
 })
 
-test_that("portfolio_sort_options errors when breakpoint_options_secondary has wrong class", {
+test_that(
+  "portfolio_sort_options errors: breakpoint_options_secondary wrong class", {
   expect_error(
     portfolio_sort_options(
       breakpoint_options_main = breakpoint_options(n_portfolios = 5),

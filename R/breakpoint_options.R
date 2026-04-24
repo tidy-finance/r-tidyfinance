@@ -52,8 +52,8 @@ breakpoint_options <- function(
   # Error handling for n_portfolios
   if (
     !is.null(n_portfolios) &&
-      (!is.numeric(n_portfolios) || 
-        n_portfolios <= 0 || 
+      (!is.numeric(n_portfolios) ||
+        n_portfolios <= 0 ||
         n_portfolios %% 1 != 0)
   ) {
     cli::cli_abort("{.arg n_portfolios} must be a positive integer.")
@@ -80,7 +80,11 @@ breakpoint_options <- function(
   }
 
   # Error handling for smooth_bunching
-  if (!is.logical(smooth_bunching) || length(smooth_bunching) != 1 || is.na(smooth_bunching)) {
+  if (
+    !is.logical(smooth_bunching) ||
+      length(smooth_bunching) != 1 ||
+      is.na(smooth_bunching)
+  ) {
     cli::cli_abort(
       "{.arg smooth_bunching} must be a single logical value (TRUE or FALSE)."
     )

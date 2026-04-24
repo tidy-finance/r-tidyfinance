@@ -176,7 +176,9 @@ download_data_wrds_crsp <- function(
         left_join(first_crsp_date, by = "permno") |>
         mutate(
           listing_age = pmax(
-            as.integer(lubridate::interval(first_crsp_date, date) %/% months(1)),
+            as.integer(
+              lubridate::interval(first_crsp_date, date) %/% months(1)
+            ),
             0L
           )
         ) |>
@@ -316,7 +318,9 @@ download_data_wrds_crsp <- function(
         left_join(first_crsp_date, by = "permno") |>
         mutate(
           listing_age = pmax(
-            as.integer(lubridate::interval(first_crsp_date, date) %/% months(1)),
+            as.integer(
+              lubridate::interval(first_crsp_date, date) %/% months(1)
+            ),
             0L
           )
         ) |>

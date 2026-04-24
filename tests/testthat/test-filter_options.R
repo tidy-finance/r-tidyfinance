@@ -72,7 +72,10 @@ test_that("filter_options errors for out-of-range min_size_quantile", {
   expect_error(filter_options(min_size_quantile = 1), "min_size_quantile")
   expect_error(filter_options(min_size_quantile = -0.1), "min_size_quantile")
   expect_error(filter_options(min_size_quantile = 1.1), "min_size_quantile")
-  expect_error(filter_options(min_size_quantile = NA_real_), "min_size_quantile")
+  expect_error(
+    filter_options(min_size_quantile = NA_real_),
+    "min_size_quantile"
+  )
 })
 
 test_that("filter_options errors for invalid min_listing_age", {
@@ -87,8 +90,14 @@ test_that("filter_options accepts zero as valid min_listing_age", {
 })
 
 test_that("filter_options errors for non-logical positive_book_equity", {
-  expect_error(filter_options(positive_book_equity = "TRUE"), "positive_book_equity")
-  expect_error(filter_options(positive_book_equity = NA), "positive_book_equity")
+  expect_error(
+    filter_options(positive_book_equity = "TRUE"),
+    "positive_book_equity"
+  )
+  expect_error(
+    filter_options(positive_book_equity = NA),
+    "positive_book_equity"
+  )
   expect_error(filter_options(positive_book_equity = 1), "positive_book_equity")
 })
 

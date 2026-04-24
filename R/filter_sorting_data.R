@@ -54,7 +54,10 @@ filter_sorting_data <- function(
   }
 
   # exclude_financials / exclude_utilities (share the same SIC column)
-  if (isTRUE(filter_options$exclude_financials) || isTRUE(filter_options$exclude_utilities)) {
+  if (
+    isTRUE(filter_options$exclude_financials) ||
+      isTRUE(filter_options$exclude_utilities)
+  ) {
     col_siccd <- data_options$siccd
     if (!col_siccd %in% colnames(data)) {
       cli::cli_abort(c(
