@@ -105,6 +105,51 @@ test_that(
   }
 )
 
+# NULL default / explicit NULL behaviour (mocked) ----------------------
+
+test_that(
+  paste(
+    "filter_factor_library_grid(): omitted breakpoints_min_size defaults to",
+    "NA (standard portfolio); explicit NULL removes the filter"
+  ),
+  {
+    grid_rows <- tibble::tibble(
+      id = c(1L, 2L),
+      sorting_variable = c("sv_bm", "sv_bm"),
+      exclude_size = c(0.2, 0.2),
+      exclude_financials = c(FALSE, FALSE),
+      exclude_utilities = c(FALSE, FALSE),
+      exclude_negative_earnings = c(FALSE, FALSE),
+      sorting_variable_lag = c("6m", "6m"),
+      rebalancing = c("monthly", "monthly"),
+      breakpoints_main = c(10L, 10L),
+      sorting_method = c("univariate", "univariate"),
+      breakpoints_secondary = c(NA_real_, NA_real_),
+      breakpoints_exchanges = c("NYSE", "NYSE"),
+      breakpoints_min_size = c(NA_real_, 1e9),
+      weighting_scheme = c("VW", "VW")
+    )
+
+    mock_files <- function(organization, dataset) {
+      make_grid_parquet_file(grid_rows)
+    }
+
+    with_mocked_bindings(
+      get_available_huggingface_files = mock_files,
+      {
+        ids_default <- filter_factor_library_grid(sorting_variable = "bm")
+        ids_explicit_null <- filter_factor_library_grid(
+          sorting_variable = "bm",
+          breakpoints_min_size = NULL
+        )
+
+        expect_length(ids_default, 1L)
+        expect_length(ids_explicit_null, 2L)
+      }
+    )
+  }
+)
+
 # Successful download (mocked) ------------------------------------------
 
 test_that(
