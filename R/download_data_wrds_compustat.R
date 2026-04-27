@@ -145,7 +145,6 @@ download_data_wrds_compustat <- function(
         be = coalesce(seq, ceq + pstk, at - lt) +
           coalesce(txditc, txdb + itcb, 0) -
           coalesce(pstkrv, pstkl, pstk, 0),
-        be = if_else(be <= 0, NA, be),
         op = (sale -
           coalesce(cogs, 0) -
           coalesce(xsga, 0) -
