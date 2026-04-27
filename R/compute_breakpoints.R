@@ -22,7 +22,7 @@
 #'     \item `percentiles` An optional numeric vector specifying the
 #'       percentiles for determining the breakpoints of the portfolios.
 #'       This parameter is mutually exclusive with `n_portfolios`.
-#'     \item `breakpoint_exchanges` An optional character vector specifying
+#'     \item `breakpoints_exchanges` An optional character vector specifying
 #'       exchange names to filter the data before computing breakpoints.
 #'       Exchanges must be stored in a column given by `data_options` (defaults
 #'       to `exchange`). If `NULL`, no filtering is applied.
@@ -33,10 +33,10 @@
 #'       off the edges due to multiple clusters. If sufficiently large
 #'       bunching is detected, `percentiles` is ignored and equally-spaced
 #'       portfolios are returned for these cases with a warning.
-#'     \item `min_size_threshold` An optional numeric value between 0 and
-#'       1 (exclusive). When set, stocks with market capitalization below
+#'     \item `breakpoints_min_size_threshold` An optional numeric value between
+#'       0 and 1 (exclusive). When set, stocks with market capitalization below
 #'       this quantile are excluded from breakpoint computation. The quantile
-#'       is computed among `breakpoint_exchanges` stocks if specified,
+#'       is computed among `breakpoints_exchanges` stocks if specified,
 #'       otherwise among all stocks. Requires a market capitalization column
 #'       in the data (column name determined by `data_options`).
 #'   }
@@ -68,7 +68,7 @@
 #'   "market_cap",
 #'   breakpoint_options(
 #'     percentiles = c(0.2, 0.4, 0.6, 0.8),
-#'     breakpoint_exchanges = c("NYSE")
+#'     breakpoints_exchanges = c("NYSE")
 #'   )
 #'  )
 #'
@@ -84,9 +84,9 @@ compute_breakpoints <- function(
 
   n_portfolios <- breakpoint_options$n_portfolios
   percentiles <- breakpoint_options$percentiles
-  breakpoint_exchanges <- breakpoint_options$breakpoint_exchanges
+  breakpoints_exchanges <- breakpoint_options$breakpoints_exchanges
   smooth_bunching <- breakpoint_options$smooth_bunching
-  min_size_threshold <- breakpoint_options$min_size_threshold
+  breakpoints_min_size_threshold <- breakpoint_options$breakpoints_min_size_threshold
 
   if (is.null(data_options)) {
     data_options <- data_options()
@@ -108,38 +108,42 @@ compute_breakpoints <- function(
   # Extract only the sorting column, filter as a vector
   sorting_values <- data[[sorting_variable]]
 
-  if (!is.null(breakpoint_exchanges)) {
+  if (!is.null(breakpoints_exchanges)) {
     exchange_col <- data_options$exchange
     if (!(exchange_col %in% colnames(data))) {
       cli::cli_abort(
         paste(
           "Please provide the column {exchange_col}",
-          "when filtering using {.arg breakpoint_exchanges}."
+          "when filtering using {.arg breakpoints_exchanges}."
         )
       )
     }
-    keep <- data[[exchange_col]] %in% breakpoint_exchanges
+    keep <- data[[exchange_col]] %in% breakpoints_exchanges
     sorting_values <- sorting_values[keep]
   }
 
-  if (!is.null(min_size_threshold)) {
+  if (!is.null(breakpoints_min_size_threshold)) {
     mktcap_col <- data_options$mktcap_lag
     if (!(mktcap_col %in% colnames(data))) {
       cli::cli_abort(
         paste(
           "Column {.val {mktcap_col}} is required",
-          "when using {.arg min_size_threshold}."
+          "when using {.arg breakpoints_min_size_threshold}."
         )
       )
     }
-    if (!is.null(breakpoint_exchanges)) {
+    if (!is.null(breakpoints_exchanges)) {
       mktcap_ref <- data[[mktcap_col]][keep]
     } else {
       mktcap_ref <- data[[mktcap_col]]
     }
-    size_cutoff <- quantile(mktcap_ref, min_size_threshold, na.rm = TRUE)
+    size_cutoff <- quantile(
+      mktcap_ref,
+      breakpoints_min_size_threshold,
+      na.rm = TRUE
+    )
     above_size <- !is.na(data[[mktcap_col]]) & data[[mktcap_col]] > size_cutoff
-    if (!is.null(breakpoint_exchanges)) {
+    if (!is.null(breakpoints_exchanges)) {
       sorting_values <- data[[sorting_variable]][keep & above_size]
     } else {
       sorting_values <- data[[sorting_variable]][above_size]
