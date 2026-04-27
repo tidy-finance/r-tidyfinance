@@ -86,7 +86,8 @@ compute_breakpoints <- function(
   percentiles <- breakpoint_options$percentiles
   breakpoints_exchanges <- breakpoint_options$breakpoints_exchanges
   smooth_bunching <- breakpoint_options$smooth_bunching
-  breakpoints_min_size_threshold <- breakpoint_options$breakpoints_min_size_threshold
+  breakpoints_min_size_threshold <-
+    breakpoint_options$breakpoints_min_size_threshold
 
   if (is.null(data_options)) {
     data_options <- data_options()
