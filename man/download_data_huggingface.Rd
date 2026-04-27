@@ -30,9 +30,9 @@ the portfolio grid. Each argument takes the form \code{column = value}, where
 \code{fill_all = TRUE} to leave unspecified columns unrestricted (default:
 \code{FALSE}, i.e. unspecified columns are fixed at the defaults listed below).
 Passing \code{NULL} for any parameter removes that filter entirely, returning
-all values for that column (e.g., \code{exclude_size = NULL} includes all size
-groups). Passing an unrecognised column name raises an error listing the
-supported names. Ignored when \code{dataset != "factor_library"}. See the
+all values for that column (e.g., \code{min_size_quantile = NULL} includes all
+size groups). Passing an unrecognised column name raises an error listing
+the supported names. Ignored when \code{dataset != "factor_library"}. See the
 Details section for supported columns and their defaults.}
 }
 \value{
@@ -58,7 +58,7 @@ Supported columns and their defaults for \code{...}:
 \item \code{sorting_variable}: \strong{Required.} The firm characteristic used
 to sort stocks into portfolios (e.g., \code{"me"} for market equity,
 \code{"bm"} for book-to-market). No default is applied.
-\item \code{exclude_size} (defaults to \code{0.2}): Fraction of the smallest
+\item \code{min_size_quantile} (defaults to \code{0.2}): Fraction of the smallest
 stocks (by market cap) excluded from the portfolio universe. \code{0.2}
 drops the bottom 20\%.
 \item \code{exclude_financials} (defaults to \code{FALSE}): Whether to drop
@@ -72,13 +72,13 @@ sorting variable before portfolio assignment (e.g., \code{"6m"} = 6-month
 lag).
 \item \code{rebalancing} (defaults to \code{"monthly"}): How frequently portfolios
 are reformed: \code{"monthly"} or \code{"annual"}.
-\item \code{breakpoints_main} (defaults to \code{10}): Number of quantile groups
+\item \code{n_portfolios_main} (defaults to \code{10}): Number of quantile groups
 (e.g., \code{10} for decile portfolios).
 \item \code{sorting_method} (defaults to \code{"univariate"}): Whether portfolios
 are formed on a single sort (\code{"univariate"}) or a sequential double
 sort (\code{"sequential"}).
-\item \code{breakpoints_secondary} (defaults to \code{NULL}): Number of groups for
-the secondary sort variable.
+\item \code{n_portfolios_secondary} (defaults to \code{NULL}): Number of groups
+for the secondary sort variable.
 Required when \code{sorting_method} is not \code{"univariate"}.
 \item \code{breakpoints_exchanges} (defaults to: \code{"NYSE"}): Exchange(s) used
 to compute breakpoints. \code{"NYSE"} uses only NYSE-listed stocks to

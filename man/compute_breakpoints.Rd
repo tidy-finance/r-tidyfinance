@@ -26,7 +26,7 @@ exclusive with \code{percentiles}.
 \item \code{percentiles} An optional numeric vector specifying the
 percentiles for determining the breakpoints of the portfolios.
 This parameter is mutually exclusive with \code{n_portfolios}.
-\item \code{breakpoint_exchanges} An optional character vector specifying
+\item \code{breakpoints_exchanges} An optional character vector specifying
 exchange names to filter the data before computing breakpoints.
 Exchanges must be stored in a column given by \code{data_options} (defaults
 to \code{exchange}). If \code{NULL}, no filtering is applied.
@@ -37,10 +37,10 @@ In some cases, smoothing will not result in equal-sized portfolios
 off the edges due to multiple clusters. If sufficiently large
 bunching is detected, \code{percentiles} is ignored and equally-spaced
 portfolios are returned for these cases with a warning.
-\item \code{min_size_threshold} An optional numeric value between 0 and
-1 (exclusive). When set, stocks with market capitalization below
+\item \code{breakpoints_min_size_threshold} An optional numeric value between
+0 and 1 (exclusive). When set, stocks with market capitalization below
 this quantile are excluded from breakpoint computation. The quantile
-is computed among \code{breakpoint_exchanges} stocks if specified,
+is computed among \code{breakpoints_exchanges} stocks if specified,
 otherwise among all stocks. Requires a market capitalization column
 in the data (column name determined by \code{data_options}).
 }}
@@ -83,7 +83,7 @@ compute_breakpoints(
   "market_cap",
   breakpoint_options(
     percentiles = c(0.2, 0.4, 0.6, 0.8),
-    breakpoint_exchanges = c("NYSE")
+    breakpoints_exchanges = c("NYSE")
   )
  )
 

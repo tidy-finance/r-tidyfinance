@@ -34,11 +34,11 @@ applies no size quantile filter.
 \item \code{min_listing_age} A single non-negative integer or numeric
 specifying the minimum number of months a stock must have been listed
 in CRSP. \code{NULL} (the default) applies no listing age filter.
-\item \code{positive_book_equity} A logical indicating whether to retain
-only observations with strictly positive book equity. Defaults to
+\item \code{exclude_negative_book_equity} A logical indicating whether to
+exclude observations with non-positive book equity. Defaults to
 \code{FALSE}.
-\item \code{positive_earnings} A logical indicating whether to retain only
-observations with strictly positive earnings. Defaults to \code{FALSE}.
+\item \code{exclude_negative_earnings} A logical indicating whether to
+exclude observations with non-positive earnings. Defaults to \code{FALSE}.
 }}
 
 \item{data_options}{A list of class \code{tidyfinance_data_options} (created via
