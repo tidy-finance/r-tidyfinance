@@ -163,30 +163,36 @@ test_that("ff_adjustment picks latest date per year", {
   expect_equal(result$x[1], 20)
 })
 
-test_that("input validation: duplicate columns between new_data and original_data", {
-  df1 <- tibble(
-    id = rep(1, 3),
-    date = as.Date(c("2020-02-01", "2020-03-01", "2020-04-01")),
-    bm = runif(3)
-  )
+test_that(
+  paste0(
+    "input validation: duplicate columns between ",
+    "new_data and original_data"
+  ),
+  {
+    df1 <- tibble(
+      id = rep(1, 3),
+      date = as.Date(c("2020-02-01", "2020-03-01", "2020-04-01")),
+      bm = runif(3)
+    )
 
-  df2 <- tibble(
-    id = rep(1, 3),
-    date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01")),
-    bm = runif(3)
-  )
+    df2 <- tibble(
+      id = rep(1, 3),
+      date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01")),
+      bm = runif(3)
+    )
 
-  expect_error(
-    join_lagged_values(
-      df1,
-      df2,
-      id_keys = "id",
-      min_lag = months(1),
-      max_lag = months(3)
-    ),
-    regexp = "already exist.*original_data.*bm"
-  )
-})
+    expect_error(
+      join_lagged_values(
+        df1,
+        df2,
+        id_keys = "id",
+        min_lag = months(1),
+        max_lag = months(3)
+      ),
+      regexp = "already exist.*original_data.*bm"
+    )
+  }
+)
 
 test_that("input validation: id_keys must be character", {
   df <- tibble(id = 1, date = as.Date("2020-01-01"))
