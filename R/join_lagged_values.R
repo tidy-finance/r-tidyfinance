@@ -114,6 +114,21 @@ join_lagged_values <- function(
     )
   }
 
+  original_non_key_cols <- setdiff(names(original_data), c(id_keys, id_date))
+  duplicate_cols <- intersect(new_column_names, original_non_key_cols)
+  if (length(duplicate_cols) > 0) {
+    cli::cli_abort(
+      c(
+        "Column{?s} in {.arg new_data} already exist in {.arg original_data}.",
+        "i" = "Duplicate column{?s}: {.field {duplicate_cols}}.",
+        "i" = paste0(
+          "Remove or rename {?this column/these columns} ",
+          "from {.arg new_data} before joining."
+        )
+      )
+    )
+  }
+
   new_data <- new_data |>
     check_new_col(c(".lower", ".upper")) |>
     dplyr::mutate(
