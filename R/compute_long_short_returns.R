@@ -58,7 +58,9 @@ compute_long_short_returns <- function(
     data_options <- data_options()
   }
 
-  data$..date <- data[[data_options$date]]
+  data <- data |>
+    check_new_col("..date") |>
+    dplyr::mutate(..date = .data[[data_options$date]])
 
   data |>
     group_by(..date) |>
