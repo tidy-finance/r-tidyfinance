@@ -174,6 +174,7 @@ filter_sorting_data <- function(
     n_before <- nrow(data)
     size_threshold <- filter_options$min_size_quantile
     data <- data |>
+      check_new_col(".size_cutoff") |>
       dplyr::group_by(.data[[col_date]]) |>
       dplyr::mutate(
         .size_cutoff = quantile(

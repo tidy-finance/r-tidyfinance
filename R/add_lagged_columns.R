@@ -130,8 +130,12 @@ add_lagged_columns <- function(
   exact_lag <- (lag == max_lag)
 
   if (!exact_lag) {
-    data[[".upper"]] <- data[[date_col]] - lag
-    data[[".lower"]] <- data[[date_col]] - max_lag
+    data <- data |>
+      check_new_col(c(".upper", ".lower")) |>
+      dplyr::mutate(
+        .upper = .data[[date_col]] - lag,
+        .lower = .data[[date_col]] - max_lag
+      )
   }
 
   for (col in cols) {
@@ -154,12 +158,15 @@ add_lagged_columns <- function(
       lagged[[date_col]] <- lagged[[date_col]] + lag
       names(lagged)[names(lagged) == col] <- lag_col_name
 
-      data <- dplyr::left_join(data, lagged, by = join_cols)
+      data <- data |>
+        check_new_col(lag_col_name) |>
+        dplyr::left_join(lagged, by = join_cols)
     } else {
       names(lagged)[names(lagged) == date_col] <- ".src_date"
       names(lagged)[names(lagged) == col] <- lag_col_name
 
       data <- data |>
+        check_new_col(lag_col_name) |>
         dplyr::left_join(
           lagged,
           by = dplyr::join_by(!!!rlang::syms(by), closest(.upper >= .src_date))

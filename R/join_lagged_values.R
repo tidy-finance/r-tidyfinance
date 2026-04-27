@@ -115,6 +115,7 @@ join_lagged_values <- function(
   }
 
   new_data <- new_data |>
+    check_new_col(c(".lower", ".upper")) |>
     dplyr::mutate(
       .lower = .data[[id_date]] %m+% min_lag,
       .upper = .data[[id_date]] %m+% max_lag
@@ -122,6 +123,7 @@ join_lagged_values <- function(
 
   if (ff_adjustment) {
     new_data <- new_data |>
+      check_new_col(".year") |>
       dplyr::mutate(.year = lubridate::year(.data[[id_date]]))
   }
 
@@ -153,6 +155,7 @@ join_lagged_values <- function(
       dplyr::pull(dplyr::all_of(col_name))
 
     original_data <- original_data |>
+      check_new_col(col_name) |>
       dplyr::mutate("{col_name}" := col_values)
   }
 

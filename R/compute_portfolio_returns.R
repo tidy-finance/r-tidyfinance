@@ -211,6 +211,7 @@ compute_portfolio_returns <- function(
   # Compute capped market capitalization per date before replacing NAs,
   # so that the quantile is not distorted by zero-filled missing values
   data <- data |>
+    check_new_col(w_capped_col) |>
     dplyr::group_by(.data[[date_col]]) |>
     dplyr::mutate(
       !!w_capped_col := pmin(
@@ -270,6 +271,7 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- data |>
+        check_new_col("portfolio") |>
         dplyr::group_by(.data[[date_col]]) |>
         dplyr::mutate(
           portfolio = assign_portfolio(
@@ -282,6 +284,7 @@ compute_portfolio_returns <- function(
         )
     } else {
       portfolio_data <- data |>
+        check_new_col("portfolio") |>
         dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
         dplyr::group_by(.data[[date_col]]) |>
         dplyr::mutate(
@@ -321,6 +324,7 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- data |>
+        check_new_col(c("portfolio_secondary", "portfolio_main")) |>
         dplyr::group_by(.data[[date_col]]) |>
         dplyr::mutate(
           portfolio_secondary = assign_portfolio(
@@ -345,6 +349,7 @@ compute_portfolio_returns <- function(
         dplyr::ungroup()
     } else {
       portfolio_data <- data |>
+        check_new_col(c("portfolio_secondary", "portfolio_main")) |>
         dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
         dplyr::group_by(.data[[date_col]]) |>
         dplyr::mutate(
@@ -408,6 +413,7 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- data |>
+        check_new_col(c("portfolio_secondary", "portfolio_main")) |>
         dplyr::group_by(.data[[date_col]]) |>
         dplyr::mutate(
           portfolio_secondary = assign_portfolio(
@@ -428,6 +434,7 @@ compute_portfolio_returns <- function(
         dplyr::ungroup()
     } else {
       portfolio_data <- data |>
+        check_new_col(c("portfolio_secondary", "portfolio_main")) |>
         dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
         dplyr::group_by(.data[[date_col]]) |>
         dplyr::mutate(
