@@ -88,9 +88,9 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'   `fill_all = TRUE` to leave unspecified columns unrestricted (default:
 #'   `FALSE`, i.e. unspecified columns are fixed at the defaults listed below).
 #'   Passing `NULL` for any parameter removes that filter entirely, returning
-#'   all values for that column (e.g., `exclude_size = NULL` includes all size
-#'   groups). Passing an unrecognised column name raises an error listing the
-#'   supported names. Ignored when `dataset != "factor_library"`. See the
+#'   all values for that column (e.g., `min_size_quantile = NULL` includes all
+#'   size groups). Passing an unrecognised column name raises an error listing
+#'   the supported names. Ignored when `dataset != "factor_library"`. See the
 #'   Details section for supported columns and their defaults.
 #'
 #' @details
@@ -104,7 +104,7 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'     \item `sorting_variable`: **Required.** The firm characteristic used
 #'       to sort stocks into portfolios (e.g., `"me"` for market equity,
 #'       `"bm"` for book-to-market). No default is applied.
-#'     \item `exclude_size` (defaults to `0.2`): Fraction of the smallest
+#'     \item `min_size_quantile` (defaults to `0.2`): Fraction of the smallest
 #'       stocks (by market cap) excluded from the portfolio universe. `0.2`
 #'       drops the bottom 20%.
 #'     \item `exclude_financials` (defaults to `FALSE`): Whether to drop
@@ -118,13 +118,13 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'       lag).
 #'     \item `rebalancing` (defaults to `"monthly"`): How frequently portfolios
 #'       are reformed: `"monthly"` or `"annual"`.
-#'     \item `breakpoints_main` (defaults to `10`): Number of quantile groups
+#'     \item `n_portfolios_main` (defaults to `10`): Number of quantile groups
 #'       (e.g., `10` for decile portfolios).
 #'     \item `sorting_method` (defaults to `"univariate"`): Whether portfolios
 #'       are formed on a single sort (`"univariate"`) or a sequential double
 #'       sort (`"sequential"`).
-#'     \item `breakpoints_secondary` (defaults to `NULL`): Number of groups for
-#'       the secondary sort variable.
+#'     \item `n_portfolios_secondary` (defaults to `NULL`): Number of groups
+#'       for the secondary sort variable.
 #'       Required when `sorting_method` is not `"univariate"`.
 #'     \item `breakpoints_exchanges` (defaults to: `"NYSE"`): Exchange(s) used
 #'       to compute breakpoints. `"NYSE"` uses only NYSE-listed stocks to
@@ -253,15 +253,15 @@ check_supported_dataset_huggingface <- function(dataset) {
 #'   grid. Supported columns and their defaults are:
 #'   \describe{
 #'     \item{`sorting_variable`}{No default.}
-#'     \item{`exclude_size`}{`0.2`}
+#'     \item{`min_size_quantile`}{`0.2`}
 #'     \item{`exclude_financials`}{`FALSE`}
 #'     \item{`exclude_utilities`}{`FALSE`}
 #'     \item{`exclude_negative_earnings`}{`FALSE`}
 #'     \item{`sorting_variable_lag`}{`"6m"`}
 #'     \item{`rebalancing`}{`"monthly"`}
-#'     \item{`breakpoints_main`}{`10`}
+#'     \item{`n_portfolios_main`}{`10`}
 #'     \item{`sorting_method`}{`"univariate"`}
-#'     \item{`breakpoints_secondary`}{`NULL` for univariate sorts;
+#'     \item{`n_portfolios_secondary`}{`NULL` for univariate sorts;
 #'       required otherwise}
 #'     \item{`breakpoints_exchanges`}{`"NYSE"`}
 #'     \item{`breakpoints_min_size`}{`NULL`}
@@ -280,15 +280,15 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
   filters <- list(...)
 
   defaults <- list(
-    exclude_size = 0.2,
+    min_size_quantile = 0.2,
     exclude_financials = FALSE,
     exclude_utilities = FALSE,
     exclude_negative_earnings = FALSE,
     sorting_variable_lag = "6m",
     rebalancing = "monthly",
-    breakpoints_main = 10,
+    n_portfolios_main = 10,
     sorting_method = "univariate",
-    breakpoints_secondary = NULL,
+    n_portfolios_secondary = NULL,
     breakpoints_exchanges = "NYSE",
     breakpoints_min_size = NA_real_,
     weighting_scheme = "VW"
@@ -298,7 +298,10 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
   unsupported <- setdiff(names(filters), supported_names)
   if (length(unsupported) > 0) {
     cli::cli_abort(c(
-      "{length(unsupported)} unsupported filter name{?s}: {.val {unsupported}}",
+      paste0(
+        "{length(unsupported)} unsupported filter ",
+        "name{?s}: {.val {unsupported}}"
+      ),
       "i" = "Supported filters: {.val {supported_names}}"
     ))
   }
@@ -310,18 +313,21 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
       }
     }
 
-    if (is.null(filters[["breakpoints_secondary"]])) {
+    if (is.null(filters[["n_portfolios_secondary"]])) {
       sorting_methods <- filters[["sorting_method"]]
       if (!all(sorting_methods == "univariate")) {
         cli::cli_abort(c(
-          "{.arg breakpoints_secondary} must be specified for bivariate sorts.",
+          paste0(
+            "{.arg n_portfolios_secondary} must be specified ",
+            "for bivariate sorts."
+          ),
           "i" = paste(
-            "Provide a value for {.arg breakpoints_secondary} or",
+            "Provide a value for {.arg n_portfolios_secondary} or",
             "use {.code fill_all = TRUE} to skip all defaults."
           )
         ))
       }
-      filters["breakpoints_secondary"] <- list(NA_real_)
+      filters["n_portfolios_secondary"] <- list(NA_real_)
     }
   }
 
@@ -388,7 +394,11 @@ download_factor_library_ids <- function(ids) {
     arrow::read_parquet() |>
     dplyr::inner_join(id_values, dplyr::join_by(id)) |>
     dplyr::mutate(
-      sorting_variable = stringr::str_replace(.data$sorting_variable, "sv_", "")
+      sorting_variable = stringr::str_replace(
+        .data$sorting_variable,
+        "sv_",
+        ""
+      )
     ) |>
     dplyr::left_join(
       available_files,
