@@ -17,14 +17,13 @@ check_new_col <- function(data, cols, call = rlang::caller_env()) {
   existing <- cols[cols %in% colnames(data)]
   if (length(existing) > 0L) {
     caller_name <- rlang::call_name(rlang::caller_call())
-    header <- if (!is.null(caller_name)) {
-      "{.fn {caller_name}} overwrites {length(existing)} existing column{?s}: {.val {existing}}."
-    } else {
-      "Overwriting {length(existing)} existing column{?s}: {.val {existing}}."
-    }
     cli::cli_warn(
       c(
-        header,
+        if (!is.null(caller_name)) {
+          "{.fn {caller_name}} overwrites {length(existing)} existing column{?s}: {.val {existing}}." # nolint
+        } else {
+          "Overwriting {length(existing)} existing column{?s}: {.val {existing}}." # nolint
+        },
         "i" = "Consider renaming or removing existing columns."
       ),
       call = call,
