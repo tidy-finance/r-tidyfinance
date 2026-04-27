@@ -116,15 +116,15 @@ test_that(
     grid_rows <- tibble::tibble(
       id = c(1L, 2L),
       sorting_variable = c("sv_bm", "sv_bm"),
-      exclude_size = c(0.2, 0.2),
+      min_size_quantile = c(0.2, 0.2),
       exclude_financials = c(FALSE, FALSE),
       exclude_utilities = c(FALSE, FALSE),
       exclude_negative_earnings = c(FALSE, FALSE),
       sorting_variable_lag = c("6m", "6m"),
       rebalancing = c("monthly", "monthly"),
-      breakpoints_main = c(10L, 10L),
+      n_portfolios_main = c(10L, 10L),
       sorting_method = c("univariate", "univariate"),
-      breakpoints_secondary = c(NA_real_, NA_real_),
+      n_portfolios_secondary = c(NA_real_, NA_real_),
       breakpoints_exchanges = c("NYSE", "NYSE"),
       breakpoints_min_size = c(NA_real_, 1e9),
       weighting_scheme = c("VW", "VW")
