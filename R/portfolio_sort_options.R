@@ -22,11 +22,11 @@
 #'     \item `min_listing_age` A single non-negative integer or numeric
 #'       specifying the minimum number of months a stock must have been listed
 #'       in CRSP. `NULL` (the default) applies no listing age filter.
-#'     \item `positive_book_equity` A logical indicating whether to retain
-#'       only observations with strictly positive book equity. Defaults to
+#'     \item `exclude_negative_book_equity` A logical indicating whether to
+#'       exclude observations with non-positive book equity. Defaults to
 #'       `FALSE`.
-#'     \item `positive_earnings` A logical indicating whether to retain only
-#'       observations with strictly positive earnings. Defaults to `FALSE`.
+#'     \item `exclude_negative_earnings` A logical indicating whether to
+#'       exclude observations with non-positive earnings. Defaults to `FALSE`.
 #'   }
 #' @param breakpoint_options_main A list of class
 #'   `tidyfinance_breakpoint_options` created by [breakpoint_options()],
@@ -39,15 +39,15 @@
 #'     \item `percentiles` An optional numeric vector specifying the
 #'       percentiles for determining the breakpoints of the portfolios.
 #'       This parameter is mutually exclusive with `n_portfolios`.
-#'     \item `breakpoint_exchanges` An optional character vector specifying
+#'     \item `breakpoints_exchanges` An optional character vector specifying
 #'       exchange names to filter the data before computing breakpoints.
 #'       Exchanges must be stored in a column given by `data_options` (defaults
 #'       to `exchange`). If `NULL`, no filtering is applied.
 #'     \item `smooth_bunching` An optional logical parameter specifying if
 #'       to attempt smoothing non-extreme portfolios if the sorting variable
 #'       bunches on the extremes (`TRUE`), or not (`FALSE`, the default).
-#'     \item `min_size_threshold` An optional numeric value between 0 and
-#'       1 (exclusive). When set, stocks with market capitalization below
+#'     \item `breakpoints_min_size_threshold` An optional numeric value between
+#'       0 and 1 (exclusive). When set, stocks with market capitalization below
 #'       this quantile are excluded from breakpoint computation.
 #'   }
 #' @param breakpoint_options_secondary A list of class

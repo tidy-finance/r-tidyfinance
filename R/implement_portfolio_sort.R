@@ -22,12 +22,13 @@
 #'       created by [filter_options()], or `NULL` (the default, which applies
 #'       no filters). Options include `exclude_financials`,
 #'       `exclude_utilities`, `min_stock_price`, `min_size_quantile`,
-#'       `min_listing_age`, `positive_book_equity`, and `positive_earnings`.
+#'       `min_listing_age`, `exclude_negative_book_equity`, and
+#'       `exclude_negative_earnings`.
 #'     \item `breakpoint_options_main` A list of class
 #'       `tidyfinance_breakpoint_options` created by [breakpoint_options()],
 #'       specifying breakpoints for the primary sorting variable. Options
-#'       include `n_portfolios`, `percentiles`, `breakpoint_exchanges`,
-#'       `smooth_bunching`, and `min_size_threshold`.
+#'       include `n_portfolios`, `percentiles`, `breakpoints_exchanges`,
+#'       `smooth_bunching`, and `breakpoints_min_size_threshold`.
 #'     \item `breakpoint_options_secondary` A list of class
 #'       `tidyfinance_breakpoint_options` created by [breakpoint_options()],
 #'       specifying breakpoints for the secondary sorting variable, or `NULL`
