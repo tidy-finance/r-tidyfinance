@@ -85,6 +85,7 @@ compute_long_short_returns <- function(
       values_to = "ret"
     ) |>
     tidyr::pivot_wider(names_from = portfolio, values_from = ret) |>
+    check_new_col("long_short_return") |>
     mutate(
       long_short_return = (top - bottom) *
         if_else(direction == "bottom_minus_top", -1, 1)
