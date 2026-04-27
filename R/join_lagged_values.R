@@ -119,9 +119,16 @@ join_lagged_values <- function(
   if (length(duplicate_cols) > 0) {
     cli::cli_abort(
       c(
-        "Column{?s} in {.arg new_data} already exist in {.arg original_data}.",
-        "i" = "Duplicate column{?s}: {.field {duplicate_cols}}.",
+        paste0(
+          "{cli::qty(length(duplicate_cols))}Column{?s} in {.arg new_data} ",
+          "already exist in {.arg original_data}."
+        ),
+        "x" = paste0(
+          "{cli::qty(length(duplicate_cols))}",
+          "Duplicate column{?s}: {.field {duplicate_cols}}."
+        ),
         "i" = paste0(
+          "{cli::qty(length(duplicate_cols))}",
           "Remove or rename {?this column/these columns} ",
           "from {.arg new_data} before joining."
         )
