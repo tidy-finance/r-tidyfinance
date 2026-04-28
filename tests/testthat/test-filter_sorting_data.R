@@ -3,6 +3,7 @@ make_sorting_data <- function(seed = 42) {
   data.frame(
     permno = 1:30,
     date = rep(as.Date("2020-01-01"), 30),
+    exchange = c(rep("NYSE", 15), rep("NASDAQ", 15)),
     siccd = c(
       rep(6200L, 5), # financial (SIC 6000–6799)
       rep(4950L, 5), # utility  (SIC 4900–4999)
@@ -140,15 +141,18 @@ test_that("filter_sorting_data errors when price missing for min_stock_price", {
   )
 })
 
-test_that("filter_sorting_data applies min_size_quantile filter correctly", {
+test_that("filter_sorting_data applies min_size_quantile filter using NYSE cutoff", {
   data <- make_sorting_data()
+  # NYSE mktcap_lag: seq(100, 500, length.out = 15), 50th pctile = 300
+  # 7 NYSE stocks fall below the cutoff; all 15 NASDAQ stocks (5000–10000) pass
+  nyse_cutoff <- quantile(seq(100, 500, length.out = 15), probs = 0.5)
   result <- filter_sorting_data(
     data,
     filter_options = filter_options(min_size_quantile = 0.5),
     quiet = TRUE
   )
-  # At least 50% of rows should be removed
-  expect_true(nrow(result) <= nrow(data) * 0.55)
+  expect_equal(nrow(result), sum(data$mktcap_lag >= nyse_cutoff))
+  expect_true(all(result$mktcap_lag >= nyse_cutoff))
 })
 
 test_that(
@@ -165,6 +169,24 @@ test_that(
         filter_options = filter_options(min_size_quantile = 0.2)
       ),
       "mktcap_lag"
+    )
+  }
+)
+
+test_that(
+  paste0(
+    "filter_sorting_data errors when ",
+    "exchange missing for min_size_quantile"
+  ),
+  {
+    data <- make_sorting_data()
+    data$exchange <- NULL
+    expect_error(
+      filter_sorting_data(
+        data,
+        filter_options = filter_options(min_size_quantile = 0.2)
+      ),
+      "exchange"
     )
   }
 )
