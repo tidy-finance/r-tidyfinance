@@ -19,7 +19,7 @@
 create_wrds_dummy_database <- function(
   path,
   url = paste0(
-    "https://github.com/tidy-finance/website/tree/main/blog/",
+    "https://raw.githubusercontent.com/tidy-finance/website/main/blog/",
     "tidy-finance-dummy-data/data/tidy_finance.sqlite"
   )
 ) {
