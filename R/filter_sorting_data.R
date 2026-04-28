@@ -206,7 +206,7 @@ filter_sorting_data <- function(
       cli::cli_warn(c(
         paste0(
           "Filter 'min_size_quantile': {length(dates_missing_cutoff)} ",
-          "date{?s} dropped because no NYSE stocks are available to compute",
+          "date{?s} dropped because no NYSE stocks are available to compute ",
           "the size quantile cutoff."
         ),
         "i" = "Affected date{?s}: {.val {dates_missing_cutoff}}."
