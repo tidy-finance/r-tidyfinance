@@ -283,7 +283,21 @@ compute_portfolio_returns <- function(
           )
         )
     } else {
-      portfolio_data <- data |>
+      filtered_data <- data |>
+        check_new_col("portfolio") |>
+        dplyr::filter(month(.data[[date_col]]) == rebalancing_month)
+
+      if (nrow(filtered_data) == 0) {
+        cli::cli_abort(
+          paste0(
+            "No observations match {.arg rebalancing_month} = ",
+            "{rebalancing_month}. Check that the data contains dates in ",
+            "the specified rebalancing month."
+          )
+        )
+      }
+
+      portfolio_data <- filtered_data |>
         check_new_col("portfolio") |>
         dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
         dplyr::group_by(.data[[date_col]]) |>
