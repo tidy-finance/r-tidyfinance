@@ -366,6 +366,34 @@ test_that(
   }
 )
 
+test_that(
+  paste0(
+    "filter_sorting_data warns when dates are dropped ",
+    "due to missing NYSE quantile cutoff"
+  ),
+  {
+    # date1 has NYSE stocks -> quantile cutoff can be computed
+    # date2 has no NYSE stocks -> no cutoff, all rows for date2 are dropped
+    date1 <- as.Date("2020-01-01")
+    date2 <- as.Date("2020-02-01")
+    data <- data.frame(
+      permno = 1:6,
+      date = c(rep(date1, 4), rep(date2, 2)),
+      exchange = c("NYSE", "NYSE", "NASDAQ", "NASDAQ", "NASDAQ", "NASDAQ"),
+      mktcap_lag = c(100, 200, 150, 250, 300, 400)
+    )
+    expect_warning(
+      result <- filter_sorting_data(
+        data,
+        filter_options = filter_options(min_size_quantile = 0.5)
+      ),
+      regexp = "min_size_quantile"
+    )
+    # all rows for date2 must be gone
+    expect_true(all(result$date == date1))
+  }
+)
+
 test_that("filter_sorting_data with NA siccd values preserves those rows", {
   data <- make_sorting_data()
   data$siccd[1:3] <- NA_integer_

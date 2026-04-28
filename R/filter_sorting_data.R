@@ -196,6 +196,23 @@ filter_sorting_data <- function(
         ),
         .groups = "drop"
       )
+
+    dates_in_data <- data |>
+      dplyr::distinct(.data[[col_date]]) |>
+      dplyr::pull(col_date)
+
+    dates_missing_cutoff <- setdiff(dates_in_data, size_cutoffs[[col_date]])
+    if (length(dates_missing_cutoff) > 0) {
+      cli::cli_warn(c(
+        paste0(
+          "Filter 'min_size_quantile': {length(dates_missing_cutoff)} ",
+          "date{?s} dropped because no NYSE stocks are available to compute",
+          "the size quantile cutoff."
+        ),
+        "i" = "Affected date{?s}: {.val {dates_missing_cutoff}}."
+      ))
+    }
+
     data <- data |>
       check_new_col(".size_cutoff") |>
       dplyr::select(-dplyr::any_of(".size_cutoff")) |>
