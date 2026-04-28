@@ -149,7 +149,8 @@ test_that(
   {
     data <- make_sorting_data()
     # NYSE mktcap_lag: seq(100, 500, length.out = 15), 50th pctile = 300
-    # 7 NYSE stocks fall below the cutoff; all 15 NASDAQ stocks (5000–10000) pass
+    # 7 NYSE stocks fall below the cutoff;
+    # all 15 NASDAQ stocks (5000–10000) pass
     nyse_cutoff <- quantile(seq(100, 500, length.out = 15), probs = 0.5)
     result <- filter_sorting_data(
       data,
