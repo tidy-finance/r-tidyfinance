@@ -198,6 +198,7 @@ filter_sorting_data <- function(
       )
     data <- data |>
       check_new_col(".size_cutoff") |>
+      dplyr::select(-dplyr::any_of(".size_cutoff")) |>
       dplyr::inner_join(size_cutoffs, by = col_date) |>
       dplyr::filter(
         !is.na(.data[[col_mktcap_lag]]) &
