@@ -298,7 +298,6 @@ compute_portfolio_returns <- function(
 
       portfolio_data <- filtered_data |>
         check_new_col("portfolio") |>
-        dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
         dplyr::group_by(.data[[date_col]]) |>
         dplyr::mutate(
           portfolio = assign_portfolio(
