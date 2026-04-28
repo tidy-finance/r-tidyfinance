@@ -29,7 +29,9 @@ applies no price filter.}
 \item{min_size_quantile}{A single numeric strictly between 0 and 1
 specifying the minimum cross-sectional size quantile (based on lagged
 market cap) required to include an observation. \code{NULL} (the default)
-applies no size quantile filter.}
+applies no size quantile filter. The cutoff is computed from NYSE
+stocks only. This requires an \code{exchange} column in the data (as
+mapped via \code{\link[=data_options]{data_options()}}); an error is raised if it is missing.}
 
 \item{min_listing_age}{A single non-negative integer or numeric specifying
 the minimum number of months a stock must have been listed in CRSP.
