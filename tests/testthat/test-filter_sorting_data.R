@@ -141,19 +141,25 @@ test_that("filter_sorting_data errors when price missing for min_stock_price", {
   )
 })
 
-test_that("filter_sorting_data applies min_size_quantile filter using NYSE cutoff", {
-  data <- make_sorting_data()
-  # NYSE mktcap_lag: seq(100, 500, length.out = 15), 50th pctile = 300
-  # 7 NYSE stocks fall below the cutoff; all 15 NASDAQ stocks (5000–10000) pass
-  nyse_cutoff <- quantile(seq(100, 500, length.out = 15), probs = 0.5)
-  result <- filter_sorting_data(
-    data,
-    filter_options = filter_options(min_size_quantile = 0.5),
-    quiet = TRUE
-  )
-  expect_equal(nrow(result), sum(data$mktcap_lag >= nyse_cutoff))
-  expect_true(all(result$mktcap_lag >= nyse_cutoff))
-})
+test_that(
+  paste0(
+    "filter_sorting_data applies ",
+    "min_size_quantile filter using NYSE cutoff"
+  ),
+  {
+    data <- make_sorting_data()
+    # NYSE mktcap_lag: seq(100, 500, length.out = 15), 50th pctile = 300
+    # 7 NYSE stocks fall below the cutoff; all 15 NASDAQ stocks (5000–10000) pass
+    nyse_cutoff <- quantile(seq(100, 500, length.out = 15), probs = 0.5)
+    result <- filter_sorting_data(
+      data,
+      filter_options = filter_options(min_size_quantile = 0.5),
+      quiet = TRUE
+    )
+    expect_equal(nrow(result), sum(data$mktcap_lag >= nyse_cutoff))
+    expect_true(all(result$mktcap_lag >= nyse_cutoff))
+  }
+)
 
 test_that(
   paste0(
