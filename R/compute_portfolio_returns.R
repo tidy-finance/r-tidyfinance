@@ -284,7 +284,6 @@ compute_portfolio_returns <- function(
         )
     } else {
       filtered_data <- data |>
-        check_new_col("portfolio") |>
         dplyr::filter(month(.data[[date_col]]) == rebalancing_month)
 
       if (nrow(filtered_data) == 0) {
