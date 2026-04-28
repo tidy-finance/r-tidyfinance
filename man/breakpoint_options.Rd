@@ -7,9 +7,9 @@
 breakpoint_options(
   n_portfolios = NULL,
   percentiles = NULL,
-  breakpoint_exchanges = NULL,
+  breakpoints_exchanges = NULL,
   smooth_bunching = FALSE,
-  min_size_threshold = NULL,
+  breakpoints_min_size_threshold = NULL,
   ...
 )
 }
@@ -21,17 +21,17 @@ Must be a positive integer. If not provided, defaults to \code{NULL}.}
 thresholds for defining breakpoints. Each value must be between 0 and 1.
 If not provided, defaults to \code{NULL}.}
 
-\item{breakpoint_exchanges}{Character vector, optional. A non-empty vector
+\item{breakpoints_exchanges}{Character vector, optional. A non-empty vector
 specifying the exchange from which to compute the breakpoints. If not
 provided, defaults to \code{NULL}.}
 
 \item{smooth_bunching}{Logical, optional. Indicates whether smooth bunching
 should be applied. Defaults to \code{FALSE}.}
 
-\item{min_size_threshold}{Numeric, optional. When set to a value between 0
-and 1, stocks with market capitalization below this quantile are excluded
-from breakpoint computation. The quantile is computed among
-\code{breakpoint_exchanges} stocks if specified, otherwise among all stocks.
+\item{breakpoints_min_size_threshold}{Numeric, optional. When set to a value
+between 0 and 1, stocks with market capitalization below this quantile are
+excluded from breakpoint computation. The quantile is computed among
+\code{breakpoints_exchanges} stocks if specified, otherwise among all stocks.
 Requires a market capitalization column in the data (see
 \code{\link[=data_options]{data_options()}}). Defaults to \code{NULL} (no size filtering).}
 
@@ -53,7 +53,7 @@ along with additional optional parameters.
 breakpoint_options(
   n_portfolios = 5,
   percentiles = c(0.2, 0.4, 0.6, 0.8),
-  breakpoint_exchanges = "NYSE",
+  breakpoints_exchanges = "NYSE",
   smooth_bunching = TRUE,
   custom_threshold = 0.5,
   another_option = "example"

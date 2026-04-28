@@ -41,12 +41,13 @@ include
 created by \code{\link[=filter_options]{filter_options()}}, or \code{NULL} (the default, which applies
 no filters). Options include \code{exclude_financials},
 \code{exclude_utilities}, \code{min_stock_price}, \code{min_size_quantile},
-\code{min_listing_age}, \code{positive_book_equity}, and \code{positive_earnings}.
+\code{min_listing_age}, \code{exclude_negative_book_equity}, and
+\code{exclude_negative_earnings}.
 \item \code{breakpoint_options_main} A list of class
 \code{tidyfinance_breakpoint_options} created by \code{\link[=breakpoint_options]{breakpoint_options()}},
 specifying breakpoints for the primary sorting variable. Options
-include \code{n_portfolios}, \code{percentiles}, \code{breakpoint_exchanges},
-\code{smooth_bunching}, and \code{min_size_threshold}.
+include \code{n_portfolios}, \code{percentiles}, \code{breakpoints_exchanges},
+\code{smooth_bunching}, and \code{breakpoints_min_size_threshold}.
 \item \code{breakpoint_options_secondary} A list of class
 \code{tidyfinance_breakpoint_options} created by \code{\link[=breakpoint_options]{breakpoint_options()}},
 specifying breakpoints for the secondary sorting variable, or \code{NULL}

@@ -28,11 +28,11 @@
 #'     \item `min_listing_age` A single non-negative integer or numeric
 #'       specifying the minimum number of months a stock must have been listed
 #'       in CRSP. `NULL` (the default) applies no listing age filter.
-#'     \item `positive_book_equity` A logical indicating whether to retain
-#'       only observations with strictly positive book equity. Defaults to
+#'     \item `exclude_negative_book_equity` A logical indicating whether to
+#'       exclude observations with non-positive book equity. Defaults to
 #'       `FALSE`.
-#'     \item `positive_earnings` A logical indicating whether to retain only
-#'       observations with strictly positive earnings. Defaults to `FALSE`.
+#'     \item `exclude_negative_earnings` A logical indicating whether to
+#'       exclude observations with non-positive earnings. Defaults to `FALSE`.
 #'   }
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'   [data_options()]) specifying column name mappings. The `siccd` element is
@@ -220,8 +220,8 @@ filter_sorting_data <- function(
     }
   }
 
-  # positive_book_equity
-  if (isTRUE(filter_options$positive_book_equity)) {
+  # exclude_negative_book_equity
+  if (isTRUE(filter_options$exclude_negative_book_equity)) {
     col_be <- data_options$be
     if (!col_be %in% colnames(data)) {
       cli::cli_abort(c(
@@ -237,13 +237,16 @@ filter_sorting_data <- function(
     n_dropped <- n_before - nrow(data)
     if (!quiet && n_dropped > 0) {
       cli::cli_inform(
-        "Filter 'positive_book_equity': removed {n_dropped} observation{?s}."
+        paste0(
+          "Filter 'exclude_negative_book_equity': ",
+          "removed {n_dropped} observation{?s}."
+        )
       )
     }
   }
 
-  # positive_earnings
-  if (isTRUE(filter_options$positive_earnings)) {
+  # exclude_negative_earnings
+  if (isTRUE(filter_options$exclude_negative_earnings)) {
     col_earn <- data_options$earnings
     if (!col_earn %in% colnames(data)) {
       cli::cli_abort(c(
@@ -259,7 +262,10 @@ filter_sorting_data <- function(
     n_dropped <- n_before - nrow(data)
     if (!quiet && n_dropped > 0) {
       cli::cli_inform(
-        "Filter 'positive_earnings': removed {n_dropped} observation{?s}."
+        paste0(
+          "Filter 'exclude_negative_earnings': ",
+          "removed {n_dropped} observation{?s}."
+        )
       )
     }
   }

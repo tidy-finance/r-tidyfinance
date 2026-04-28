@@ -30,11 +30,11 @@ applies no size quantile filter.
 \item \code{min_listing_age} A single non-negative integer or numeric
 specifying the minimum number of months a stock must have been listed
 in CRSP. \code{NULL} (the default) applies no listing age filter.
-\item \code{positive_book_equity} A logical indicating whether to retain
-only observations with strictly positive book equity. Defaults to
+\item \code{exclude_negative_book_equity} A logical indicating whether to
+exclude observations with non-positive book equity. Defaults to
 \code{FALSE}.
-\item \code{positive_earnings} A logical indicating whether to retain only
-observations with strictly positive earnings. Defaults to \code{FALSE}.
+\item \code{exclude_negative_earnings} A logical indicating whether to
+exclude observations with non-positive earnings. Defaults to \code{FALSE}.
 }}
 
 \item{breakpoint_options_main}{A list of class
@@ -48,15 +48,15 @@ exclusive with \code{percentiles}.
 \item \code{percentiles} An optional numeric vector specifying the
 percentiles for determining the breakpoints of the portfolios.
 This parameter is mutually exclusive with \code{n_portfolios}.
-\item \code{breakpoint_exchanges} An optional character vector specifying
+\item \code{breakpoints_exchanges} An optional character vector specifying
 exchange names to filter the data before computing breakpoints.
 Exchanges must be stored in a column given by \code{data_options} (defaults
 to \code{exchange}). If \code{NULL}, no filtering is applied.
 \item \code{smooth_bunching} An optional logical parameter specifying if
 to attempt smoothing non-extreme portfolios if the sorting variable
 bunches on the extremes (\code{TRUE}), or not (\code{FALSE}, the default).
-\item \code{min_size_threshold} An optional numeric value between 0 and
-1 (exclusive). When set, stocks with market capitalization below
+\item \code{breakpoints_min_size_threshold} An optional numeric value between
+0 and 1 (exclusive). When set, stocks with market capitalization below
 this quantile are excluded from breakpoint computation.
 }}
 

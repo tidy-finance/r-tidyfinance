@@ -18,10 +18,10 @@
 #' @param min_listing_age A single non-negative integer or numeric specifying
 #'   the minimum number of months a stock must have been listed in CRSP.
 #'   `NULL` (the default) applies no listing age filter.
-#' @param positive_book_equity A logical indicating whether to retain only
-#'   observations with strictly positive book equity. Defaults to `FALSE`.
-#' @param positive_earnings A logical indicating whether to retain only
-#'   observations with strictly positive earnings. Defaults to `FALSE`.
+#' @param exclude_negative_book_equity A logical indicating whether to exclude
+#'   observations with non-positive book equity. Defaults to `FALSE`.
+#' @param exclude_negative_earnings A logical indicating whether to exclude
+#'   observations with non-positive earnings. Defaults to `FALSE`.
 #' @param ... Additional arguments to be included in the filter options list.
 #'
 #' @returns A list of class `tidyfinance_filter_options` containing the
@@ -44,8 +44,8 @@ filter_options <- function(
   min_stock_price = NULL,
   min_size_quantile = NULL,
   min_listing_age = NULL,
-  positive_book_equity = FALSE,
-  positive_earnings = FALSE,
+  exclude_negative_book_equity = FALSE,
+  exclude_negative_earnings = FALSE,
   ...
 ) {
   # Error handling for exclude_financials
@@ -115,22 +115,24 @@ filter_options <- function(
     }
   }
 
-  # Error handling for positive_book_equity
+  # Error handling for exclude_negative_book_equity
   if (
-    !is.logical(positive_book_equity) ||
-      length(positive_book_equity) != 1 ||
-      is.na(positive_book_equity)
+    !is.logical(exclude_negative_book_equity) ||
+      length(exclude_negative_book_equity) != 1 ||
+      is.na(exclude_negative_book_equity)
   ) {
-    cli::cli_abort("{.arg positive_book_equity} must be a single logical.")
+    cli::cli_abort(
+      "{.arg exclude_negative_book_equity} must be a single logical."
+    )
   }
 
-  # Error handling for positive_earnings
+  # Error handling for exclude_negative_earnings
   if (
-    !is.logical(positive_earnings) ||
-      length(positive_earnings) != 1 ||
-      is.na(positive_earnings)
+    !is.logical(exclude_negative_earnings) ||
+      length(exclude_negative_earnings) != 1 ||
+      is.na(exclude_negative_earnings)
   ) {
-    cli::cli_abort("{.arg positive_earnings} must be a single logical.")
+    cli::cli_abort("{.arg exclude_negative_earnings} must be a single logical.")
   }
 
   # Create the list structure with class attribute
@@ -141,8 +143,8 @@ filter_options <- function(
       "min_stock_price" = min_stock_price,
       "min_size_quantile" = min_size_quantile,
       "min_listing_age" = min_listing_age,
-      "positive_book_equity" = positive_book_equity,
-      "positive_earnings" = positive_earnings,
+      "exclude_negative_book_equity" = exclude_negative_book_equity,
+      "exclude_negative_earnings" = exclude_negative_earnings,
       ...
     ),
     class = "tidyfinance_filter_options"

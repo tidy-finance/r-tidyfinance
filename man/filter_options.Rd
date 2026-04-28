@@ -10,8 +10,8 @@ filter_options(
   min_stock_price = NULL,
   min_size_quantile = NULL,
   min_listing_age = NULL,
-  positive_book_equity = FALSE,
-  positive_earnings = FALSE,
+  exclude_negative_book_equity = FALSE,
+  exclude_negative_earnings = FALSE,
   ...
 )
 }
@@ -35,11 +35,11 @@ applies no size quantile filter.}
 the minimum number of months a stock must have been listed in CRSP.
 \code{NULL} (the default) applies no listing age filter.}
 
-\item{positive_book_equity}{A logical indicating whether to retain only
-observations with strictly positive book equity. Defaults to \code{FALSE}.}
+\item{exclude_negative_book_equity}{A logical indicating whether to exclude
+observations with non-positive book equity. Defaults to \code{FALSE}.}
 
-\item{positive_earnings}{A logical indicating whether to retain only
-observations with strictly positive earnings. Defaults to \code{FALSE}.}
+\item{exclude_negative_earnings}{A logical indicating whether to exclude
+observations with non-positive earnings. Defaults to \code{FALSE}.}
 
 \item{...}{Additional arguments to be included in the filter options list.}
 }

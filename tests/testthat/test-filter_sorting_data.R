@@ -197,14 +197,14 @@ test_that("filter_sorting_data errors when listing_age column is missing", {
 test_that(
   paste0(
     "filter_sorting_data applies ",
-    "positive_book_equity filter correctly"
+    "exclude_negative_book_equity filter correctly"
   ),
   {
     data <- make_sorting_data()
     n_nonpositive <- sum(!is.na(data$be) & data$be <= 0)
     result <- filter_sorting_data(
       data,
-      filter_options = filter_options(positive_book_equity = TRUE),
+      filter_options = filter_options(exclude_negative_book_equity = TRUE),
       quiet = TRUE
     )
     expect_equal(nrow(result), nrow(data) - n_nonpositive)
@@ -215,7 +215,7 @@ test_that(
 test_that(
   paste0(
     "filter_sorting_data errors when ",
-    "be missing for positive_book_equity"
+    "be missing for exclude_negative_book_equity"
   ),
   {
     data <- make_sorting_data()
@@ -223,39 +223,45 @@ test_that(
     expect_error(
       filter_sorting_data(
         data,
-        filter_options = filter_options(positive_book_equity = TRUE)
+        filter_options = filter_options(exclude_negative_book_equity = TRUE)
       ),
       "be"
     )
   }
 )
 
-test_that("filter_sorting_data applies positive_earnings filter correctly", {
-  data <- make_sorting_data()
-  n_nonpositive <- sum(!is.na(data$ib) & data$ib <= 0)
-  result <- filter_sorting_data(
-    data,
-    filter_options = filter_options(positive_earnings = TRUE),
-    quiet = TRUE
-  )
-  expect_equal(nrow(result), nrow(data) - n_nonpositive)
-  expect_true(all(result$ib > 0))
-})
+test_that(
+  paste0(
+    "filter_sorting_data applies ",
+    "exclude_negative_earnings filter correctly"
+  ),
+  {
+    data <- make_sorting_data()
+    n_nonpositive <- sum(!is.na(data$ib) & data$ib <= 0)
+    result <- filter_sorting_data(
+      data,
+      filter_options = filter_options(exclude_negative_earnings = TRUE),
+      quiet = TRUE
+    )
+    expect_equal(nrow(result), nrow(data) - n_nonpositive)
+    expect_true(all(result$ib > 0))
+  }
+)
 
 test_that(
   paste0(
     "filter_sorting_data emits a message mentioning ",
-    "positive_earnings when quiet = FALSE and rows are removed"
+    "exclude_negative_earnings when quiet = FALSE and rows are removed"
   ),
   {
     data <- make_sorting_data()
     expect_message(
       filter_sorting_data(
         data,
-        filter_options = filter_options(positive_earnings = TRUE),
+        filter_options = filter_options(exclude_negative_earnings = TRUE),
         quiet = FALSE
       ),
-      "positive_earnings"
+      "exclude_negative_earnings"
     )
   }
 )
@@ -263,7 +269,7 @@ test_that(
 test_that(
   paste0(
     "filter_sorting_data errors when earnings ",
-    "column is missing for positive_earnings"
+    "column is missing for exclude_negative_earnings"
   ),
   {
     data <- make_sorting_data()
@@ -271,7 +277,7 @@ test_that(
     expect_error(
       filter_sorting_data(
         data,
-        filter_options = filter_options(positive_earnings = TRUE)
+        filter_options = filter_options(exclude_negative_earnings = TRUE)
       ),
       "ib"
     )
@@ -313,17 +319,23 @@ test_that("filter_sorting_data errors for invalid quiet argument", {
   expect_error(filter_sorting_data(data, quiet = 1), "quiet")
 })
 
-test_that("filter_sorting_data respects custom column names via data_options", {
-  data <- make_sorting_data()
-  names(data)[names(data) == "prc_adj"] <- "stock_price"
-  result <- filter_sorting_data(
-    data,
-    filter_options = filter_options(min_stock_price = 3),
-    data_options = data_options(price = "stock_price"),
-    quiet = TRUE
-  )
-  expect_true(all(result$stock_price >= 3, na.rm = TRUE))
-})
+test_that(
+  paste0(
+    "filter_sorting_data respects custom ",
+    "column names via data_options"
+  ),
+  {
+    data <- make_sorting_data()
+    names(data)[names(data) == "prc_adj"] <- "stock_price"
+    result <- filter_sorting_data(
+      data,
+      filter_options = filter_options(min_stock_price = 3),
+      data_options = data_options(price = "stock_price"),
+      quiet = TRUE
+    )
+    expect_true(all(result$stock_price >= 3, na.rm = TRUE))
+  }
+)
 
 test_that("filter_sorting_data with NA siccd values preserves those rows", {
   data <- make_sorting_data()
