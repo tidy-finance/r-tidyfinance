@@ -24,7 +24,9 @@
 #'     \item `min_size_quantile` A single numeric strictly between 0 and 1
 #'       specifying the minimum cross-sectional size quantile (based on lagged
 #'       market cap) required to include an observation. `NULL` (the default)
-#'       applies no size quantile filter.
+#'       applies no size quantile filter. The cutoff is computed from NYSE
+#'       stocks only; the `exchange` column (mapped via [data_options()])
+#'       must be present in the data or an error is raised.
 #'     \item `min_listing_age` A single non-negative integer or numeric
 #'       specifying the minimum number of months a stock must have been listed
 #'       in CRSP. `NULL` (the default) applies no listing age filter.
@@ -42,7 +44,7 @@
 #'   `listing_age` is used to specify the listing age column, `be` is used to
 #'   specify the book equity column, and `earnings` is used to specify the
 #'   earnings column. Uses [data_options()] default if `NULL`:
-#'   `"siccd" = "siccd"`, `"price" = "prc_adj"`,
+#'   `"siccd" = "siccd"`, `"price" = "prc_adj"`, `"exchange" = "exchange"`
 #'   `"mktcap_lag" = "mktcap_lag"`, `"date" = "date"`,
 #'   `"listing_age" = "listing_age"`, `"be" = "be"`, and `"earnings" = "ib"`.
 #' @param quiet A logical indicating whether informational messages should be
@@ -159,6 +161,7 @@ filter_sorting_data <- function(
   if (!is.null(filter_options$min_size_quantile)) {
     col_mktcap_lag <- data_options$mktcap_lag
     col_date <- data_options$date
+    col_exchange <- data_options$exchange
     if (!col_mktcap_lag %in% colnames(data)) {
       cli::cli_abort(c(
         "Column {.val {col_mktcap_lag}} not found in {.arg data}.",
@@ -171,19 +174,49 @@ filter_sorting_data <- function(
         "i" = "Set {.arg data_options$date} to the correct column name."
       ))
     }
+    if (!col_exchange %in% colnames(data)) {
+      cli::cli_abort(c(
+        "Column {.val {col_exchange}} not found in {.arg data}.",
+        "i" = paste0(
+          "The size quantile cutoff is computed from NYSE stocks. ",
+          "Set {.arg data_options$exchange} to the correct column name."
+        )
+      ))
+    }
     n_before <- nrow(data)
     size_threshold <- filter_options$min_size_quantile
-    data <- data |>
-      check_new_col(".size_cutoff") |>
+    size_cutoffs <- data |>
+      dplyr::filter(.data[[col_exchange]] == "NYSE") |>
       dplyr::group_by(.data[[col_date]]) |>
-      dplyr::mutate(
+      dplyr::summarise(
         .size_cutoff = quantile(
           .data[[col_mktcap_lag]],
           probs = size_threshold,
           na.rm = TRUE
-        )
-      ) |>
-      dplyr::ungroup() |>
+        ),
+        .groups = "drop"
+      )
+
+    dates_in_data <- data |>
+      dplyr::distinct(.data[[col_date]]) |>
+      dplyr::pull(col_date)
+
+    dates_missing_cutoff <- setdiff(dates_in_data, size_cutoffs[[col_date]])
+    if (length(dates_missing_cutoff) > 0) {
+      cli::cli_warn(c(
+        paste0(
+          "Filter 'min_size_quantile': {length(dates_missing_cutoff)} ",
+          "date{?s} dropped because no NYSE stocks are available to compute ",
+          "the size quantile cutoff."
+        ),
+        "i" = "Affected date{?s}: {.val {dates_missing_cutoff}}."
+      ))
+    }
+
+    data <- data |>
+      check_new_col(".size_cutoff") |>
+      dplyr::select(-dplyr::any_of(".size_cutoff")) |>
+      dplyr::inner_join(size_cutoffs, by = col_date) |>
       dplyr::filter(
         !is.na(.data[[col_mktcap_lag]]) &
           .data[[col_mktcap_lag]] >= .size_cutoff

@@ -174,7 +174,11 @@ test_that(
     ".size_cutoff already exists in data"
   ),
   {
-    data_with_cutoff <- tibble::add_column(panel, .size_cutoff = NA_real_)
+    data_with_cutoff <- tibble::add_column(
+      panel,
+      .size_cutoff = NA_real_,
+      exchange = "NYSE"
+    )
     expect_warning(
       filter_sorting_data(
         data_with_cutoff,

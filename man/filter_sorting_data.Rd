@@ -30,7 +30,9 @@ default) applies no price filter.
 \item \code{min_size_quantile} A single numeric strictly between 0 and 1
 specifying the minimum cross-sectional size quantile (based on lagged
 market cap) required to include an observation. \code{NULL} (the default)
-applies no size quantile filter.
+applies no size quantile filter. The cutoff is computed from NYSE
+stocks only; the \code{exchange} column (mapped via \code{\link[=data_options]{data_options()}})
+must be present in the data or an error is raised.
 \item \code{min_listing_age} A single non-negative integer or numeric
 specifying the minimum number of months a stock must have been listed
 in CRSP. \code{NULL} (the default) applies no listing age filter.
@@ -49,7 +51,7 @@ capitalization column, \code{date} is used to specify the date column,
 \code{listing_age} is used to specify the listing age column, \code{be} is used to
 specify the book equity column, and \code{earnings} is used to specify the
 earnings column. Uses \code{\link[=data_options]{data_options()}} default if \code{NULL}:
-\code{"siccd" = "siccd"}, \code{"price" = "prc_adj"},
+\code{"siccd" = "siccd"}, \code{"price" = "prc_adj"}, \code{"exchange" = "exchange"}
 \code{"mktcap_lag" = "mktcap_lag"}, \code{"date" = "date"},
 \code{"listing_age" = "listing_age"}, \code{"be" = "be"}, and \code{"earnings" = "ib"}.}
 
