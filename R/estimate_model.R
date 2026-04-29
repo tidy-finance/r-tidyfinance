@@ -106,26 +106,27 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
   needs_coefficients <- "coefficients" %in% output
   needs_tstats <- "tstats" %in% output
 
+  complete <- stats::complete.cases(stats::model.frame(
+    formula,
+    data = data,
+    na.action = stats::na.pass
+  ))
+
   if (needs_residuals) {
-    complete <- stats::complete.cases(stats::model.frame(
-      formula,
-      data = data,
-      na.action = stats::na.pass
-    ))
     insufficient_residuals <- sum(complete) < min_obs ||
       sum(complete) <= length(independent_vars)
   }
 
   if (needs_coefficients || needs_tstats) {
-    insufficient_summary <- nrow(data) < min_obs ||
-      nrow(data) <= length(independent_vars)
+    insufficient_summary <- sum(complete) < min_obs ||
+      sum(complete) <= length(independent_vars)
   }
 
   fit <- NULL
   if (needs_residuals && !insufficient_residuals) {
     fit <- stats::lm(formula, data = data[complete, ])
   } else if ((needs_coefficients || needs_tstats) && !insufficient_summary) {
-    fit <- stats::lm(formula, data = data)
+    fit <- stats::lm(formula, data = data[complete, ])
   }
 
   to_tibble <- function(x) {
