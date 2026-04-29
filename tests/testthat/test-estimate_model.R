@@ -214,7 +214,10 @@ test_that("tstats are NA tibble when all model rows are NA", {
   all_na$ret_excess[] <- NA
   expect_no_error(
     result <- estimate_model(
-      all_na, "ret_excess ~ mkt_excess", min_obs = 1, output = "tstats"
+      all_na,
+      "ret_excess ~ mkt_excess",
+      min_obs = 1,
+      output = "tstats"
     )
   )
   expect_s3_class(result, "tbl_df")
