@@ -198,3 +198,25 @@ test_that("residuals are NA when too few complete cases after NA removal", {
   )
   expect_true(all(is.na(result)))
 })
+
+test_that("coefficients are NA tibble when all model rows are NA (regression: lm.fit 0 cases)", {
+  all_na <- test_data
+  all_na$ret_excess[] <- NA
+  expect_no_error(
+    result <- estimate_model(all_na, "ret_excess ~ mkt_excess", min_obs = 1)
+  )
+  expect_s3_class(result, "tbl_df")
+  expect_true(all(is.na(result)))
+})
+
+test_that("tstats are NA tibble when all model rows are NA", {
+  all_na <- test_data
+  all_na$ret_excess[] <- NA
+  expect_no_error(
+    result <- estimate_model(
+      all_na, "ret_excess ~ mkt_excess", min_obs = 1, output = "tstats"
+    )
+  )
+  expect_s3_class(result, "tbl_df")
+  expect_true(all(is.na(result)))
+})

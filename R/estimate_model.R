@@ -112,20 +112,19 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
     na.action = stats::na.pass
   ))
 
+  insufficient <- sum(complete) < min_obs ||
+    sum(complete) <= length(independent_vars)
+
   if (needs_residuals) {
-    insufficient_residuals <- sum(complete) < min_obs ||
-      sum(complete) <= length(independent_vars)
+    insufficient_residuals <- insufficient
   }
 
   if (needs_coefficients || needs_tstats) {
-    insufficient_summary <- sum(complete) < min_obs ||
-      sum(complete) <= length(independent_vars)
+    insufficient_summary <- insufficient
   }
 
   fit <- NULL
-  if (needs_residuals && !insufficient_residuals) {
-    fit <- stats::lm(formula, data = data[complete, ])
-  } else if ((needs_coefficients || needs_tstats) && !insufficient_summary) {
+  if (!insufficient) {
     fit <- stats::lm(formula, data = data[complete, ])
   }
 
