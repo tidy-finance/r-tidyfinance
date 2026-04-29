@@ -199,7 +199,7 @@ test_that("residuals are NA when too few complete cases after NA removal", {
   expect_true(all(is.na(result)))
 })
 
-test_that("coefficients are NA tibble when all model rows are NA (regression: lm.fit 0 cases)", {
+test_that("coefficients are NA when all rows are NA", {
   all_na <- test_data
   all_na$ret_excess[] <- NA
   expect_no_error(
