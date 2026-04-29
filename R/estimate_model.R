@@ -115,14 +115,6 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
   insufficient <- sum(complete) < min_obs ||
     sum(complete) <= length(independent_vars)
 
-  if (needs_residuals) {
-    insufficient_residuals <- insufficient
-  }
-
-  if (needs_coefficients || needs_tstats) {
-    insufficient_summary <- insufficient
-  }
-
   fit <- NULL
   if (!insufficient) {
     fit <- stats::lm(formula, data = data[complete, ])
@@ -146,7 +138,7 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
   result <- list()
 
   if (needs_coefficients) {
-    if (insufficient_summary) {
+    if (insufficient) {
       result$coefficients <- na_tibble()
     } else {
       result$coefficients <- to_tibble(stats::coef(fit))
@@ -154,7 +146,7 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
   }
 
   if (needs_tstats) {
-    if (insufficient_summary) {
+    if (insufficient) {
       result$tstats <- na_tibble()
     } else {
       result$tstats <- to_tibble(summary(fit)$coefficients[, "t value"])
@@ -162,7 +154,7 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
   }
 
   if (needs_residuals) {
-    if (insufficient_residuals) {
+    if (insufficient) {
       result$residuals <- rep(NA_real_, nrow(data))
     } else {
       resid_result <- rep(NA_real_, nrow(data))
