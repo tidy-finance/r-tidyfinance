@@ -106,26 +106,18 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
   needs_coefficients <- "coefficients" %in% output
   needs_tstats <- "tstats" %in% output
 
-  if (needs_residuals) {
-    complete <- stats::complete.cases(stats::model.frame(
-      formula,
-      data = data,
-      na.action = stats::na.pass
-    ))
-    insufficient_residuals <- sum(complete) < min_obs ||
-      sum(complete) <= length(independent_vars)
-  }
+  complete <- stats::complete.cases(stats::model.frame(
+    formula,
+    data = data,
+    na.action = stats::na.pass
+  ))
 
-  if (needs_coefficients || needs_tstats) {
-    insufficient_summary <- nrow(data) < min_obs ||
-      nrow(data) <= length(independent_vars)
-  }
+  insufficient <- sum(complete) < min_obs ||
+    sum(complete) <= length(independent_vars)
 
   fit <- NULL
-  if (needs_residuals && !insufficient_residuals) {
+  if (!insufficient) {
     fit <- stats::lm(formula, data = data[complete, ])
-  } else if ((needs_coefficients || needs_tstats) && !insufficient_summary) {
-    fit <- stats::lm(formula, data = data)
   }
 
   to_tibble <- function(x) {
@@ -146,7 +138,7 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
   result <- list()
 
   if (needs_coefficients) {
-    if (insufficient_summary) {
+    if (insufficient) {
       result$coefficients <- na_tibble()
     } else {
       result$coefficients <- to_tibble(stats::coef(fit))
@@ -154,7 +146,7 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
   }
 
   if (needs_tstats) {
-    if (insufficient_summary) {
+    if (insufficient) {
       result$tstats <- na_tibble()
     } else {
       result$tstats <- to_tibble(summary(fit)$coefficients[, "t value"])
@@ -162,7 +154,7 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
   }
 
   if (needs_residuals) {
-    if (insufficient_residuals) {
+    if (insufficient) {
       result$residuals <- rep(NA_real_, nrow(data))
     } else {
       resid_result <- rep(NA_real_, nrow(data))
