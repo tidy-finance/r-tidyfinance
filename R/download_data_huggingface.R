@@ -129,9 +129,9 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'     \item `breakpoints_exchanges` (defaults to: `"NYSE"`): Exchange(s) used
 #'       to compute breakpoints. `"NYSE"` uses only NYSE-listed stocks to
 #'       define quantile cutoffs (the conventional Fama-French approach).
-#'     \item `breakpoints_min_size_threshold` (defaults to `NULL`): Minimum market-cap
-#'       threshold (in USD) applied when computing breakpoints. `NULL` means no
-#'       minimum-size screen is applied.
+#'     \item `breakpoints_min_size_threshold` (defaults to `NULL`): Minimum
+#'       market-cap threshold (in USD) applied when computing breakpoints.
+#'       `NULL` means no minimum-size screen is applied.
 #'     \item `weighting_scheme` (defaults to `"VW"`): Return weighting within
 #'       portfolios: `"VW"` for value-weighted or `"EW"` for equal-weighted.
 #'   }
