@@ -129,7 +129,7 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'     \item `breakpoints_exchanges` (defaults to: `"NYSE"`): Exchange(s) used
 #'       to compute breakpoints. `"NYSE"` uses only NYSE-listed stocks to
 #'       define quantile cutoffs (the conventional Fama-French approach).
-#'     \item `breakpoints_min_size` (defaults to `NULL`): Minimum market-cap
+#'     \item `breakpoints_min_size_threshold` (defaults to `NULL`): Minimum market-cap
 #'       threshold (in USD) applied when computing breakpoints. `NULL` means no
 #'       minimum-size screen is applied.
 #'     \item `weighting_scheme` (defaults to `"VW"`): Return weighting within
@@ -264,7 +264,7 @@ check_supported_dataset_huggingface <- function(dataset) {
 #'     \item{`n_portfolios_secondary`}{`NULL` for univariate sorts;
 #'       required otherwise}
 #'     \item{`breakpoints_exchanges`}{`"NYSE"`}
-#'     \item{`breakpoints_min_size`}{`NULL`}
+#'     \item{`breakpoints_min_size_threshold`}{`NULL`}
 #'     \item{`weighting_scheme`}{`"VW"`}
 #'   }
 #'   Each value can be a vector to match multiple levels.
@@ -290,7 +290,7 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
     sorting_method = "univariate",
     n_portfolios_secondary = NULL,
     breakpoints_exchanges = "NYSE",
-    breakpoints_min_size = NA_real_,
+    breakpoints_min_size_threshold = NA_real_,
     weighting_scheme = "VW"
   )
 
