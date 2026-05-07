@@ -126,7 +126,7 @@ test_that(
       sorting_method = c("univariate", "univariate"),
       n_portfolios_secondary = c(NA_real_, NA_real_),
       breakpoints_exchanges = c("NYSE", "NYSE"),
-      breakpoints_min_size = c(NA_real_, 1e9),
+      breakpoints_min_size_threshold = c(NA_real_, 1e9),
       weighting_scheme = c("VW", "VW")
     )
 
@@ -140,7 +140,7 @@ test_that(
         ids_default <- filter_factor_library_grid(sorting_variable = "bm")
         ids_explicit_null <- filter_factor_library_grid(
           sorting_variable = "bm",
-          breakpoints_min_size = NULL
+          breakpoints_min_size_threshold = NULL
         )
 
         expect_length(ids_default, 1L)
