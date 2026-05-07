@@ -83,9 +83,9 @@ Required when \code{sorting_method} is not \code{"univariate"}.
 \item \code{breakpoints_exchanges} (defaults to: \code{"NYSE"}): Exchange(s) used
 to compute breakpoints. \code{"NYSE"} uses only NYSE-listed stocks to
 define quantile cutoffs (the conventional Fama-French approach).
-\item \code{breakpoints_min_size} (defaults to \code{NULL}): Minimum market-cap
-threshold (in USD) applied when computing breakpoints. \code{NULL} means no
-minimum-size screen is applied.
+\item \code{breakpoints_min_size_threshold} (defaults to \code{NULL}): Minimum
+market-cap threshold (in USD) applied when computing breakpoints.
+\code{NULL} means no minimum-size screen is applied.
 \item \code{weighting_scheme} (defaults to \code{"VW"}): Return weighting within
 portfolios: \code{"VW"} for value-weighted or \code{"EW"} for equal-weighted.
 }
