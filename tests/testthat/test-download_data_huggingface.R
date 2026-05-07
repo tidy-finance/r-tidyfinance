@@ -1,13 +1,13 @@
 # Helpers ---------------------------------------------------------------
 
 make_grid_parquet_file <- function(rows) {
-  tmp <- withr::local_tempfile(fileext = ".parquet")
+  tmp <- tempfile(fileext = ".parquet")
   arrow::write_parquet(rows, tmp)
   tibble::tibble(path = "grid/part.parquet", size = file.size(tmp), url = tmp)
 }
 
 make_returns_parquet_file <- function(rows, sv, sv_lag) {
-  tmp <- withr::local_tempfile(fileext = ".parquet")
+  tmp <- tempfile(fileext = ".parquet")
   arrow::write_parquet(rows, tmp)
   tibble::tibble(
     path = paste0(
