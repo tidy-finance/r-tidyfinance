@@ -131,7 +131,7 @@ download_data_wrds_crsp <- function(
 
       first_crsp_date <- msenames_db |>
         group_by(permno) |>
-        summarise(first_crsp_date = min(namedt)) |>
+        summarise(first_crsp_date = min(namedt, na.rm = TRUE)) |>
         collect()
 
       crsp_monthly <- msf_db |>
@@ -273,7 +273,7 @@ download_data_wrds_crsp <- function(
 
       first_crsp_date <- stksecurityinfohist_db |>
         group_by(permno) |>
-        summarise(first_crsp_date = min(secinfostartdt)) |>
+        summarise(first_crsp_date = min(secinfostartdt, na.rm = TRUE)) |>
         collect()
 
       crsp_monthly <- msf_db |>
