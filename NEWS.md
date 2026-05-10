@@ -1,4 +1,4 @@
-# tidyfinance (development version)
+# tidyfinance 0.5.0
 
 ## New features
 
