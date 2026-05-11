@@ -6,7 +6,13 @@ make_grid_parquet_file <- function(rows) {
   tibble::tibble(path = "grid/part.parquet", size = file.size(tmp), url = tmp)
 }
 
-make_returns_parquet_file <- function(rows, sv, sv_lag) {
+make_returns_parquet_file <- function(
+  rows,
+  sv,
+  sv_lag,
+  sorting_method,
+  n_portfolios_main
+) {
   tmp <- tempfile(fileext = ".parquet")
   arrow::write_parquet(rows, tmp)
   tibble::tibble(
@@ -15,6 +21,10 @@ make_returns_parquet_file <- function(rows, sv, sv_lag) {
       sv,
       "/sorting_variable_lag=",
       sv_lag,
+      "/sorting_method=",
+      sorting_method,
+      "/n_portfolios_main=",
+      n_portfolios_main,
       "/part.parquet"
     ),
     size = file.size(tmp),
@@ -46,14 +56,22 @@ test_that(
     grid_rows <- tibble::tibble(
       id = 1L,
       sorting_variable = "sv_me",
-      sorting_variable_lag = "3m"
+      sorting_variable_lag = "3m",
+      sorting_method = "univariate",
+      n_portfolios_main = 10L
     )
 
     mock_files <- function(organization, dataset) {
       if (dataset == "factor-library-grid") {
         make_grid_parquet_file(grid_rows)
       } else {
-        make_returns_parquet_file(tibble::tibble(id = 1L), "me", "3m")
+        make_returns_parquet_file(
+          tibble::tibble(id = 1L),
+          "me",
+          "3m",
+          "univariate",
+          "10"
+        )
       }
     }
 
@@ -78,7 +96,9 @@ test_that(
     grid_rows <- tibble::tibble(
       id = 1L,
       sorting_variable = "sv_me",
-      sorting_variable_lag = "3m"
+      sorting_variable_lag = "3m",
+      sorting_method = "univariate",
+      n_portfolios_main = 10L
     )
 
     mock_files <- function(organization, dataset) {
@@ -161,7 +181,9 @@ test_that(
     grid_rows <- tibble::tibble(
       id = 1L,
       sorting_variable = "sv_me",
-      sorting_variable_lag = "3m"
+      sorting_variable_lag = "3m",
+      sorting_method = "univariate",
+      n_portfolios_main = 10L
     )
     returns_rows <- tibble::tibble(id = 1L, ret = 0.01)
 
@@ -169,7 +191,13 @@ test_that(
       if (dataset == "factor-library-grid") {
         make_grid_parquet_file(grid_rows)
       } else {
-        make_returns_parquet_file(returns_rows, "me", "3m")
+        make_returns_parquet_file(
+          returns_rows,
+          "me",
+          "3m",
+          "univariate",
+          "10"
+        )
       }
     }
 
