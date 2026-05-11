@@ -216,6 +216,8 @@ utils::globalVariables(
     "dlyvol",
     "sorting_variable",
     "sorting_variable_lag",
+    "sorting_method",
+    "n_portfolios_main",
     "url",
     "path",
     "size",

@@ -412,10 +412,10 @@ download_factor_library_ids <- function(ids) {
     dplyr::left_join(
       available_files,
       dplyr::join_by(
-        .data$sorting_variable,
-        .data$sorting_variable_lag,
-        .data$sorting_method,
-        .data$n_portfolios_main
+        sorting_variable,
+        sorting_variable_lag,
+        sorting_method,
+        n_portfolios_main
       )
     )
 
