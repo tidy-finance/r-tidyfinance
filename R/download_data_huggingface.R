@@ -355,10 +355,10 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
 #' Given a vector of portfolio IDs from the `tidy-finance/factor-library-grid`,
 #' this function downloads the corresponding return data from the
 #' `tidy-finance/factor-library` dataset on Hugging Face. It identifies the
-#' unique `(sorting_variable, sorting_variable_lag)` combinations for the
-#' requested IDs, downloads one parquet file per combination in full, and
-#' then inner-joins to retain only the requested IDs. The grid metadata is
-#' joined back onto the result.
+#' unique `(sorting_variable, sorting_variable_lag, sorting_method,
+#' n_portfolios_main)` combinations for the requested IDs, downloads one
+#' parquet file per combination in full, and then inner-joins to retain only
+#' the requested IDs. The grid metadata is joined back onto the result.
 #'
 #' Raises an error if `ids` is empty or contains IDs that cannot be matched to
 #' a parquet file (listing the affected IDs and their key columns).
@@ -441,9 +441,19 @@ download_factor_library_ids <- function(ids) {
   if (nrow(missing_urls) > 0) {
     missing_keys <- missing_urls |> # nolint: object_usage_linter
       dplyr::inner_join(
-        id_grid |>
-          dplyr::select("id", "sorting_variable", "sorting_variable_lag"),
-        dplyr::join_by(sorting_variable, sorting_variable_lag)
+        id_grid |> dplyr::select(
+          "id",
+          "sorting_variable",
+          "sorting_variable_lag",
+          "sorting_method",
+          "n_portfolios_main"
+        ),
+        dplyr::join_by(
+          sorting_variable,
+          sorting_variable_lag,
+          sorting_method,
+          n_portfolios_main
+        )
       ) |>
       dplyr::mutate(
         key = paste0(
@@ -453,6 +463,10 @@ download_factor_library_ids <- function(ids) {
           .data$sorting_variable,
           " / ",
           .data$sorting_variable_lag,
+          " / ",
+          .data$sorting_method,
+          " / ",
+          .data$n_portfolios_main,
           ")"
         )
       ) |>
@@ -462,8 +476,9 @@ download_factor_library_ids <- function(ids) {
       "No parquet file found for {length(missing_keys)} portfolio ID{?s}.",
       "x" = "Affected ID{?s}: {.val {missing_keys}}",
       "i" = paste(
-        "Check that the {.arg sorting_variable} and",
-        "{.arg sorting_variable_lag} values exist in the factor library."
+        "Check that the {.arg sorting_variable},",
+        "{.arg sorting_variable_lag}, {.arg sorting_method},",
+        "and {.arg n_portfolios_main} values exist in the factor library."
       )
     ))
   }
