@@ -70,7 +70,7 @@ test_that(
           "me",
           "3m",
           "univariate",
-          "10"
+          10L
         )
       }
     }
@@ -196,7 +196,7 @@ test_that(
           "me",
           "3m",
           "univariate",
-          "10"
+          10L
         )
       }
     }
