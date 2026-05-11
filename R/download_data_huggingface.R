@@ -386,8 +386,8 @@ download_factor_library_ids <- function(ids) {
         "n_portfolios_main"
       ),
       regex = paste0(
-        "sorting_variable=([^/]+)/sorting_variable_lag=([^/]+),
-      /sorting_method=([^/]+)/n_portfolios_main=([^/]+)/"
+        "sorting_variable=([^/]+)/sorting_variable_lag=([^/]+)",
+        "/sorting_method=([^/]+)/n_portfolios_main=([^/]+)/"
       ),
       remove = FALSE
     )
