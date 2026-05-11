@@ -404,7 +404,7 @@ download_factor_library_ids <- function(ids) {
         "sv_",
         ""
       ),
-      n_portfolios_main = as.character(n_portfolios_main)
+      n_portfolios_main = as.character(.data$n_portfolios_main)
     ) |>
     dplyr::left_join(
       available_files,
