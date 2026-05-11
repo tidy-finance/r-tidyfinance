@@ -385,7 +385,10 @@ download_factor_library_ids <- function(ids) {
         "sorting_method",
         "n_portfolios_main"
       ),
-      regex = "sorting_variable=([^/]+)/sorting_variable_lag=([^/]+)/sorting_method=([^/]+)/n_portfolios_main=([^/]+)/",
+      regex = paste0(
+        "sorting_variable=([^/]+)/sorting_variable_lag=([^/]+),
+      /sorting_method=([^/]+)/n_portfolios_main=([^/]+)/"
+      ),
       remove = FALSE
     )
 
@@ -409,20 +412,20 @@ download_factor_library_ids <- function(ids) {
     dplyr::left_join(
       available_files,
       dplyr::join_by(
-        sorting_variable,
-        sorting_variable_lag,
-        sorting_method,
-        n_portfolios_main
+        .data$sorting_variable,
+        .data$sorting_variable_lag,
+        .data$sorting_method,
+        .data$n_portfolios_main
       )
     )
 
   relevant_urls <- id_grid |>
     dplyr::distinct(
-      url,
-      sorting_variable,
-      sorting_variable_lag,
-      sorting_method,
-      n_portfolios_main
+      .data$url,
+      .data$sorting_variable,
+      .data$sorting_variable_lag,
+      .data$sorting_method,
+      .data$n_portfolios_main
     )
 
   if (nrow(relevant_urls) == 0) {
