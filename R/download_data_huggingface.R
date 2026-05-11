@@ -379,8 +379,13 @@ download_factor_library_ids <- function(ids) {
   ) |>
     tidyr::extract(
       col = "path",
-      into = c("sorting_variable", "sorting_variable_lag"),
-      regex = "sorting_variable=([^/]+)/sorting_variable_lag=([^/]+)/",
+      into = c(
+        "sorting_variable",
+        "sorting_variable_lag",
+        "sorting_method",
+        "n_portfolios_main"
+      ),
+      regex = "sorting_variable=([^/]+)/sorting_variable_lag=([^/]+)/sorting_method=([^/]+)/n_portfolios_main=([^/]+)/",
       remove = FALSE
     )
 
@@ -398,15 +403,27 @@ download_factor_library_ids <- function(ids) {
         .data$sorting_variable,
         "sv_",
         ""
-      )
+      ),
+      n_portfolios_main = as.character(n_portfolios_main)
     ) |>
     dplyr::left_join(
       available_files,
-      dplyr::join_by(sorting_variable, sorting_variable_lag)
+      dplyr::join_by(
+        sorting_variable,
+        sorting_variable_lag,
+        sorting_method,
+        n_portfolios_main
+      )
     )
 
   relevant_urls <- id_grid |>
-    dplyr::distinct(url, sorting_variable, sorting_variable_lag)
+    dplyr::distinct(
+      url,
+      sorting_variable,
+      sorting_variable_lag,
+      sorting_method,
+      n_portfolios_main
+    )
 
   if (nrow(relevant_urls) == 0) {
     cli::cli_abort(c(
