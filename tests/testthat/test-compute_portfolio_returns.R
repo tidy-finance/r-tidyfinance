@@ -980,7 +980,7 @@ test_that("all-NA mktcap_lag produces NA not NaN for VW returns", {
   expect_false(any(is.na(result$ret_excess_ew)))
 })
 
-test_that("bivariate min_portfolio_size counts firms per main-portfolio-date, not per cell", {
+test_that("bivariate min_portfolio_size counts per main-portfolio-date", {
   # 100 firms x 12 months, 5x5 bivariate -> ~4 firms per cell but ~20 per
   # main-portfolio-date cross-section. A per-cell threshold of 10 would
   # void every cell; a per-cross-section threshold of 10 should not.
@@ -1017,7 +1017,7 @@ test_that("bivariate min_portfolio_size voids cross-sections below threshold", {
   expect_true(all(is.na(result$ret_excess_ew)))
 })
 
-test_that("univariate min_portfolio_size unchanged: counts firms per portfolio-date", {
+test_that("univariate min_portfolio_size counts firms per portfolio-date", {
   data <- make_panel(n_stocks = 50, n_months = 12)
   # 50 firms / 5 portfolios = 10 per portfolio-date. Threshold of 11 should
   # void everything; threshold of 5 should keep everything.

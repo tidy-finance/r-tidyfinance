@@ -632,16 +632,21 @@ aggregate_bivariate_returns <- function(
     ) |>
     dplyr::left_join(
       n_per_main_date,
-      by = stats::setNames(c("portfolio_main", date_col), c("portfolio", date_col))
+      by = stats::setNames(
+        c("portfolio_main", date_col),
+        c("portfolio", date_col)
+      )
     ) |>
     dplyr::mutate(
       dplyr::across(
         c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped),
-        \(x) dplyr::if_else(
-          is.nan(x) | is.na(n_firms) | n_firms < min_portfolio_size,
-          NA_real_,
-          x
-        )
+        \(x) {
+          dplyr::if_else(
+            is.nan(x) | is.na(n_firms) | n_firms < min_portfolio_size,
+            NA_real_,
+            x
+          )
+        }
       )
     ) |>
     dplyr::select(-n_firms)
