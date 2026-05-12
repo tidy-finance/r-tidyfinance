@@ -13,7 +13,7 @@ compute_portfolio_returns(
   breakpoint_options_secondary = NULL,
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
-  min_portfolio_size = 0L,
+  min_portfolio_size = 1L,
   cap_weight = 0.8,
   data_options = NULL,
   quiet = FALSE
@@ -65,8 +65,15 @@ for the secondary sorting variable. The default is set to
 \code{\link[=compute_breakpoints]{compute_breakpoints()}}.}
 
 \item{min_portfolio_size}{An integer specifying the minimum number of
-portfolio constituents (default is set to \code{0}, effectively deactivating
-the check). Small portfolios' returns are set to zero.}
+firms required in the reported portfolio cross-section on a given date
+(default \code{1L}, i.e. at least one observation per reported portfolio).
+For both univariate and bivariate sorts the threshold is applied to the
+firm count per \verb{(portfolio, date)} of the reported cross-section: for
+univariate sorts that is firms per portfolio-date; for bivariate sorts
+that is firms per main-portfolio-date summed across the secondary
+buckets. Cross-sections below the threshold have their returns set to
+\code{NA}. A typical value is \code{5L} (the Fama-French convention). Set to \code{0L}
+to deactivate the check entirely.}
 
 \item{cap_weight}{A numeric value between 0 and 1 specifying the percentile
 at which market capitalization is capped per date when computing capped
