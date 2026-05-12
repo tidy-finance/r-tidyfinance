@@ -53,8 +53,15 @@
 #'   for the secondary sorting variable. The default is set to
 #'   [compute_breakpoints()].
 #' @param min_portfolio_size An integer specifying the minimum number of
-#'   portfolio constituents (default is set to `0`, effectively deactivating
-#'   the check). Small portfolios' returns are set to zero.
+#'   firms required in the reported portfolio cross-section on a given date
+#'   (default `1L`, i.e. at least one observation per reported portfolio).
+#'   For both univariate and bivariate sorts the threshold is applied to the
+#'   firm count per `(portfolio, date)` of the reported cross-section: for
+#'   univariate sorts that is firms per portfolio-date; for bivariate sorts
+#'   that is firms per main-portfolio-date summed across the secondary
+#'   buckets. Cross-sections below the threshold have their returns set to
+#'   `NA`. A typical value is `5L` (the Fama-French convention). Set to `0L`
+#'   to deactivate the check entirely.
 #' @param cap_weight A numeric value between 0 and 1 specifying the percentile
 #'   at which market capitalization is capped per date when computing capped
 #'   value-weighted excess returns (i.e., `ret_excess_vw_capped`). Defaults to
@@ -137,7 +144,7 @@ compute_portfolio_returns <- function(
   breakpoint_options_secondary = NULL,
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
-  min_portfolio_size = 0L,
+  min_portfolio_size = 1L,
   cap_weight = 0.8,
   data_options = NULL,
   quiet = FALSE
@@ -400,22 +407,14 @@ compute_portfolio_returns <- function(
       )
     }
 
-    portfolio_returns <- portfolio_returns |>
-      dplyr::group_by(portfolio_main, portfolio_secondary, .data[[date_col]]) |>
-      summarise_portfolio_returns(
-        ret_col,
-        w_col,
-        w_capped_col,
-        min_portfolio_size
-      ) |>
-      dplyr::group_by(portfolio = portfolio_main, .data[[date_col]]) |>
-      dplyr::summarise(
-        dplyr::across(
-          c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped),
-          \(x) mean(x, na.rm = TRUE)
-        ),
-        .groups = "drop"
-      )
+    portfolio_returns <- aggregate_bivariate_returns(
+      portfolio_returns,
+      date_col,
+      ret_col,
+      w_col,
+      w_capped_col,
+      min_portfolio_size
+    )
   }
 
   if (sorting_method == "bivariate-independent") {
@@ -481,22 +480,14 @@ compute_portfolio_returns <- function(
       )
     }
 
-    portfolio_returns <- portfolio_returns |>
-      dplyr::group_by(portfolio_main, portfolio_secondary, .data[[date_col]]) |>
-      summarise_portfolio_returns(
-        ret_col,
-        w_col,
-        w_capped_col,
-        min_portfolio_size
-      ) |>
-      dplyr::group_by(portfolio = portfolio_main, .data[[date_col]]) |>
-      dplyr::summarise(
-        dplyr::across(
-          c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped),
-          \(x) mean(x, na.rm = TRUE)
-        ),
-        .groups = "drop"
-      )
+    portfolio_returns <- aggregate_bivariate_returns(
+      portfolio_returns,
+      date_col,
+      ret_col,
+      w_col,
+      w_capped_col,
+      min_portfolio_size
+    )
   }
 
   portfolio_returns <- portfolio_returns[!is.na(portfolio_returns$portfolio), ]
@@ -538,7 +529,8 @@ compute_portfolio_returns <- function(
       paste0(
         "Returning a complete panel with {n_missing} missing value{?s} ",
         "in factor returns due to insufficient observations ",
-        "(n() <= {min_portfolio_size})."
+        "(fewer than {min_portfolio_size} firm{?s} per (portfolio, date) ",
+        "cross-section)."
       )
     )
   }
@@ -589,6 +581,75 @@ summarise_portfolio_returns <- function(
       ),
       .groups = "drop"
     )
+}
+
+#' Aggregate bivariate-sort returns across the secondary dimension
+#'
+#' Computes cell-level returns over `(portfolio_main, portfolio_secondary,
+#' date)` without an occupancy threshold, then averages across the secondary
+#' buckets to obtain reported `(portfolio_main, date)` returns. The
+#' `min_portfolio_size` threshold is applied to the per-`(portfolio_main,
+#' date)` firm count (the reported cross-section), not per cell.
+#'
+#' @param portfolio_returns A panel with columns `portfolio_main`,
+#'   `portfolio_secondary`, the date column, and per-stock returns/weights.
+#' @param date_col,ret_col,w_col,w_capped_col Column names.
+#' @param min_portfolio_size Minimum firms per reported `(portfolio_main,
+#'   date)` cross-section. Cross-sections below this size receive `NA`.
+#'
+#' @returns A data frame with columns `portfolio`, the date column, and the
+#'   three return columns.
+#'
+#' @keywords internal
+#' @noRd
+aggregate_bivariate_returns <- function(
+  portfolio_returns,
+  date_col,
+  ret_col,
+  w_col,
+  w_capped_col,
+  min_portfolio_size
+) {
+  n_per_main_date <- portfolio_returns |>
+    dplyr::filter(!is.na(portfolio_main), !is.na(portfolio_secondary)) |>
+    dplyr::count(portfolio_main, .data[[date_col]], name = "n_firms")
+
+  portfolio_returns |>
+    dplyr::group_by(portfolio_main, portfolio_secondary, .data[[date_col]]) |>
+    summarise_portfolio_returns(
+      ret_col,
+      w_col,
+      w_capped_col,
+      min_portfolio_size = 0L
+    ) |>
+    dplyr::group_by(portfolio = portfolio_main, .data[[date_col]]) |>
+    dplyr::summarise(
+      dplyr::across(
+        c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped),
+        \(x) mean(x, na.rm = TRUE)
+      ),
+      .groups = "drop"
+    ) |>
+    dplyr::left_join(
+      n_per_main_date,
+      by = stats::setNames(
+        c("portfolio_main", date_col),
+        c("portfolio", date_col)
+      )
+    ) |>
+    dplyr::mutate(
+      dplyr::across(
+        c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped),
+        \(x) {
+          dplyr::if_else(
+            is.nan(x) | is.na(n_firms) | n_firms < min_portfolio_size,
+            NA_real_,
+            x
+          )
+        }
+      )
+    ) |>
+    dplyr::select(-n_firms)
 }
 
 #' Join rebalanced portfolio assignments to sorting data (internal helper)

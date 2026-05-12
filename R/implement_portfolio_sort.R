@@ -39,9 +39,13 @@
 #'   the main sorting variable. Defaults to [compute_breakpoints()].
 #' @param breakpoint_function_secondary The function used to compute breakpoints
 #'   for the secondary sorting variable. Defaults to [compute_breakpoints()].
-#' @param min_portfolio_size An integer specifying the minimum number of stocks
-#'   required in a portfolio. Portfolios with fewer stocks receive `NA` returns.
-#'   Defaults to `0L`.
+#' @param min_portfolio_size An integer specifying the minimum number of
+#'   firms in the reported portfolio cross-section on a given date. Defaults
+#'   to `1L` (at least one observation per reported portfolio). For univariate
+#'   sorts that is firms per portfolio-date; for bivariate sorts that is firms
+#'   per main-portfolio-date summed across the secondary buckets.
+#'   Cross-sections below the threshold have their returns set to `NA`.
+#'   Set to `0L` to deactivate the check. See [compute_portfolio_returns()].
 #' @param cap_weight A numeric between 0 and 1 specifying the quantile at which
 #'   portfolio weights are capped for the capped value-weighted return.
 #'   Defaults to `0.8`.
@@ -102,7 +106,7 @@ implement_portfolio_sort <- function(
   portfolio_sort_options,
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
-  min_portfolio_size = 0L,
+  min_portfolio_size = 1L,
   cap_weight = 0.8,
   data_options = NULL,
   quiet = FALSE
