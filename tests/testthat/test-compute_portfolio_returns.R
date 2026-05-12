@@ -979,3 +979,65 @@ test_that("all-NA mktcap_lag produces NA not NaN for VW returns", {
   # EW returns should still be computed
   expect_false(any(is.na(result$ret_excess_ew)))
 })
+
+test_that("bivariate min_portfolio_size counts firms per main-portfolio-date, not per cell", {
+  # 100 firms x 12 months, 5x5 bivariate -> ~4 firms per cell but ~20 per
+  # main-portfolio-date cross-section. A per-cell threshold of 10 would
+  # void every cell; a per-cross-section threshold of 10 should not.
+  data <- make_panel(n_stocks = 100, n_months = 12)
+  result <- compute_portfolio_returns(
+    data,
+    c("size", "bm"),
+    "bivariate-dependent",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 5),
+    breakpoint_options_secondary = breakpoint_options(n_portfolios = 5),
+    min_portfolio_size = 10L,
+    quiet = TRUE
+  )
+  expect_false(all(is.na(result$ret_excess_ew)))
+  # With ~20 firms per main-portfolio-date, threshold = 10 should keep
+  # essentially all cross-sections.
+  expect_gt(mean(!is.na(result$ret_excess_ew)), 0.9)
+})
+
+test_that("bivariate min_portfolio_size voids cross-sections below threshold", {
+  # 60 firms per date, 6 main x 2 secondary -> ~10 firms per main-portfolio
+  # cross-section (summed across secondaries). A threshold of 50 should
+  # void everything.
+  data <- make_panel(n_stocks = 60, n_months = 12)
+  result <- compute_portfolio_returns(
+    data,
+    c("size", "bm"),
+    "bivariate-independent",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 6),
+    breakpoint_options_secondary = breakpoint_options(n_portfolios = 2),
+    min_portfolio_size = 50L,
+    quiet = TRUE
+  )
+  expect_true(all(is.na(result$ret_excess_ew)))
+})
+
+test_that("univariate min_portfolio_size unchanged: counts firms per portfolio-date", {
+  data <- make_panel(n_stocks = 50, n_months = 12)
+  # 50 firms / 5 portfolios = 10 per portfolio-date. Threshold of 11 should
+  # void everything; threshold of 5 should keep everything.
+  result_high <- compute_portfolio_returns(
+    data,
+    "size",
+    "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 5),
+    min_portfolio_size = 11L,
+    quiet = TRUE
+  )
+  expect_true(all(is.na(result_high$ret_excess_ew)))
+
+  result_low <- compute_portfolio_returns(
+    data,
+    "size",
+    "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 5),
+    min_portfolio_size = 5L,
+    quiet = TRUE
+  )
+  expect_false(any(is.na(result_low$ret_excess_ew)))
+})

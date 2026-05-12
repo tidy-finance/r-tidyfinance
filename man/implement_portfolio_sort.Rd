@@ -61,9 +61,12 @@ the main sorting variable. Defaults to \code{\link[=compute_breakpoints]{compute
 \item{breakpoint_function_secondary}{The function used to compute breakpoints
 for the secondary sorting variable. Defaults to \code{\link[=compute_breakpoints]{compute_breakpoints()}}.}
 
-\item{min_portfolio_size}{An integer specifying the minimum number of stocks
-required in a portfolio. Portfolios with fewer stocks receive \code{NA} returns.
-Defaults to \code{0L}.}
+\item{min_portfolio_size}{An integer specifying the minimum number of
+firms in the reported portfolio cross-section on a given date. Defaults
+to \code{0L} (no minimum). For univariate sorts that is firms per
+portfolio-date; for bivariate sorts that is firms per main-portfolio-date
+summed across the secondary buckets. Cross-sections below the threshold
+have their returns set to \code{NA}. See \code{\link[=compute_portfolio_returns]{compute_portfolio_returns()}}.}
 
 \item{cap_weight}{A numeric between 0 and 1 specifying the quantile at which
 portfolio weights are capped for the capped value-weighted return.
