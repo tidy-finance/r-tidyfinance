@@ -227,6 +227,7 @@ utils::globalVariables(
     "listing_age",
     "first_crsp_date",
     ".size_cutoff",
-    "ib"
+    "ib",
+    "n_firms"
   )
 )

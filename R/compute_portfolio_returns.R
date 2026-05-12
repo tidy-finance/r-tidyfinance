@@ -54,13 +54,14 @@
 #'   [compute_breakpoints()].
 #' @param min_portfolio_size An integer specifying the minimum number of
 #'   firms required in the reported portfolio cross-section on a given date
-#'   (default is `0L`, no minimum). For both univariate and bivariate sorts
-#'   the threshold is applied to the firm count per `(portfolio, date)` of
-#'   the reported cross-section: for univariate sorts that is firms per
-#'   portfolio-date; for bivariate sorts that is firms per main-portfolio-date
-#'   summed across the secondary buckets. Cross-sections below the threshold
-#'   have their returns set to `NA`. A typical value is `5L` (the Fama-French
-#'   convention).
+#'   (default `1L`, i.e. at least one observation per reported portfolio).
+#'   For both univariate and bivariate sorts the threshold is applied to the
+#'   firm count per `(portfolio, date)` of the reported cross-section: for
+#'   univariate sorts that is firms per portfolio-date; for bivariate sorts
+#'   that is firms per main-portfolio-date summed across the secondary
+#'   buckets. Cross-sections below the threshold have their returns set to
+#'   `NA`. A typical value is `5L` (the Fama-French convention). Set to `0L`
+#'   to deactivate the check entirely.
 #' @param cap_weight A numeric value between 0 and 1 specifying the percentile
 #'   at which market capitalization is capped per date when computing capped
 #'   value-weighted excess returns (i.e., `ret_excess_vw_capped`). Defaults to
@@ -143,7 +144,7 @@ compute_portfolio_returns <- function(
   breakpoint_options_secondary = NULL,
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
-  min_portfolio_size = 0L,
+  min_portfolio_size = 1L,
   cap_weight = 0.8,
   data_options = NULL,
   quiet = FALSE
@@ -637,7 +638,7 @@ aggregate_bivariate_returns <- function(
       dplyr::across(
         c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped),
         \(x) dplyr::if_else(
-          is.nan(x) | n_firms < min_portfolio_size,
+          is.nan(x) | is.na(n_firms) | n_firms < min_portfolio_size,
           NA_real_,
           x
         )
