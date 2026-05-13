@@ -1,9 +1,10 @@
 # tidyfinance (development version)
 
+# tidyfinance 0.5.0
+
 ## New features
 
-- Added `implement_portfolio_sort()` as a convenience wrapper that combines sample construction filtering 
-  and portfolio return computation into a single call
+- Added `implement_portfolio_sort()` as a convenience wrapper that combines sample construction filtering and portfolio return computation into a single call.
 - Added `download_data_risk_free()` to download and process risk-free rate
   data from FRED, splicing TB3MS (pre-2001) with DTB4WK (from 2001
   onwards) for monthly data, and using DTB3 for daily data. Also
@@ -11,10 +12,12 @@
 - Updated `download_data_wrds_crsp()` to use `download_data_risk_free()`
   (FRED-based) instead of the Kenneth French risk-free rate when
   computing excess returns.
-- Added only_us paramter to download_data_wrds_compustat()
+- Added `download_data_risk_free()`.
+- Added `only_us` parameter to `download_data_wrds_compustat()`.
 - Added new parameters for common CRSP transformation tasks (`add_ccm_links`, `adjust_volume`) to `download_data_wrds_crsp()`.
 - Added `prc_adj` to `"crsp_monthly"` version `"v1"`.
-- Added `adjust_volume` parameter for `"crsp_daily"` version `"v1"` and `"v2"`.
+- Added `adjust_volume` parameter for `"crsp_daily"` version `"v1"` and `"v2"`
+ to `download_data_wrds_compustat()`.
 - Added `compute_rolling_value()`.
 - Added `output` parameter to `estimate_model()` to also return t-stats or residuals.
 - Added `join_lagged_values()`.
@@ -22,9 +25,9 @@
 - Added `download_data_huggingface()` and `get_available_huggingface_files()`. and support for `type = "hf_high_frequency_sp500"`.
 - Deprecated `type` parameter in favor of `domain` and `dataset`.
 - Added `detail` parameter to `estimate_fama_macbeth()` to include average `n_obs`, `r_squared`, and `adj_r_squared`.
-- Removed lower bound of excess returns for CRSP data. 
+- Removed lower bound of excess returns in `download_data_wrds_crsp()`. 
 - Removed `add_lag_columns()` in favor of `add_lagged_columns()`.
-- Added domain `"tidyfinance"` with datasets `"high_frequency_sp500"` and `"factor_library"`.
+- Added domain `"tidyfinance"` with datasets `"high_frequency_sp500"`, `"factor_library"`, and `"risk_free"`.
 
 ## Improvements
 
