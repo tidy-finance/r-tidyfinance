@@ -72,10 +72,14 @@ compute_long_short_returns <- function(
         )
     ) |>
     mutate(
-      "{data_options$portfolio}" := if_else(
-        .data[[data_options$portfolio]] == min(.data[[data_options$portfolio]]),
-        "bottom",
-        "top"
+      "{data_options$portfolio}" := factor(
+        if_else(
+          .data[[data_options$portfolio]] ==
+            min(.data[[data_options$portfolio]]),
+          "bottom",
+          "top"
+        ),
+        levels = c("bottom", "top")
       )
     ) |>
     ungroup() |>
@@ -84,7 +88,11 @@ compute_long_short_returns <- function(
       names_to = "ret_measure",
       values_to = "ret"
     ) |>
-    tidyr::pivot_wider(names_from = portfolio, values_from = ret) |>
+    tidyr::pivot_wider(
+      names_from = portfolio,
+      values_from = ret,
+      names_expand = TRUE
+    ) |>
     check_new_col("long_short_return") |>
     mutate(
       long_short_return = (top - bottom) *

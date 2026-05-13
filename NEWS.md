@@ -39,6 +39,7 @@
 - Removed erroneous time zone adjustment in `download_data_wrds_trace_enhanced()` [#133](https://github.com/tidy-finance/r-tidyfinance/issues/133). 
 - Replaced tabs in `list_supported_types_ff()` with underscores [#134](https://github.com/tidy-finance/r-tidyfinance/issues/134).
 - `compute_portfolio_returns()` and `implement_portfolio_sort()` now apply `min_portfolio_size` to the reported portfolio cross-section. For bivariate sorts this is the firm count per `(main_portfolio, date)` summed across secondary buckets, not per `(main, secondary, date)` cell as before. Previously, setting `min_portfolio_size` to the number of cells (e.g. `n_main * n_secondary`) silently voided every cell. Univariate behaviour is unchanged. The default has changed from `0L` to `1L`, so each reported portfolio is required to have at least one observation by default; pass `min_portfolio_size = 0L` to deactivate the check. The param documentation has also been corrected to reflect that small portfolios receive `NA` (not zero).
+- `compute_long_short_returns()` no longer errors with `object 'top' not found` when the input panel contains only one distinct portfolio (e.g., because `assign_portfolio()` collapsed to a single bucket on a constant sorting variable). The long-short return is now `NA` on such dates, consistent with "no investment, no return", instead of crashing.
 
 # tidyfinance 0.4.5
 
