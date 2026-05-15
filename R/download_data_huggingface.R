@@ -352,23 +352,37 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
 
 #' Download factor library returns for a vector of portfolio IDs
 #'
-#' Given a vector of portfolio IDs from the `tidy-finance/factor-library-grid`,
-#' this function downloads the corresponding return data from the
-#' `tidy-finance/factor-library` dataset on Hugging Face. It identifies the
-#' unique `(sorting_variable, sorting_variable_lag, sorting_method,
-#' n_portfolios_main)` combinations for the requested IDs, downloads one
-#' parquet file per combination in full, and then inner-joins to retain only
-#' the requested IDs. The grid metadata is joined back onto the result.
+#' Given a vector of portfolio IDs from the `tidy-finance/factor-library-grid`
+#' Hugging Face dataset, downloads the corresponding return data from the
+#' `tidy-finance/factor-library` dataset on Hugging Face. The function
+#' identifies the unique `(sorting_variable, sorting_variable_lag,
+#' sorting_method, n_portfolios_main)` combinations for the requested IDs,
+#' downloads one parquet file per combination in full, and then inner-joins
+#' to retain only the requested IDs. The grid metadata is joined back onto
+#' the result.
 #'
-#' Raises an error if `ids` is empty or contains IDs that cannot be matched to
-#' a parquet file (listing the affected IDs and their key columns).
+#' Use this function when you already know the portfolio IDs you want (for
+#' example, from a previous call to [download_data_huggingface()] with
+#' `dataset = "factor_library"`). To resolve IDs from filter criteria
+#' (sorting variable, weighting scheme, breakpoints, etc.) and download in
+#' a single call, use [download_data_huggingface()] instead.
 #'
-#' @param ids Vector of portfolio IDs to download, as returned by
-#'   `filter_factor_library_grid()`.
+#' Raises an error if `ids` is empty or contains IDs that cannot be matched
+#' to a parquet file (listing the affected IDs and their key columns).
 #'
-#' @return A tibble of portfolio returns with the grid metadata columns for the
-#'   requested IDs appended.
-#' @noRd
+#' @param ids Integer or numeric vector of portfolio IDs to download. IDs
+#'   correspond to rows of the `tidy-finance/factor-library-grid` dataset.
+#'
+#' @returns A tibble of portfolio returns with the grid metadata columns for
+#'   the requested IDs appended.
+#'
+#' @family download functions
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'   download_factor_library_ids(c(1L, 2L, 3L))
+#' }
 download_factor_library_ids <- function(ids) {
   organization <- "tidy-finance"
   dataset_name <- "factor-library"
