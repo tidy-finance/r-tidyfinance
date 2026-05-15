@@ -66,6 +66,7 @@ Other download functions:
 \code{\link{download_data_macro_predictors}()},
 \code{\link{download_data_osap}()},
 \code{\link{download_data_risk_free}()},
-\code{\link{download_data_stock_prices}()}
+\code{\link{download_data_stock_prices}()},
+\code{\link{download_factor_library_ids}()}
 }
 \concept{download functions}
