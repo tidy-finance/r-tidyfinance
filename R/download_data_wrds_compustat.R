@@ -19,7 +19,8 @@
 #' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #' @param additional_columns Additional columns from the Compustat table as a
 #'   character vector.
-#' @param only_us A logical indicating whether only US firms should be returned.
+#' @param usd_only A logical indicating whether only USD-denominated shares
+#'   should be returned.
 #' @returns A data frame with financial data for the specified period,
 #'   including variables for book equity (be), operating profitability (op),
 #'   investment (inv), and others.
@@ -57,7 +58,7 @@ download_data_wrds_compustat <- function(
   end_date = NULL,
   type = deprecated(),
   additional_columns = NULL,
-  only_us = FALSE
+  usd_only = FALSE
 ) {
   # Handle explicit type argument
   if (lifecycle::is_present(type)) {
@@ -159,7 +160,7 @@ download_data_wrds_compustat <- function(
       ungroup() |>
       mutate(date = floor_date(datadate, "month"))
 
-    if (isTRUE(only_us)) {
+    if (isTRUE(usd_only)) {
       compustat <- compustat |>
         filter(.data$curcd == "USD")
     }
@@ -214,7 +215,7 @@ download_data_wrds_compustat <- function(
       ungroup() |>
       filter(if_else(is.na(rdq), TRUE, date < rdq))
 
-    if (isTRUE(only_us)) {
+    if (isTRUE(usd_only)) {
       compustat <- compustat |>
         filter(.data$curcdq == "USD")
     }

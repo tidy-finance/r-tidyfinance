@@ -10,7 +10,7 @@ download_data_wrds_compustat(
   end_date = NULL,
   type = deprecated(),
   additional_columns = NULL,
-  only_us = FALSE
+  usd_only = FALSE
 )
 }
 \arguments{
@@ -30,7 +30,8 @@ the dataset is returned.}
 \item{additional_columns}{Additional columns from the Compustat table as a
 character vector.}
 
-\item{only_us}{A logical indicating whether only US firms should be returned.}
+\item{usd_only}{A logical indicating whether only USD-denominated shares
+should be returned.}
 }
 \value{
 A data frame with financial data for the specified period,
