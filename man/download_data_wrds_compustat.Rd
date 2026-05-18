@@ -10,7 +10,7 @@ download_data_wrds_compustat(
   end_date = NULL,
   type = deprecated(),
   additional_columns = NULL,
-  usd_only = FALSE,
+  only_usd = FALSE,
   only_us = deprecated()
 )
 }
@@ -31,10 +31,10 @@ the dataset is returned.}
 \item{additional_columns}{Additional columns from the Compustat table as a
 character vector.}
 
-\item{usd_only}{A logical indicating whether only USD-denominated shares
+\item{only_usd}{A logical indicating whether only USD-denominated shares
 should be returned.}
 
-\item{only_us}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{usd_only} instead.}
+\item{only_us}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{only_usd} instead.}
 }
 \value{
 A data frame with financial data for the specified period,

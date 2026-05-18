@@ -1,8 +1,8 @@
 # tidyfinance (development version)
 
-- Renamed `only_us` parameter in `download_data_wrds_compustat()` to `usd_only`
+- Renamed `only_us` parameter in `download_data_wrds_compustat()` to `only_usd`
   to reflect that the filter keeps USD-denominated shares only. The old name
-  is deprecated and forwards to `usd_only` with a warning.
+  is deprecated and forwards to `only_usd` with a warning.
 
 # tidyfinance 0.5.0
 

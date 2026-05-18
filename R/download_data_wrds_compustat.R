@@ -19,9 +19,9 @@
 #' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #' @param additional_columns Additional columns from the Compustat table as a
 #'   character vector.
-#' @param usd_only A logical indicating whether only USD-denominated shares
+#' @param only_usd A logical indicating whether only USD-denominated shares
 #'   should be returned.
-#' @param only_us `r lifecycle::badge("deprecated")` Use `usd_only` instead.
+#' @param only_us `r lifecycle::badge("deprecated")` Use `only_usd` instead.
 #' @returns A data frame with financial data for the specified period,
 #'   including variables for book equity (be), operating profitability (op),
 #'   investment (inv), and others.
@@ -59,7 +59,7 @@ download_data_wrds_compustat <- function(
   end_date = NULL,
   type = deprecated(),
   additional_columns = NULL,
-  usd_only = FALSE,
+  only_usd = FALSE,
   only_us = deprecated()
 ) {
   # Handle explicit type argument
@@ -77,9 +77,9 @@ download_data_wrds_compustat <- function(
     lifecycle::deprecate_warn(
       when = "0.5.1",
       what = "download_data_wrds_compustat(only_us)",
-      with = "download_data_wrds_compustat(usd_only)"
+      with = "download_data_wrds_compustat(only_usd)"
     )
-    usd_only <- only_us
+    only_usd <- only_us
   }
 
   # Handle legacy type passed as dataset argument
@@ -172,7 +172,7 @@ download_data_wrds_compustat <- function(
       ungroup() |>
       mutate(date = floor_date(datadate, "month"))
 
-    if (isTRUE(usd_only)) {
+    if (isTRUE(only_usd)) {
       compustat <- compustat |>
         filter(.data$curcd == "USD")
     }
@@ -227,7 +227,7 @@ download_data_wrds_compustat <- function(
       ungroup() |>
       filter(if_else(is.na(rdq), TRUE, date < rdq))
 
-    if (isTRUE(usd_only)) {
+    if (isTRUE(only_usd)) {
       compustat <- compustat |>
         filter(.data$curcdq == "USD")
     }
