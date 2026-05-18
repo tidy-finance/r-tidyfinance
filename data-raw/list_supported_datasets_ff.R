@@ -1,10 +1,12 @@
-# This script generates the hardcoded tibble used in
-# list_supported_datasets_ff(). Run this script if the list of available
-# Fama-French datasets needs to be updated. The output of
-# datapasta::tribble_paste() should replace the tribble() call in
-# R/list_supported_datasets.R.
+# nolint start: commented_code_linter.
+# This script generates the hardcoded tibble used in the helper
+# list_supported_datasets_ff inside R/list_supported_datasets.R. Run it
+# when the list of available Fama-French datasets needs updating; the
+# output of datapasta::tribble_paste should replace the existing
+# tribble call in that helper.
 #
 # Requires: frenchdata, dplyr, datapasta
+# nolint end
 
 library(dplyr)
 

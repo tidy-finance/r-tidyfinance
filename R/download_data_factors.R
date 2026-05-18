@@ -75,7 +75,8 @@ download_data_factors_ff <- function(
       with = "download_data_factors_ff(dataset)",
       details = paste0(
         "Column type should be replaced with dataset name. ",
-        "Use `list_supported_datasets(domain = 'Fama-French')` to see the mapping."
+        "Use `list_supported_datasets(domain = 'Fama-French')` to ",
+        "see the mapping."
       )
     )
     parsed <- parse_type_to_domain_dataset(dataset)
@@ -335,7 +336,10 @@ check_supported_dataset_ff <- function(dataset) {
   if (!dataset %in% ff_types$dataset_name) {
     cli::cli_abort(c(
       "Unsupported Fama-French dataset: {.val {dataset}}",
-      "i" = "Use {.fn list_supported_datasets} with {.arg domain = 'Fama-French'}",
+      "i" = paste0(
+        "Use {.fn list_supported_datasets} with ",
+        "{.arg domain = 'Fama-French'}"
+      ),
       "to see available datasets."
     ))
   }
