@@ -217,6 +217,34 @@ test_that(
   }
 )
 
+# factor_library_grid dispatch (mocked) ---------------------------------
+
+test_that(
+  paste(
+    "download_data_huggingface('factor_library_grid') returns the grid tibble"
+  ),
+  {
+    grid_rows <- tibble::tibble(
+      id = c(1L, 2L),
+      sorting_variable = c("sv_me", "sv_bm")
+    )
+
+    mock_files <- function(organization, dataset) {
+      make_grid_parquet_file(grid_rows)
+    }
+
+    with_mocked_bindings(
+      get_available_huggingface_files = mock_files,
+      {
+        result <- download_data_huggingface("factor_library_grid")
+        expect_s3_class(result, "tbl_df")
+        expect_equal(nrow(result), 2L)
+        expect_true(all(c("id", "sorting_variable") %in% colnames(result)))
+      }
+    )
+  }
+)
+
 # Live smoke test -------------------------------------------------------
 
 test_that(
