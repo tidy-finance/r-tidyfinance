@@ -1,5 +1,9 @@
 # tidyfinance (development version)
 
+- Added `download_factor_library_grid()` to fetch the
+  `tidy-finance/factor-library-grid` dataset from Hugging Face. Also
+  accessible via `download_data("tidyfinance", "factor_library_grid")`.
+
 # tidyfinance 0.5.0
 
 ## New features
