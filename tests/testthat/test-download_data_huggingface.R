@@ -217,6 +217,65 @@ test_that(
   }
 )
 
+# ids shortcut (mocked) -------------------------------------------------
+
+test_that(
+  paste(
+    "download_data_huggingface('factor_library', ids = ...) delegates to",
+    "download_factor_library_ids() and skips the grid filter"
+  ),
+  {
+    grid_rows <- tibble::tibble(
+      id = c(1L, 2L),
+      sorting_variable = c("sv_me", "sv_me"),
+      sorting_variable_lag = c("3m", "3m"),
+      sorting_method = c("univariate", "univariate"),
+      n_portfolios_main = c(10L, 10L)
+    )
+    returns_rows <- tibble::tibble(id = c(1L, 2L), ret = c(0.01, 0.02))
+
+    mock_files <- function(organization, dataset) {
+      if (dataset == "factor-library-grid") {
+        make_grid_parquet_file(grid_rows)
+      } else {
+        make_returns_parquet_file(
+          returns_rows,
+          "me",
+          "3m",
+          "univariate",
+          10L
+        )
+      }
+    }
+
+    with_mocked_bindings(
+      get_available_huggingface_files = mock_files,
+      {
+        result <- download_data_huggingface(
+          "factor_library",
+          ids = c(1L, 2L)
+        )
+        expect_s3_class(result, "tbl_df")
+        expect_equal(sort(result$id), c(1L, 2L))
+      }
+    )
+  }
+)
+
+test_that(
+  "download_data_huggingface('factor_library') errors on ids + filters",
+  {
+    expect_error(
+      download_data_huggingface(
+        "factor_library",
+        ids = c(1L, 2L),
+        sorting_variable = "me"
+      ),
+      regexp = "cannot be combined with filter arguments"
+    )
+  }
+)
+
 # Live smoke test -------------------------------------------------------
 
 test_that(

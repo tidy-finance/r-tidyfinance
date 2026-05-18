@@ -1,5 +1,10 @@
 # tidyfinance (development version)
 
+- `download_data("tidyfinance", "factor_library", ids = <vector>)` now
+  delegates directly to `download_factor_library_ids()`, bypassing the
+  grid filter. Passing `ids` together with filter arguments raises an
+  informative error.
+
 # tidyfinance 0.5.0
 
 ## New features

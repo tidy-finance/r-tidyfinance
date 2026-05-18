@@ -24,16 +24,20 @@ format. Only used for \code{"high_frequency_sp500"}.}
 
 \item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
 
-\item{...}{For \code{dataset = "factor_library"}: named arguments used to filter
-the portfolio grid. Each argument takes the form \code{column = value}, where
-\code{value} may be a vector to match multiple levels. Optionally pass
-\code{fill_all = TRUE} to leave unspecified columns unrestricted (default:
-\code{FALSE}, i.e. unspecified columns are fixed at the defaults listed below).
-Passing \code{NULL} for any parameter removes that filter entirely, returning
-all values for that column (e.g., \code{min_size_quantile = NULL} includes all
-size groups). Passing an unrecognised column name raises an error listing
-the supported names. Ignored when \code{dataset != "factor_library"}. See the
-Details section for supported columns and their defaults.}
+\item{...}{For \code{dataset = "factor_library"}: either named arguments used
+to filter the portfolio grid, or \verb{ids = <vector>} to bypass the grid
+filter and download specific portfolios directly via
+\code{\link[=download_factor_library_ids]{download_factor_library_ids()}}. Filter arguments take the form
+\code{column = value}, where \code{value} may be a vector to match multiple
+levels. Optionally pass \code{fill_all = TRUE} to leave unspecified columns
+unrestricted (default: \code{FALSE}, i.e. unspecified columns are fixed at
+the defaults listed below). Passing \code{NULL} for any parameter removes
+that filter entirely, returning all values for that column (e.g.,
+\code{min_size_quantile = NULL} includes all size groups). Passing an
+unrecognised column name raises an error listing the supported names.
+\code{ids} cannot be combined with filter arguments. Ignored when
+\code{dataset != "factor_library"}. See the Details section for supported
+columns and their defaults.}
 }
 \value{
 A tibble with the downloaded data. For \code{"high_frequency_sp500"},
@@ -103,6 +107,7 @@ portfolios: \code{"VW"} for value-weighted or \code{"EW"} for equal-weighted.
   download_data_huggingface(
     "factor_library", sorting_variable = "ag", fill_all = TRUE
   )
+  download_data_huggingface("factor_library", ids = c(1L, 2L, 3L))
 }
 }
 \seealso{

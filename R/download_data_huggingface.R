@@ -82,16 +82,20 @@ get_available_huggingface_files <- function(organization, dataset) {
 #' @param end_date Date or character. End date (inclusive) in `"YYYY-MM-DD"`
 #'   format. Only used for `"high_frequency_sp500"`.
 #' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
-#' @param ... For `dataset = "factor_library"`: named arguments used to filter
-#'   the portfolio grid. Each argument takes the form `column = value`, where
-#'   `value` may be a vector to match multiple levels. Optionally pass
-#'   `fill_all = TRUE` to leave unspecified columns unrestricted (default:
-#'   `FALSE`, i.e. unspecified columns are fixed at the defaults listed below).
-#'   Passing `NULL` for any parameter removes that filter entirely, returning
-#'   all values for that column (e.g., `min_size_quantile = NULL` includes all
-#'   size groups). Passing an unrecognised column name raises an error listing
-#'   the supported names. Ignored when `dataset != "factor_library"`. See the
-#'   Details section for supported columns and their defaults.
+#' @param ... For `dataset = "factor_library"`: either named arguments used
+#'   to filter the portfolio grid, or `ids = <vector>` to bypass the grid
+#'   filter and download specific portfolios directly via
+#'   [download_factor_library_ids()]. Filter arguments take the form
+#'   `column = value`, where `value` may be a vector to match multiple
+#'   levels. Optionally pass `fill_all = TRUE` to leave unspecified columns
+#'   unrestricted (default: `FALSE`, i.e. unspecified columns are fixed at
+#'   the defaults listed below). Passing `NULL` for any parameter removes
+#'   that filter entirely, returning all values for that column (e.g.,
+#'   `min_size_quantile = NULL` includes all size groups). Passing an
+#'   unrecognised column name raises an error listing the supported names.
+#'   `ids` cannot be combined with filter arguments. Ignored when
+#'   `dataset != "factor_library"`. See the Details section for supported
+#'   columns and their defaults.
 #'
 #' @details
 #' **Note on `dataset = "factor_library"` defaults:** The defaults below reflect
@@ -157,6 +161,7 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'   download_data_huggingface(
 #'     "factor_library", sorting_variable = "ag", fill_all = TRUE
 #'   )
+#'   download_data_huggingface("factor_library", ids = c(1L, 2L, 3L))
 #' }
 download_data_huggingface <- function(
   dataset = NULL,
@@ -514,24 +519,45 @@ download_factor_library_ids <- function(ids) {
 
 #' Download factor library data from Hugging Face
 #'
-#' A thin wrapper that combines `filter_factor_library_grid()` and
-#' `download_factor_library_ids()`: it resolves matching portfolio IDs
-#' from the grid and then downloads the corresponding return data.
+#' A thin wrapper around `download_factor_library_ids()` that either takes
+#' an explicit `ids` vector or resolves matching portfolio IDs from the
+#' grid via `filter_factor_library_grid()` before downloading the
+#' corresponding return data.
 #'
 #' @param ... Named filter arguments forwarded to
 #'   `filter_factor_library_grid()`. See
 #'   `filter_factor_library_grid()` for the full list of supported
-#'   columns and their defaults.
+#'   columns and their defaults. Ignored when `ids` is provided.
+#' @param ids Optional integer or numeric vector of portfolio IDs. When
+#'   supplied, the filter arguments in `...` are not allowed and the helper
+#'   delegates directly to `download_factor_library_ids()`.
 #' @param fill_all Logical(1). Forwarded to
 #'   `filter_factor_library_grid()`. When `TRUE`, columns not
 #'   specified in `...` are left unrestricted rather than set to
-#'   their defaults.
+#'   their defaults. Ignored when `ids` is provided.
 #'
 #' @return A tibble of portfolio returns with grid metadata columns
 #'   appended, one row per portfolio-period observation for the
 #'   matched IDs.
 #' @noRd
-download_data_hugging_face_factor_library <- function(..., fill_all = FALSE) {
+download_data_hugging_face_factor_library <- function(
+  ...,
+  ids = NULL,
+  fill_all = FALSE
+) {
+  if (!is.null(ids)) {
+    if (...length() > 0) {
+      cli::cli_abort(c(
+        "{.arg ids} cannot be combined with filter arguments.",
+        "i" = paste(
+          "Pass {.arg ids} alone to download specific portfolios, or",
+          "use filter arguments (e.g. {.arg sorting_variable}) to",
+          "resolve IDs from the grid."
+        )
+      ))
+    }
+    return(download_factor_library_ids(ids))
+  }
   ids <- filter_factor_library_grid(..., fill_all = fill_all)
   download_factor_library_ids(ids)
 }

@@ -38,8 +38,10 @@ dataset type.}
 depending on the \code{domain}. For instance, if \code{domain} is
 \code{"constituents"}, arguments are passed to
 \code{download_data_constituents()}. If \code{domain} is \code{"tidyfinance"} and
-\code{dataset} is \code{"factor_library"}, arguments are used to filter the
-portfolio grid (e.g., \code{sorting_variable}, \code{rebalancing}, \code{fill_all});
+\code{dataset} is \code{"factor_library"}, arguments are either filter inputs
+(e.g., \code{sorting_variable}, \code{rebalancing}, \code{fill_all}) or an explicit
+\code{ids} vector that bypasses the grid filter and downloads the
+specified portfolios directly via \code{download_factor_library_ids()};
 see \code{download_data_huggingface()} for details.}
 }
 \value{
@@ -83,6 +85,7 @@ download_data(
   sorting_variable = "52w",
   rebalancing = "annual"
 )
+download_data("tidyfinance", "factor_library", ids = c(1L, 2L, 3L))
 }
 }
 \seealso{
