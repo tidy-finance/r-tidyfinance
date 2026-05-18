@@ -21,6 +21,7 @@
 #'   character vector.
 #' @param usd_only A logical indicating whether only USD-denominated shares
 #'   should be returned.
+#' @param only_us `r lifecycle::badge("deprecated")` Use `usd_only` instead.
 #' @returns A data frame with financial data for the specified period,
 #'   including variables for book equity (be), operating profitability (op),
 #'   investment (inv), and others.
@@ -58,7 +59,8 @@ download_data_wrds_compustat <- function(
   end_date = NULL,
   type = deprecated(),
   additional_columns = NULL,
-  usd_only = FALSE
+  usd_only = FALSE,
+  only_us = deprecated()
 ) {
   # Handle explicit type argument
   if (lifecycle::is_present(type)) {
@@ -68,6 +70,16 @@ download_data_wrds_compustat <- function(
       details = "Use the `dataset` argument instead."
     )
     dataset <- sub("^wrds_", "", type)
+  }
+
+  # Handle deprecated only_us argument
+  if (lifecycle::is_present(only_us)) {
+    lifecycle::deprecate_warn(
+      when = "0.5.1",
+      what = "download_data_wrds_compustat(only_us)",
+      with = "download_data_wrds_compustat(usd_only)"
+    )
+    usd_only <- only_us
   }
 
   # Handle legacy type passed as dataset argument

@@ -10,7 +10,8 @@ download_data_wrds_compustat(
   end_date = NULL,
   type = deprecated(),
   additional_columns = NULL,
-  usd_only = FALSE
+  usd_only = FALSE,
+  only_us = deprecated()
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ character vector.}
 
 \item{usd_only}{A logical indicating whether only USD-denominated shares
 should be returned.}
+
+\item{only_us}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{usd_only} instead.}
 }
 \value{
 A data frame with financial data for the specified period,
