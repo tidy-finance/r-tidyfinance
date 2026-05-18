@@ -104,7 +104,9 @@ download_data_constituents <- function(index) {
       }
 
       constituents_processed <- constituents_processed |>
+        mutate(symbol = trimws(symbol)) |>
         filter(!symbol %in% symbol_blacklist) |>
+        filter(grepl("[A-Za-z0-9]", symbol)) |>
         filter(name != "") |>
         filter(!grepl(tolower(index), tolower(name))) |>
         filter(!grepl("CASH", name)) |>

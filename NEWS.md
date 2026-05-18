@@ -1,5 +1,14 @@
 # tidyfinance (development version)
 
+## Bug fixes
+
+- `download_data_constituents()` now drops rows whose source ticker contains
+  no alphanumeric characters (e.g. blank, whitespace, or `"-"`). Previously
+  such rows survived the blacklist filter and ended up with `symbol == "-"`
+  in the returned tibble — observed for unlisted CVR/contra/rights entries
+  in Russell 1000/2000/3000, S&P 500, S&P SmallCap 600, MSCI World, MSCI
+  Emerging Markets, and MSCI ACWI.
+
 # tidyfinance 0.5.0
 
 ## New features
