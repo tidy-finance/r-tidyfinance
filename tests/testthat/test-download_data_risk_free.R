@@ -89,8 +89,8 @@ test_that("download_data via tidyfinance risk_free routes correctly", {
   expect_true(all(c("date", "risk_free") %in% colnames(data)))
 })
 
-test_that("risk_free appears in list_supported_types for tidyfinance", {
-  types <- list_supported_types()
-  tf_types <- types[types$domain == "tidyfinance", ]
-  expect_true("risk_free" %in% tf_types$type)
+test_that("risk_free appears in list_supported_datasets for tidyfinance", {
+  datasets <- list_supported_datasets()
+  tf_datasets <- datasets[datasets$domain == "tidyfinance", ]
+  expect_true("risk_free" %in% tf_datasets$type)
 })

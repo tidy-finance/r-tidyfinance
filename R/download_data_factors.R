@@ -75,7 +75,7 @@ download_data_factors_ff <- function(
       with = "download_data_factors_ff(dataset)",
       details = paste0(
         "Column type should be replaced with dataset name. ",
-        "Use `list_supported_types(domain = 'Fama-French')` to see the mapping."
+        "Use `list_supported_datasets(domain = 'Fama-French')` to see the mapping."
       )
     )
     parsed <- parse_type_to_domain_dataset(dataset)
@@ -207,7 +207,7 @@ download_data_factors_q <- function(
       with = "download_data_factors_q(dataset)",
       details = paste0(
         "Column type should be replaced with dataset name. ",
-        "Use `list_supported_types(domain = 'Global Q')` to see the mapping."
+        "Use `list_supported_datasets(domain = 'Global Q')` to see the mapping."
       )
     )
     parsed <- parse_type_to_domain_dataset(dataset)
@@ -279,8 +279,8 @@ download_data_factors_q <- function(
 #' @noRd
 is_legacy_type_ff <- function(x) {
   ff_types <- dplyr::bind_rows(
-    list_supported_types_ff(),
-    list_supported_types_ff_legacy()
+    list_supported_datasets_ff(),
+    list_supported_datasets_ff_legacy()
   )
   x %in% ff_types$type
 }
@@ -288,7 +288,7 @@ is_legacy_type_ff <- function(x) {
 #' Check if a string is a legacy Global Q type
 #' @noRd
 is_legacy_type_q <- function(x) {
-  q_types <- list_supported_types_q()
+  q_types <- list_supported_datasets_q()
   x %in% q_types$type
 }
 
@@ -328,14 +328,14 @@ determine_frequency_q <- function(dataset) {
 #' @noRd
 check_supported_dataset_ff <- function(dataset) {
   ff_types <- dplyr::bind_rows(
-    list_supported_types_ff(),
-    list_supported_types_ff_legacy()
+    list_supported_datasets_ff(),
+    list_supported_datasets_ff_legacy()
   )
 
   if (!dataset %in% ff_types$dataset_name) {
     cli::cli_abort(c(
       "Unsupported Fama-French dataset: {.val {dataset}}",
-      "i" = "Use {.fn list_supported_types} with {.arg domain = 'Fama-French'}",
+      "i" = "Use {.fn list_supported_datasets} with {.arg domain = 'Fama-French'}",
       "to see available datasets."
     ))
   }
@@ -344,12 +344,12 @@ check_supported_dataset_ff <- function(dataset) {
 #' Check if Global Q dataset is supported
 #' @noRd
 check_supported_dataset_q <- function(dataset) {
-  q_types <- list_supported_types_q()
+  q_types <- list_supported_datasets_q()
 
   if (!dataset %in% q_types$dataset_name) {
     cli::cli_abort(c(
       "Unsupported Global Q dataset: {.val {dataset}}",
-      "i" = "Use {.fn list_supported_types} with {.arg domain = 'Global Q'}",
+      "i" = "Use {.fn list_supported_datasets} with {.arg domain = 'Global Q'}",
       "to see available datasets."
     ))
   }

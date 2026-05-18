@@ -1,5 +1,11 @@
 # tidyfinance (development version)
 
+- Renamed `list_supported_types()` to `list_supported_datasets()`
+  ([#242](https://github.com/tidy-finance/r-tidyfinance/issues/242)). The
+  old name remains exported as a soft-deprecated alias that forwards to the
+  new function. Internal helpers were renamed accordingly
+  (e.g. `list_supported_types_ff()` -> `list_supported_datasets_ff()`).
+
 # tidyfinance 0.5.0
 
 ## New features

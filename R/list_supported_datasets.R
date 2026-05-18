@@ -11,9 +11,9 @@
 #'   domain to which the dataset belongs, always "Fama-French").
 #'
 #' @family utility functions
-list_supported_types_ff <- function() {
+list_supported_datasets_ff <- function() {
   # nolint start
-  # To update this list, run data-raw/list_supported_types_ff.R and replace
+  # To update this list, run data-raw/list_supported_datasets_ff.R and replace
   # the tribble() call below with the output of datapasta::tribble_paste().
   tribble(
     ~type                                                                                                         ,
@@ -624,14 +624,14 @@ list_supported_types_ff <- function() {
 #' weekly, monthly). Each dataset type is associated with a specific Fama-French
 #' model (e.g., 3 factors, 5 factors). Additionally, it annotates each dataset
 #' with the domain "Fama-French". Not included in the exported
-#' `list_supported_types()` function.
+#' `list_supported_datasets()` function.
 #'
 #' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`
 #'   (a descriptive name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, always "Fama-French").
 #'
 #' @family utility functions
-list_supported_types_ff_legacy <- function() {
+list_supported_datasets_ff_legacy <- function() {
   # nolint start
   tribble(
     ~type                                 ,
@@ -687,7 +687,7 @@ list_supported_types_ff_legacy <- function() {
 #'   `dataset_name` (the file name of the dataset), and `domain` (the
 #'   domain to which the dataset belongs, always "Global Q").
 #'
-list_supported_types_q <- function() {
+list_supported_datasets_q <- function() {
   # nolint start
   tribble(
     ~type                        ,
@@ -723,7 +723,7 @@ list_supported_types_q <- function() {
 #'   always "Goyal-Welch").
 #'
 #' @family utility functions
-list_supported_types_macro_predictors <- function() {
+list_supported_datasets_macro_predictors <- function() {
   # nolint start
   tribble(
     ~type                        ,
@@ -749,7 +749,7 @@ list_supported_types_macro_predictors <- function() {
 #'   domain to which the dataset belongs, always "WRDS").
 #'
 #' @family utility functions
-list_supported_types_wrds <- function() {
+list_supported_datasets_wrds <- function() {
   # nolint start
   tribble(
     ~type                                           ,
@@ -783,7 +783,7 @@ list_supported_types_wrds <- function() {
 #'   dataset belongs).
 #'
 #' @family utility functions
-list_supported_types_other <- function() {
+list_supported_datasets_other <- function() {
   tibble(
     "type" = c(
       "stock_prices",
@@ -815,19 +815,19 @@ list_supported_types_other <- function() {
   )
 }
 
-#' List All Supported Dataset Types
+#' List All Supported Datasets
 #'
-#' Aggregates and returns a comprehensive tibble of all supported dataset
-#' types from different domains. It includes various datasets across
-#' different frequencies (daily, weekly, monthly, quarterly, annual) and
-#' models (e.g., q5 factors, Fama-French 3 and 5 factors, macro predictors).
+#' Aggregates and returns a comprehensive tibble of all supported datasets
+#' from different domains. It includes various datasets across different
+#' frequencies (daily, weekly, monthly, quarterly, annual) and models
+#' (e.g., q5 factors, Fama-French 3 and 5 factors, macro predictors).
 #'
-#' @param domain A character vector to filter for domain-specific types
-#'   (e.g., c("WRDS", "Fama-French"))
-#' @param as_vector Logical indicating whether types should be returned as
-#'   a character vector instead of a data frame.
+#' @param domain A character vector to filter for domain-specific datasets
+#'   (e.g., c("WRDS", "Fama-French")).
+#' @param as_vector Logical indicating whether datasets should be returned
+#'   as a character vector instead of a data frame.
 #'
-#' @returns A tibble aggregating all supported dataset types with columns:
+#' @returns A tibble aggregating all supported datasets with columns:
 #'   `type` (the type of dataset), `dataset_name` (a descriptive name or
 #'   file name of the dataset), and `domain` (the domain to which the
 #'   dataset belongs, e.g., "Global Q", "Fama-French", "Goyal-Welch").
@@ -836,30 +836,44 @@ list_supported_types_other <- function() {
 #' @export
 #'
 #' @examples
-#' # List all supported types as a data frame
-#' list_supported_types()
+#' # List all supported datasets as a data frame
+#' list_supported_datasets()
 #'
 #' # Filter by domain
-#' list_supported_types(domain = "WRDS")
+#' list_supported_datasets(domain = "WRDS")
 #'
-#' # List supported types as a vector
-#' list_supported_types(as_vector = TRUE)
-list_supported_types <- function(domain = NULL, as_vector = FALSE) {
-  supported_types <- dplyr::bind_rows(
-    list_supported_types_q(),
-    list_supported_types_ff(),
-    list_supported_types_macro_predictors(),
-    list_supported_types_wrds(),
-    list_supported_types_other()
+#' # List supported datasets as a vector
+#' list_supported_datasets(as_vector = TRUE)
+list_supported_datasets <- function(domain = NULL, as_vector = FALSE) {
+  supported_datasets <- dplyr::bind_rows(
+    list_supported_datasets_q(),
+    list_supported_datasets_ff(),
+    list_supported_datasets_macro_predictors(),
+    list_supported_datasets_wrds(),
+    list_supported_datasets_other()
   )
   if (!is.null(domain)) {
     filter_domains <- domain
-    supported_types <- supported_types |>
+    supported_datasets <- supported_datasets |>
       dplyr::filter(.data$domain %in% filter_domains)
   }
   if (as_vector) {
-    supported_types$type
+    supported_datasets$type
   } else {
-    supported_types
+    supported_datasets
   }
+}
+
+#' @rdname list_supported_datasets
+#' @description
+#' `list_supported_types()` is a soft-deprecated alias for
+#' `list_supported_datasets()`.
+#' @export
+list_supported_types <- function(domain = NULL, as_vector = FALSE) {
+  lifecycle::deprecate_soft(
+    when = "0.5.1",
+    what = "list_supported_types()",
+    with = "list_supported_datasets()"
+  )
+  list_supported_datasets(domain = domain, as_vector = as_vector)
 }

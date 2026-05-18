@@ -93,7 +93,7 @@ download_data <- function(
       what = "download_data(type)",
       details = paste0(
         "Column type should be replaced with domain and dataset. ",
-        "Use `list_supported_types()` to see the mapping."
+        "Use `list_supported_datasets()` to see the mapping."
       )
     )
     parsed <- parse_type_to_domain_dataset(domain)
@@ -187,13 +187,13 @@ is_legacy_type <- function(x) {
 
   # Check all known legacy type patterns
   ff_types <- dplyr::bind_rows(
-    list_supported_types_ff(),
-    list_supported_types_ff_legacy()
+    list_supported_datasets_ff(),
+    list_supported_datasets_ff_legacy()
   )
-  q_types <- list_supported_types_q()
-  macro_types <- list_supported_types_macro_predictors()
-  wrds_types <- list_supported_types_wrds()
-  other_types <- list_supported_types_other() |>
+  q_types <- list_supported_datasets_q()
+  macro_types <- list_supported_datasets_macro_predictors()
+  wrds_types <- list_supported_datasets_wrds()
+  other_types <- list_supported_datasets_other() |>
     dplyr::filter(.data$domain != "tidyfinance", .data$type != "osap")
 
   all_types <- dplyr::bind_rows(
@@ -212,8 +212,8 @@ is_legacy_type <- function(x) {
 parse_type_to_domain_dataset <- function(type) {
   # Check Fama-French types (both current and legacy)
   ff_types <- dplyr::bind_rows(
-    list_supported_types_ff(),
-    list_supported_types_ff_legacy()
+    list_supported_datasets_ff(),
+    list_supported_datasets_ff_legacy()
   )
 
   if (type %in% ff_types$type) {
@@ -222,7 +222,7 @@ parse_type_to_domain_dataset <- function(type) {
   }
 
   # Global Q factors: "factors_q5_*" -> domain = "factors_q"
-  q_types <- list_supported_types_q()
+  q_types <- list_supported_datasets_q()
 
   if (type %in% q_types$type) {
     dataset_name <- q_types$dataset_name[q_types$type == type]
@@ -233,14 +233,14 @@ parse_type_to_domain_dataset <- function(type) {
   }
 
   # Macro predictors: "macro_predictors_*" -> domain = "macro_predictors"
-  macro_types <- list_supported_types_macro_predictors()
+  macro_types <- list_supported_datasets_macro_predictors()
 
   if (type %in% macro_types$type) {
     dataset <- sub("^macro_predictors_", "", type)
     return(list(domain = "macro_predictors", dataset = dataset))
   }
 
-  wrds_types <- list_supported_types_wrds()
+  wrds_types <- list_supported_datasets_wrds()
 
   if (type %in% wrds_types$type) {
     dataset <- sub("^wrds_", "", type)
@@ -261,7 +261,7 @@ parse_type_to_domain_dataset <- function(type) {
 
   cli::cli_abort(c(
     "Cannot parse legacy type: {.val {type}}",
-    "i" = "Use {.fn list_supported_types} to see available types."
+    "i" = "Use {.fn list_supported_datasets} to see available datasets."
   ))
 }
 
