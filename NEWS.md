@@ -1,13 +1,17 @@
 # tidyfinance (development version)
 
-## Bug fixes
-
 - `download_data_constituents()` now drops rows whose source ticker contains
   no alphanumeric characters (e.g. blank, whitespace, or `"-"`). Previously
   such rows survived the blacklist filter and ended up with `symbol == "-"`
   in the returned tibble — observed for unlisted CVR/contra/rights entries
   in Russell 1000/2000/3000, S&P 500, S&P SmallCap 600, MSCI World, MSCI
   Emerging Markets, and MSCI ACWI.
+- Added `download_factor_library_grid()` to fetch the
+  `tidy-finance/factor-library-grid` dataset from Hugging Face. Also
+  accessible via `download_data("tidyfinance", "factor_library_grid")`.
+- Renamed `only_us` parameter in `download_data_wrds_compustat()` to `only_usd`
+  to reflect that the filter keeps USD-denominated shares only. The old name
+  is deprecated and forwards to `only_usd` with a warning.
 
 # tidyfinance 0.5.0
 
