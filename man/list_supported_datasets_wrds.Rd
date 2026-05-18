@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_supported_datasets.R
 \name{list_supported_datasets_wrds}
 \alias{list_supported_datasets_wrds}
-\title{List Supported WRDS Dataset Types}
+\title{List Supported WRDS Datasets}
 \usage{
 list_supported_datasets_wrds()
 }
@@ -12,7 +12,7 @@ A tibble with columns: \code{type} (the type of dataset),
 domain to which the dataset belongs, always "WRDS").
 }
 \description{
-Returns a tibble with the supported dataset types provided via WRDS.
+Returns a tibble with the supported datasets provided via WRDS.
 Additionally, it annotates each dataset with the domain "WRDS".
 }
 \seealso{

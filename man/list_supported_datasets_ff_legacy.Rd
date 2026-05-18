@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_supported_datasets.R
 \name{list_supported_datasets_ff_legacy}
 \alias{list_supported_datasets_ff_legacy}
-\title{List Supported Legacy Fama-French Dataset Types}
+\title{List Supported Legacy Fama-French Datasets}
 \usage{
 list_supported_datasets_ff_legacy()
 }
@@ -13,7 +13,7 @@ dataset belongs, always "Fama-French").
 }
 \description{
 Returns a tibble with the legacy names of initially supported
-Fama-French dataset types, including their names and frequencies (daily,
+Fama-French datasets, including their names and frequencies (daily,
 weekly, monthly). Each dataset type is associated with a specific Fama-French
 model (e.g., 3 factors, 5 factors). Additionally, it annotates each dataset
 with the domain "Fama-French". Not included in the exported

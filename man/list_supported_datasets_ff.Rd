@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_supported_datasets.R
 \name{list_supported_datasets_ff}
 \alias{list_supported_datasets_ff}
-\title{List Supported Fama-French Dataset Types}
+\title{List Supported Fama-French Datasets}
 \usage{
 list_supported_datasets_ff()
 }
@@ -12,7 +12,7 @@ A tibble with columns: \code{type} (the type of dataset),
 domain to which the dataset belongs, always "Fama-French").
 }
 \description{
-Returns a tibble with the supported Fama-French dataset types, including
+Returns a tibble with the supported Fama-French datasets, including
 their names and frequencies (daily, weekly, monthly). Each dataset type
 is associated with a specific Fama-French model (e.g., 3 factors, 5
 factors). Additionally, it annotates each dataset with the domain

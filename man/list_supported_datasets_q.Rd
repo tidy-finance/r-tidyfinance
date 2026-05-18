@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_supported_datasets.R
 \name{list_supported_datasets_q}
 \alias{list_supported_datasets_q}
-\title{List Supported Global Q Dataset Types}
+\title{List Supported Global Q Datasets}
 \usage{
 list_supported_datasets_q()
 }
@@ -12,7 +12,7 @@ A tibble with columns: \code{type} (the type of dataset),
 domain to which the dataset belongs, always "Global Q").
 }
 \description{
-Returns a tibble with the supported Global Q dataset types, including
+Returns a tibble with the supported Global Q datasets, including
 their names and frequencies (daily, weekly, weekly week-to-week, monthly,
 quarterly, annual). Each dataset type is associated with the Global Q
 model, specifically the q5 factors model for the year 2023. Additionally,

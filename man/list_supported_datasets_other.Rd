@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_supported_datasets.R
 \name{list_supported_datasets_other}
 \alias{list_supported_datasets_other}
-\title{List Supported Other Data Types}
+\title{List Supported Other Datasets}
 \usage{
 list_supported_datasets_other()
 }
@@ -12,7 +12,7 @@ A tibble with columns: \code{type} (the type of dataset), \code{dataset_name}
 dataset belongs).
 }
 \description{
-Returns a tibble listing the supported other data types and their
+Returns a tibble listing the supported other datasets and their
 corresponding dataset names.
 }
 \seealso{

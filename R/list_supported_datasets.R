@@ -1,6 +1,6 @@
-#' List Supported Fama-French Dataset Types
+#' List Supported Fama-French Datasets
 #'
-#' Returns a tibble with the supported Fama-French dataset types, including
+#' Returns a tibble with the supported Fama-French datasets, including
 #' their names and frequencies (daily, weekly, monthly). Each dataset type
 #' is associated with a specific Fama-French model (e.g., 3 factors, 5
 #' factors). Additionally, it annotates each dataset with the domain
@@ -617,10 +617,10 @@ list_supported_datasets_ff <- function() {
   # nolint end
 }
 
-#' List Supported Legacy Fama-French Dataset Types
+#' List Supported Legacy Fama-French Datasets
 #'
 #' Returns a tibble with the legacy names of initially supported
-#' Fama-French dataset types, including their names and frequencies (daily,
+#' Fama-French datasets, including their names and frequencies (daily,
 #' weekly, monthly). Each dataset type is associated with a specific Fama-French
 #' model (e.g., 3 factors, 5 factors). Additionally, it annotates each dataset
 #' with the domain "Fama-French". Not included in the exported
@@ -675,9 +675,9 @@ list_supported_datasets_ff_legacy <- function() {
   # nolint end
 }
 
-#' List Supported Global Q Dataset Types
+#' List Supported Global Q Datasets
 #'
-#' Returns a tibble with the supported Global Q dataset types, including
+#' Returns a tibble with the supported Global Q datasets, including
 #' their names and frequencies (daily, weekly, weekly week-to-week, monthly,
 #' quarterly, annual). Each dataset type is associated with the Global Q
 #' model, specifically the q5 factors model for the year 2023. Additionally,
@@ -709,11 +709,11 @@ list_supported_datasets_q <- function() {
   # nolint end
 }
 
-#' List Supported Macro Predictor Dataset Types
+#' List Supported Macro Predictor Datasets
 #'
-#' Returns a tibble with the supported macro predictor dataset types
+#' Returns a tibble with the supported macro predictor datasets
 #' provided by Goyal-Welch, including their frequencies (monthly, quarterly,
-#' annual). All dataset types reference the same source file,
+#' annual). All datasets reference the same source file,
 #' "PredictorData2022.xlsx" for the year 2022. Additionally, it annotates
 #' each dataset with the domain "Goyal-Welch".
 #'
@@ -739,9 +739,9 @@ list_supported_datasets_macro_predictors <- function() {
   # nolint end
 }
 
-#' List Supported WRDS Dataset Types
+#' List Supported WRDS Datasets
 #'
-#' Returns a tibble with the supported dataset types provided via WRDS.
+#' Returns a tibble with the supported datasets provided via WRDS.
 #' Additionally, it annotates each dataset with the domain "WRDS".
 #'
 #' @returns A tibble with columns: `type` (the type of dataset),
@@ -773,9 +773,9 @@ list_supported_datasets_wrds <- function() {
   # nolint end
 }
 
-#' List Supported Other Data Types
+#' List Supported Other Datasets
 #'
-#' Returns a tibble listing the supported other data types and their
+#' Returns a tibble listing the supported other datasets and their
 #' corresponding dataset names.
 #'
 #' @returns A tibble with columns: `type` (the type of dataset), `dataset_name`

@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_supported_datasets.R
 \name{list_supported_datasets_macro_predictors}
 \alias{list_supported_datasets_macro_predictors}
-\title{List Supported Macro Predictor Dataset Types}
+\title{List Supported Macro Predictor Datasets}
 \usage{
 list_supported_datasets_macro_predictors()
 }
@@ -13,9 +13,9 @@ all types), and \code{domain} (the domain to which the dataset belongs,
 always "Goyal-Welch").
 }
 \description{
-Returns a tibble with the supported macro predictor dataset types
+Returns a tibble with the supported macro predictor datasets
 provided by Goyal-Welch, including their frequencies (monthly, quarterly,
-annual). All dataset types reference the same source file,
+annual). All datasets reference the same source file,
 "PredictorData2022.xlsx" for the year 2022. Additionally, it annotates
 each dataset with the domain "Goyal-Welch".
 }

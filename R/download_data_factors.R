@@ -279,18 +279,18 @@ download_data_factors_q <- function(
 #' Check if a string is a legacy Fama-French type
 #' @noRd
 is_legacy_type_ff <- function(x) {
-  ff_types <- dplyr::bind_rows(
+  ff_datasets <- dplyr::bind_rows(
     list_supported_datasets_ff(),
     list_supported_datasets_ff_legacy()
   )
-  x %in% ff_types$type
+  x %in% ff_datasets$type
 }
 
 #' Check if a string is a legacy Global Q type
 #' @noRd
 is_legacy_type_q <- function(x) {
-  q_types <- list_supported_datasets_q()
-  x %in% q_types$type
+  q_datasets <- list_supported_datasets_q()
+  x %in% q_datasets$type
 }
 
 #' Determine frequency from Fama-French dataset name
@@ -328,12 +328,12 @@ determine_frequency_q <- function(dataset) {
 #' Check if Fama-French dataset is supported
 #' @noRd
 check_supported_dataset_ff <- function(dataset) {
-  ff_types <- dplyr::bind_rows(
+  ff_datasets <- dplyr::bind_rows(
     list_supported_datasets_ff(),
     list_supported_datasets_ff_legacy()
   )
 
-  if (!dataset %in% ff_types$dataset_name) {
+  if (!dataset %in% ff_datasets$dataset_name) {
     cli::cli_abort(c(
       "Unsupported Fama-French dataset: {.val {dataset}}",
       "i" = paste0(
@@ -348,9 +348,9 @@ check_supported_dataset_ff <- function(dataset) {
 #' Check if Global Q dataset is supported
 #' @noRd
 check_supported_dataset_q <- function(dataset) {
-  q_types <- list_supported_datasets_q()
+  q_datasets <- list_supported_datasets_q()
 
-  if (!dataset %in% q_types$dataset_name) {
+  if (!dataset %in% q_datasets$dataset_name) {
     cli::cli_abort(c(
       "Unsupported Global Q dataset: {.val {dataset}}",
       "i" = "Use {.fn list_supported_datasets} with {.arg domain = 'Global Q'}",
