@@ -1,5 +1,10 @@
 # tidyfinance (development version)
 
+- Renamed `list_supported_types()` to `list_supported_datasets()`
+  ([#242](https://github.com/tidy-finance/r-tidyfinance/issues/242)). The
+  old name remains exported as a soft-deprecated alias that forwards to the
+  new function. Internal helpers were renamed accordingly
+  (e.g. `list_supported_types_ff()` -> `list_supported_datasets_ff()`).
 - `download_data_constituents()` now drops symbols equal to `"-"`.
 - Added `download_factor_library_grid()` to fetch the
   `tidy-finance/factor-library-grid` dataset from Hugging Face. Also
