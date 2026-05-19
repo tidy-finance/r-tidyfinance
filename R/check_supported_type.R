@@ -11,13 +11,13 @@
 #'   type is supported or stops execution with an error message if the type is
 #'   unsupported.
 check_supported_type <- function(type) {
-  supported_types <- list_supported_types(as_vector = TRUE)
-  supported_types_legacy <- list_supported_types_ff_legacy()$type
+  supported_types <- list_supported_datasets(as_vector = TRUE)
+  supported_types_legacy <- list_supported_datasets_ff_legacy()$type
   if (!any(type %in% c(supported_types, supported_types_legacy))) {
     cli::cli_abort(
       paste(
         "Unsupported {.arg type} specified. Call the function",
-        "{.fn list_supported_types} to get all supported types."
+        "{.fn list_supported_datasets} to get all supported datasets."
       )
     )
   }

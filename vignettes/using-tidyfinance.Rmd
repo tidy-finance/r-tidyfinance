@@ -44,7 +44,7 @@ library(tidyfinance)
 
 The main function is `download_data(type, start_date, end_date)` with supported type:
 ```{r}
-list_supported_types()
+list_supported_datasets()
 ```
 
 So, for instance, if you want to download monthly Fama-French Three-Factor data, you can call:
