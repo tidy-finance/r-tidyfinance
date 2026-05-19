@@ -1,5 +1,6 @@
 # tidyfinance (development version)
 
+- `download_data_constituents()` now drops symbols equal to `"-"`.
 - Added `download_factor_library_grid()` to fetch the
   `tidy-finance/factor-library-grid` dataset from Hugging Face. Also
   accessible via `download_data("tidyfinance", "factor_library_grid")`.
