@@ -3,9 +3,7 @@
 make_grid_parquet_file <- function(rows) {
   tmp <- tempfile(fileext = ".parquet")
   arrow::write_parquet(rows, tmp)
-  tibble::tibble(path = "grid/part.parquet", 
-                 size = file.size(tmp), 
-                 url = tmp)
+  tibble::tibble(path = "grid/part.parquet", size = file.size(tmp), url = tmp)
 }
 
 make_returns_parquet_file <- function(
@@ -281,19 +279,16 @@ test_that(
   }
 )
 
-test_that(
-  "download_data_huggingface('factor_library') errors on ids + filters",
-  {
-    expect_error(
-      download_data_huggingface(
-        "factor_library",
-        ids = c(1L, 2L),
-        sorting_variable = "me"
-      ),
-      regexp = "cannot be combined with filter arguments"
-    )
-  }
-)
+test_that("download_data_huggingface('factor_library') errors on ids + filters", {
+  expect_error(
+    download_data_huggingface(
+      "factor_library",
+      ids = c(1L, 2L),
+      sorting_variable = "me"
+    ),
+    regexp = "cannot be combined with filter arguments"
+  )
+})
 
 # Live smoke test -------------------------------------------------------
 
