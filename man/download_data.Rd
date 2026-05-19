@@ -86,6 +86,7 @@ download_data(
   rebalancing = "annual"
 )
 download_data("tidyfinance", "factor_library", ids = c(1L, 2L, 3L))
+download_data("tidyfinance", "factor_library_grid")
 }
 }
 \seealso{
@@ -99,6 +100,7 @@ Other download functions:
 \code{\link{download_data_osap}()},
 \code{\link{download_data_risk_free}()},
 \code{\link{download_data_stock_prices}()},
+\code{\link{download_factor_library_grid}()},
 \code{\link{download_factor_library_ids}()}
 }
 \concept{download functions}

@@ -14,7 +14,7 @@ download_data_huggingface(
 }
 \arguments{
 \item{dataset}{Character(1). The dataset to download. Supported values are
-\code{"high_frequency_sp500"} and \code{"factor_library"}.}
+\code{"high_frequency_sp500"}, \code{"factor_library"}, and \code{"factor_library_grid"}.}
 
 \item{start_date}{Date or character. Start date (inclusive) in
 \code{"YYYY-MM-DD"} format. Only used for \code{"high_frequency_sp500"}.}
@@ -50,6 +50,8 @@ Downloads data from a supported Hugging Face dataset. For
 \code{"high_frequency_sp500"}, parquet files are filtered by date range and
 row-bound. For \code{"factor_library"}, portfolio characteristics are selected via
 \code{filter_factor_library_grid()} and the matching return data is downloaded.
+For \code{"factor_library_grid"}, the grid itself is returned via
+\code{\link[=download_factor_library_grid]{download_factor_library_grid()}}.
 }
 \details{
 \strong{Note on \code{dataset = "factor_library"} defaults:} The defaults below reflect
@@ -121,6 +123,7 @@ Other download functions:
 \code{\link{download_data_osap}()},
 \code{\link{download_data_risk_free}()},
 \code{\link{download_data_stock_prices}()},
+\code{\link{download_factor_library_grid}()},
 \code{\link{download_factor_library_ids}()}
 }
 \concept{download functions}

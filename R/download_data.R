@@ -68,6 +68,7 @@
 #'   rebalancing = "annual"
 #' )
 #' download_data("tidyfinance", "factor_library", ids = c(1L, 2L, 3L))
+#' download_data("tidyfinance", "factor_library_grid")
 #' }
 download_data <- function(
   domain = NULL,

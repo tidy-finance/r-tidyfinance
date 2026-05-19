@@ -74,9 +74,11 @@ get_available_huggingface_files <- function(organization, dataset) {
 #' `"high_frequency_sp500"`, parquet files are filtered by date range and
 #' row-bound. For `"factor_library"`, portfolio characteristics are selected via
 #' `filter_factor_library_grid()` and the matching return data is downloaded.
+#' For `"factor_library_grid"`, the grid itself is returned via
+#' [download_factor_library_grid()].
 #'
 #' @param dataset Character(1). The dataset to download. Supported values are
-#'   `"high_frequency_sp500"` and `"factor_library"`.
+#'   `"high_frequency_sp500"`, `"factor_library"`, and `"factor_library_grid"`.
 #' @param start_date Date or character. Start date (inclusive) in
 #'   `"YYYY-MM-DD"` format. Only used for `"high_frequency_sp500"`.
 #' @param end_date Date or character. End date (inclusive) in `"YYYY-MM-DD"`
@@ -200,6 +202,10 @@ download_data_huggingface <- function(
 
   check_supported_dataset_huggingface(dataset)
 
+  if (dataset == "factor_library_grid") {
+    return(download_factor_library_grid())
+  }
+
   if (dataset == "high_frequency_sp500") {
     organization <- "voigtstefan"
     dataset_name <- "sp500"
@@ -237,7 +243,11 @@ is_legacy_type_hf <- function(x) {
 #' Check if Hugging Face dataset is supported
 #' @noRd
 check_supported_dataset_huggingface <- function(dataset) {
-  supported_datasets <- c("high_frequency_sp500", "factor_library")
+  supported_datasets <- c(
+    "high_frequency_sp500",
+    "factor_library",
+    "factor_library_grid"
+  )
 
   if (!dataset %in% supported_datasets) {
     cli::cli_abort(c(
@@ -336,12 +346,7 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
     }
   }
 
-  result <- get_available_huggingface_files(
-    "tidy-finance",
-    "factor-library-grid"
-  ) |>
-    dplyr::pull(.data$url) |>
-    arrow::read_parquet() |>
+  result <- download_factor_library_grid() |>
     dplyr::mutate(
       sorting_variable = stringr::str_replace(.data$sorting_variable, "sv_", "")
     )
@@ -353,6 +358,38 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
   }
 
   dplyr::pull(result, .data$id)
+}
+
+#' Download the Factor Library Grid from Hugging Face
+#'
+#' Returns the `tidy-finance/factor-library-grid` dataset, which describes
+#' every portfolio construction available in the factor library (one row per
+#' construction, identified by `id`). Use the returned tibble to discover
+#' which `(sorting_variable, weighting_scheme, rebalancing, ...)` combinations
+#' exist before requesting their returns with
+#' [download_factor_library_ids()].
+#'
+#' Equivalent to calling
+#' `download_data("tidyfinance", "factor_library_grid")`.
+#'
+#' @returns A tibble with one row per portfolio construction in the factor
+#'   library, including the integer `id` column used by
+#'   [download_factor_library_ids()].
+#'
+#' @family download functions
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'   download_factor_library_grid()
+#' }
+download_factor_library_grid <- function() {
+  get_available_huggingface_files(
+    "tidy-finance",
+    "factor-library-grid"
+  ) |>
+    dplyr::pull(.data$url) |>
+    arrow::read_parquet()
 }
 
 #' Download factor library returns for a vector of portfolio IDs
@@ -413,12 +450,7 @@ download_factor_library_ids <- function(ids) {
 
   id_values <- data.frame(id = ids)
 
-  id_grid <- get_available_huggingface_files(
-    organization,
-    "factor-library-grid"
-  ) |>
-    dplyr::pull(.data$url) |>
-    arrow::read_parquet() |>
+  id_grid <- download_factor_library_grid() |>
     dplyr::inner_join(id_values, dplyr::join_by(id)) |>
     dplyr::mutate(
       sorting_variable = stringr::str_replace(

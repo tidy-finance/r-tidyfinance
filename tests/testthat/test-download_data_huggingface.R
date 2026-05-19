@@ -223,6 +223,11 @@ test_that(
   paste(
     "download_data_huggingface('factor_library', ids = ...) delegates to",
     "download_factor_library_ids() and skips the grid filter"
+# factor_library_grid dispatch (mocked) ---------------------------------
+
+test_that(
+  paste(
+    "download_data_huggingface('factor_library_grid') returns the grid tibble"
   ),
   {
     grid_rows <- tibble::tibble(
@@ -246,6 +251,11 @@ test_that(
           10L
         )
       }
+      sorting_variable = c("sv_me", "sv_bm")
+    )
+
+    mock_files <- function(organization, dataset) {
+      make_grid_parquet_file(grid_rows)
     }
 
     with_mocked_bindings(
@@ -272,6 +282,15 @@ test_that(
         sorting_variable = "me"
       ),
       regexp = "cannot be combined with filter arguments"
+    )
+  }
+)
+
+        result <- download_data_huggingface("factor_library_grid")
+        expect_s3_class(result, "tbl_df")
+        expect_equal(nrow(result), 2L)
+        expect_true(all(c("id", "sorting_variable") %in% colnames(result)))
+      }
     )
   }
 )
