@@ -25,8 +25,10 @@
 #'   depending on the `domain`. For instance, if `domain` is
 #'   `"constituents"`, arguments are passed to
 #'   `download_data_constituents()`. If `domain` is `"tidyfinance"` and
-#'   `dataset` is `"factor_library"`, arguments are used to filter the
-#'   portfolio grid (e.g., `sorting_variable`, `rebalancing`, `fill_all`);
+#'   `dataset` is `"factor_library"`, arguments are either filter inputs
+#'   (e.g., `sorting_variable`, `rebalancing`, `fill_all`) or an explicit
+#'   `ids` vector that bypasses the grid filter and downloads the
+#'   specified portfolios directly via `download_factor_library_ids()`;
 #'   see `download_data_huggingface()` for details.
 #'
 #' @returns A tibble with processed data, including dates and the relevant
@@ -65,6 +67,7 @@
 #'   sorting_variable = "52w",
 #'   rebalancing = "annual"
 #' )
+#' download_data("tidyfinance", "factor_library", ids = c(1L, 2L, 3L))
 #' download_data("tidyfinance", "factor_library_grid")
 #' }
 download_data <- function(

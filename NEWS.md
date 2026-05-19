@@ -1,5 +1,9 @@
 # tidyfinance (development version)
 
+- `download_data("tidyfinance", "factor_library", ids = <vector>)` now
+  delegates directly to `download_factor_library_ids()`, bypassing the
+  grid filter. Passing `ids` together with filter arguments raises an
+  informative error.
 - Renamed `list_supported_types()` to `list_supported_datasets()`
   ([#242](https://github.com/tidy-finance/r-tidyfinance/issues/242)). The
   old name remains exported as a soft-deprecated alias that forwards to the

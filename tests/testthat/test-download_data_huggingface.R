@@ -217,6 +217,59 @@ test_that(
   }
 )
 
+# ids shortcut (mocked) -------------------------------------------------
+
+test_that(
+  paste(
+    "download_data_huggingface('factor_library', ids = ...) delegates to",
+    "download_factor_library_ids() and skips the grid filter"
+  ),
+  {
+    grid_rows <- tibble::tibble(
+      id = c(1L, 2L),
+      sorting_variable = c("sv_me", "sv_bm"),
+      sorting_variable_lag = c("3m", "6m"),
+      sorting_method = c("univariate", "univariate"),
+      n_portfolios_main = c(10L, 10L)
+    )
+
+    mock_files <- function(organization, dataset) {
+      if (dataset == "factor-library-grid") {
+        make_grid_parquet_file(grid_rows)
+      } else {
+        dplyr::bind_rows(
+          make_returns_parquet_file(
+            tibble::tibble(id = 1L, ret = 0.01),
+            "me",
+            "3m",
+            "univariate",
+            10L
+          ),
+          make_returns_parquet_file(
+            tibble::tibble(id = 2L, ret = 0.02),
+            "bm",
+            "6m",
+            "univariate",
+            10L
+          )
+        )
+      }
+    }
+
+    with_mocked_bindings(
+      get_available_huggingface_files = mock_files,
+      {
+        result <- download_data_huggingface(
+          "factor_library",
+          ids = c(1L, 2L)
+        )
+        expect_s3_class(result, "tbl_df")
+        expect_equal(sort(result$id), c(1L, 2L))
+      }
+    )
+  }
+)
+
 # factor_library_grid dispatch (mocked) ---------------------------------
 
 test_that(
@@ -226,7 +279,10 @@ test_that(
   {
     grid_rows <- tibble::tibble(
       id = c(1L, 2L),
-      sorting_variable = c("sv_me", "sv_bm")
+      sorting_variable = c("sv_me", "sv_me"),
+      sorting_variable_lag = c("3m", "3m"),
+      sorting_method = c("univariate", "univariate"),
+      n_portfolios_main = c(10L, 10L)
     )
 
     mock_files <- function(organization, dataset) {
@@ -241,6 +297,23 @@ test_that(
         expect_equal(nrow(result), 2L)
         expect_true(all(c("id", "sorting_variable") %in% colnames(result)))
       }
+    )
+  }
+)
+
+test_that(
+  paste(
+    "download_data_huggingface('factor_library')",
+    "errors on ids + filters"
+  ),
+  {
+    expect_error(
+      download_data_huggingface(
+        "factor_library",
+        ids = c(1L, 2L),
+        sorting_variable = "me"
+      ),
+      regexp = "cannot be combined with filter arguments"
     )
   }
 )
