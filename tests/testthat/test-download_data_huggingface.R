@@ -295,16 +295,22 @@ test_that(
   }
 )
 
-test_that("download_data_huggingface('factor_library') errors on ids + filters", {
-  expect_error(
-    download_data_huggingface(
-      "factor_library",
-      ids = c(1L, 2L),
-      sorting_variable = "me"
-    ),
-    regexp = "cannot be combined with filter arguments"
-  )
-})
+test_that(
+  paste(
+    "download_data_huggingface('factor_library')",
+    "errors on ids + filters"
+  ),
+  {
+    expect_error(
+      download_data_huggingface(
+        "factor_library",
+        ids = c(1L, 2L),
+        sorting_variable = "me"
+      ),
+      regexp = "cannot be combined with filter arguments"
+    )
+  }
+)
 
 # Live smoke test -------------------------------------------------------
 
