@@ -65,6 +65,7 @@
 #'   sorting_variable = "52w",
 #'   rebalancing = "annual"
 #' )
+#' download_data("tidyfinance", "factor_library_grid")
 #' }
 download_data <- function(
   domain = NULL,

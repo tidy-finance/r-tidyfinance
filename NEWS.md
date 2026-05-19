@@ -5,6 +5,13 @@
   old name remains exported as a soft-deprecated alias that forwards to the
   new function. Internal helpers were renamed accordingly
   (e.g. `list_supported_types_ff()` -> `list_supported_datasets_ff()`).
+- `download_data_constituents()` now drops symbols equal to `"-"`.
+- Added `download_factor_library_grid()` to fetch the
+  `tidy-finance/factor-library-grid` dataset from Hugging Face. Also
+  accessible via `download_data("tidyfinance", "factor_library_grid")`.
+- Renamed `only_us` parameter in `download_data_wrds_compustat()` to `only_usd`
+  to reflect that the filter keeps USD-denominated shares only. The old name
+  is deprecated and forwards to `only_usd` with a warning.
 
 # tidyfinance 0.5.0
 

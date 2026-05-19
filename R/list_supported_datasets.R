@@ -792,7 +792,8 @@ list_supported_datasets_other <- function() {
       "osap",
       "risk_free",
       "high_frequency_sp500",
-      "factor_library"
+      "factor_library",
+      "factor_library_grid"
     ),
     "dataset_name" = c(
       "YahooFinance",
@@ -801,13 +802,15 @@ list_supported_datasets_other <- function() {
       "Open Source Asset Pricing",
       "Risk-Free Rate",
       "High Frequency S&P 500",
-      "Factor Library"
+      "Factor Library",
+      "Factor Library Grid"
     ),
     "domain" = c(
       "Stock Prices",
       "Index Constituents",
       "FRED",
       "Open Source Asset Pricing",
+      "tidyfinance",
       "tidyfinance",
       "tidyfinance",
       "tidyfinance"

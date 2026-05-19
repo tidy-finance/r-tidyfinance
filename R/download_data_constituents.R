@@ -37,7 +37,7 @@
 #' }
 #'
 download_data_constituents <- function(index) {
-  symbol_blacklist <- c("", "USD", "GXU4", "EUR", "MARGIN_EUR", "MLIFT")
+  symbol_blacklist <- c("", "-", "USD", "GXU4", "EUR", "MARGIN_EUR", "MLIFT")
 
   supported_indexes <- list_supported_indexes()
 
@@ -104,8 +104,8 @@ download_data_constituents <- function(index) {
       }
 
       constituents_processed <- constituents_processed |>
+        mutate(symbol = trimws(symbol)) |>
         filter(!symbol %in% symbol_blacklist) |>
-        filter(name != "") |>
         filter(!grepl(tolower(index), tolower(name))) |>
         filter(!grepl("CASH", name)) |>
         filter(!grepl(tolower(gsub("\\s+", "", index)), tolower(name))) |>
