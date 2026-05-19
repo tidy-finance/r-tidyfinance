@@ -227,11 +227,27 @@ test_that(
   {
     grid_rows <- tibble::tibble(
       id = c(1L, 2L),
-      sorting_variable = c("sv_me", "sv_bm")
+      sorting_variable = c("sv_me", "sv_bm"),
+      sorting_variable_lag = c("3m", "6m"),
+      sorting_method = c("univariate", "univariate"),
+      n_portfolios_main = c(10L, 10L)
     )
 
     mock_files <- function(organization, dataset) {
-      make_grid_parquet_file(grid_rows)
+      if (dataset == "factor-library-grid") {
+        make_grid_parquet_file(grid_rows)
+      } else {
+        dplyr::bind_rows(
+          make_returns_parquet_file(
+            tibble::tibble(id = 1L, ret = 0.01),
+            "me", "3m", "univariate", 10L
+          ),
+          make_returns_parquet_file(
+            tibble::tibble(id = 2L, ret = 0.02),
+            "bm", "6m", "univariate", 10L
+          )
+        )
+      }
     }
 
     with_mocked_bindings(
