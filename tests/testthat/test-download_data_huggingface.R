@@ -240,11 +240,17 @@ test_that(
         dplyr::bind_rows(
           make_returns_parquet_file(
             tibble::tibble(id = 1L, ret = 0.01),
-            "me", "3m", "univariate", 10L
+            "me",
+            "3m",
+            "univariate",
+            10L
           ),
           make_returns_parquet_file(
             tibble::tibble(id = 2L, ret = 0.02),
-            "bm", "6m", "univariate", 10L
+            "bm",
+            "6m",
+            "univariate",
+            10L
           )
         )
       }
