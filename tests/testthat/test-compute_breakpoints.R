@@ -890,7 +890,8 @@ test_that(
 
 test_that(
   paste0(
-    "breakpoints_min_size_threshold set but mktcap_lag column absent raises an error"
+    "breakpoints_min_size_threshold set but mktcap_lag column absent raises",
+    "an error"
   ),
   {
     expect_error(
