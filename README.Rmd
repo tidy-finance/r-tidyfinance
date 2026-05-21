@@ -22,6 +22,7 @@ knitr::opts_chunk$set(
 `r badger::badge_github_version(color = "blue")`
 [![R-CMD-check](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml)
 [![Lint](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/lint.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/lint.yaml/badge.svg)
+[![Codecov test coverage](https://codecov.io/gh/tidy-finance/r-tidyfinance/graph/badge.svg)](https://app.codecov.io/gh/tidy-finance/r-tidyfinance)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 

@@ -16,6 +16,7 @@
 - Renamed `only_us` parameter in `download_data_wrds_compustat()` to `only_usd`
   to reflect that the filter keeps USD-denominated shares only. The old name
   is deprecated and forwards to `only_usd` with a warning.
+- Added `test-coverage.yaml` workflow and badge to README.
 
 # tidyfinance 0.5.0
 
