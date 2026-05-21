@@ -45,3 +45,23 @@ test_that("trim handles edge cases", {
   x <- rep(1, 10)
   expect_equal(trim(x, 0.1), x)
 })
+
+test_that("cut below 0 raises an error", {
+  expect_error(trim(1:10, cut = -0.1))
+})
+
+test_that("cut above 0.5 raises an error", {
+  expect_error(trim(1:10, cut = 0.6))
+})
+
+test_that("values beyond cut quantiles are replaced with NA", {
+  x <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 100) # 100 is a clear outlier
+
+  result <- trim(x, cut = 0.1)
+
+  # Extreme values become NA, interior values are unchanged
+  expect_true(anyNA(result))
+  expect_equal(result[2:8], x[2:8])
+  # Length is preserved (NA replaces, does not remove)
+  expect_length(result, length(x))
+})
