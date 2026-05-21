@@ -66,26 +66,40 @@ test_that("non-numeric columns in ... raise an error", {
 })
 
 test_that("detail = FALSE returns only basic statistics columns", {
-  result <- create_summary_statistics(df, y) # y has no NAs → quantile_na_handler anyNA = FALSE
+  result <- create_summary_statistics(df, y)
   expect_named(result, c("variable", "n", "mean", "sd", "min", "q50", "max"))
   expect_equal(nrow(result), 1L)
   expect_false(is.na(result$q50))
 })
 
-test_that("detail = TRUE returns extended quantile columns, NA when data has NAs", {
-  result <- create_summary_statistics(df, x, detail = TRUE) # x has NA → anyNA = TRUE
-  expect_true(all(c("q01", "q25", "q75", "q99") %in% names(result)))
-  expect_true(is.na(result$q50)) # quantile_na_handler anyNA = TRUE path
-})
+test_that(
+  paste0(
+    "detail = TRUE returns extended quantile columns, NA when data has NAs"
+  ),
+  {
+    result <- create_summary_statistics(df, x, detail = TRUE)
+    expect_true(all(c("q01", "q25", "q75", "q99") %in% names(result)))
+    expect_true(is.na(result$q50)) # quantile_na_handler anyNA = TRUE path
+  }
+)
 
-test_that("drop_na = TRUE in the no-by branch removes NA rows before summarising", {
-  # NA row dropped before quantile_na_handler is called → anyNA = FALSE → real quantile returned
-  result <- create_summary_statistics(df, x, detail = TRUE, drop_na = TRUE)
-  expect_false(is.na(result$q50))
-})
+test_that(
+  paste0(
+    "drop_na = TRUE in the no-by branch removes NA rows before summarising"
+  ),
+  {
+    result <- create_summary_statistics(df, x, detail = TRUE, drop_na = TRUE)
+    expect_false(is.na(result$q50))
+  }
+)
 
-test_that("by argument groups results and drop_na = TRUE applies in grouped branch", {
-  result <- create_summary_statistics(df, x, y, by = g, drop_na = TRUE)
-  expect_true("g" %in% names(result))
-  expect_equal(nrow(result), 4L) # 2 variables × 2 groups
-})
+test_that(
+  paste0(
+    "by argument groups results and drop_na = TRUE applies in grouped branch"
+  ),
+  {
+    result <- create_summary_statistics(df, x, y, by = g, drop_na = TRUE)
+    expect_true("g" %in% names(result))
+    expect_equal(nrow(result), 4L) # 2 variables × 2 groups
+  }
+)
