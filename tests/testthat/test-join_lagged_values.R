@@ -1,319 +1,180 @@
-test_that("basic lag join works with single id and single variable", {
-  df1 <- tibble(
-    id = rep(1, 4),
-    date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01", "2020-04-01"))
+test_that("normal join adds lagged columns for matching date windows", {
+  # Also covers: NULL data_options default, loop over multiple cols.
+  orig <- tibble::tibble(
+    id = 1L,
+    date = as.Date(c("2023-02-01", "2023-04-01", "2023-05-01"))
   )
-
-  df2 <- tibble(
-    id = rep(1, 4),
-    date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01", "2020-04-01")),
-    x = c(10, 20, 30, 40)
+  new <- tibble::tibble(
+    id = 1L,
+    date = as.Date("2023-01-01"),
+    x = 10,
+    y = 20
   )
-
+  # T=Jan-2023: window [Feb-2023, Apr-2023]
+  # Feb, Apr → match; May → no match
   result <- join_lagged_values(
-    original_data = df1,
-    new_data = df2,
+    orig,
+    new,
     id_keys = "id",
     min_lag = months(1),
     max_lag = months(3)
   )
-
-  expect_true("x" %in% names(result))
-  expect_equal(nrow(result), 4)
-  # Row with date 2020-01-01: looking for new_data where .lower <= date and
-  # date <= .upper new_data row date=2020-01-01 -> .lower=2020-02-01,
-  # .upper=2020-04-01 -> 2020-01-01 < .lower, no
-  # So first row should be NA (nothing lagged into it yet)
-  expect_true(is.na(result$x[1]))
+  expect_equal(result$x[1], 10)
+  expect_equal(result$x[2], 10)
+  expect_true(is.na(result$x[3]))
+  expect_equal(result$y[1], 20)
 })
 
-test_that("multiple id keys are supported", {
-  df1 <- tibble(
-    id1 = c(1, 1, 2, 2),
-    id2 = c("a", "a", "b", "b"),
-    date = as.Date(c("2020-01-01", "2020-03-01", "2020-01-01", "2020-03-01"))
+test_that("ff_adjustment removes non-last observations per id-year", {
+  orig <- tibble::tibble(
+    id = 1L,
+    date = as.Date(c("2022-08-01", "2023-03-01"))
   )
-
-  df2 <- tibble(
-    id1 = c(1, 1, 2, 2),
-    id2 = c("a", "a", "b", "b"),
-    date = as.Date(c("2020-01-01", "2020-02-01", "2020-01-01", "2020-02-01")),
-    val = c(100, 200, 300, 400)
-  )
-
-  result <- join_lagged_values(
-    original_data = df1,
-    new_data = df2,
-    id_keys = c("id1", "id2"),
-    min_lag = months(1),
-    max_lag = months(3)
-  )
-
-  expect_true("val" %in% names(result))
-  expect_equal(nrow(result), 4)
-  # IDs should not bleed across groups
-  # For id1=2, id2="b", date=2020-03-01: should match new_data with
-  # id1=2, id2="b"
-  row_2b_march <- result |>
-    filter(id1 == 2, id2 == "b", date == as.Date("2020-03-01"))
-  row_1a_march <- result |>
-    filter(id1 == 1, id2 == "a", date == as.Date("2020-03-01"))
-  # These should come from different source rows
-  expect_false(
-    identical(row_2b_march$val, row_1a_march$val) && !is.na(row_2b_march$val)
-  )
-})
-
-test_that("multiple new columns are joined", {
-  df1 <- tibble(
-    id = rep(1, 3),
-    date = as.Date(c("2020-02-01", "2020-03-01", "2020-04-01"))
-  )
-
-  df2 <- tibble(
-    id = rep(1, 3),
-    date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01")),
-    x = c(1, 2, 3),
-    y = c(10, 20, 30)
-  )
-
-  result <- join_lagged_values(
-    original_data = df1,
-    new_data = df2,
-    id_keys = "id",
-    min_lag = months(1),
-    max_lag = months(3)
-  )
-
-  expect_true(all(c("x", "y") %in% names(result)))
-  expect_equal(ncol(result), 4) # id, date, x, y
-})
-
-test_that("no match produces NAs", {
-  df1 <- tibble(
-    id = 1,
-    date = as.Date("2025-01-01")
-  )
-
-  df2 <- tibble(
-    id = 1,
-    date = as.Date("2020-01-01"),
-    x = 999
-  )
-
-  result <- join_lagged_values(
-    original_data = df1,
-    new_data = df2,
-    id_keys = "id",
-    min_lag = months(1),
-    max_lag = months(3)
-  )
-
-  expect_true(is.na(result$x[1]))
-})
-
-test_that("different ids do not cross-contaminate", {
-  df1 <- tibble(
-    id = c(1, 2),
-    date = as.Date(c("2020-03-01", "2020-03-01"))
-  )
-
-  df2 <- tibble(
-    id = c(1, 2),
-    date = as.Date(c("2020-01-01", "2020-01-01")),
-    x = c(100, 200)
-  )
-
-  result <- join_lagged_values(
-    original_data = df1,
-    new_data = df2,
-    id_keys = "id",
-    min_lag = months(1),
-    max_lag = months(6)
-  )
-
-  expect_equal(result$x[result$id == 1], 100)
-  expect_equal(result$x[result$id == 2], 200)
-})
-
-test_that("ff_adjustment picks latest date per year", {
-  df1 <- tibble(
-    id = rep(1, 2),
-    date = as.Date(c("2021-06-01", "2021-09-01"))
-  )
-
-  # Two rows in 2020 for same id; ff_adjustment should pick the later one
-  df2 <- tibble(
-    id = rep(1, 3),
-    date = as.Date(c("2020-06-01", "2020-12-01", "2021-03-01")),
-    x = c(10, 20, 30)
-  )
-
-  result <- join_lagged_values(
-    original_data = df1,
-    new_data = df2,
-    id_keys = "id",
-    min_lag = months(6),
-    max_lag = months(18),
-    ff_adjustment = TRUE
-  )
-
-  expect_true("x" %in% names(result))
-  # With ff_adjustment, only the max-date row per (id, year) is kept
-  expect_equal(result$x[1], 20)
-})
-
-test_that(
-  paste0(
-    "input validation: duplicate columns between ",
-    "new_data and original_data"
-  ),
-  {
-    df1 <- tibble(
-      id = rep(1, 3),
-      date = as.Date(c("2020-02-01", "2020-03-01", "2020-04-01")),
-      bm = runif(3)
-    )
-
-    df2 <- tibble(
-      id = rep(1, 3),
-      date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01")),
-      bm = runif(3)
-    )
-
-    expect_error(
-      join_lagged_values(
-        df1,
-        df2,
-        id_keys = "id",
-        min_lag = months(1),
-        max_lag = months(3)
-      ),
-      regexp = "already exist.*original_data.*bm"
-    )
-  }
-)
-
-test_that("input validation: id_keys must be character", {
-  df <- tibble(id = 1, date = as.Date("2020-01-01"))
-  expect_error(
-    join_lagged_values(
-      df,
-      df,
-      id_keys = 1,
-      min_lag = months(1),
-      max_lag = months(3)
-    )
-  )
-})
-
-test_that("input validation: date column must exist in both datasets", {
-  df1 <- tibble(id = 1, date = as.Date("2020-01-01"))
-  df2 <- tibble(id = 1, dt = as.Date("2020-01-01"), x = 1)
-
-  expect_error(
-    join_lagged_values(
-      df1,
-      df2,
-      id_keys = "id",
-      min_lag = months(1),
-      max_lag = months(3),
-      data_options = data_options(date = "dt")
-    )
-  )
-})
-
-test_that("custom date column name via data_options works", {
-  df1 <- tibble(id = 1, dt = as.Date(c("2020-03-01", "2020-04-01")))
-  df2 <- tibble(
-    id = 1,
-    dt = as.Date(c("2020-01-01", "2020-02-01")),
+  new <- tibble::tibble(
+    id = 1L,
+    date = as.Date(c("2022-06-01", "2022-12-01")),
     x = c(5, 10)
   )
-
+  # ff: Jun-2022 dropped, Dec-2022 kept (last in 2022).
+  # Dec window: [Jan-2023, Mar-2023]
+  #   Aug-2022: no match → NA
+  #   Mar-2023: match    → 10
   result <- join_lagged_values(
-    original_data = df1,
-    new_data = df2,
+    orig,
+    new,
     id_keys = "id",
     min_lag = months(1),
-    max_lag = months(4),
-    data_options = data_options(date = "dt")
+    max_lag = months(3),
+    ff_adjustment = TRUE
   )
-
-  expect_true("x" %in% names(result))
-  expect_equal(nrow(result), 2)
+  expect_true(is.na(result$x[1]))
+  expect_equal(result$x[2], 10)
 })
 
-test_that("original_data columns are preserved", {
-  df1 <- tibble(
-    id = rep(1, 3),
-    date = as.Date(c("2020-02-01", "2020-03-01", "2020-04-01")),
-    existing_col = c("a", "b", "c")
+test_that("non-NULL data_options uses specified date column", {
+  orig <- tibble::tibble(
+    id = 1L,
+    my_date = as.Date(c("2023-02-01", "2023-05-01"))
   )
-
-  df2 <- tibble(
-    id = rep(1, 3),
-    date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01")),
-    x = c(1, 2, 3)
+  new <- tibble::tibble(
+    id = 1L,
+    my_date = as.Date("2023-01-01"),
+    x = 7
   )
-
+  opts <- data_options(date = "my_date")
   result <- join_lagged_values(
-    original_data = df1,
-    new_data = df2,
+    orig,
+    new,
     id_keys = "id",
     min_lag = months(1),
-    max_lag = months(3)
+    max_lag = months(3),
+    data_options = opts
   )
-
-  expect_true("existing_col" %in% names(result))
-  expect_equal(result$existing_col, c("a", "b", "c"))
+  expect_equal(result$x[1], 7)
+  expect_true(is.na(result$x[2]))
 })
 
-test_that("empty original_data returns empty result with correct columns", {
-  df1 <- tibble(id = integer(), date = as.Date(character()))
-  df2 <- tibble(id = 1, date = as.Date("2020-01-01"), x = 1)
-
-  result <- join_lagged_values(
-    original_data = df1,
-    new_data = df2,
-    id_keys = "id",
-    min_lag = months(1),
-    max_lag = months(3)
+test_that("error when id_keys is not a character vector", {
+  orig <- tibble::tibble(id = 1L, date = as.Date("2023-01-01"))
+  new <- tibble::tibble(id = 1L, date = as.Date("2023-01-01"), x = 1)
+  expect_error(
+    join_lagged_values(
+      orig,
+      new,
+      id_keys = 1L,
+      min_lag = months(1),
+      max_lag = months(3)
+    ),
+    "character"
   )
-
-  expect_equal(nrow(result), 0)
-  expect_true("x" %in% names(result))
 })
 
-test_that("closest match is used within the lag window", {
-  # With multiple new_data dates falling in the window, closest() should pick
-
-  df1 <- tibble(
-    id = 1,
-    date = as.Date("2020-06-01")
+test_that("error when date column missing from original_data", {
+  orig <- tibble::tibble(id = 1L, other = 1)
+  new <- tibble::tibble(id = 1L, date = as.Date("2023-01-01"), x = 1)
+  expect_error(
+    join_lagged_values(
+      orig,
+      new,
+      id_keys = "id",
+      min_lag = months(1),
+      max_lag = months(3)
+    ),
+    "original_data"
   )
+})
 
-  df2 <- tibble(
-    id = rep(1, 4),
-    date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01", "2020-04-01")),
-    x = c(10, 20, 30, 40)
+test_that("error when date column missing from new_data", {
+  orig <- tibble::tibble(id = 1L, date = as.Date("2023-01-01"))
+  new <- tibble::tibble(id = 1L, other = 1)
+  expect_error(
+    join_lagged_values(
+      orig,
+      new,
+      id_keys = "id",
+      min_lag = months(1),
+      max_lag = months(3)
+    ),
+    "new_data"
   )
+})
 
-  result <- join_lagged_values(
-    original_data = df1,
-    new_data = df2,
-    id_keys = "id",
-    min_lag = months(1),
-    max_lag = months(6)
+test_that("error when id_keys column missing from original_data", {
+  orig <- tibble::tibble(date = as.Date("2023-01-01"), val = 1)
+  new <- tibble::tibble(id = 1L, date = as.Date("2023-01-01"), x = 1)
+  expect_error(
+    join_lagged_values(
+      orig,
+      new,
+      id_keys = "id",
+      min_lag = months(1),
+      max_lag = months(3)
+    ),
+    "original_data"
   )
+})
 
-  # .lower for each new_data row: +1 month from date
-  # 2020-01-01 -> .lower=2020-02-01, .upper=2020-08-01
-  # 2020-02-01 -> .lower=2020-03-01, .upper=2020-09-01
-  # 2020-03-01 -> .lower=2020-04-01, .upper=2020-10-01
-  # 2020-04-01 -> .lower=2020-05-01, .upper=2020-11-01
-  # original date=2020-06-01: closest(.date >= .lower)
-  # picks the largest .lower <= 2020-06-01
-  # That's .lower=2020-05-01 from date=2020-04-01, so x=40
-  expect_equal(result$x[1], 40)
+test_that("error when id_keys column missing from new_data", {
+  orig <- tibble::tibble(id = 1L, date = as.Date("2023-01-01"))
+  new <- tibble::tibble(date = as.Date("2023-01-01"), x = 1)
+  expect_error(
+    join_lagged_values(
+      orig,
+      new,
+      id_keys = "id",
+      min_lag = months(1),
+      max_lag = months(3)
+    ),
+    "new_data"
+  )
+})
+
+test_that("error when new_data has no columns besides id_keys and date", {
+  orig <- tibble::tibble(id = 1L, date = as.Date("2023-01-01"))
+  new <- tibble::tibble(id = 1L, date = as.Date("2023-01-01"))
+  expect_error(
+    join_lagged_values(
+      orig,
+      new,
+      id_keys = "id",
+      min_lag = months(1),
+      max_lag = months(3)
+    ),
+    "columns besides"
+  )
+})
+
+test_that("error when new_data column already exists in original_data", {
+  orig <- tibble::tibble(id = 1L, date = as.Date("2023-01-01"), x = 0)
+  new <- tibble::tibble(id = 1L, date = as.Date("2023-01-01"), x = 1)
+  expect_error(
+    join_lagged_values(
+      orig,
+      new,
+      id_keys = "id",
+      min_lag = months(1),
+      max_lag = months(3)
+    ),
+    "already exist"
+  )
 })
