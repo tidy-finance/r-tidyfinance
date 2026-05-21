@@ -19,12 +19,15 @@ test_that("list_supported_datasets_q returns expected structure", {
   expect_snapshot(result)
 })
 
-test_that("list_supported_datasets_macro_predictors returns expected structure", {
-  result <- list_supported_datasets_macro_predictors()
-  expect_named(result, c("type", "dataset_name", "domain"))
-  expect_true(all(result$domain == "Goyal-Welch"))
-  expect_snapshot(result)
-})
+test_that(
+  paste0("list_supported_datasets_macro_predictors returns expected structure"),
+  {
+    result <- list_supported_datasets_macro_predictors()
+    expect_named(result, c("type", "dataset_name", "domain"))
+    expect_true(all(result$domain == "Goyal-Welch"))
+    expect_snapshot(result)
+  }
+)
 
 test_that("list_supported_datasets_wrds returns expected structure", {
   result <- list_supported_datasets_wrds()

@@ -10,7 +10,7 @@ test_that("normal join adds lagged columns for matching date windows", {
     x = 10,
     y = 20
   )
-  # T=Jan-2023: window [Feb-2023, Apr-2023]
+  # T equal to Jan-2023: window [Feb-2023, Apr-2023]
   # Feb, Apr → match; May → no match
   result <- join_lagged_values(
     orig,
