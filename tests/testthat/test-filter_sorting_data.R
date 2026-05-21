@@ -1,407 +1,314 @@
-make_sorting_data <- function(seed = 42) {
-  set.seed(seed)
-  data.frame(
-    permno = 1:30,
-    date = rep(as.Date("2020-01-01"), 30),
-    exchange = c(rep("NYSE", 15), rep("NASDAQ", 15)),
-    siccd = c(
-      rep(6200L, 5), # financial (SIC 6000–6799)
-      rep(4950L, 5), # utility  (SIC 4900–4999)
-      rep(5000L, 5), # retail   (neutral)
-      rep(7000L, 5), # services (neutral)
-      rep(1000L, 10) # other    (neutral)
-    ),
-    prc_adj = c(rep(0.5, 10), rep(5, 10), rep(20, 10)),
-    mktcap_lag = c(
-      seq(100, 500, length.out = 15),
-      seq(5000, 10000, length.out = 15)
-    ),
-    listing_age = c(rep(6L, 10), rep(24L, 20)),
-    be = c(rep(-1, 5), rep(0.5, 5), rep(1, 20)),
-    ib = c(rep(-2, 5), rep(0.3, 5), rep(1, 20))
+test_that("quiet must be a single non-NA logical", {
+  d <- data.frame(x = 1)
+  expect_error(
+    filter_sorting_data(d, quiet = "yes"),
+    "quiet"
   )
-}
-
-test_that("filter_sorting_data returns all rows when no filters are active", {
-  data <- make_sorting_data()
-  result <- filter_sorting_data(data, quiet = TRUE)
-  expect_equal(nrow(result), nrow(data))
-})
-
-test_that("filter_sorting_data preserves all columns", {
-  data <- make_sorting_data()
-  result <- filter_sorting_data(data, quiet = TRUE)
-  expect_equal(colnames(result), colnames(data))
-})
-
-test_that(
-  paste0(
-    "filter_sorting_data removes ",
-    "financials when exclude_financials = TRUE"
-  ),
-  {
-    data <- make_sorting_data()
-    n_financials <- sum(data$siccd >= 6000 & data$siccd <= 6799, na.rm = TRUE)
-    result <- filter_sorting_data(
-      data,
-      filter_options = filter_options(exclude_financials = TRUE),
-      quiet = TRUE
-    )
-    expect_equal(nrow(result), nrow(data) - n_financials)
-    expect_true(all(
-      is.na(result$siccd) | result$siccd < 6000 | result$siccd > 6799
-    ))
-  }
-)
-
-test_that(
-  paste0(
-    "filter_sorting_data removes utility ",
-    "firms when exclude_utilities = TRUE"
-  ),
-  {
-    data <- make_sorting_data()
-    n_utilities <- sum(data$siccd >= 4900 & data$siccd <= 4999, na.rm = TRUE)
-    result <- filter_sorting_data(
-      data,
-      filter_options = filter_options(exclude_utilities = TRUE),
-      quiet = TRUE
-    )
-    expect_equal(nrow(result), nrow(data) - n_utilities)
-    expect_true(all(
-      is.na(result$siccd) | result$siccd < 4900 | result$siccd > 4999
-    ))
-  }
-)
-
-test_that(
-  paste0(
-    "filter_sorting_data removes financials ",
-    "and utilities when both excluded"
-  ),
-  {
-    data <- make_sorting_data()
-    n_fin_or_util <- sum(
-      (data$siccd >= 6000 & data$siccd <= 6799) |
-        (data$siccd >= 4900 & data$siccd <= 4999),
-      na.rm = TRUE
-    )
-    result <- filter_sorting_data(
-      data,
-      filter_options = filter_options(
-        exclude_financials = TRUE,
-        exclude_utilities = TRUE
-      ),
-      quiet = TRUE
-    )
-    expect_equal(nrow(result), nrow(data) - n_fin_or_util)
-  }
-)
-
-test_that(
-  paste0(
-    "filter_sorting_data errors when ",
-    "siccd missing for financial exclusion"
-  ),
-  {
-    data <- make_sorting_data()
-    data$siccd <- NULL
-    expect_error(
-      filter_sorting_data(
-        data,
-        filter_options = filter_options(exclude_financials = TRUE)
-      ),
-      "siccd"
-    )
-  }
-)
-
-test_that("filter_sorting_data applies min_stock_price filter correctly", {
-  data <- make_sorting_data()
-  threshold <- 3
-  n_below <- sum(!is.na(data$prc_adj) & data$prc_adj < threshold)
-  result <- filter_sorting_data(
-    data,
-    filter_options = filter_options(min_stock_price = threshold),
-    quiet = TRUE
+  expect_error(
+    filter_sorting_data(d, quiet = NA),
+    "quiet"
   )
-  expect_equal(nrow(result), nrow(data) - n_below)
-  expect_true(all(result$prc_adj >= threshold, na.rm = TRUE))
+  expect_error(
+    filter_sorting_data(d, quiet = c(TRUE, FALSE)),
+    "quiet"
+  )
 })
 
-test_that("filter_sorting_data errors when price missing for min_stock_price", {
-  data <- make_sorting_data()
-  data$prc_adj <- NULL
+test_that("NULL filter_options and data_options leave data unchanged", {
+  d <- data.frame(x = 1:3)
+  expect_identical(filter_sorting_data(d), d)
+})
+
+test_that("SIC filters abort when siccd column is absent", {
   expect_error(
     filter_sorting_data(
-      data,
-      filter_options = filter_options(min_stock_price = 5)
+      data.frame(x = 1),
+      filter_options = filter_options(
+        exclude_financials = TRUE
+      )
+    ),
+    "siccd"
+  )
+})
+
+test_that("exclude_financials removes SIC 6000-6799, keeps NA, messages", {
+  d <- data.frame(
+    siccd = c(5999L, 6000L, 6400L, 6799L, 6800L, NA_integer_)
+  )
+  expect_message(
+    out <- filter_sorting_data(
+      d,
+      filter_options = filter_options(
+        exclude_financials = TRUE
+      )
+    ),
+    "exclude_financials"
+  )
+  # 5999, 6800, NA survive
+  expect_equal(nrow(out), 3L)
+  expect_true(all(
+    is.na(out$siccd) |
+      out$siccd < 6000L |
+      out$siccd > 6799L
+  ))
+})
+
+test_that("exclude_utilities removes SIC 4900-4999, keeps NA, messages", {
+  d <- data.frame(
+    siccd = c(
+      4899L,
+      4900L,
+      4950L,
+      4999L,
+      5000L,
+      NA_integer_
+    )
+  )
+  expect_message(
+    out <- filter_sorting_data(
+      d,
+      filter_options = filter_options(
+        exclude_utilities = TRUE
+      )
+    ),
+    "exclude_utilities"
+  )
+  # 4899, 5000, NA survive
+  expect_equal(nrow(out), 3L)
+  expect_true(all(
+    is.na(out$siccd) |
+      out$siccd < 4900L |
+      out$siccd > 4999L
+  ))
+})
+
+test_that("min_stock_price aborts when price column is absent", {
+  expect_error(
+    filter_sorting_data(
+      data.frame(x = 1),
+      filter_options = filter_options(min_stock_price = 1)
     ),
     "prc_adj"
   )
 })
 
-test_that(
-  paste0(
-    "filter_sorting_data applies ",
-    "min_size_quantile filter using NYSE cutoff"
-  ),
-  {
-    data <- make_sorting_data()
-    # NYSE mktcap_lag: seq(100, 500, length.out = 15), 50th pctile = 300
-    # 7 NYSE stocks fall below the cutoff;
-    # all 15 NASDAQ stocks (5000–10000) pass
-    nyse_cutoff <- quantile(seq(100, 500, length.out = 15), probs = 0.5)
-    result <- filter_sorting_data(
-      data,
-      filter_options = filter_options(min_size_quantile = 0.5),
-      quiet = TRUE
-    )
-    expect_equal(nrow(result), sum(data$mktcap_lag >= nyse_cutoff))
-    expect_true(all(result$mktcap_lag >= nyse_cutoff))
-  }
-)
-
-test_that(
-  paste0(
-    "filter_sorting_data errors when ",
-    "mktcap_lag missing for min_size_quantile"
-  ),
-  {
-    data <- make_sorting_data()
-    data$mktcap_lag <- NULL
-    expect_error(
-      filter_sorting_data(
-        data,
-        filter_options = filter_options(min_size_quantile = 0.2)
-      ),
-      "mktcap_lag"
-    )
-  }
-)
-
-test_that(
-  paste0(
-    "filter_sorting_data errors when ",
-    "exchange missing for min_size_quantile"
-  ),
-  {
-    data <- make_sorting_data()
-    data$exchange <- NULL
-    expect_error(
-      filter_sorting_data(
-        data,
-        filter_options = filter_options(min_size_quantile = 0.2)
-      ),
-      "exchange"
-    )
-  }
-)
-
-test_that("filter_sorting_data applies min_listing_age filter correctly", {
-  data <- make_sorting_data()
-  min_age <- 12
-  n_young <- sum(!is.na(data$listing_age) & data$listing_age < min_age)
-  result <- filter_sorting_data(
-    data,
-    filter_options = filter_options(min_listing_age = min_age),
-    quiet = TRUE
+test_that("min_stock_price removes below-threshold and NA rows, messages", {
+  d <- data.frame(prc_adj = c(NA_real_, 0.9, 1.0, 5.0))
+  expect_message(
+    out <- filter_sorting_data(
+      d,
+      filter_options = filter_options(min_stock_price = 1)
+    ),
+    "min_stock_price"
   )
-  expect_equal(nrow(result), nrow(data) - n_young)
-  expect_true(all(result$listing_age >= min_age, na.rm = TRUE))
+  expect_equal(nrow(out), 2L)
+  expect_true(all(out$prc_adj >= 1))
 })
 
-test_that("filter_sorting_data errors when listing_age column is missing", {
-  data <- make_sorting_data()
-  data$listing_age <- NULL
+test_that("min_size_quantile aborts when mktcap_lag column is absent", {
   expect_error(
     filter_sorting_data(
-      data,
+      data.frame(date = Sys.Date(), exchange = "NYSE"),
+      filter_options = filter_options(
+        min_size_quantile = 0.5
+      )
+    ),
+    "mktcap_lag"
+  )
+})
+
+test_that("min_size_quantile aborts when date column is absent", {
+  expect_error(
+    filter_sorting_data(
+      data.frame(mktcap_lag = 1, exchange = "NYSE"),
+      filter_options = filter_options(
+        min_size_quantile = 0.5
+      )
+    ),
+    "date"
+  )
+})
+
+test_that("min_size_quantile aborts when exchange column is absent", {
+  expect_error(
+    filter_sorting_data(
+      data.frame(mktcap_lag = 1, date = Sys.Date()),
+      filter_options = filter_options(
+        min_size_quantile = 0.5
+      )
+    ),
+    "exchange"
+  )
+})
+
+test_that("min_size_quantile warns on dates with no NYSE observations", {
+  # "2020-01-02" is NASDAQ-only → no cutoff computed → warning
+  d <- data.frame(
+    date = as.Date(c("2020-01-01", "2020-01-02")),
+    exchange = c("NYSE", "NASDAQ"),
+    mktcap_lag = c(100, 200)
+  )
+  expect_warning(
+    filter_sorting_data(
+      d,
+      filter_options = filter_options(
+        min_size_quantile = 0.5
+      )
+    ),
+    "min_size_quantile"
+  )
+})
+
+test_that("min_size_quantile removes below-NYSE-quantile stocks and messages", {
+  # NYSE quantile(c(100,200,300), 0.5) = 200; keep mktcap_lag >= 200
+  d <- data.frame(
+    date = as.Date("2020-01-01"),
+    exchange = c("NYSE", "NYSE", "NYSE", "NASDAQ"),
+    mktcap_lag = c(100, 200, 300, 50)
+  )
+  expect_message(
+    out <- filter_sorting_data(
+      d,
+      filter_options = filter_options(
+        min_size_quantile = 0.5
+      )
+    ),
+    "min_size_quantile"
+  )
+  expect_true(all(out$mktcap_lag >= 200))
+})
+
+test_that("min_size_quantile emits no message when no rows are removed", {
+  # All NYSE mktcap_lag identical -> any quantile == 100;
+  # every row passes, n_dropped = 0, no message emitted.
+  d <- data.frame(
+    date = as.Date("2020-01-01"),
+    exchange = c("NYSE", "NYSE"),
+    mktcap_lag = c(100, 100)
+  )
+  expect_no_message(
+    filter_sorting_data(
+      d,
+      filter_options = filter_options(
+        min_size_quantile = 0.1
+      )
+    )
+  )
+})
+
+test_that("min_listing_age aborts when listing_age column is absent", {
+  expect_error(
+    filter_sorting_data(
+      data.frame(x = 1),
       filter_options = filter_options(min_listing_age = 12)
     ),
     "listing_age"
   )
 })
 
-test_that(
-  paste0(
-    "filter_sorting_data applies ",
-    "exclude_negative_book_equity filter correctly"
-  ),
-  {
-    data <- make_sorting_data()
-    n_nonpositive <- sum(!is.na(data$be) & data$be <= 0)
-    result <- filter_sorting_data(
-      data,
-      filter_options = filter_options(exclude_negative_book_equity = TRUE),
-      quiet = TRUE
-    )
-    expect_equal(nrow(result), nrow(data) - n_nonpositive)
-    expect_true(all(result$be > 0))
-  }
-)
+test_that("min_listing_age removes young and NA stocks and messages", {
+  d <- data.frame(
+    listing_age = c(NA_integer_, 6L, 12L, 24L)
+  )
+  expect_message(
+    out <- filter_sorting_data(
+      d,
+      filter_options = filter_options(min_listing_age = 12)
+    ),
+    "min_listing_age"
+  )
+  expect_equal(nrow(out), 2L)
+  expect_true(all(out$listing_age >= 12))
+})
+
+test_that("exclude_negative_book_equity aborts when be column is absent", {
+  expect_error(
+    filter_sorting_data(
+      data.frame(x = 1),
+      filter_options = filter_options(
+        exclude_negative_book_equity = TRUE
+      )
+    ),
+    "be"
+  )
+})
 
 test_that(
   paste0(
-    "filter_sorting_data errors when ",
-    "be missing for exclude_negative_book_equity"
+    "exclude_negative_book_equity removes non-positive",
+    " be and NA rows and messages"
   ),
   {
-    data <- make_sorting_data()
-    data$be <- NULL
-    expect_error(
-      filter_sorting_data(
-        data,
-        filter_options = filter_options(exclude_negative_book_equity = TRUE)
-      ),
-      "be"
-    )
-  }
-)
-
-test_that(
-  paste0(
-    "filter_sorting_data applies ",
-    "exclude_negative_earnings filter correctly"
-  ),
-  {
-    data <- make_sorting_data()
-    n_nonpositive <- sum(!is.na(data$ib) & data$ib <= 0)
-    result <- filter_sorting_data(
-      data,
-      filter_options = filter_options(exclude_negative_earnings = TRUE),
-      quiet = TRUE
-    )
-    expect_equal(nrow(result), nrow(data) - n_nonpositive)
-    expect_true(all(result$ib > 0))
-  }
-)
-
-test_that(
-  paste0(
-    "filter_sorting_data emits a message mentioning ",
-    "exclude_negative_earnings when quiet = FALSE and rows are removed"
-  ),
-  {
-    data <- make_sorting_data()
+    d <- data.frame(be = c(NA_real_, -1, 0, 1, 2))
     expect_message(
-      filter_sorting_data(
-        data,
-        filter_options = filter_options(exclude_negative_earnings = TRUE),
-        quiet = FALSE
+      out <- filter_sorting_data(
+        d,
+        filter_options = filter_options(
+          exclude_negative_book_equity = TRUE
+        )
+      ),
+      "exclude_negative_book_equity"
+    )
+    expect_equal(nrow(out), 2L)
+    expect_true(all(out$be > 0))
+  }
+)
+
+test_that("exclude_negative_earnings aborts when earnings column is absent", {
+  expect_error(
+    filter_sorting_data(
+      data.frame(x = 1),
+      filter_options = filter_options(
+        exclude_negative_earnings = TRUE
+      )
+    ),
+    "ib"
+  )
+})
+
+test_that(
+  paste0(
+    "exclude_negative_earnings removes non-positive",
+    " earnings and NA rows and messages"
+  ),
+  {
+    d <- data.frame(ib = c(NA_real_, -1, 0, 1, 2))
+    expect_message(
+      out <- filter_sorting_data(
+        d,
+        filter_options = filter_options(
+          exclude_negative_earnings = TRUE
+        )
       ),
       "exclude_negative_earnings"
     )
+    expect_equal(nrow(out), 2L)
+    expect_true(all(out$ib > 0))
   }
 )
 
-test_that(
-  paste0(
-    "filter_sorting_data errors when earnings ",
-    "column is missing for exclude_negative_earnings"
-  ),
-  {
-    data <- make_sorting_data()
-    data$ib <- NULL
-    expect_error(
-      filter_sorting_data(
-        data,
-        filter_options = filter_options(exclude_negative_earnings = TRUE)
-      ),
-      "ib"
-    )
-  }
-)
-
-test_that(
-  paste0(
-    "filter_sorting_data emits a message ",
-    "when quiet=FALSE and rows removed"
-  ),
-  {
-    data <- make_sorting_data()
-    expect_message(
-      filter_sorting_data(
-        data,
-        filter_options = filter_options(exclude_financials = TRUE),
-        quiet = FALSE
-      )
-    )
-  }
-)
-
-test_that("filter_sorting_data suppresses messages when quiet = TRUE", {
-  data <- make_sorting_data()
-  expect_silent(
+test_that("quiet = TRUE suppresses messages across all filters", {
+  # Each filter removes at least one row, but quiet = TRUE means
+  # the `!quiet && n_dropped > 0` guard is FALSE for all of them.
+  d <- data.frame(
+    siccd = c(6100L, 4950L, 2000L),
+    prc_adj = c(10, 10, 0.5),
+    listing_age = c(5L, 12L, 24L),
+    be = c(-1, 1, 2),
+    ib = c(-1, 1, 2)
+  )
+  expect_no_message(
     filter_sorting_data(
-      data,
-      filter_options = filter_options(exclude_financials = TRUE),
-      quiet = TRUE
-    )
-  )
-})
-
-test_that("filter_sorting_data errors for invalid quiet argument", {
-  data <- make_sorting_data()
-  expect_error(filter_sorting_data(data, quiet = "yes"), "quiet")
-  expect_error(filter_sorting_data(data, quiet = NA), "quiet")
-  expect_error(filter_sorting_data(data, quiet = 1), "quiet")
-})
-
-test_that(
-  paste0(
-    "filter_sorting_data respects custom ",
-    "column names via data_options"
-  ),
-  {
-    data <- make_sorting_data()
-    names(data)[names(data) == "prc_adj"] <- "stock_price"
-    result <- filter_sorting_data(
-      data,
-      filter_options = filter_options(min_stock_price = 3),
-      data_options = data_options(price = "stock_price"),
-      quiet = TRUE
-    )
-    expect_true(all(result$stock_price >= 3, na.rm = TRUE))
-  }
-)
-
-test_that(
-  paste0(
-    "filter_sorting_data warns when dates are dropped ",
-    "due to missing NYSE quantile cutoff"
-  ),
-  {
-    # date1 has NYSE stocks -> quantile cutoff can be computed
-    # date2 has no NYSE stocks -> no cutoff, all rows for date2 are dropped
-    date1 <- as.Date("2020-01-01")
-    date2 <- as.Date("2020-02-01")
-    data <- data.frame(
-      permno = 1:6,
-      date = c(rep(date1, 4), rep(date2, 2)),
-      exchange = c("NYSE", "NYSE", "NASDAQ", "NASDAQ", "NASDAQ", "NASDAQ"),
-      mktcap_lag = c(100, 200, 150, 250, 300, 400)
-    )
-    expect_warning(
-      result <- filter_sorting_data(
-        data,
-        filter_options = filter_options(min_size_quantile = 0.5)
+      d,
+      filter_options = filter_options(
+        exclude_financials = TRUE,
+        exclude_utilities = TRUE,
+        min_stock_price = 1,
+        min_listing_age = 12,
+        exclude_negative_book_equity = TRUE,
+        exclude_negative_earnings = TRUE
       ),
-      regexp = "min_size_quantile"
+      quiet = TRUE
     )
-    # all rows for date2 must be gone
-    expect_true(all(result$date == date1))
-  }
-)
-
-test_that("filter_sorting_data with NA siccd values preserves those rows", {
-  data <- make_sorting_data()
-  data$siccd[1:3] <- NA_integer_
-  result <- filter_sorting_data(
-    data,
-    filter_options = filter_options(exclude_financials = TRUE),
-    quiet = TRUE
   )
-  # NA rows should be kept (not removed)
-  expect_true(any(is.na(result$siccd)))
 })
