@@ -247,7 +247,7 @@ test_that("single output is returned directly, not wrapped in a list", {
 })
 
 test_that("model without intercept skips column rename in to_tibble", {
-  result <- estimate_model(df, "y ~ x - 1", output = "tstats")
+  expect_warning(result <- estimate_model(df, "y ~ x - 1", output = "tstats"))
   expect_s3_class(result, "tbl_df")
   expect_false("intercept" %in% names(result))
 })
@@ -260,10 +260,12 @@ test_that("residuals are NA for rows with missing values, non-NA elsewhere", {
 })
 
 test_that("multiple outputs returns a named list", {
-  result <- estimate_model(
-    df,
-    "y ~ x",
-    output = c("coefficients", "tstats", "residuals")
+  expect_warning(
+    result <- estimate_model(
+      df,
+      "y ~ x",
+      output = c("coefficients", "tstats", "residuals")
+    )
   )
   # return_multiple = TRUE path; also exercises all three sufficient branches
   expect_type(result, "list")
