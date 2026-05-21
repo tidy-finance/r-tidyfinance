@@ -10,9 +10,11 @@
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![](https://img.shields.io/badge/devel%20version-0.4.5.9027-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
+[![](https://img.shields.io/badge/devel%20version-0.5.0.9002-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
 [![R-CMD-check](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml)
 [![Lint](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/lint.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/lint.yaml/badge.svg)
+[![Codecov test
+coverage](https://codecov.io/gh/tidy-finance/r-tidyfinance/graph/badge.svg)](https://app.codecov.io/gh/tidy-finance/r-tidyfinance)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
@@ -210,15 +212,15 @@ download_data(
 #> # A tibble: 504 × 8
 #>    symbol date          volume  open   low  high close adjusted_close
 #>    <chr>  <date>         <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2020-01-02 135480400  74.1  73.8  75.2  75.1           72.4
-#>  2 AAPL   2020-01-03 146322800  74.3  74.1  75.1  74.4           71.7
-#>  3 AAPL   2020-01-06 118387200  73.4  73.2  75.0  74.9           72.3
+#>  1 AAPL   2020-01-02 135480400  74.1  73.8  75.2  75.1           72.3
+#>  2 AAPL   2020-01-03 146322800  74.3  74.1  75.1  74.4           71.6
+#>  3 AAPL   2020-01-06 118387200  73.4  73.2  75.0  74.9           72.2
 #>  4 AAPL   2020-01-07 108872000  75.0  74.4  75.2  74.6           71.9
-#>  5 AAPL   2020-01-08 132079200  74.3  74.3  76.1  75.8           73.1
+#>  5 AAPL   2020-01-08 132079200  74.3  74.3  76.1  75.8           73.0
 #>  6 AAPL   2020-01-09 170108400  76.8  76.6  77.6  77.4           74.6
-#>  7 AAPL   2020-01-10 140644800  77.7  77.1  78.2  77.6           74.8
-#>  8 AAPL   2020-01-13 121532000  77.9  77.8  79.3  79.2           76.4
-#>  9 AAPL   2020-01-14 161954400  79.2  78.0  79.4  78.2           75.4
+#>  7 AAPL   2020-01-10 140644800  77.7  77.1  78.2  77.6           74.7
+#>  8 AAPL   2020-01-13 121532000  77.9  77.8  79.3  79.2           76.3
+#>  9 AAPL   2020-01-14 161954400  79.2  78.0  79.4  78.2           75.3
 #> 10 AAPL   2020-01-15 121923600  78.0  77.4  78.9  77.8           75.0
 #> # ℹ 494 more rows
 ```
@@ -328,7 +330,7 @@ download_data(
 #>  2  10015 001001 1983-09-20 1986-07-31
 #>  3  10023 001002 1972-12-14 1973-06-05
 #>  4  10031 001003 1983-12-07 1989-08-16
-#>  5  54594 001004 1972-04-24 2026-05-10
+#>  5  54594 001004 1972-04-24 2026-05-21
 #>  6  61903 001005 1973-01-31 1983-01-31
 #>  7  10058 001007 1973-10-01 1979-01-30
 #>  8  10058 001007 1979-01-31 1984-09-28
