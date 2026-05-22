@@ -17,6 +17,7 @@
   to reflect that the filter keeps USD-denominated shares only. The old name
   is deprecated and forwards to `only_usd` with a warning.
 - Added `test-coverage.yaml` workflow and badge to README.
+- Added tests to get coverage to 100% (excl. `set_wrds_credentials()`).
 
 # tidyfinance 0.5.0
 
