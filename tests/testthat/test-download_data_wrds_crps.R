@@ -68,13 +68,6 @@ test_that("deprecated type inputs are translated to dataset", {
   )
 })
 
-crsp_dates <- function() {
-  list(
-    start_date = as.Date("2001-01-01"),
-    end_date = as.Date("2020-12-31")
-  )
-}
-
 risk_free_monthly <- function(start_date, end_date) {
   tibble::tibble(
     date = as.Date(c("2020-01-01", "2020-02-01")),
@@ -200,12 +193,19 @@ mock_crsp_tbl <- function(con, from) {
 }
 
 with_crsp_mocks <- function(code) {
+  fake_con <- structure(list(), class = "DBIConnection")
+  withr::local_envvar(WRDS_USER = "user", WRDS_PASSWORD = "pass")
+
   local_mocked_bindings(
-    validate_dates = function(start_date, end_date, use_default_range) {
-      expect_true(use_default_range)
-      crsp_dates()
-    },
-    get_wrds_connection = function() "con",
+    Postgres = function() "pg_driver",
+    .package = "RPostgres"
+  )
+  local_mocked_bindings(
+    dbConnect = function(...) fake_con,
+    .package = "DBI"
+  )
+
+  local_mocked_bindings(
     disconnect_connection = function(con) invisible(TRUE),
     download_data_risk_free = function(start_date, end_date, ...) {
       dots <- list(...)
@@ -216,7 +216,7 @@ with_crsp_mocks <- function(code) {
       }
     },
     tbl = mock_crsp_tbl,
-    .env = globalenv()
+    .env = environment(download_data_wrds_crsp)
   )
 
   force(code)
@@ -226,6 +226,8 @@ test_that("monthly CRSP v1 is processed", {
   with_crsp_mocks({
     out <- download_data_wrds_crsp(
       dataset = "crsp_monthly",
+      start_date = "2001-01-01",
+      end_date = "2020-12-31",
       version = "v1",
       additional_columns = "mthvol"
     )
@@ -244,6 +246,8 @@ test_that("monthly CRSP v2 is processed", {
   with_crsp_mocks({
     out <- download_data_wrds_crsp(
       dataset = "crsp_monthly",
+      start_date = "2001-01-01",
+      end_date = "2020-12-31",
       version = "v2",
       additional_columns = "mthvol"
     )
@@ -262,6 +266,8 @@ test_that("daily CRSP v1 validates and adjusts volume", {
     expect_error(
       download_data_wrds_crsp(
         dataset = "crsp_daily",
+        start_date = "2001-01-01",
+        end_date = "2020-12-31",
         version = "v1",
         adjust_volume = TRUE,
         additional_columns = "prc"
@@ -271,6 +277,8 @@ test_that("daily CRSP v1 validates and adjusts volume", {
 
     out <- download_data_wrds_crsp(
       dataset = "crsp_daily",
+      start_date = "2001-01-01",
+      end_date = "2020-12-31",
       version = "v1",
       adjust_volume = TRUE,
       additional_columns = c("prc", "vol", "cfacpr", "exchcd")
@@ -289,6 +297,8 @@ test_that("daily CRSP v1 handles empty batches", {
   with_crsp_mocks({
     out <- download_data_wrds_crsp(
       dataset = "crsp_daily",
+      start_date = "2001-01-01",
+      end_date = "2020-12-31",
       version = "v1",
       batch_size = 1
     )
@@ -304,6 +314,8 @@ test_that("daily CRSP v2 validates and adjusts volume", {
     expect_error(
       download_data_wrds_crsp(
         dataset = "crsp_daily",
+        start_date = "2001-01-01",
+        end_date = "2020-12-31",
         version = "v2",
         adjust_volume = TRUE,
         additional_columns = "dlyprc"
@@ -313,6 +325,8 @@ test_that("daily CRSP v2 validates and adjusts volume", {
 
     out <- download_data_wrds_crsp(
       dataset = "crsp_daily",
+      start_date = "2001-01-01",
+      end_date = "2020-12-31",
       version = "v2",
       adjust_volume = TRUE,
       additional_columns = c(
@@ -337,6 +351,8 @@ test_that("daily CRSP v2 handles empty batches", {
   with_crsp_mocks({
     out <- download_data_wrds_crsp(
       dataset = "crsp_daily",
+      start_date = "2001-01-01",
+      end_date = "2020-12-31",
       version = "v2",
       batch_size = 1
     )
@@ -358,11 +374,13 @@ test_that("CCM links are added when requested", {
   with_crsp_mocks({
     local_mocked_bindings(
       download_data_wrds_ccm_links = function() ccm_links,
-      .env = globalenv()
+      .env = environment(download_data_wrds_crsp)
     )
 
     out <- download_data_wrds_crsp(
       dataset = "crsp_monthly",
+      start_date = "2001-01-01",
+      end_date = "2020-12-31",
       version = "v2",
       add_ccm_links = TRUE
     )
