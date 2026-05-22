@@ -22,7 +22,7 @@ make_grid <- function(id = 1L) {
 # page_df is passed straight through fromJSON so the rest of
 # the pipeline (tibble(), filter(), select()) runs for real.
 mock_httr2 <- function(page_df, link = NULL) {
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     request = function(url) list(url = url),
     req_user_agent = function(req, ...) req,
     req_perform = function(req, ...) list(),
@@ -31,7 +31,7 @@ mock_httr2 <- function(page_df, link = NULL) {
     .package = "httr2",
     .env = parent.frame()
   )
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     fromJSON = function(...) page_df,
     .package = "jsonlite",
     .env = parent.frame()
@@ -74,7 +74,7 @@ test_that("multi-page: paginates until rel=next link absent", {
   )
   links <- list('<https://page2.example.com>; rel="next"', NULL)
 
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     request = function(url) list(url = url),
     req_user_agent = function(req, ...) req,
     req_perform = function(req, ...) {
@@ -85,7 +85,7 @@ test_that("multi-page: paginates until rel=next link absent", {
     resp_headers = function(resp) list(link = links[[page_n]]),
     .package = "httr2"
   )
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     fromJSON = function(...) pages[[page_n]],
     .package = "jsonlite"
   )
@@ -106,7 +106,7 @@ test_that("aborts when dataset is NULL", {
 
 test_that("deprecated type arg warns and strips hf_ prefix", {
   withr::local_options(lifecycle_verbosity = "warning")
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     download_factor_library_grid = function() {
       tibble::tibble(id = integer(0))
     }
@@ -120,7 +120,7 @@ test_that("deprecated type arg warns and strips hf_ prefix", {
 
 test_that("legacy hf_ dataset value warns and strips prefix", {
   withr::local_options(lifecycle_verbosity = "warning")
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     download_factor_library_grid = function() {
       tibble::tibble(id = integer(0))
     }
@@ -143,7 +143,7 @@ test_that("aborts for unsupported dataset", {
 
 test_that("factor_library_grid: delegates to helper", {
   mock_grid <- tibble::tibble(id = 1L)
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     download_factor_library_grid = function() mock_grid
   )
 
@@ -160,10 +160,10 @@ test_that("high_frequency_sp500: filters by date and downloads", {
   )
   mock_trades <- tibble::tibble(price = 100.0)
 
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     get_available_huggingface_files = function(...) available
   )
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     read_parquet = function(...) mock_trades,
     .package = "arrow"
   )
@@ -179,7 +179,7 @@ test_that("high_frequency_sp500: filters by date and downloads", {
 
 test_that("factor_library: delegates to inner helper", {
   mock_returns <- tibble::tibble(id = 1L, ret = 0.01)
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     download_data_hugging_face_factor_library = function(...) {
       mock_returns
     }
@@ -232,7 +232,7 @@ test_that("fill_all = FALSE: defaults applied, row filtered out", {
     breakpoints_min_size_threshold = c(NA_real_, NA_real_),
     weighting_scheme = c("VW", "VW")
   )
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     download_factor_library_grid = function() grid
   )
 
@@ -263,7 +263,7 @@ test_that("fill_all = TRUE: only explicit filters applied", {
     breakpoints_min_size_threshold = c(NA_real_, NA_real_),
     weighting_scheme = c("EW", "VW")
   )
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     download_factor_library_grid = function() grid
   )
 
@@ -285,10 +285,10 @@ test_that("pulls url from available files and reads parquet", {
   )
   mock_grid <- tibble::tibble(id = 1L)
 
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     get_available_huggingface_files = function(...) available
   )
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     read_parquet = function(...) mock_grid,
     .package = "arrow"
   )
@@ -301,7 +301,7 @@ test_that("pulls url from available files and reads parquet", {
 test_that("aborts when no grid rows match requested ids", {
   # make_grid(42L) has id = 42; requesting id = 999 yields an
   # empty inner_join, so relevant_urls is empty.
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     download_factor_library_grid = function() make_grid(42L),
     get_available_huggingface_files = function(...) {
       tibble::tibble(
@@ -322,7 +322,7 @@ test_that("aborts when ids have no matching parquet file", {
   # The available path "unrelated/data.parquet" does not match
   # the regex in tidyr::extract, so all key columns are NA and
   # the left_join leaves url = NA for the matched grid row.
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     download_factor_library_grid = function() make_grid(1L),
     get_available_huggingface_files = function(...) {
       tibble::tibble(
@@ -349,7 +349,7 @@ test_that("downloads returns and joins grid metadata", {
   )
   mock_returns <- tibble::tibble(id = 1L, ret = 0.01)
 
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     download_factor_library_grid = function() make_grid(1L),
     get_available_huggingface_files = function(...) {
       tibble::tibble(
@@ -359,7 +359,7 @@ test_that("downloads returns and joins grid metadata", {
       )
     }
   )
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     read_parquet = function(...) mock_returns,
     .package = "arrow"
   )
@@ -384,7 +384,7 @@ test_that("aborts when ids and filter args are combined", {
 
 test_that("with ids: delegates to download_factor_library_ids", {
   mock_result <- tibble::tibble(id = 1L, ret = 0.01)
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     download_factor_library_ids = function(ids) mock_result
   )
 
@@ -395,7 +395,7 @@ test_that("with ids: delegates to download_factor_library_ids", {
 
 test_that("without ids: resolves via grid then downloads", {
   mock_result <- tibble::tibble(id = 1L, ret = 0.01)
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     filter_factor_library_grid = function(...) 1L,
     download_factor_library_ids = function(ids) mock_result
   )
