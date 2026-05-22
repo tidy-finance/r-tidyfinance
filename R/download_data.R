@@ -174,8 +174,6 @@ download_data <- function(
         ...
       )
     }
-  } else {
-    cli::cli_abort("Unsupported domain: {.val {domain}}")
   }
 
   processed_data
