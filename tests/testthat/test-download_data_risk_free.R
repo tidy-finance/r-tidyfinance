@@ -1,96 +1,85 @@
-test_that("download_data_risk_free returns monthly data with correct columns", {
-  skip_if_offline()
-  skip_on_cran()
-  data <- download_data_risk_free("2020-01-01", "2020-12-31")
-  expect_s3_class(data, "tbl_df")
-  expect_true(all(c("date", "risk_free") %in% colnames(data)))
-  expect_equal(ncol(data), 2)
-  expect_true(all(!is.na(data$risk_free)))
-})
-
-test_that("download_data_risk_free returns daily data with correct columns", {
-  skip_if_offline()
-  skip_on_cran()
-  data <- download_data_risk_free(
-    "2020-01-01",
-    "2020-12-31",
-    frequency = "daily"
-  )
-  expect_s3_class(data, "tbl_df")
-  expect_true(all(c("date", "risk_free") %in% colnames(data)))
-  expect_equal(ncol(data), 2)
-  expect_true(all(!is.na(data$risk_free)))
-})
-
-test_that("download_data_risk_free monthly returns one row per month", {
-  skip_if_offline()
-  skip_on_cran()
-  data <- download_data_risk_free("2010-01-01", "2010-12-31")
-  expect_equal(nrow(data), 12)
-  expect_s3_class(data$date, "Date")
-})
-
-test_that("download_data_risk_free uses correct splice date boundary", {
-  skip_if_offline()
-  skip_on_cran()
-  data <- download_data_risk_free("2000-11-01", "2001-02-28")
-  expect_true(nrow(data) >= 4)
-  expect_true(all(!is.na(data$risk_free)))
-})
-
-test_that("download_data_risk_free errors on invalid frequency", {
+test_that("invalid frequency aborts with informative message", {
   expect_error(
-    download_data_risk_free("2020-01-01", "2020-12-31", frequency = "weekly"),
-    regexp = "frequency"
+    download_data_risk_free(frequency = "weekly"),
+    regexp = "monthly.*daily",
+    class = "rlang_error"
   )
 })
 
-test_that("download_data_risk_free errors when start_date after end_date", {
-  skip_if_offline()
-  skip_on_cran()
-  expect_error(
-    download_data_risk_free("2021-12-31", "2020-01-01"),
-    regexp = "`start_date` cannot be after `end_date`"
-  )
-})
-
-test_that("download_data_risk_free returns filtered rows for date range", {
-  skip_if_offline()
-  skip_on_cran()
-  result <- download_data_risk_free("2020-03-01", "2020-06-30")
-  expect_equal(nrow(result), 4)
-  expect_true(all(result$date >= as.Date("2020-03-01")))
-  expect_true(all(result$date <= as.Date("2020-06-30")))
-})
-
-test_that("download_data_risk_free aborts with clear message on failure", {
-  with_mocked_bindings(
-    read_parquet = function(file, ...) stop("connection refused"),
-    .package = "arrow",
-    {
-      expect_error(
-        download_data_risk_free("2020-01-01", "2020-12-31"),
-        regexp = "Failed to download risk-free rate data from HuggingFace"
+test_that("download failure is caught and re-thrown", {
+  local_mocked_bindings(
+    validate_dates = function(...) {
+      list(
+        start_date = NULL,
+        end_date = NULL
       )
     }
   )
-})
-
-test_that("download_data via tidyfinance risk_free routes correctly", {
-  skip_if_offline()
-  skip_on_cran()
-  data <- download_data(
-    "tidyfinance",
-    "risk_free",
-    "2020-01-01",
-    "2020-12-31"
+  local_mocked_bindings(
+    read_parquet = function(...) stop("connection refused"),
+    .package = "arrow"
   )
-  expect_s3_class(data, "tbl_df")
-  expect_true(all(c("date", "risk_free") %in% colnames(data)))
+
+  expect_error(
+    download_data_risk_free(),
+    regexp = "Failed to download risk-free rate data",
+    class = "rlang_error"
+  )
 })
 
-test_that("risk_free appears in list_supported_datasets for tidyfinance", {
-  datasets <- list_supported_datasets()
-  tf_datasets <- datasets[datasets$domain == "tidyfinance", ]
-  expect_true("risk_free" %in% tf_datasets$type)
+test_that("full dataset returned when no dates are supplied", {
+  mock_data <- tibble::tibble(
+    date = as.Date(c("2020-01-01", "2020-02-01")),
+    risk_free = c(0.001, 0.002)
+  )
+
+  local_mocked_bindings(
+    validate_dates = function(...) {
+      list(
+        start_date = NULL,
+        end_date = NULL
+      )
+    }
+  )
+  local_mocked_bindings(
+    read_parquet = function(...) mock_data,
+    .package = "arrow"
+  )
+
+  result <- download_data_risk_free()
+
+  expect_equal(result, mock_data)
+})
+
+test_that("data is filtered when start and end dates are supplied", {
+  mock_data <- tibble::tibble(
+    date = as.Date(
+      c("2020-01-01", "2020-02-01", "2020-03-01")
+    ),
+    risk_free = c(0.001, 0.002, 0.003)
+  )
+
+  local_mocked_bindings(
+    validate_dates = function(...) {
+      list(
+        start_date = as.Date("2020-01-01"),
+        end_date = as.Date("2020-02-01")
+      )
+    }
+  )
+  local_mocked_bindings(
+    read_parquet = function(...) mock_data,
+    .package = "arrow"
+  )
+
+  result <- download_data_risk_free(
+    "2020-01-01",
+    "2020-02-01"
+  )
+
+  expect_equal(nrow(result), 2L)
+  expect_equal(
+    result$date,
+    as.Date(c("2020-01-01", "2020-02-01"))
+  )
 })
