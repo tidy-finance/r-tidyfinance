@@ -1,5 +1,10 @@
 # tidyfinance (development version)
 
+- Removed the `using-tidyfinance` and `dates-in-tidyfinance` vignettes.
+  Both predated the current `download_data()` interface and are
+  superseded by the package manuscript. `knitr` and `rmarkdown` are no
+  longer declared in `Suggests`, and `VignetteBuilder` has been dropped
+  from `DESCRIPTION`.
 - `download_data("tidyfinance", "factor_library", ids = <vector>)` now
   delegates directly to `download_factor_library_ids()`, bypassing the
   grid filter. Passing `ids` together with filter arguments raises an
