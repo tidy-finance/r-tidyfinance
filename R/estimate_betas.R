@@ -97,8 +97,8 @@ estimate_betas <- function(
   } else if (lookback@minute > 0) {
     lookback <- lookback@minute
     period <- "minute"
-  } else if (lookback@second > 0) {
-    lookback <- lookback@second
+  } else if (lookback@.Data > 0) {
+    lookback <- lookback@.Data
     period <- "second"
   } else {
     cli::cli_abort(

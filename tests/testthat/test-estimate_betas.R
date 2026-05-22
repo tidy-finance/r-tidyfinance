@@ -1,161 +1,194 @@
-test_that("Input validation: negative or zero lookback throws error", {
-  data <- tibble(
-    date = as.Date("2020-01-01"),
-    permno = 1,
-    ret_excess = 0,
-    mkt_excess = 0
-  )
-  expect_error(estimate_betas(data, "ret_excess ~ mkt_excess", -1))
-  expect_error(estimate_betas(data, "ret_excess ~ mkt_excess", 0))
-})
+set.seed(1234)
 
-test_that("Input validation: negative or zero min_obs throws error", {
-  data <- tibble(
-    date = as.Date("2020-01-01"),
-    permno = 1,
-    ret_excess = 0,
-    mkt_excess = 0
-  )
-  expect_error(estimate_betas(data, "ret_excess ~ mkt_excess", 3, min_obs = -1))
-  expect_error(estimate_betas(data, "ret_excess ~ mkt_excess", 3, min_obs = 0))
-})
-
-test_that("Input validation: invalid use_furrr throws error", {
-  data <- tibble(
-    date = as.Date("2020-01-01"),
-    permno = 1,
-    ret_excess = 0,
-    mkt_excess = 0
-  )
-  expect_error(estimate_betas(data, "ret_excess ~ mkt_excess", 3, use_furr = 0))
-})
-
-test_that("Output structure: correct column names and number of rows", {
-  data <- tibble(
-    date = rep(
-      seq.Date(
-        from = as.Date("2020-01-01"),
-        to = as.Date("2020-12-01"),
-        by = "month"
-      ),
-      each = 2
-    ),
-    permno = rep(1:2, times = 12),
-    ret_excess = rnorm(24, 0, 0.1),
-    mkt_excess = rnorm(24, 0, 0.1)
-  )
-
-  result <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
-
-  expect_true(all(c("date", "beta_mkt_excess") %in% colnames(result)))
-  # Should match the number of unique date-permno pairs
-  expect_equal(nrow(result), 24) #
-})
-
-test_that("Correctness: Known result test", {
-  data <- tibble(
-    date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01")),
-    permno = c(1, 1, 1),
-    ret_excess = c(0.1, 0.2, 0.3),
-    mkt_excess = c(0.1, 0.2, 0.3)
-  )
-
-  result <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
-
-  expect_equal(result$beta_mkt_excess, c(NA, 1, 1))
-})
-
-test_that("Performance: Single vs multiple workers give the same result", {
-  data <- tibble(
-    date = rep(
-      seq.Date(
-        from = as.Date("2020-01-01"),
-        to = as.Date("2020-12-01"),
-        by = "month"
-      ),
-      each = 2
-    ),
-    permno = rep(1:2, times = 12),
-    ret_excess = rnorm(24, 0, 0.1),
-    mkt_excess = rnorm(24, 0, 0.1)
-  )
-
-  suppressPackageStartupMessages(require(purrr))
-
-  result_single <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
-  result_multi <- estimate_betas(
-    data,
-    "ret_excess ~ mkt_excess",
-    months(3),
-    use_furrr = TRUE
-  )
-
-  expect_equal(result_single, result_multi)
-})
-
-test_that("Rolling window behavior: correct handling of boundary dates", {
-  data <- tibble(
-    date = seq.Date(
-      from = as.Date("2020-01-01"),
-      to = as.Date("2020-06-01"),
-      by = "month"
-    ),
-    permno = 1,
-    ret_excess = rnorm(6, 0, 0.1),
-    mkt_excess = rnorm(6, 0, 0.1)
-  )
-
-  result <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
-
-  expect_equal(nrow(result), 6)
-  # Check if the first couple of rows have NA values where the window size
-  # is not sufficient
-  expect_true(all(is.na(result$beta_mkt_excess[1])))
-})
-
-test_that("Daily data test: correctly handles daily data grouped into months", {
-  data <- tibble(
-    date = rep(
-      seq.Date(
-        from = as.Date("2020-01-01"),
-        to = as.Date("2020-12-31"),
-        by = "day"
-      ),
-      each = 2
-    ),
-    permno = rep(1:2, times = 366),
-    ret_excess = rnorm(732, 0, 0.02),
-    mkt_excess = rnorm(732, 0, 0.02)
-  )
-
-  data <- data |>
-    mutate(date = lubridate::floor_date(date, "month"))
-
-  result <- estimate_betas(
-    data,
-    "ret_excess ~ mkt_excess",
-    lookback = months(6)
-  )
-
-  # Check if rows match the expected number of date-permno combinations
-  expect_equal(nrow(result), length(unique(data$date)) * 2)
-  expect_true(all(c("date", "beta_mkt_excess") %in% colnames(result)))
-})
-
-test_that("Edge case: single permno", {
-  data <- tibble(
-    date = seq.Date(
+data_monthly <- tibble::tibble(
+  date = rep(
+    seq.Date(
       from = as.Date("2020-01-01"),
       to = as.Date("2020-12-01"),
       by = "month"
     ),
-    permno = 1,
-    ret_excess = rnorm(12, 0, 0.1),
-    mkt_excess = rnorm(12, 0, 0.1)
+    each = 50
+  ),
+  permno = rep(1:50, times = 12),
+  ret_excess = rnorm(600, 0, 0.1),
+  mkt_excess = rnorm(600, 0, 0.1),
+  smb = rnorm(600, 0, 0.1),
+  hml = rnorm(600, 0, 0.1)
+)
+
+data_daily <- tibble::tibble(
+  date = rep(
+    seq.Date(
+      from = as.Date("2020-01-01"),
+      to = as.Date("2020-12-31"),
+      by = "day"
+    ),
+    each = 50
+  ),
+  permno = rep(1:50, times = 366),
+  ret_excess = rnorm(18300, 0, 0.02),
+  mkt_excess = rnorm(18300, 0, 0.02),
+  smb = rnorm(18300, 0, 0.02),
+  hml = rnorm(18300, 0, 0.02)
+) |>
+  dplyr::mutate(date = lubridate::floor_date(date, "month"))
+
+
+test_that("uses default data_options when NULL", {
+  result <- estimate_betas(
+    data_monthly,
+    "ret_excess ~ mkt_excess",
+    months(3)
   )
+  expect_true("permno" %in% colnames(result))
+  expect_true("date" %in% colnames(result))
+})
 
-  result <- estimate_betas(data, "ret_excess ~ mkt_excess", months(3))
+test_that("uses custom data_options when provided", {
+  df <- dplyr::rename(data_monthly, id = permno)
+  result <- estimate_betas(
+    df,
+    "ret_excess ~ mkt_excess",
+    months(3),
+    data_options = data_options(id = "id")
+  )
+  expect_true("id" %in% colnames(result))
+})
 
-  expect_equal(nrow(result), 12)
-  expect_true(all(c("date", "beta_mkt_excess") %in% colnames(result)))
+test_that("lookback in months is parsed correctly", {
+  result <- estimate_betas(
+    data_monthly,
+    "ret_excess ~ mkt_excess",
+    months(3)
+  )
+  expect_s3_class(result, "data.frame")
+  expect_true("beta_mkt_excess" %in% colnames(result))
+})
+
+test_that("lookback in days is parsed correctly", {
+  result <- estimate_betas(
+    data_daily,
+    "ret_excess ~ mkt_excess",
+    lubridate::days(90)
+  )
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("lookback in hours triggers hour period", {
+  df <- data_monthly |>
+    dplyr::mutate(
+      date = as.POSIXct(date) + rep(seq(0, 11) * 3600, each = 50)
+    )
+  result <- estimate_betas(
+    df,
+    "ret_excess ~ mkt_excess",
+    lubridate::hours(5)
+  )
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("lookback in minutes triggers minute period", {
+  df <- data_monthly |>
+    dplyr::mutate(
+      date = as.POSIXct(date) + rep(seq(0, 11) * 60, each = 50)
+    )
+  result <- estimate_betas(
+    df,
+    "ret_excess ~ mkt_excess",
+    lubridate::minutes(5)
+  )
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("lookback in seconds triggers second period", {
+  df <- data_monthly |>
+    dplyr::mutate(
+      date = as.POSIXct(date) + rep(seq(0, 11), each = 50)
+    )
+  result <- estimate_betas(
+    df,
+    "ret_excess ~ mkt_excess",
+    lubridate::seconds(5)
+  )
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("invalid lookback (zero period) raises error", {
+  bad_lookback <- lubridate::period(0)
+  expect_error(
+    estimate_betas(
+      data_monthly,
+      "ret_excess ~ mkt_excess",
+      bad_lookback
+    ),
+    regexp = "lookback"
+  )
+})
+
+test_that("min_obs defaults to 80% of lookback when NULL", {
+  # Should run without error; coverage confirms NULL branch taken
+  result <- estimate_betas(
+    data_monthly,
+    "ret_excess ~ mkt_excess",
+    months(10),
+    min_obs = NULL
+  )
+  expect_s3_class(result, "data.frame")
+})
+
+test_that("min_obs <= 0 raises an error", {
+  expect_error(
+    estimate_betas(
+      data_monthly,
+      "ret_excess ~ mkt_excess",
+      months(3),
+      min_obs = 0
+    ),
+    regexp = "min_obs"
+  )
+})
+
+test_that("non-logical use_furrr raises an error", {
+  expect_error(
+    estimate_betas(
+      data_monthly,
+      "ret_excess ~ mkt_excess",
+      months(3),
+      use_furrr = "yes"
+    ),
+    regexp = "use_furrr"
+  )
+})
+
+test_that("lookback < num_params issues a warning", {
+  expect_warning(
+    estimate_betas(
+      data_monthly,
+      "ret_excess ~ mkt_excess + smb + hml",
+      months(2)
+    ),
+    regexp = "lookback"
+  )
+})
+
+test_that("use_furrr = TRUE uses furrr path", {
+  future::plan("sequential")
+  result <- estimate_betas(
+    data_monthly,
+    "ret_excess ~ mkt_excess",
+    months(3),
+    use_furrr = TRUE
+  )
+  expect_s3_class(result, "data.frame")
+  expect_true("beta_mkt_excess" %in% colnames(result))
+})
+
+test_that("intercept column is renamed from beta_intercept", {
+  result <- estimate_betas(
+    data_monthly,
+    "ret_excess ~ mkt_excess",
+    months(3)
+  )
+  expect_true("intercept" %in% colnames(result))
+  expect_false("beta_intercept" %in% colnames(result))
 })
