@@ -648,8 +648,6 @@ download_data_wrds_crsp <- function(
 
       processed_data <- bind_rows(crsp_daily_list)
     }
-  } else {
-    cli::cli_abort("Unsupported CRSP dataset: {.val {dataset}}")
   }
 
   if (isTRUE(add_ccm_links)) {
