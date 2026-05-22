@@ -20,6 +20,7 @@
 #' set_wrds_credentials()
 #' }
 set_wrds_credentials <- function() {
+  # nocov start
   wrds_user <- readline(prompt = "Enter your WRDS username: ")
   wrds_password <- readline(prompt = "Enter your WRDS password: ")
   location_choice <- readline(
@@ -112,4 +113,4 @@ set_wrds_credentials <- function() {
       "{.path {location_choice}} directory."
     )
   )
-}
+} # nocov end

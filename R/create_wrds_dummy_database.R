@@ -23,6 +23,7 @@ create_wrds_dummy_database <- function(
     "tidy-finance-dummy-data/data/tidy_finance.sqlite"
   )
 ) {
+  # nocov start
   if (missing(path)) {
     cli::cli_abort(c(
       "Please provide a file path for the SQLite database.",
@@ -58,4 +59,4 @@ create_wrds_dummy_database <- function(
   }
 
   invisible(NULL)
-}
+} # nocov end

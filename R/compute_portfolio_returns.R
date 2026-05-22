@@ -497,7 +497,9 @@ compute_portfolio_returns <- function(
   if (!is.null(rebalancing_month)) {
     matching_dates <- all_dates[month(all_dates) == rebalancing_month]
     if (length(matching_dates) == 0L) {
-      cli::cli_abort("No dates in data match {rebalancing_month = }.")
+      cli::cli_abort(
+        "No dates in data match for rebalancing month = {rebalancing_month}."
+      )
     }
     first_rebalancing_date <- min(matching_dates)
     all_dates <- all_dates[all_dates >= first_rebalancing_date]

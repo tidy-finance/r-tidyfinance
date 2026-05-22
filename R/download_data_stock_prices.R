@@ -104,11 +104,11 @@ download_data_stock_prices <- function(
     } else {
       error_message <- # nolint: object_usage_linter.
         httr2::resp_body_json(response)$chart$error
-      cli::cli_warn(
-        "Failed to retrieve data for symbol {symbols[j]} with",
-        "status code {response$status_code} ({error_message$code}):",
+      cli::cli_warn(c(
+        "Failed to retrieve data for symbol {symbols[j]} with ",
+        "status code {response$status_code} ({error_message$code}): ",
         "{error_message$description}"
-      )
+      ))
     }
     cli::cli_progress_update()
   }

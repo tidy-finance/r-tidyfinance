@@ -124,7 +124,7 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
     if ("(Intercept)" %in% names(x)) {
       names(x)[names(x) == "(Intercept)"] <- "intercept"
     }
-    as_tibble(t(x))
+    as_tibble(t(x), .name_repair = "minimal")
   }
 
   na_tibble <- function() {
@@ -132,7 +132,7 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
       return(NA_real_)
     }
     beta <- setNames(rep(NA_real_, length(independent_vars)), independent_vars)
-    as_tibble(t(beta))
+    as_tibble(t(beta), .name_repair = "minimal")
   }
 
   result <- list()

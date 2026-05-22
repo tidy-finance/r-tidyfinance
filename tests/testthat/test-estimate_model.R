@@ -223,3 +223,81 @@ test_that("tstats are NA tibble when all model rows are NA", {
   expect_s3_class(result, "tbl_df")
   expect_true(all(is.na(result)))
 })
+
+# Minimal reusable data
+df <- data.frame(y = as.numeric(1:10), x = as.numeric(1:10))
+
+test_that("invalid output raises an error", {
+  expect_error(estimate_model(df, "y ~ x", output = "foo"))
+})
+
+test_that("column named 'intercept' in model raises an error", {
+  d <- data.frame(y = 1:10, intercept = 1:10)
+  expect_error(estimate_model(d, "y ~ intercept"))
+})
+
+test_that("independent variable absent from data raises an error", {
+  expect_error(estimate_model(df, "y ~ x + z"))
+})
+
+test_that("single output is returned directly, not wrapped in a list", {
+  result <- estimate_model(df, "y ~ x")
+  expect_s3_class(result, "tbl_df")
+  expect_true("intercept" %in% names(result))
+})
+
+test_that("model without intercept skips column rename in to_tibble", {
+  expect_warning(result <- estimate_model(df, "y ~ x - 1", output = "tstats"))
+  expect_s3_class(result, "tbl_df")
+  expect_false("intercept" %in% names(result))
+})
+
+test_that("residuals are NA for rows with missing values, non-NA elsewhere", {
+  d <- data.frame(y = c(as.numeric(1:9), NA), x = as.numeric(1:10))
+  result <- estimate_model(d, "y ~ x", output = "residuals")
+  expect_true(is.na(result[10]))
+  expect_false(anyNA(result[1:9]))
+})
+
+test_that("multiple outputs returns a named list", {
+  expect_warning(
+    result <- estimate_model(
+      df,
+      "y ~ x",
+      output = c("coefficients", "tstats", "residuals")
+    )
+  )
+  # return_multiple = TRUE path; also exercises all three sufficient branches
+  expect_type(result, "list")
+  expect_named(result, c("coefficients", "tstats", "residuals"))
+})
+
+test_that(
+  paste0("insufficient observations returns NA tibbles and NA residual vector"),
+  {
+    d <- data.frame(y = as.numeric(1:5), x = as.numeric(1:5))
+    result <- estimate_model(
+      d,
+      "y ~ x",
+      min_obs = 10,
+      output = c("coefficients", "tstats", "residuals")
+    )
+    # Covers all three insufficient branches in a single test
+    expect_true(all(is.na(result$coefficients)))
+    expect_true(all(is.na(result$tstats)))
+    expect_equal(result$residuals, rep(NA_real_, 5))
+  }
+)
+
+test_that(
+  paste0(
+    "insufficient obs with no independent variables returns NA_real_ scalar"
+  ),
+  {
+    # "y ~ 1" (intercept-only) → independent_vars = character(0)
+    # na_tibble() takes the length == 0 early-return path
+    d <- data.frame(y = as.numeric(1:5))
+    result <- estimate_model(d, "y ~ 1", min_obs = 10, output = "coefficients")
+    expect_equal(result, NA_real_)
+  }
+)

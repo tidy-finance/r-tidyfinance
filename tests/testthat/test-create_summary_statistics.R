@@ -53,3 +53,53 @@ test_that("NA values are handled correctly", {
   expect_identical(result_keep_na$q50, NA_real_)
   expect_identical(result_keep_na$max, NA_real_)
 })
+
+df <- data.frame(
+  x = c(1, 2, 3, NA, 5), # has a missing value
+  y = c(10, 20, 30, 40, 50),
+  g = c("A", "A", "B", "B", "A"),
+  chr = letters[1:5]
+)
+
+test_that("non-numeric columns in ... raise an error", {
+  expect_error(create_summary_statistics(df, x, chr))
+})
+
+test_that("detail = FALSE returns only basic statistics columns", {
+  result <- create_summary_statistics(df, y)
+  expect_named(result, c("variable", "n", "mean", "sd", "min", "q50", "max"))
+  expect_equal(nrow(result), 1L)
+  expect_false(is.na(result$q50))
+})
+
+test_that(
+  paste0(
+    "detail = TRUE returns extended quantile columns, NA when data has NAs"
+  ),
+  {
+    result <- create_summary_statistics(df, x, detail = TRUE)
+    expect_true(all(c("q01", "q25", "q75", "q99") %in% names(result)))
+    expect_true(is.na(result$q50)) # quantile_na_handler anyNA = TRUE path
+  }
+)
+
+test_that(
+  paste0(
+    "drop_na = TRUE in the no-by branch removes NA rows before summarising"
+  ),
+  {
+    result <- create_summary_statistics(df, x, detail = TRUE, drop_na = TRUE)
+    expect_false(is.na(result$q50))
+  }
+)
+
+test_that(
+  paste0(
+    "by argument groups results and drop_na = TRUE applies in grouped branch"
+  ),
+  {
+    result <- create_summary_statistics(df, x, y, by = g, drop_na = TRUE)
+    expect_true("g" %in% names(result))
+    expect_equal(nrow(result), 4L) # 2 variables × 2 groups
+  }
+)

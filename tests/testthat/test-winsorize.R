@@ -48,3 +48,24 @@ test_that("winsorize() handles edge cases", {
   x <- rep(1, 10)
   expect_equal(winsorize(x, 0.1), x)
 })
+
+test_that("cut below 0 raises an error", {
+  expect_error(winsorize(1:10, cut = -0.1))
+})
+
+test_that("cut above 0.5 raises an error", {
+  expect_error(winsorize(1:10, cut = 0.6))
+})
+
+test_that("values beyond cut quantiles are replaced by the boundary values", {
+  x <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 100) # 100 is a clear outlier
+
+  result <- winsorize(x, cut = 0.1)
+
+  # Upper tail: values above the 90th quantile are capped
+  expect_true(all(result <= quantile(x, 0.9, na.rm = TRUE)))
+  # Lower tail: values below the 10th quantile are floored
+  expect_true(all(result >= quantile(x, 0.1, na.rm = TRUE)))
+  # Interior values are unchanged
+  expect_equal(result[2:8], x[2:8])
+})

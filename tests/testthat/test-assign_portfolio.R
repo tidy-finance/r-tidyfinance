@@ -467,3 +467,55 @@ test_that("breakpoint function receives all four arguments", {
   expect_equal(received_args$bp_options, my_bp_opts)
   expect_equal(received_args$data_options, my_data_opts)
 })
+
+test_that("normal assignment returns correct portfolio indices", {
+  # Custom breakpoint_function also exercises that argument path.
+  # breakpoints c(0, 50, 100) create two portfolios:
+  #   x in (0, 50] -> 1,  x in (50, 100] -> 2
+  data <- data.frame(x = c(10, 60, 100))
+  bp_fn <- function(data, sv, bo, do) c(0, 50, 100)
+  result <- assign_portfolio(
+    data,
+    "x",
+    breakpoint_function = bp_fn
+  )
+  expect_equal(result, c(1L, 2L, 2L))
+})
+
+test_that("constant sorting variable warns and returns all 1L", {
+  data <- data.frame(x = rep(5, 6))
+  expect_warning(
+    result <- assign_portfolio(data, "x"),
+    "constant"
+  )
+  expect_equal(result, rep.int(1L, 6L))
+})
+
+test_that("NA breakpoints warns and returns NA_integer_", {
+  data <- data.frame(x = 1:5)
+  bp_na <- function(data, sv, bo, do) c(NA_real_, NA_real_)
+  expect_warning(
+    result <- assign_portfolio(
+      data,
+      "x",
+      breakpoint_function = bp_na
+    ),
+    "missing breakpoints"
+  )
+  expect_identical(result, NA_integer_)
+})
+
+test_that("cluster warning when portfolios collapse due to ties", {
+  # All x values fall into the first of four expected portfolios.
+  data <- data.frame(x = c(1, 2, 3))
+  bp_fn <- function(data, sv, bo, do) c(0, 25, 50, 75, 100)
+  expect_warning(
+    result <- assign_portfolio(
+      data,
+      "x",
+      breakpoint_function = bp_fn
+    ),
+    "clusters"
+  )
+  expect_true(all(result == 1L))
+})

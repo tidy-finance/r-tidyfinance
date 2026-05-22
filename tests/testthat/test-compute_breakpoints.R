@@ -842,3 +842,183 @@ test_that("breakpoint_options validates breakpoints_min_size_threshold", {
     "breakpoints_min_size_threshold"
   )
 })
+
+# Standard data with exchange and mktcap_lag columns
+df <- data.frame(
+  x = 1:20,
+  exchange = rep(c("NYSE", "NASDAQ"), 10),
+  mktcap_lag = 1:20
+)
+
+# Data engineered to produce specific bunching patterns (25 rows each)
+df_both <- data.frame(x = c(rep(0, 10), 1:5, rep(10, 10)))
+df_lower <- data.frame(x = c(rep(0, 15), 1:10))
+df_upper <- data.frame(x = c(1:10, rep(20, 15)))
+
+test_that("non-list breakpoint_options raises an error", {
+  expect_error(compute_breakpoints(df, "x", breakpoint_options = 5))
+})
+
+test_that("providing both n_portfolios and percentiles raises an error", {
+  expect_error(
+    compute_breakpoints(
+      df,
+      "x",
+      list(n_portfolios = 4, percentiles = c(0.25, 0.75))
+    )
+  )
+})
+
+test_that("providing neither n_portfolios nor percentiles raises an error", {
+  expect_error(compute_breakpoints(df, "x", list()))
+})
+
+test_that(
+  paste0(
+    "breakpoints_exchanges set but exchange column absent raises an error"
+  ),
+  {
+    expect_error(
+      compute_breakpoints(
+        data.frame(x = 1:10),
+        "x",
+        list(n_portfolios = 3, breakpoints_exchanges = "NYSE")
+      )
+    )
+  }
+)
+
+test_that(
+  paste0(
+    "breakpoints_min_size_threshold set but mktcap_lag column absent raises",
+    "an error"
+  ),
+  {
+    expect_error(
+      compute_breakpoints(
+        data.frame(x = 1:10),
+        "x",
+        list(n_portfolios = 3, breakpoints_min_size_threshold = 0.2)
+      )
+    )
+  }
+)
+
+test_that("n_portfolios <= 1 raises an error", {
+  expect_error(compute_breakpoints(df, "x", list(n_portfolios = 1)))
+})
+
+test_that("exchange filter leaving no rows warns and returns NA_real_", {
+  expect_warning(
+    result <- compute_breakpoints(
+      df,
+      "x",
+      list(n_portfolios = 3, breakpoints_exchanges = "AMEX")
+    )
+  )
+  expect_equal(result, NA_real_)
+})
+
+test_that("n_portfolios with no filters returns n + 1 breakpoints", {
+  result <- compute_breakpoints(df, "x", list(n_portfolios = 4))
+  expect_length(result, 5L)
+})
+
+test_that(
+  paste0(
+    "percentiles with exchange filter computes breakpoints on filtered data"
+  ),
+  {
+    result <- compute_breakpoints(
+      df,
+      "x",
+      list(percentiles = c(0.25, 0.5, 0.75), breakpoints_exchanges = "NYSE")
+    )
+    expect_length(result, 5L) # c(0, p1, p2, p3, 1) = 5 breakpoints
+  }
+)
+
+test_that(
+  paste0(
+    "min_size_threshold with exchange filter uses exchange-filtered mktcap",
+    "reference"
+  ),
+  {
+    result <- compute_breakpoints(
+      df,
+      "x",
+      list(
+        n_portfolios = 3,
+        breakpoints_exchanges = "NYSE",
+        breakpoints_min_size_threshold = 0.2
+      )
+    )
+    expect_length(result, 4L)
+  }
+)
+
+test_that(
+  paste0(
+    "min_size_threshold without exchange filter uses full dataset as mktcap",
+    "reference"
+  ),
+  {
+    result <- compute_breakpoints(
+      df,
+      "x",
+      list(n_portfolios = 3, breakpoints_min_size_threshold = 0.2)
+    )
+    expect_length(result, 4L)
+  }
+)
+
+test_that(
+  paste0(
+    "smooth_bunching with both-edge bunching warns and recomputes inner",
+    "breakpoints"
+  ),
+  {
+    expect_warning(
+      result <- compute_breakpoints(
+        df_both,
+        "x",
+        list(percentiles = c(1 / 3, 2 / 3), smooth_bunching = TRUE)
+      )
+    )
+    expect_length(result, 4L)
+  }
+)
+
+test_that(
+  paste0(
+    "smooth_bunching with lower-edge bunching warns and recomputes upper",
+    "breakpoints"
+  ),
+  {
+    expect_warning(
+      result <- compute_breakpoints(
+        df_lower,
+        "x",
+        list(percentiles = c(1 / 3, 2 / 3), smooth_bunching = TRUE)
+      )
+    )
+    expect_length(result, 4L)
+  }
+)
+
+test_that(
+  paste0(
+    "smooth_bunching with upper-edge bunching warns and recomputes lower",
+    "breakpoints"
+  ),
+  {
+    expect_warning(
+      result <- compute_breakpoints(
+        df_upper,
+        "x",
+        list(percentiles = c(1 / 3, 2 / 3), smooth_bunching = TRUE)
+      )
+    )
+    expect_length(result, 4L)
+  }
+)
