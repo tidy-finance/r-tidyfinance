@@ -76,7 +76,7 @@ risk_free_monthly <- function(start_date, end_date) {
 }
 
 risk_free_daily <- function(start_date, end_date, frequency = NULL) {
-  expect_equal(frequency, "daily")
+  testthat::expect_equal(frequency, "daily")
 
   tibble::tibble(
     date = as.Date(c(
@@ -196,16 +196,16 @@ with_crsp_mocks <- function(code) {
   fake_con <- structure(list(), class = "DBIConnection")
   withr::local_envvar(WRDS_USER = "user", WRDS_PASSWORD = "pass")
 
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     Postgres = function() "pg_driver",
     .package = "RPostgres"
   )
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     dbConnect = function(...) fake_con,
     .package = "DBI"
   )
 
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     disconnect_connection = function(con) invisible(TRUE),
     download_data_risk_free = function(start_date, end_date, ...) {
       dots <- list(...)
