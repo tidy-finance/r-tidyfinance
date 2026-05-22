@@ -229,8 +229,6 @@ download_data_huggingface <- function(
       tidyr::unnest("data")
   } else if (dataset == "factor_library") {
     download_data_hugging_face_factor_library(...)
-  } else {
-    cli::cli_abort("Unsupported dataset: {.val {dataset}}")
   }
 }
 

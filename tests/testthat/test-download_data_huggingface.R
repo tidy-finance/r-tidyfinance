@@ -1,340 +1,408 @@
-# Helpers ---------------------------------------------------------------
-
-make_grid_parquet_file <- function(rows) {
-  tmp <- tempfile(fileext = ".parquet")
-  arrow::write_parquet(rows, tmp)
-  tibble::tibble(path = "grid/part.parquet", size = file.size(tmp), url = tmp)
-}
-
-make_returns_parquet_file <- function(
-  rows,
-  sv,
-  sv_lag,
-  sorting_method,
-  n_portfolios_main
-) {
-  tmp <- tempfile(fileext = ".parquet")
-  arrow::write_parquet(rows, tmp)
+# Full-schema grid row used by download_factor_library_ids tests.
+make_grid <- function(id = 1L) {
   tibble::tibble(
-    path = paste0(
-      "sorting_variable=",
-      sv,
-      "/sorting_variable_lag=",
-      sv_lag,
-      "/sorting_method=",
-      sorting_method,
-      "/n_portfolios_main=",
-      n_portfolios_main,
-      "/part.parquet"
-    ),
-    size = file.size(tmp),
-    url = tmp
+    id = id,
+    sorting_variable = "sv_me",
+    sorting_variable_lag = "6m",
+    sorting_method = "univariate",
+    n_portfolios_main = 10L,
+    min_size_quantile = 0.2,
+    exclude_financials = FALSE,
+    exclude_utilities = FALSE,
+    exclude_negative_earnings = FALSE,
+    rebalancing = "monthly",
+    n_portfolios_secondary = NA_real_,
+    breakpoints_exchanges = "NYSE",
+    breakpoints_min_size_threshold = NA_real_,
+    weighting_scheme = "VW"
   )
 }
 
-# Input validation (no network) -----------------------------------------
+# Mocks the full httr2 chain + jsonlite::fromJSON for one page.
+# page_df is passed straight through fromJSON so the rest of
+# the pipeline (tibble(), filter(), select()) runs for real.
+mock_httr2 <- function(page_df, link = NULL) {
+  local_mocked_bindings(
+    request = function(url) list(url = url),
+    req_user_agent = function(req, ...) req,
+    req_perform = function(req, ...) list(),
+    resp_body_string = function(resp) "[]",
+    resp_headers = function(resp) list(link = link),
+    .package = "httr2",
+    .env = parent.frame()
+  )
+  local_mocked_bindings(
+    fromJSON = function(...) page_df,
+    .package = "jsonlite",
+    .env = parent.frame()
+  )
+}
 
-test_that(
-  paste(
-    "filter_grid() aborts with a clear message on unsupported filter names"
-  ),
-  {
-    expect_error(
-      download_data_huggingface("factor_library", not_a_column = "x"),
-      regexp = "unsupported filter name"
+# ── get_available_huggingface_files ─────────────────
+
+test_that("single page: returns only parquet files", {
+  page_df <- data.frame(
+    type = c("file", "file", "directory"),
+    path = c("data.parquet", "readme.txt", "subdir"),
+    size = c(100L, 10L, 0L),
+    stringsAsFactors = FALSE
+  )
+  mock_httr2(page_df)
+
+  result <- get_available_huggingface_files("org", "ds")
+
+  expect_equal(nrow(result), 1L)
+  expect_named(result, c("path", "size", "url"))
+  expect_equal(result$path, "data.parquet")
+})
+
+test_that("multi-page: paginates until rel=next link absent", {
+  page_n <- 0L
+  pages <- list(
+    data.frame(
+      type = "file",
+      path = "a.parquet",
+      size = 1L,
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      type = "file",
+      path = "b.parquet",
+      size = 2L,
+      stringsAsFactors = FALSE
     )
-  }
-)
+  )
+  links <- list('<https://page2.example.com>; rel="next"', NULL)
 
-# Empty / missing URL behaviour (mocked) --------------------------------
+  local_mocked_bindings(
+    request = function(url) list(url = url),
+    req_user_agent = function(req, ...) req,
+    req_perform = function(req, ...) {
+      page_n <<- page_n + 1L
+      list()
+    },
+    resp_body_string = function(resp) "[]",
+    resp_headers = function(resp) list(link = links[[page_n]]),
+    .package = "httr2"
+  )
+  local_mocked_bindings(
+    fromJSON = function(...) pages[[page_n]],
+    .package = "jsonlite"
+  )
 
-test_that(
-  paste(
-    "download_factor_library_returns_ids() aborts when no IDs match the grid"
-  ),
-  {
-    grid_rows <- tibble::tibble(
-      id = 1L,
-      sorting_variable = "sv_me",
-      sorting_variable_lag = "3m",
-      sorting_method = "univariate",
-      n_portfolios_main = 10L
-    )
+  result <- get_available_huggingface_files("org", "ds")
 
-    mock_files <- function(organization, dataset) {
-      if (dataset == "factor-library-grid") {
-        make_grid_parquet_file(grid_rows)
-      } else {
-        make_returns_parquet_file(
-          tibble::tibble(id = 1L),
-          "me",
-          "3m",
-          "univariate",
-          10L
-        )
-      }
+  expect_equal(nrow(result), 2L)
+})
+
+# ── download_data_huggingface ────────────────────────
+
+test_that("aborts when dataset is NULL", {
+  expect_error(
+    download_data_huggingface(dataset = NULL),
+    class = "rlang_error"
+  )
+})
+
+test_that("deprecated type arg warns and strips hf_ prefix", {
+  withr::local_options(lifecycle_verbosity = "warning")
+  local_mocked_bindings(
+    download_factor_library_grid = function() {
+      tibble::tibble(id = integer(0))
     }
+  )
 
-    with_mocked_bindings(
-      get_available_huggingface_files = mock_files,
-      {
-        expect_error(
-          download_factor_library_ids(integer(0)),
-          regexp = "No parquet files found for the requested portfolio IDs"
-        )
-      }
-    )
-  }
-)
+  expect_warning(
+    download_data_huggingface(type = "hf_factor_library_grid"),
+    regexp = "deprecated"
+  )
+})
 
-test_that(
-  paste(
-    "download_factor_library_returns_ids() aborts when a parquet URL",
-    "is missing for a portfolio ID"
-  ),
-  {
-    grid_rows <- tibble::tibble(
-      id = 1L,
-      sorting_variable = "sv_me",
-      sorting_variable_lag = "3m",
-      sorting_method = "univariate",
-      n_portfolios_main = 10L
-    )
-
-    mock_files <- function(organization, dataset) {
-      if (dataset == "factor-library-grid") {
-        make_grid_parquet_file(grid_rows)
-      } else {
-        tibble::tibble(
-          path = character(0),
-          size = numeric(0),
-          url = character(0)
-        )
-      }
+test_that("legacy hf_ dataset value warns and strips prefix", {
+  withr::local_options(lifecycle_verbosity = "warning")
+  local_mocked_bindings(
+    download_factor_library_grid = function() {
+      tibble::tibble(id = integer(0))
     }
+  )
 
-    with_mocked_bindings(
-      get_available_huggingface_files = mock_files,
-      {
-        expect_error(
-          download_factor_library_ids(1L),
-          regexp = "No parquet file found for 1 portfolio ID"
-        )
-      }
-    )
-  }
-)
+  expect_warning(
+    download_data_huggingface(
+      dataset = "hf_factor_library_grid"
+    ),
+    regexp = "deprecated"
+  )
+})
 
-# NULL default / explicit NULL behaviour (mocked) ----------------------
+test_that("aborts for unsupported dataset", {
+  expect_error(
+    download_data_huggingface(dataset = "unknown"),
+    class = "rlang_error"
+  )
+})
 
-test_that(
-  paste(
-    "filter_factor_library_grid(): omitted breakpoints_min_size defaults to",
-    "NA (standard portfolio); explicit NULL removes the filter"
-  ),
-  {
-    grid_rows <- tibble::tibble(
-      id = c(1L, 2L),
-      sorting_variable = c("sv_bm", "sv_bm"),
-      min_size_quantile = c(0.2, 0.2),
-      exclude_financials = c(FALSE, FALSE),
-      exclude_utilities = c(FALSE, FALSE),
-      exclude_negative_earnings = c(FALSE, FALSE),
-      sorting_variable_lag = c("6m", "6m"),
-      rebalancing = c("monthly", "monthly"),
-      n_portfolios_main = c(10L, 10L),
-      sorting_method = c("univariate", "univariate"),
-      n_portfolios_secondary = c(NA_real_, NA_real_),
-      breakpoints_exchanges = c("NYSE", "NYSE"),
-      breakpoints_min_size_threshold = c(NA_real_, 1e9),
-      weighting_scheme = c("VW", "VW")
-    )
+test_that("factor_library_grid: delegates to helper", {
+  mock_grid <- tibble::tibble(id = 1L)
+  local_mocked_bindings(
+    download_factor_library_grid = function() mock_grid
+  )
 
-    mock_files <- function(organization, dataset) {
-      make_grid_parquet_file(grid_rows)
+  result <- download_data_huggingface("factor_library_grid")
+
+  expect_equal(result, mock_grid)
+})
+
+test_that("high_frequency_sp500: filters by date and downloads", {
+  available <- tibble::tibble(
+    path = "date=2007-07-26/part.parquet",
+    size = 100L,
+    url = "https://example.com/part.parquet"
+  )
+  mock_trades <- tibble::tibble(price = 100.0)
+
+  local_mocked_bindings(
+    get_available_huggingface_files = function(...) available
+  )
+  local_mocked_bindings(
+    read_parquet = function(...) mock_trades,
+    .package = "arrow"
+  )
+
+  result <- download_data_huggingface(
+    "high_frequency_sp500",
+    "2007-07-26",
+    "2007-07-26"
+  )
+
+  expect_equal(result, mock_trades)
+})
+
+test_that("factor_library: delegates to inner helper", {
+  mock_returns <- tibble::tibble(id = 1L, ret = 0.01)
+  local_mocked_bindings(
+    download_data_hugging_face_factor_library = function(...) {
+      mock_returns
     }
+  )
 
-    with_mocked_bindings(
-      get_available_huggingface_files = mock_files,
-      {
-        ids_default <- filter_factor_library_grid(sorting_variable = "bm")
-        ids_explicit_null <- filter_factor_library_grid(
-          sorting_variable = "bm",
-          breakpoints_min_size_threshold = NULL
-        )
+  result <- download_data_huggingface(
+    "factor_library",
+    sorting_variable = "me"
+  )
 
-        expect_length(ids_default, 1L)
-        expect_length(ids_explicit_null, 2L)
-      }
-    )
-  }
-)
+  expect_equal(result, mock_returns)
+})
 
-# Successful download (mocked) ------------------------------------------
+# ── filter_factor_library_grid ───────────────────────
 
-test_that(
-  paste(
-    "download_data_huggingface() returns a tibble for factor_library with",
-    "matched IDs"
-  ),
-  {
-    grid_rows <- tibble::tibble(
-      id = 1L,
-      sorting_variable = "sv_me",
-      sorting_variable_lag = "3m",
-      sorting_method = "univariate",
-      n_portfolios_main = 10L
-    )
-    returns_rows <- tibble::tibble(id = 1L, ret = 0.01)
+test_that("aborts for unsupported filter name", {
+  expect_error(
+    filter_factor_library_grid(bad_col = "x"),
+    class = "rlang_error"
+  )
+})
 
-    mock_files <- function(organization, dataset) {
-      if (dataset == "factor-library-grid") {
-        make_grid_parquet_file(grid_rows)
-      } else {
-        make_returns_parquet_file(
-          returns_rows,
-          "me",
-          "3m",
-          "univariate",
-          10L
-        )
-      }
+test_that("aborts: non-univariate sort without secondary n", {
+  # error fires before download_factor_library_grid() is reached
+  expect_error(
+    filter_factor_library_grid(
+      sorting_variable = "me",
+      sorting_method = "sequential"
+    ),
+    class = "rlang_error"
+  )
+})
+
+test_that("fill_all = FALSE: defaults applied, row filtered out", {
+  # Row 2 differs only in min_size_quantile (0.4 vs default 0.2)
+  # and should be dropped; all other columns match defaults.
+  grid <- tibble::tibble(
+    id = c(1L, 2L),
+    sorting_variable = c("sv_me", "sv_me"),
+    min_size_quantile = c(0.2, 0.4),
+    exclude_financials = c(FALSE, FALSE),
+    exclude_utilities = c(FALSE, FALSE),
+    exclude_negative_earnings = c(FALSE, FALSE),
+    sorting_variable_lag = c("6m", "6m"),
+    rebalancing = c("monthly", "monthly"),
+    n_portfolios_main = c(10L, 10L),
+    sorting_method = c("univariate", "univariate"),
+    n_portfolios_secondary = c(NA_real_, NA_real_),
+    breakpoints_exchanges = c("NYSE", "NYSE"),
+    breakpoints_min_size_threshold = c(NA_real_, NA_real_),
+    weighting_scheme = c("VW", "VW")
+  )
+  local_mocked_bindings(
+    download_factor_library_grid = function() grid
+  )
+
+  ids <- filter_factor_library_grid(sorting_variable = "me")
+
+  expect_equal(ids, 1L)
+})
+
+test_that("fill_all = TRUE: only explicit filters applied", {
+  # Both rows share all columns except sorting_variable and
+  # weighting_scheme. With fill_all = TRUE, only the explicit
+  # sorting_variable = "me" filter is applied; row 2 ("sv_bm")
+  # is dropped while row 1 ("sv_me") passes regardless of the
+  # differing weighting_scheme.
+  grid <- tibble::tibble(
+    id = c(1L, 2L),
+    sorting_variable = c("sv_me", "sv_bm"),
+    min_size_quantile = c(0.2, 0.2),
+    exclude_financials = c(FALSE, FALSE),
+    exclude_utilities = c(FALSE, FALSE),
+    exclude_negative_earnings = c(FALSE, FALSE),
+    sorting_variable_lag = c("6m", "6m"),
+    rebalancing = c("monthly", "monthly"),
+    n_portfolios_main = c(10L, 10L),
+    sorting_method = c("univariate", "univariate"),
+    n_portfolios_secondary = c(NA_real_, NA_real_),
+    breakpoints_exchanges = c("NYSE", "NYSE"),
+    breakpoints_min_size_threshold = c(NA_real_, NA_real_),
+    weighting_scheme = c("EW", "VW")
+  )
+  local_mocked_bindings(
+    download_factor_library_grid = function() grid
+  )
+
+  ids <- filter_factor_library_grid(
+    sorting_variable = "me",
+    fill_all = TRUE
+  )
+
+  expect_equal(ids, 1L)
+})
+
+# ── download_factor_library_grid ─────────────────────
+
+test_that("pulls url from available files and reads parquet", {
+  available <- tibble::tibble(
+    path = "grid.parquet",
+    size = 500L,
+    url = "https://example.com/grid.parquet"
+  )
+  mock_grid <- tibble::tibble(id = 1L)
+
+  local_mocked_bindings(
+    get_available_huggingface_files = function(...) available
+  )
+  local_mocked_bindings(
+    read_parquet = function(...) mock_grid,
+    .package = "arrow"
+  )
+
+  expect_equal(download_factor_library_grid(), mock_grid)
+})
+
+# ── download_factor_library_ids ──────────────────────
+
+test_that("aborts when no grid rows match requested ids", {
+  # make_grid(42L) has id = 42; requesting id = 999 yields an
+  # empty inner_join, so relevant_urls is empty.
+  local_mocked_bindings(
+    download_factor_library_grid = function() make_grid(42L),
+    get_available_huggingface_files = function(...) {
+      tibble::tibble(
+        path = character(0),
+        size = numeric(0),
+        url = character(0)
+      )
     }
+  )
 
-    with_mocked_bindings(
-      get_available_huggingface_files = mock_files,
-      {
-        result <- download_data_huggingface(
-          "factor_library",
-          sorting_variable = "me",
-          fill_all = TRUE
-        )
-        expect_s3_class(result, "tbl_df")
-        expect_true(nrow(result) > 0)
-        expect_true("id" %in% colnames(result))
-      }
-    )
-  }
-)
+  expect_error(
+    download_factor_library_ids(999L),
+    class = "rlang_error"
+  )
+})
 
-# ids shortcut (mocked) -------------------------------------------------
-
-test_that(
-  paste(
-    "download_data_huggingface('factor_library', ids = ...) delegates to",
-    "download_factor_library_ids() and skips the grid filter"
-  ),
-  {
-    grid_rows <- tibble::tibble(
-      id = c(1L, 2L),
-      sorting_variable = c("sv_me", "sv_bm"),
-      sorting_variable_lag = c("3m", "6m"),
-      sorting_method = c("univariate", "univariate"),
-      n_portfolios_main = c(10L, 10L)
-    )
-
-    mock_files <- function(organization, dataset) {
-      if (dataset == "factor-library-grid") {
-        make_grid_parquet_file(grid_rows)
-      } else {
-        dplyr::bind_rows(
-          make_returns_parquet_file(
-            tibble::tibble(id = 1L, ret = 0.01),
-            "me",
-            "3m",
-            "univariate",
-            10L
-          ),
-          make_returns_parquet_file(
-            tibble::tibble(id = 2L, ret = 0.02),
-            "bm",
-            "6m",
-            "univariate",
-            10L
-          )
-        )
-      }
+test_that("aborts when ids have no matching parquet file", {
+  # The available path "unrelated/data.parquet" does not match
+  # the regex in tidyr::extract, so all key columns are NA and
+  # the left_join leaves url = NA for the matched grid row.
+  local_mocked_bindings(
+    download_factor_library_grid = function() make_grid(1L),
+    get_available_huggingface_files = function(...) {
+      tibble::tibble(
+        path = "unrelated/data.parquet",
+        size = 100L,
+        url = "https://example.com/unrelated/data.parquet"
+      )
     }
+  )
 
-    with_mocked_bindings(
-      get_available_huggingface_files = mock_files,
-      {
-        result <- download_data_huggingface(
-          "factor_library",
-          ids = c(1L, 2L)
-        )
-        expect_s3_class(result, "tbl_df")
-        expect_equal(sort(result$id), c(1L, 2L))
-      }
-    )
-  }
-)
+  expect_error(
+    download_factor_library_ids(1L),
+    class = "rlang_error"
+  )
+})
 
-# factor_library_grid dispatch (mocked) ---------------------------------
+test_that("downloads returns and joins grid metadata", {
+  fpath <- paste0(
+    "sorting_variable=me/",
+    "sorting_variable_lag=6m/",
+    "sorting_method=univariate/",
+    "n_portfolios_main=10/",
+    "data.parquet"
+  )
+  mock_returns <- tibble::tibble(id = 1L, ret = 0.01)
 
-test_that(
-  paste(
-    "download_data_huggingface('factor_library_grid') returns the grid tibble"
-  ),
-  {
-    grid_rows <- tibble::tibble(
-      id = c(1L, 2L),
-      sorting_variable = c("sv_me", "sv_me"),
-      sorting_variable_lag = c("3m", "3m"),
-      sorting_method = c("univariate", "univariate"),
-      n_portfolios_main = c(10L, 10L)
-    )
-
-    mock_files <- function(organization, dataset) {
-      make_grid_parquet_file(grid_rows)
+  local_mocked_bindings(
+    download_factor_library_grid = function() make_grid(1L),
+    get_available_huggingface_files = function(...) {
+      tibble::tibble(
+        path = fpath,
+        size = 100L,
+        url = paste0("https://example.com/", fpath)
+      )
     }
+  )
+  local_mocked_bindings(
+    read_parquet = function(...) mock_returns,
+    .package = "arrow"
+  )
 
-    with_mocked_bindings(
-      get_available_huggingface_files = mock_files,
-      {
-        result <- download_data_huggingface("factor_library_grid")
-        expect_s3_class(result, "tbl_df")
-        expect_equal(nrow(result), 2L)
-        expect_true(all(c("id", "sorting_variable") %in% colnames(result)))
-      }
-    )
-  }
-)
+  result <- download_factor_library_ids(1L)
 
-test_that(
-  paste(
-    "download_data_huggingface('factor_library')",
-    "errors on ids + filters"
-  ),
-  {
-    expect_error(
-      download_data_huggingface(
-        "factor_library",
-        ids = c(1L, 2L),
-        sorting_variable = "me"
-      ),
-      regexp = "cannot be combined with filter arguments"
-    )
-  }
-)
+  expect_true("ret" %in% names(result))
+  expect_true("weighting_scheme" %in% names(result))
+})
 
-# Live smoke test -------------------------------------------------------
+# ── download_data_hugging_face_factor_library ────────
 
-test_that(
-  paste(
-    "download_data_huggingface() downloads factor_library data successfully"
-  ),
-  {
-    skip_if_offline()
-    skip_on_cran()
+test_that("aborts when ids and filter args are combined", {
+  expect_error(
+    download_data_hugging_face_factor_library(
+      sorting_variable = "me",
+      ids = 1L
+    ),
+    class = "rlang_error"
+  )
+})
 
-    result <- download_data_huggingface(
-      "factor_library",
-      sorting_variable = "me"
-    )
+test_that("with ids: delegates to download_factor_library_ids", {
+  mock_result <- tibble::tibble(id = 1L, ret = 0.01)
+  local_mocked_bindings(
+    download_factor_library_ids = function(ids) mock_result
+  )
 
-    expect_s3_class(result, "tbl_df")
-    expect_true(nrow(result) > 0)
-    expect_true("id" %in% colnames(result))
-  }
-)
+  result <- download_data_hugging_face_factor_library(ids = 1L)
+
+  expect_equal(result, mock_result)
+})
+
+test_that("without ids: resolves via grid then downloads", {
+  mock_result <- tibble::tibble(id = 1L, ret = 0.01)
+  local_mocked_bindings(
+    filter_factor_library_grid = function(...) 1L,
+    download_factor_library_ids = function(ids) mock_result
+  )
+
+  result <- download_data_hugging_face_factor_library(
+    sorting_variable = "me"
+  )
+
+  expect_equal(result, mock_result)
+})
