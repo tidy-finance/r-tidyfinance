@@ -7,8 +7,10 @@
 #' processing the data.
 #'
 #' @param domain The domain of the dataset to download (e.g.,
-#'   "famafrench", "globalq", "macro_predictors", "wrds",
+#'   "famafrench", "globalq", "macro_predictors", "wrds", "pseudo",
 #'   "constituents", "fred", "stock_prices", "osap", "tidyfinance").
+#'   Use `"pseudo"` to obtain synthetic data with the same schema as
+#'   `"wrds"` for testing or rendering without a WRDS subscription.
 #' @param dataset Optional. The specific dataset to download within the
 #'   domain.
 #' @param start_date Optional. A character string or Date object in
@@ -134,6 +136,13 @@ download_data <- function(
     )
   } else if (domain == "wrds") {
     processed_data <- download_data_wrds(
+      dataset = dataset,
+      start_date = start_date,
+      end_date = end_date,
+      ...
+    )
+  } else if (domain == "pseudo") {
+    processed_data <- simulate_pseudo_data(
       dataset = dataset,
       start_date = start_date,
       end_date = end_date,
@@ -277,6 +286,7 @@ check_supported_domain <- function(domain) {
     "factors_q",
     "macro_predictors",
     "wrds",
+    "pseudo",
     "constituents",
     "fred",
     "stock_prices",
