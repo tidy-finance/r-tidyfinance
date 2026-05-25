@@ -193,6 +193,48 @@ test_that("factor_library: delegates to inner helper", {
   expect_equal(result, mock_returns)
 })
 
+test_that("factor_library: forwards start_date and end_date", {
+  captured <- NULL
+  testthat::local_mocked_bindings(
+    download_data_hugging_face_factor_library = function(...) {
+      captured <<- list(...)
+      tibble::tibble(id = 1L)
+    }
+  )
+
+  download_data_huggingface(
+    "factor_library",
+    sorting_variable = "me",
+    start_date = "2020-01-01",
+    end_date = "2020-12-31"
+  )
+
+  expect_equal(captured$start_date, "2020-01-01")
+  expect_equal(captured$end_date, "2020-12-31")
+  expect_equal(captured$sorting_variable, "me")
+})
+
+test_that("high_frequency_sp500: uses sample window when no dates", {
+  available <- tibble::tibble(
+    path = "date=2007-06-27/part.parquet",
+    size = 100L,
+    url = "https://example.com/part.parquet"
+  )
+  testthat::local_mocked_bindings(
+    get_available_huggingface_files = function(...) available
+  )
+  testthat::local_mocked_bindings(
+    read_parquet = function(...) tibble::tibble(price = 100.0),
+    .package = "arrow"
+  )
+
+  # The default sample window (2007-06-27..2007-07-27) includes the only
+  # available file, so a row is returned even though no dates were passed.
+  result <- download_data_huggingface("high_frequency_sp500")
+
+  expect_equal(nrow(result), 1L)
+})
+
 # ── filter_factor_library_grid ───────────────────────
 
 test_that("aborts for unsupported filter name", {
@@ -405,4 +447,60 @@ test_that("without ids: resolves via grid then downloads", {
   )
 
   expect_equal(result, mock_result)
+})
+
+test_that("filters returns to the requested date range", {
+  mock_returns <- tibble::tibble(
+    id = 1L,
+    date = as.Date(c("2019-12-31", "2020-06-30", "2021-01-31")),
+    ret = c(0.01, 0.02, 0.03)
+  )
+  testthat::local_mocked_bindings(
+    download_factor_library_ids = function(ids) mock_returns
+  )
+
+  result <- download_data_hugging_face_factor_library(
+    ids = 1L,
+    start_date = "2020-01-01",
+    end_date = "2020-12-31"
+  )
+
+  expect_equal(result$date, as.Date("2020-06-30"))
+})
+
+test_that("returns full history and informs when dates omitted", {
+  mock_returns <- tibble::tibble(
+    id = 1L,
+    date = as.Date(c("2019-12-31", "2020-06-30")),
+    ret = c(0.01, 0.02)
+  )
+  testthat::local_mocked_bindings(
+    download_factor_library_ids = function(ids) mock_returns
+  )
+
+  expect_message(
+    result <- download_data_hugging_face_factor_library(ids = 1L),
+    "full data set"
+  )
+  expect_equal(result, mock_returns)
+})
+
+test_that("date filtering also applies on the grid-resolved path", {
+  mock_returns <- tibble::tibble(
+    id = 1L,
+    date = as.Date(c("2018-01-31", "2020-06-30")),
+    ret = c(0.01, 0.02)
+  )
+  testthat::local_mocked_bindings(
+    filter_factor_library_grid = function(...) 1L,
+    download_factor_library_ids = function(ids) mock_returns
+  )
+
+  result <- download_data_hugging_face_factor_library(
+    sorting_variable = "me",
+    start_date = "2020-01-01",
+    end_date = "2020-12-31"
+  )
+
+  expect_equal(result$date, as.Date("2020-06-30"))
 })
