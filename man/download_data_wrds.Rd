@@ -59,7 +59,6 @@ specific data download function.
 }
 \seealso{
 Other WRDS functions: 
-\code{\link{create_wrds_dummy_database}()},
 \code{\link{disconnect_connection}()},
 \code{\link{download_data_wrds_ccm_links}()},
 \code{\link{download_data_wrds_compustat}()},

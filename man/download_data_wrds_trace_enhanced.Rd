@@ -45,7 +45,6 @@ Dick-Nielsen, J. (2014). How to clean enhanced TRACE data. Working Paper.
 }
 \seealso{
 Other WRDS functions: 
-\code{\link{create_wrds_dummy_database}()},
 \code{\link{disconnect_connection}()},
 \code{\link{download_data_wrds}()},
 \code{\link{download_data_wrds_ccm_links}()},

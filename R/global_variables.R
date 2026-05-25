@@ -228,6 +228,9 @@ utils::globalVariables(
     "first_crsp_date",
     ".size_cutoff",
     "ib",
-    "n_firms"
+    "n_firms",
+    "permco",
+    "seq",
+    "op"
   )
 )

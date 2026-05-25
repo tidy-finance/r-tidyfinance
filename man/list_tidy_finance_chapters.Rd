@@ -29,6 +29,7 @@ Other utility functions:
 \code{\link{list_supported_datasets_ff_legacy}()},
 \code{\link{list_supported_datasets_macro_predictors}()},
 \code{\link{list_supported_datasets_other}()},
+\code{\link{list_supported_datasets_pseudo}()},
 \code{\link{list_supported_datasets_wrds}()},
 \code{\link{list_supported_indexes}()},
 \code{\link{open_tidy_finance_website}()},

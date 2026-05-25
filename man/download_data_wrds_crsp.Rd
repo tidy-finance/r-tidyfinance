@@ -87,7 +87,6 @@ offerings. \emph{Journal of Financial Economics}, 97(1), 33-52.
 }
 \seealso{
 Other WRDS functions: 
-\code{\link{create_wrds_dummy_database}()},
 \code{\link{disconnect_connection}()},
 \code{\link{download_data_wrds}()},
 \code{\link{download_data_wrds_ccm_links}()},
