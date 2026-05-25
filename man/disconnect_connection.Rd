@@ -24,7 +24,6 @@ disconnect_connection(con)
 }
 \seealso{
 Other WRDS functions: 
-\code{\link{create_wrds_dummy_database}()},
 \code{\link{download_data_wrds}()},
 \code{\link{download_data_wrds_ccm_links}()},
 \code{\link{download_data_wrds_compustat}()},
