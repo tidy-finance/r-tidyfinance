@@ -77,7 +77,6 @@ Fama, E. F., & French, K. R. (2015). A five-factor asset pricing model.
 }
 \seealso{
 Other WRDS functions: 
-\code{\link{create_wrds_dummy_database}()},
 \code{\link{disconnect_connection}()},
 \code{\link{download_data_wrds}()},
 \code{\link{download_data_wrds_ccm_links}()},
