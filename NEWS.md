@@ -1,5 +1,11 @@
 # tidyfinance (development version)
 
+- `download_data("tidyfinance", "factor_library", ...)` now honors the
+  canonical `start_date` and `end_date` arguments, filtering the returned
+  portfolio returns to the requested range. When both are omitted, the full
+  history is returned and the standard "Returning the full data set" message
+  is emitted (via `validate_dates()`). Previously these arguments were
+  accepted but silently ignored for the factor library.
 - Added `domain = "pseudo"` to `download_data()` for generating pseudo
   data with the same schema as the corresponding real domain. Supported
   datasets in this release: `"crsp_monthly"`, `"crsp_daily"`,
