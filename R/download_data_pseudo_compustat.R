@@ -1,6 +1,6 @@
-#' Generate Synthetic Compustat Data
+#' Generate Pseudo Compustat Data
 #'
-#' Returns synthetic Compustat data with the same column layout as
+#' Returns pseudo Compustat data with the same column layout as
 #' [download_data_wrds_compustat()]. Useful for testing and for reproducing
 #' the workflow of analyses that rely on Compustat without a WRDS
 #' subscription. The returned values are simulated and not suitable for
@@ -11,16 +11,16 @@
 #' @param dataset A string specifying the dataset to simulate. Supported:
 #'   `"compustat_annual"` and `"compustat_quarterly"`.
 #' @param start_date Optional. A character string or Date object in
-#'   "YYYY-MM-DD" format specifying the start date for the synthetic panel.
+#'   "YYYY-MM-DD" format specifying the start date for the pseudo panel.
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD"
-#'   format specifying the end date for the synthetic panel.
+#'   format specifying the end date for the pseudo panel.
 #' @param additional_columns Additional Compustat columns to include. Filled
 #'   with plausible random draws so call sites that pass `additional_columns`
 #'   continue to work; the values themselves are not economically meaningful.
 #' @param only_usd Accepted for API compatibility with
-#'   [download_data_wrds_compustat()]; the synthetic universe is treated as
+#'   [download_data_wrds_compustat()]; the pseudo universe is treated as
 #'   USD-denominated, so this argument has no effect.
-#' @param n_assets Integer. Number of synthetic firms in the universe.
+#' @param n_assets Integer. Number of pseudo firms in the universe.
 #'   Defaults to `1000`.
 #' @param seed Integer. Random seed; defaults to `1234`. Identical
 #'   `(seed, n_assets)` produces identical output across calls and matches the
@@ -67,7 +67,7 @@ download_data_pseudo_compustat <- function(
     cli::cli_abort(c(
       "Unsupported Compustat dataset: {.val {dataset}}",
       i = paste(
-        "Supported synthetic datasets:",
+        "Supported pseudo datasets:",
         "{.val compustat_annual}, {.val compustat_quarterly}."
       )
     ))

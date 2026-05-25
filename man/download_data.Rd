@@ -17,7 +17,7 @@ download_data(
 \item{domain}{The domain of the dataset to download (e.g.,
 "famafrench", "globalq", "macro_predictors", "wrds", "pseudo",
 "constituents", "fred", "stock_prices", "osap", "tidyfinance").
-Use \code{"pseudo"} to obtain synthetic data with the same schema as
+Use \code{"pseudo"} to obtain pseudo data with the same schema as
 \code{"wrds"} for testing or rendering without a WRDS subscription.}
 
 \item{dataset}{Optional. The specific dataset to download within the

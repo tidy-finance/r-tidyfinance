@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_data_pseudo_compustat.R
 \name{download_data_pseudo_compustat}
 \alias{download_data_pseudo_compustat}
-\title{Generate Synthetic Compustat Data}
+\title{Generate Pseudo Compustat Data}
 \usage{
 download_data_pseudo_compustat(
   dataset = NULL,
@@ -19,20 +19,20 @@ download_data_pseudo_compustat(
 \code{"compustat_annual"} and \code{"compustat_quarterly"}.}
 
 \item{start_date}{Optional. A character string or Date object in
-"YYYY-MM-DD" format specifying the start date for the synthetic panel.}
+"YYYY-MM-DD" format specifying the start date for the pseudo panel.}
 
 \item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD"
-format specifying the end date for the synthetic panel.}
+format specifying the end date for the pseudo panel.}
 
 \item{additional_columns}{Additional Compustat columns to include. Filled
 with plausible random draws so call sites that pass \code{additional_columns}
 continue to work; the values themselves are not economically meaningful.}
 
 \item{only_usd}{Accepted for API compatibility with
-\code{\link[=download_data_wrds_compustat]{download_data_wrds_compustat()}}; the synthetic universe is treated as
+\code{\link[=download_data_wrds_compustat]{download_data_wrds_compustat()}}; the pseudo universe is treated as
 USD-denominated, so this argument has no effect.}
 
-\item{n_assets}{Integer. Number of synthetic firms in the universe.
+\item{n_assets}{Integer. Number of pseudo firms in the universe.
 Defaults to \code{1000}.}
 
 \item{seed}{Integer. Random seed; defaults to \code{1234}. Identical
@@ -50,7 +50,7 @@ For \code{"compustat_annual"}, a tibble with columns \code{gvkey}, \code{date},
 \code{datadate}, \code{atq}, \code{ceqq}, and any requested \code{additional_columns}.
 }
 \description{
-Returns synthetic Compustat data with the same column layout as
+Returns pseudo Compustat data with the same column layout as
 \code{\link[=download_data_wrds_compustat]{download_data_wrds_compustat()}}. Useful for testing and for reproducing
 the workflow of analyses that rely on Compustat without a WRDS
 subscription. The returned values are simulated and not suitable for

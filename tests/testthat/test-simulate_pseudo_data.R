@@ -5,7 +5,7 @@ test_that("simulate_pseudo_data validates the dataset argument", {
   )
   expect_error(
     simulate_pseudo_data("bad"),
-    "Unsupported synthetic dataset"
+    "Unsupported pseudo dataset"
   )
 })
 
@@ -60,7 +60,7 @@ test_that("download_data routes pseudo to simulate_pseudo_data", {
   expect_identical(out$end_date, "2020-06-30")
 })
 
-test_that("synthetic CRSP monthly returns expected schema", {
+test_that("pseudo CRSP monthly returns expected schema", {
   crsp <- download_data_pseudo_crsp(
     dataset = "crsp_monthly",
     start_date = "2020-01-01",
@@ -106,7 +106,7 @@ test_that("add_ccm_links = TRUE appends gvkey from the shared universe", {
   expect_setequal(unique(crsp$gvkey), ccm$gvkey)
 })
 
-test_that("synthetic Compustat annual returns expected schema", {
+test_that("pseudo Compustat annual returns expected schema", {
   comp <- download_data_pseudo_compustat(
     dataset = "compustat_annual",
     start_date = "2020-01-01",
@@ -144,7 +144,7 @@ test_that("additional_columns are honored on Compustat", {
   expect_true("ib" %in% names(comp))
 })
 
-test_that("synthetic CCM links cover the full identifier universe", {
+test_that("pseudo CCM links cover the full identifier universe", {
   ccm <- download_data_pseudo_ccm_links(n_assets = 10, seed = 1234)
   expect_equal(nrow(ccm), 10)
   expect_named(ccm, c("permno", "gvkey", "linkdt", "linkenddt"))
@@ -200,7 +200,7 @@ test_that("identifier universe matches across CRSP, Compustat, and CCM", {
   expect_setequal(unique(crsp$permno), ccm$permno)
 })
 
-test_that("synthetic CRSP daily returns expected schema (weekdays only)", {
+test_that("pseudo CRSP daily returns expected schema (weekdays only)", {
   crsp_daily <- download_data_pseudo_crsp(
     dataset = "crsp_daily",
     start_date = "2020-01-01",
@@ -217,7 +217,7 @@ test_that("synthetic CRSP daily returns expected schema (weekdays only)", {
   expect_true(all(lubridate::wday(crsp_daily$date, week_start = 1) <= 5L))
 })
 
-test_that("synthetic Compustat quarterly returns expected schema", {
+test_that("pseudo Compustat quarterly returns expected schema", {
   compq <- download_data_pseudo_compustat(
     dataset = "compustat_quarterly",
     start_date = "2020-01-01",
@@ -259,7 +259,7 @@ test_that("additional_columns and add_ccm_links work on daily and quarterly", {
   expect_true(all(c("saleq", "niq") %in% names(compq)))
 })
 
-test_that("simulate_pseudo_data emits the synthetic-data notice", {
+test_that("simulate_pseudo_data emits the pseudo-data notice", {
   expect_message(
     simulate_pseudo_data(
       "crsp_monthly",
@@ -267,7 +267,7 @@ test_that("simulate_pseudo_data emits the synthetic-data notice", {
       end_date = "2020-03-31",
       n_assets = 2
     ),
-    "synthetic"
+    "pseudo"
   )
 })
 

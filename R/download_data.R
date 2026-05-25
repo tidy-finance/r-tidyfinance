@@ -9,7 +9,7 @@
 #' @param domain The domain of the dataset to download (e.g.,
 #'   "famafrench", "globalq", "macro_predictors", "wrds", "pseudo",
 #'   "constituents", "fred", "stock_prices", "osap", "tidyfinance").
-#'   Use `"pseudo"` to obtain synthetic data with the same schema as
+#'   Use `"pseudo"` to obtain pseudo data with the same schema as
 #'   `"wrds"` for testing or rendering without a WRDS subscription.
 #' @param dataset Optional. The specific dataset to download within the
 #'   domain.

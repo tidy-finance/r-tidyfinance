@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_data_pseudo_crsp.R
 \name{download_data_pseudo_crsp}
 \alias{download_data_pseudo_crsp}
-\title{Generate Synthetic CRSP Data}
+\title{Generate Pseudo CRSP Data}
 \usage{
 download_data_pseudo_crsp(
   dataset = NULL,
@@ -22,13 +22,13 @@ download_data_pseudo_crsp(
 \code{"crsp_monthly"} and \code{"crsp_daily"}.}
 
 \item{start_date}{Optional. A character string or Date object in
-"YYYY-MM-DD" format specifying the start date for the synthetic panel.}
+"YYYY-MM-DD" format specifying the start date for the pseudo panel.}
 
 \item{end_date}{Optional. A character string or Date object in "YYYY-MM-DD"
-format specifying the end date for the synthetic panel.}
+format specifying the end date for the pseudo panel.}
 
 \item{version}{Accepted for API compatibility with
-\code{\link[=download_data_wrds_crsp]{download_data_wrds_crsp()}}; the synthetic schema follows the v2 output.}
+\code{\link[=download_data_wrds_crsp]{download_data_wrds_crsp()}}; the pseudo schema follows the v2 output.}
 
 \item{additional_columns}{Additional CRSP columns to include. Filled with
 plausible random draws so call sites that pass \code{additional_columns}
@@ -36,16 +36,16 @@ continue to work; the values themselves are not economically meaningful.}
 
 \item{add_ccm_links}{A logical indicating whether CRSP-Compustat links
 should be appended. When \code{TRUE}, the output gains a \code{gvkey} column whose
-values are derived from the same synthetic identifier universe used by
+values are derived from the same pseudo identifier universe used by
 \code{\link[=download_data_pseudo_ccm_links]{download_data_pseudo_ccm_links()}}.}
 
 \item{adjust_volume}{Accepted for API compatibility with
-\code{\link[=download_data_wrds_crsp]{download_data_wrds_crsp()}}; ignored for synthetic data.}
+\code{\link[=download_data_wrds_crsp]{download_data_wrds_crsp()}}; ignored for pseudo data.}
 
 \item{batch_size}{Accepted for API compatibility with
-\code{\link[=download_data_wrds_crsp]{download_data_wrds_crsp()}}; ignored for synthetic data.}
+\code{\link[=download_data_wrds_crsp]{download_data_wrds_crsp()}}; ignored for pseudo data.}
 
-\item{n_assets}{Integer. Number of synthetic firms in the universe.
+\item{n_assets}{Integer. Number of pseudo firms in the universe.
 Defaults to \code{1000}.}
 
 \item{seed}{Integer. Random seed; defaults to \code{1234}. Identical
@@ -62,7 +62,7 @@ For \code{"crsp_monthly"}, a tibble with columns \code{permno}, \code{date},
 appended.
 }
 \description{
-Returns synthetic CRSP data with the same column layout as
+Returns pseudo CRSP data with the same column layout as
 \code{\link[=download_data_wrds_crsp]{download_data_wrds_crsp()}}. Useful for testing and for reproducing the
 workflow of analyses that rely on CRSP without a WRDS subscription. The
 returned values are simulated and not suitable for inference.
@@ -70,7 +70,7 @@ returned values are simulated and not suitable for inference.
 \details{
 Both \code{"crsp_monthly"} and \code{"crsp_daily"} are supported. The daily panel
 uses weekdays (Monday-Friday) only; weekend dates are excluded so the
-synthetic calendar approximates a trading-day grid.
+pseudo calendar approximates a trading-day grid.
 }
 \examples{
 download_data_pseudo_crsp(

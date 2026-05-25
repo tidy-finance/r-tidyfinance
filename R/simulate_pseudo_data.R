@@ -1,12 +1,12 @@
 #' Internal Router for `domain = "pseudo"`
 #'
 #' Single entry point invoked by [download_data()] when `domain = "pseudo"`.
-#' Emits the synthetic-data notice, validates the requested `dataset`, and
+#' Emits the pseudo-data notice, validates the requested `dataset`, and
 #' dispatches to the corresponding per-dataset generator. Not exported; users
 #' access pseudo data via `download_data(domain = "pseudo", ...)` or the
 #' per-dataset `download_data_pseudo_*()` functions.
 #'
-#' @param dataset A string identifying the synthetic dataset to return.
+#' @param dataset A string identifying the pseudo dataset to return.
 #'   Supported: `"crsp_monthly"`, `"crsp_daily"`, `"compustat_annual"`,
 #'   `"compustat_quarterly"`, and `"ccm_links"`.
 #' @param start_date,end_date Optional date bounds passed through to the
@@ -33,7 +33,7 @@ simulate_pseudo_data <- function(
 
   cli::cli_inform(c(
     i = paste(
-      "Returning synthetic data from {.code domain = \"pseudo\"}.",
+      "Returning pseudo data from {.code domain = \"pseudo\"}.",
       "Schema matches {.code domain = \"wrds\"}, but values are simulated",
       "and not suitable for inference."
     )
@@ -58,7 +58,7 @@ simulate_pseudo_data <- function(
   }
 }
 
-#' Check if a synthetic dataset is supported
+#' Check if a pseudo dataset is supported
 #' @noRd
 check_supported_dataset_pseudo <- function(dataset) {
   supported_datasets <- c(
@@ -71,15 +71,15 @@ check_supported_dataset_pseudo <- function(dataset) {
 
   if (!dataset %in% supported_datasets) {
     cli::cli_abort(c(
-      "Unsupported synthetic dataset: {.val {dataset}}",
+      "Unsupported pseudo dataset: {.val {dataset}}",
       i = "Supported datasets: {.val {supported_datasets}}"
     ))
   }
 }
 
-#' Simulate a Synthetic Identifier Universe for the Pseudo Panels
+#' Simulate an Identifier Universe for the Pseudo Panels
 #'
-#' Internal helper that draws a synthetic universe of stock identifiers used by
+#' Internal helper that draws a pseudo universe of stock identifiers used by
 #' the `download_data_pseudo_*()` family. The universe is fully determined
 #' by `seed` and `n_assets` so that calls to different pseudo datasets (CRSP,
 #' Compustat, CCM links) share the same identifier mapping and join cleanly.
@@ -89,11 +89,11 @@ check_supported_dataset_pseudo <- function(dataset) {
 #' the assigned industry so that downstream industry filters (e.g. excluding
 #' financials at 6000-6799 or utilities at 4900-4999) drop the intended firms.
 #'
-#' @param n_assets Integer. Number of synthetic firms in the universe.
+#' @param n_assets Integer. Number of pseudo firms in the universe.
 #' @param seed Integer. Random seed; the same `(seed, n_assets)` always yields
 #'   the same universe.
 #'
-#' @returns A tibble with one row per synthetic firm and columns `permno`,
+#' @returns A tibble with one row per pseudo firm and columns `permno`,
 #'   `permco`, `gvkey`, `exchange`, `industry`, and `siccd`.
 #'
 #' @keywords internal

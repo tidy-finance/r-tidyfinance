@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_data_pseudo_ccm_links.R
 \name{download_data_pseudo_ccm_links}
 \alias{download_data_pseudo_ccm_links}
-\title{Generate Synthetic CCM Links}
+\title{Generate Pseudo CCM Links}
 \usage{
 download_data_pseudo_ccm_links(
   n_assets = 1000L,
@@ -12,25 +12,25 @@ download_data_pseudo_ccm_links(
 )
 }
 \arguments{
-\item{n_assets}{Integer. Number of synthetic firms in the universe.
+\item{n_assets}{Integer. Number of pseudo firms in the universe.
 Defaults to \code{1000}.}
 
-\item{seed}{Integer. Random seed controlling the synthetic identifier
+\item{seed}{Integer. Random seed controlling the pseudo identifier
 universe; defaults to \code{1234}.}
 
 \item{linktype}{Accepted for API compatibility with
-\code{\link[=download_data_wrds_ccm_links]{download_data_wrds_ccm_links()}}; ignored for synthetic data.}
+\code{\link[=download_data_wrds_ccm_links]{download_data_wrds_ccm_links()}}; ignored for pseudo data.}
 
 \item{linkprim}{Accepted for API compatibility with
-\code{\link[=download_data_wrds_ccm_links]{download_data_wrds_ccm_links()}}; ignored for synthetic data.}
+\code{\link[=download_data_wrds_ccm_links]{download_data_wrds_ccm_links()}}; ignored for pseudo data.}
 }
 \value{
 A tibble with columns \code{permno}, \code{gvkey}, \code{linkdt}, and \code{linkenddt},
-one row per synthetic firm.
+one row per pseudo firm.
 }
 \description{
-Returns a synthetic CRSP-Compustat linking table with the same column
-layout as \code{\link[=download_data_wrds_ccm_links]{download_data_wrds_ccm_links()}}. Every synthetic \code{permno} is
+Returns a pseudo CRSP-Compustat linking table with the same column
+layout as \code{\link[=download_data_wrds_ccm_links]{download_data_wrds_ccm_links()}}. Every pseudo \code{permno} is
 linked to its corresponding \code{gvkey} for the full sample horizon.
 }
 \examples{

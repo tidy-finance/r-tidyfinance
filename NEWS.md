@@ -1,6 +1,6 @@
 # tidyfinance (development version)
 
-- Added `domain = "pseudo"` to `download_data()` for generating synthetic
+- Added `domain = "pseudo"` to `download_data()` for generating pseudo
   data with the same schema as the corresponding real domain. Supported
   datasets in this release: `"crsp_monthly"`, `"crsp_daily"`,
   `"compustat_annual"`, `"compustat_quarterly"`, and `"ccm_links"` (all
@@ -11,7 +11,7 @@
   `download_data_pseudo_ccm_links()`) remain exported for direct use.
   All generators accept `n_assets` and `seed` arguments; identical
   `(seed, n_assets)` yields the same identifier universe across datasets,
-  so synthetic CRSP and Compustat join cleanly via `add_ccm_links = TRUE`
+  so pseudo CRSP and Compustat join cleanly via `add_ccm_links = TRUE`
   or `ccm_links`. Daily CRSP is generated on weekdays only.
 - Removed the `using-tidyfinance` and `dates-in-tidyfinance` vignettes.
   Both predated the current `download_data()` interface and are

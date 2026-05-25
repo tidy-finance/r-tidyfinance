@@ -1,34 +1,34 @@
-#' Generate Synthetic CRSP Data
+#' Generate Pseudo CRSP Data
 #'
-#' Returns synthetic CRSP data with the same column layout as
+#' Returns pseudo CRSP data with the same column layout as
 #' [download_data_wrds_crsp()]. Useful for testing and for reproducing the
 #' workflow of analyses that rely on CRSP without a WRDS subscription. The
 #' returned values are simulated and not suitable for inference.
 #'
 #' Both `"crsp_monthly"` and `"crsp_daily"` are supported. The daily panel
 #' uses weekdays (Monday-Friday) only; weekend dates are excluded so the
-#' synthetic calendar approximates a trading-day grid.
+#' pseudo calendar approximates a trading-day grid.
 #'
 #' @param dataset A string specifying the dataset to simulate. Supported:
 #'   `"crsp_monthly"` and `"crsp_daily"`.
 #' @param start_date Optional. A character string or Date object in
-#'   "YYYY-MM-DD" format specifying the start date for the synthetic panel.
+#'   "YYYY-MM-DD" format specifying the start date for the pseudo panel.
 #' @param end_date Optional. A character string or Date object in "YYYY-MM-DD"
-#'   format specifying the end date for the synthetic panel.
+#'   format specifying the end date for the pseudo panel.
 #' @param version Accepted for API compatibility with
-#'   [download_data_wrds_crsp()]; the synthetic schema follows the v2 output.
+#'   [download_data_wrds_crsp()]; the pseudo schema follows the v2 output.
 #' @param additional_columns Additional CRSP columns to include. Filled with
 #'   plausible random draws so call sites that pass `additional_columns`
 #'   continue to work; the values themselves are not economically meaningful.
 #' @param add_ccm_links A logical indicating whether CRSP-Compustat links
 #'   should be appended. When `TRUE`, the output gains a `gvkey` column whose
-#'   values are derived from the same synthetic identifier universe used by
+#'   values are derived from the same pseudo identifier universe used by
 #'   [download_data_pseudo_ccm_links()].
 #' @param adjust_volume Accepted for API compatibility with
-#'   [download_data_wrds_crsp()]; ignored for synthetic data.
+#'   [download_data_wrds_crsp()]; ignored for pseudo data.
 #' @param batch_size Accepted for API compatibility with
-#'   [download_data_wrds_crsp()]; ignored for synthetic data.
-#' @param n_assets Integer. Number of synthetic firms in the universe.
+#'   [download_data_wrds_crsp()]; ignored for pseudo data.
+#' @param n_assets Integer. Number of pseudo firms in the universe.
 #'   Defaults to `1000`.
 #' @param seed Integer. Random seed; defaults to `1234`. Identical
 #'   `(seed, n_assets)` produces identical output across calls and matches the
@@ -77,7 +77,7 @@ download_data_pseudo_crsp <- function(
     cli::cli_abort(c(
       "Unsupported CRSP dataset: {.val {dataset}}",
       i = paste(
-        "Supported synthetic datasets:",
+        "Supported pseudo datasets:",
         "{.val crsp_monthly}, {.val crsp_daily}."
       )
     ))

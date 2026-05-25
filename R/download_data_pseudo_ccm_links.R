@@ -1,20 +1,20 @@
-#' Generate Synthetic CCM Links
+#' Generate Pseudo CCM Links
 #'
-#' Returns a synthetic CRSP-Compustat linking table with the same column
-#' layout as [download_data_wrds_ccm_links()]. Every synthetic `permno` is
+#' Returns a pseudo CRSP-Compustat linking table with the same column
+#' layout as [download_data_wrds_ccm_links()]. Every pseudo `permno` is
 #' linked to its corresponding `gvkey` for the full sample horizon.
 #'
-#' @param n_assets Integer. Number of synthetic firms in the universe.
+#' @param n_assets Integer. Number of pseudo firms in the universe.
 #'   Defaults to `1000`.
-#' @param seed Integer. Random seed controlling the synthetic identifier
+#' @param seed Integer. Random seed controlling the pseudo identifier
 #'   universe; defaults to `1234`.
 #' @param linktype Accepted for API compatibility with
-#'   [download_data_wrds_ccm_links()]; ignored for synthetic data.
+#'   [download_data_wrds_ccm_links()]; ignored for pseudo data.
 #' @param linkprim Accepted for API compatibility with
-#'   [download_data_wrds_ccm_links()]; ignored for synthetic data.
+#'   [download_data_wrds_ccm_links()]; ignored for pseudo data.
 #'
 #' @returns A tibble with columns `permno`, `gvkey`, `linkdt`, and `linkenddt`,
-#'   one row per synthetic firm.
+#'   one row per pseudo firm.
 #'
 #' @family pseudo functions
 #' @export
