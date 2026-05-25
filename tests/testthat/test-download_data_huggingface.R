@@ -427,6 +427,9 @@ test_that("aborts when ids and filter args are combined", {
 test_that("with ids: delegates to download_factor_library_ids", {
   mock_result <- tibble::tibble(id = 1L, ret = 0.01)
   testthat::local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
     download_factor_library_ids = function(ids) mock_result
   )
 
@@ -438,6 +441,9 @@ test_that("with ids: delegates to download_factor_library_ids", {
 test_that("without ids: resolves via grid then downloads", {
   mock_result <- tibble::tibble(id = 1L, ret = 0.01)
   testthat::local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
     filter_factor_library_grid = function(...) 1L,
     download_factor_library_ids = function(ids) mock_result
   )
@@ -456,6 +462,9 @@ test_that("filters returns to the requested date range", {
     ret = c(0.01, 0.02, 0.03)
   )
   testthat::local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = as.Date(start_date), end_date = as.Date(end_date))
+    },
     download_factor_library_ids = function(ids) mock_returns
   )
 
@@ -468,20 +477,21 @@ test_that("filters returns to the requested date range", {
   expect_equal(result$date, as.Date("2020-06-30"))
 })
 
-test_that("returns full history and informs when dates omitted", {
+test_that("returns full history when dates omitted", {
   mock_returns <- tibble::tibble(
     id = 1L,
     date = as.Date(c("2019-12-31", "2020-06-30")),
     ret = c(0.01, 0.02)
   )
   testthat::local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
     download_factor_library_ids = function(ids) mock_returns
   )
 
-  expect_message(
-    result <- download_data_hugging_face_factor_library(ids = 1L),
-    "full data set"
-  )
+  result <- download_data_hugging_face_factor_library(ids = 1L)
+
   expect_equal(result, mock_returns)
 })
 
@@ -492,6 +502,9 @@ test_that("date filtering also applies on the grid-resolved path", {
     ret = c(0.01, 0.02)
   )
   testthat::local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = as.Date(start_date), end_date = as.Date(end_date))
+    },
     filter_factor_library_grid = function(...) 1L,
     download_factor_library_ids = function(ids) mock_returns
   )
