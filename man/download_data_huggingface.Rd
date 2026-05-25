@@ -6,8 +6,8 @@
 \usage{
 download_data_huggingface(
   dataset = NULL,
-  start_date = NULL,
-  end_date = NULL,
+  start_date = "2007-06-27",
+  end_date = "2007-07-27",
   type = deprecated(),
   ...
 )
@@ -17,13 +17,10 @@ download_data_huggingface(
 \code{"high_frequency_sp500"}, \code{"factor_library"}, and \code{"factor_library_grid"}.}
 
 \item{start_date}{Date or character. Start date (inclusive) in
-\code{"YYYY-MM-DD"} format. Used for \code{"high_frequency_sp500"} and
-\code{"factor_library"}. When omitted for \code{"factor_library"}, the full return
-history is returned; \code{"high_frequency_sp500"} falls back to a built-in
-sample window.}
+\code{"YYYY-MM-DD"} format. Only used for \code{"high_frequency_sp500"}.}
 
 \item{end_date}{Date or character. End date (inclusive) in \code{"YYYY-MM-DD"}
-format. See \code{start_date}.}
+format. Only used for \code{"high_frequency_sp500"}.}
 
 \item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
 
@@ -52,8 +49,7 @@ with the full grid metadata for the matched portfolio IDs.
 Downloads data from a supported Hugging Face dataset. For
 \code{"high_frequency_sp500"}, parquet files are filtered by date range and
 row-bound. For \code{"factor_library"}, portfolio characteristics are selected via
-\code{filter_factor_library_grid()}, the matching return data is downloaded, and
-the result is filtered to \code{start_date}/\code{end_date} when both are supplied.
+\code{filter_factor_library_grid()} and the matching return data is downloaded.
 For \code{"factor_library_grid"}, the grid itself is returned via
 \code{\link[=download_factor_library_grid]{download_factor_library_grid()}}.
 }
@@ -112,12 +108,6 @@ portfolios: \code{"VW"} for value-weighted or \code{"EW"} for equal-weighted.
   )
   download_data_huggingface(
     "factor_library", sorting_variable = "ag", fill_all = TRUE
-  )
-  download_data_huggingface(
-    "factor_library",
-    sorting_variable = "me",
-    start_date = "2000-01-01",
-    end_date = "2020-12-31"
   )
   download_data_huggingface("factor_library", ids = c(1L, 2L, 3L))
 }

@@ -1,11 +1,5 @@
 # tidyfinance (development version)
 
-- `download_data("tidyfinance", "factor_library", ...)` now honors the
-  canonical `start_date` and `end_date` arguments, filtering the returned
-  portfolio returns to the requested range. When both are omitted, the full
-  history is returned and the standard "Returning the full data set" message
-  is emitted (via `validate_dates()`). Previously these arguments were
-  accepted but silently ignored for the factor library.
 - Removed the `using-tidyfinance` and `dates-in-tidyfinance` vignettes.
   Both predated the current `download_data()` interface and are
   superseded by the package manuscript. `knitr` and `rmarkdown` are no
