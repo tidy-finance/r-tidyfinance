@@ -420,3 +420,184 @@ winsorize()
 trim()
 create_summary_statistics()
 ```
+
+## Data Availability and Provenance Statements
+
+The `tidyfinance` package is a software tool that provides programmatic
+access to financial and economic data hosted by third-party providers. It
+does **not** bundle or redistribute any research data itself; instead,
+`download_data()` and its children retrieve data on demand directly from the
+original sources. The statements below therefore describe the data that the
+package makes accessible.
+
+### Statement about Rights
+
+- \[x\] I certify that the author(s) of the manuscript have legitimate
+  access to and permission to use the data used in this manuscript.
+- \[x\] I certify that the author(s) of the manuscript have documented
+  permission to redistribute/publish the data contained within this package.
+  Where the original providers restrict redistribution, the package accesses
+  the data at its source rather than redistributing it.
+
+### License for Data
+
+The repository contains no bundled data, so no separate data license applies
+to it. Data retrieved through the package remain subject to the terms and
+licenses of their respective providers (see [Details on each Data
+Source](#details-on-each-data-source)). Users are responsible for complying
+with those terms.
+
+### Summary of Availability
+
+- \[ \] All data **are** publicly available.
+- \[x\] Some data **cannot be made** publicly available.
+- \[ \] **No data can be made** publicly available.
+
+Most sources accessed by the package (Ken French Data Library, Global Q,
+Welch-Goyal, Open Source Asset Pricing, FRED, Yahoo Finance, and the Tidy
+Finance datasets on Hugging Face) are openly available without registration.
+Data accessed through WRDS (CRSP, Compustat, the CCM linking table, and
+Enhanced TRACE) require a valid institutional WRDS subscription and cannot be
+redistributed.
+
+### Details on each Data Source
+
+| Data source | Domain / dataset | Provider | Access | Fee |
+|---|---|---|---|---|
+| Fama-French factors | `factors_ff` | Ken French Data Library | Public | No |
+| q-factors | `factors_q` | Global Q (Hou, Xue, and Zhang) | Public | No |
+| Macroeconomic predictors | `macro_predictors` | Welch and Goyal (2008) | Public | No |
+| Cross-sectional predictors | `osap` | Open Source Asset Pricing (Chen and Zimmermann) | Public | No |
+| Macroeconomic series | `fred` | Federal Reserve Bank of St. Louis (FRED) | Public | No |
+| Stock prices | `stock_prices` | Yahoo Finance | Public | No |
+| High-frequency S&P 500 | `tidyfinance` / `high_frequency_sp500` | Tidy Finance (Hugging Face) | Public | No |
+| Factor library | `tidyfinance` / `factor_library` | Tidy Finance (Hugging Face) | Public | No |
+| CRSP, Compustat, CCM, TRACE | `wrds` / `crsp_monthly`, `compustat_annual`, `ccm_links`, `trace_enhanced` | Wharton Research Data Services (WRDS) | Restricted (subscription) | Yes |
+
+Each provider sets its own terms of use; consult the provider sites linked in
+the [Usage](#download-open-source-data) sections above for the authoritative
+access conditions and citation requirements.
+
+## Dataset list
+
+The repository distributes no datasets. All data are downloaded at run time
+from the providers listed in [Details on each Data
+Source](#details-on-each-data-source).
+
+## Computational requirements
+
+### Software Requirements
+
+- **R** (>= 4.1).
+- Install the package and its dependencies with
+  `install.packages("tidyfinance")` (CRAN) or
+  `pak::pak("tidy-finance/r-tidyfinance")` (development version).
+- R package dependencies (declared in `DESCRIPTION`):
+  - **Imports:** arrow, cli, dplyr (>= 1.1.4), dbplyr (>= 2.5.0), glue,
+    jsonlite, lifecycle, lubridate (>= 1.9.3), purrr (>= 1.0.2), rlang
+    (>= 1.1.3), slider (>= 0.3.1), stats, stringr, tibble, tidyr (>= 1.3.1),
+    DBI (>= 1.2.2), frenchdata (>= 0.2.0), httr2 (>= 1.0.0), RPostgres
+    (>= 1.4.5), sandwich (>= 3.1-0).
+  - **Suggests:** furrr (>= 0.3.1), testthat (>= 3.2.0), withr.
+- Accessing WRDS data additionally requires WRDS credentials, set via
+  `Sys.setenv(WRDS_USER = "...", WRDS_PASSWORD = "...")` or
+  `set_wrds_credentials()`.
+- An active internet connection is required, since all data are downloaded
+  from remote providers.
+
+### Controlled Randomness
+
+The data-download functions are deterministic given a fixed source. The
+pseudo-data generators (`domain = "pseudo"`, e.g.
+`download_data_pseudo_crsp()`) draw random values and accept a `seed`
+argument for reproducibility, for example:
+
+``` r
+download_data(
+  domain = "pseudo",
+  dataset = "crsp_monthly",
+  n_assets = 100,
+  seed = 1234
+)
+```
+
+No other randomness is involved.
+
+### Memory and Runtime Requirements
+
+#### Summary
+
+Approximate time needed to run the examples in this README on a standard
+2024 desktop machine: **less than one hour**. Each `download_data()` call
+typically completes in seconds to a few minutes, dominated by network speed
+and the size of the requested range. Memory use is modest and scales with the
+size of the requested data; the README examples run in well under 8 GB of
+RAM.
+
+#### Details
+
+The package is platform-independent and is tested on Linux, macOS, and
+Windows via GitHub Actions (R release, old-release, and development). No
+specialized hardware is required; runtime is dominated by network latency and
+provider response times rather than local computation.
+
+## Description of programs/code
+
+- The package source code lives in `R/`. Each `download_data_*.R` file
+  implements access to one data domain, and the remaining files provide the
+  analysis helpers (portfolio sorts, estimation, winsorizing, and so on).
+- `R/download_data.R` is the user-facing dispatcher: `download_data()` routes
+  to the domain-specific functions based on the `domain` argument.
+- Unit tests live in `tests/testthat/`. Documentation is generated with
+  `roxygen2` into `man/`.
+- The repository follows the standard R package layout; see `DESCRIPTION` for
+  metadata and `NEWS.md` for the changelog.
+
+### License for Code
+
+The code in this repository is released under the MIT License (see the
+[`LICENSE`](LICENSE) file). Copyright (c) 2024 Christoph Scheuch, Stefan
+Voigt, and Patrick Weiss.
+
+## Instructions to Replicators
+
+1.  Install R (>= 4.1).
+2.  Install the package: `install.packages("tidyfinance")` for the released
+    version, or `pak::pak("tidy-finance/r-tidyfinance")` for the development
+    version.
+3.  Load it with `library(tidyfinance)`.
+4.  To access open data, run any of the `download_data()` examples shown in
+    the usage sections above; no credentials are needed.
+5.  To access WRDS data, first set your WRDS credentials (see [Download WRDS
+    Data](#download-wrds-data)), then run the corresponding `download_data()`
+    calls.
+
+### Details
+
+Each example is self-contained: a single `download_data()` call returns a
+tidy `tibble` that can be used directly. Because the package retrieves live
+data from external providers, exact values may change over time as providers
+revise their data, while the structure of the returned objects is stable.
+
+## List of tables and programs
+
+This repository is a software package rather than the replication archive for
+a specific article, so there is no fixed mapping of manuscript exhibits to
+programs. The package supports the empirical exercises in *Tidy Finance with
+R* (Scheuch, Voigt, and Weiss, 2023); the corresponding analyses and their
+code are documented chapter by chapter at <https://www.tidy-finance.org/r/>.
+
+## References
+
+- Scheuch, C., Voigt, S., and Weiss, P. (2023). *Tidy Finance with R*.
+  Chapman and Hall/CRC. <https://doi.org/10.1201/b23237>
+- Welch, I., and Goyal, A. (2008). A Comprehensive Look at the Empirical
+  Performance of Equity Premium Prediction. *Review of Financial Studies*,
+  21(4), 1455-1508.
+- Chen, A. Y., and Zimmermann, T. (2022). Open Source Cross-Sectional Asset
+  Pricing. *Critical Finance Review*. <https://www.openassetpricing.com/>
+- Fama, E. F., and French, K. R. Data Library.
+  <https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html>
+- Hou, K., Xue, C., and Zhang, L. The Global-Q Factors. <https://global-q.org/>
+- Federal Reserve Bank of St. Louis. FRED Economic Data.
+  <https://fred.stlouisfed.org/>
