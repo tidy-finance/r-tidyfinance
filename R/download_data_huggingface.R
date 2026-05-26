@@ -73,16 +73,20 @@ get_available_huggingface_files <- function(organization, dataset) {
 #' Downloads data from a supported Hugging Face dataset. For
 #' `"high_frequency_sp500"`, parquet files are filtered by date range and
 #' row-bound. For `"factor_library"`, portfolio characteristics are selected via
-#' `filter_factor_library_grid()` and the matching return data is downloaded.
+#' `filter_factor_library_grid()`, the matching return data is downloaded, and
+#' the result is filtered to `start_date`/`end_date` when both are supplied.
 #' For `"factor_library_grid"`, the grid itself is returned via
 #' [download_factor_library_grid()].
 #'
 #' @param dataset Character(1). The dataset to download. Supported values are
 #'   `"high_frequency_sp500"`, `"factor_library"`, and `"factor_library_grid"`.
 #' @param start_date Date or character. Start date (inclusive) in
-#'   `"YYYY-MM-DD"` format. Only used for `"high_frequency_sp500"`.
+#'   `"YYYY-MM-DD"` format. Used for `"high_frequency_sp500"` and
+#'   `"factor_library"`. When omitted for `"factor_library"`, the full return
+#'   history is returned; `"high_frequency_sp500"` falls back to a built-in
+#'   sample window.
 #' @param end_date Date or character. End date (inclusive) in `"YYYY-MM-DD"`
-#'   format. Only used for `"high_frequency_sp500"`.
+#'   format. See `start_date`.
 #' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #' @param ... For `dataset = "factor_library"`: either named arguments used
 #'   to filter the portfolio grid, or `ids = <vector>` to bypass the grid
@@ -163,12 +167,18 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'   download_data_huggingface(
 #'     "factor_library", sorting_variable = "ag", fill_all = TRUE
 #'   )
+#'   download_data_huggingface(
+#'     "factor_library",
+#'     sorting_variable = "me",
+#'     start_date = "2000-01-01",
+#'     end_date = "2020-12-31"
+#'   )
 #'   download_data_huggingface("factor_library", ids = c(1L, 2L, 3L))
 #' }
 download_data_huggingface <- function(
   dataset = NULL,
-  start_date = "2007-06-27",
-  end_date = "2007-07-27",
+  start_date = NULL,
+  end_date = NULL,
   type = deprecated(),
   ...
 ) {
@@ -207,6 +217,13 @@ download_data_huggingface <- function(
   }
 
   if (dataset == "high_frequency_sp500") {
+    if (is.null(start_date)) {
+      start_date <- "2007-06-27"
+    }
+    if (is.null(end_date)) {
+      end_date <- "2007-07-27"
+    }
+
     organization <- "voigtstefan"
     dataset_name <- "sp500"
 
@@ -228,7 +245,11 @@ download_data_huggingface <- function(
       ) |>
       tidyr::unnest("data")
   } else if (dataset == "factor_library") {
-    download_data_hugging_face_factor_library(...)
+    download_data_hugging_face_factor_library(
+      ...,
+      start_date = start_date,
+      end_date = end_date
+    )
   }
 }
 
@@ -565,6 +586,12 @@ download_factor_library_ids <- function(ids) {
 #'   `filter_factor_library_grid()`. When `TRUE`, columns not
 #'   specified in `...` are left unrestricted rather than set to
 #'   their defaults. Ignored when `ids` is provided.
+#' @param start_date Optional. A character string or Date object in
+#'   `"YYYY-MM-DD"` format. When both `start_date` and `end_date` are
+#'   provided, the returns are filtered to the inclusive range. When either
+#'   is `NULL`, the full history is returned.
+#' @param end_date Optional. A character string or Date object in
+#'   `"YYYY-MM-DD"` format. See `start_date`.
 #'
 #' @return A tibble of portfolio returns with grid metadata columns
 #'   appended, one row per portfolio-period observation for the
@@ -573,7 +600,9 @@ download_factor_library_ids <- function(ids) {
 download_data_hugging_face_factor_library <- function(
   ...,
   ids = NULL,
-  fill_all = FALSE
+  fill_all = FALSE,
+  start_date = NULL,
+  end_date = NULL
 ) {
   if (!is.null(ids)) {
     if (...length() > 0) {
@@ -586,8 +615,20 @@ download_data_hugging_face_factor_library <- function(
         )
       ))
     }
-    return(download_factor_library_ids(ids))
+  } else {
+    ids <- filter_factor_library_grid(..., fill_all = fill_all)
   }
-  ids <- filter_factor_library_grid(..., fill_all = fill_all)
-  download_factor_library_ids(ids)
+
+  dates <- validate_dates(start_date, end_date)
+
+  returns <- download_factor_library_ids(ids)
+
+  if (!is.null(dates$start_date) && !is.null(dates$end_date)) {
+    returns <- dplyr::filter(
+      returns,
+      dplyr::between(.data$date, dates$start_date, dates$end_date)
+    )
+  }
+
+  returns
 }
