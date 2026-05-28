@@ -16,8 +16,7 @@ test_that("download failure is caught and re-thrown", {
     }
   )
   local_mocked_bindings(
-    read_parquet = function(...) stop("connection refused"),
-    .package = "arrow"
+    read_parquet_url = function(...) stop("connection refused")
   )
 
   expect_error(
@@ -42,8 +41,7 @@ test_that("full dataset returned when no dates are supplied", {
     }
   )
   local_mocked_bindings(
-    read_parquet = function(...) mock_data,
-    .package = "arrow"
+    read_parquet_url = function(...) mock_data
   )
 
   result <- download_data_risk_free()
@@ -68,8 +66,7 @@ test_that("data is filtered when start and end dates are supplied", {
     }
   )
   local_mocked_bindings(
-    read_parquet = function(...) mock_data,
-    .package = "arrow"
+    read_parquet_url = function(...) mock_data
   )
 
   result <- download_data_risk_free(

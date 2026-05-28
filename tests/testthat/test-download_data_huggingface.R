@@ -18,22 +18,17 @@ make_grid <- function(id = 1L) {
   )
 }
 
-# Mocks the full httr2 chain + jsonlite::fromJSON for one page.
-# page_df is passed straight through fromJSON so the rest of
+# Mocks the full httr2 chain for one page.
+# page_df is returned by resp_body_json so the rest of
 # the pipeline (tibble(), filter(), select()) runs for real.
 mock_httr2 <- function(page_df, link = NULL) {
   testthat::local_mocked_bindings(
     request = function(url) list(url = url),
     req_user_agent = function(req, ...) req,
     req_perform = function(req, ...) list(),
-    resp_body_string = function(resp) "[]",
+    resp_body_json = function(resp, ...) page_df,
     resp_headers = function(resp) list(link = link),
     .package = "httr2",
-    .env = parent.frame()
-  )
-  testthat::local_mocked_bindings(
-    fromJSON = function(...) page_df,
-    .package = "jsonlite",
     .env = parent.frame()
   )
 }
@@ -81,13 +76,9 @@ test_that("multi-page: paginates until rel=next link absent", {
       page_n <<- page_n + 1L
       list()
     },
-    resp_body_string = function(resp) "[]",
+    resp_body_json = function(resp, ...) pages[[page_n]],
     resp_headers = function(resp) list(link = links[[page_n]]),
     .package = "httr2"
-  )
-  testthat::local_mocked_bindings(
-    fromJSON = function(...) pages[[page_n]],
-    .package = "jsonlite"
   )
 
   result <- get_available_huggingface_files("org", "ds")
@@ -164,8 +155,7 @@ test_that("high_frequency_sp500: filters by date and downloads", {
     get_available_huggingface_files = function(...) available
   )
   testthat::local_mocked_bindings(
-    read_parquet = function(...) mock_trades,
-    .package = "arrow"
+    read_parquet_url = function(...) mock_trades
   )
 
   result <- download_data_huggingface(
@@ -289,8 +279,7 @@ test_that("pulls url from available files and reads parquet", {
     get_available_huggingface_files = function(...) available
   )
   testthat::local_mocked_bindings(
-    read_parquet = function(...) mock_grid,
-    .package = "arrow"
+    read_parquet_url = function(...) mock_grid
   )
 
   expect_equal(download_factor_library_grid(), mock_grid)
@@ -360,8 +349,7 @@ test_that("downloads returns and joins grid metadata", {
     }
   )
   testthat::local_mocked_bindings(
-    read_parquet = function(...) mock_returns,
-    .package = "arrow"
+    read_parquet_url = function(...) mock_returns
   )
 
   result <- download_factor_library_ids(1L)

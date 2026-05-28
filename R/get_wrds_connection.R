@@ -33,6 +33,11 @@
 #'   # disconnect_connection(con)
 #' }
 get_wrds_connection <- function() {
+  rlang::check_installed(
+    "dbplyr",
+    reason = "to translate dplyr verbs into SQL against the WRDS backend."
+  )
+
   if (
     !nzchar(Sys.getenv("WRDS_USER")) || !nzchar(Sys.getenv("WRDS_PASSWORD"))
   ) {
