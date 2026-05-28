@@ -61,9 +61,9 @@ get_available_huggingface_files <- function(organization, dataset) {
   out |>
     tidyr::unnest("data") |>
     dplyr::mutate(
-      url = glue::glue(
+      url = paste0(
         "https://huggingface.co/datasets/",
-        "{organization}/{dataset}/resolve/main/{path}"
+        organization, "/", dataset, "/resolve/main/", .data$path
       )
     )
 }
@@ -233,7 +233,7 @@ download_data_huggingface <- function(
       dataset_name
     ) |>
       dplyr::mutate(
-        date = as.Date(stringr::str_match(.data$path, date_pattern)[, 2])
+        date = as.Date(extract_capture(.data$path, date_pattern))
       )
 
     tibble::tibble(
@@ -241,7 +241,7 @@ download_data_huggingface <- function(
     ) |>
       dplyr::inner_join(available_files, dplyr::join_by(date)) |>
       dplyr::transmute(
-        data = purrr::map(url, ~ arrow::read_parquet(.x))
+        data = purrr::map(url, ~ read_parquet_url(.x))
       ) |>
       tidyr::unnest("data")
   } else if (dataset == "factor_library") {
@@ -257,6 +257,22 @@ download_data_huggingface <- function(
 #' @noRd
 is_legacy_type_hf <- function(x) {
   grepl("^hf_", x)
+}
+
+#' Extract the first capture group of a regex pattern from a character vector
+#'
+#' Vectorised replacement for `stringr::str_match(x, pattern)[, 2]` using
+#' base R `regmatches()` + `regexec()`. Returns `NA_character_` for
+#' elements that do not match.
+#'
+#' @noRd
+extract_capture <- function(x, pattern) {
+  matches <- regmatches(x, regexec(pattern, x))
+  vapply(
+    matches,
+    function(m) if (length(m) >= 2) m[2] else NA_character_,
+    character(1)
+  )
 }
 
 #' Check if Hugging Face dataset is supported
@@ -367,7 +383,7 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
 
   result <- download_factor_library_grid() |>
     dplyr::mutate(
-      sorting_variable = stringr::str_replace(.data$sorting_variable, "sv_", "")
+      sorting_variable = sub("sv_", "", .data$sorting_variable)
     )
 
   filters <- purrr::compact(filters)
@@ -408,7 +424,7 @@ download_factor_library_grid <- function() {
     "factor-library-grid"
   ) |>
     dplyr::pull(.data$url) |>
-    arrow::read_parquet()
+    read_parquet_url()
 }
 
 #' Download factor library returns for a vector of portfolio IDs
@@ -472,11 +488,7 @@ download_factor_library_ids <- function(ids) {
   id_grid <- download_factor_library_grid() |>
     dplyr::inner_join(id_values, dplyr::join_by(id)) |>
     dplyr::mutate(
-      sorting_variable = stringr::str_replace(
-        .data$sorting_variable,
-        "sv_",
-        ""
-      ),
+      sorting_variable = sub("sv_", "", .data$sorting_variable),
       n_portfolios_main = as.character(.data$n_portfolios_main)
     ) |>
     dplyr::left_join(
@@ -558,7 +570,7 @@ download_factor_library_ids <- function(ids) {
   }
 
   relevant_files <- relevant_urls$url |>
-    purrr::map(~ arrow::read_parquet(.x)) |>
+    purrr::map(~ read_parquet_url(.x)) |>
     dplyr::bind_rows()
 
   relevant_files |>

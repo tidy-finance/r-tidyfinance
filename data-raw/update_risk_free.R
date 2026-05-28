@@ -68,5 +68,5 @@ risk_free_daily <- bind_rows(
 ) |>
   arrange(date)
 
-write_parquet(risk_free_monthly, "/tmp/risk_free_monthly.parquet")
-write_parquet(risk_free_daily, "/tmp/risk_free_daily.parquet")
+nanoparquet::write_parquet(risk_free_monthly, "/tmp/risk_free_monthly.parquet")
+nanoparquet::write_parquet(risk_free_daily, "/tmp/risk_free_daily.parquet")

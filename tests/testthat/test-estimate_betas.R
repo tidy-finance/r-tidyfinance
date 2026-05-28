@@ -172,7 +172,6 @@ test_that("lookback < num_params issues a warning", {
 })
 
 test_that("use_furrr = TRUE uses furrr path", {
-  future::plan("sequential")
   result <- estimate_betas(
     data_monthly,
     "ret_excess ~ mkt_excess",

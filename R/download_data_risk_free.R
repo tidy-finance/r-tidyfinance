@@ -84,7 +84,7 @@ download_data_risk_free <- function(
   )
 
   risk_free_data <- tryCatch(
-    arrow::read_parquet(url),
+    read_parquet_url(url),
     error = function(e) {
       cli::cli_abort(c(
         "Failed to download risk-free rate data from HuggingFace.",

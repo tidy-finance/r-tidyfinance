@@ -164,8 +164,7 @@ test_that("high_frequency_sp500: filters by date and downloads", {
     get_available_huggingface_files = function(...) available
   )
   testthat::local_mocked_bindings(
-    read_parquet = function(...) mock_trades,
-    .package = "arrow"
+    read_parquet_url = function(...) mock_trades
   )
 
   result <- download_data_huggingface(
@@ -224,8 +223,7 @@ test_that("high_frequency_sp500: uses sample window when no dates", {
     get_available_huggingface_files = function(...) available
   )
   testthat::local_mocked_bindings(
-    read_parquet = function(...) tibble::tibble(price = 100.0),
-    .package = "arrow"
+    read_parquet_url = function(...) tibble::tibble(price = 100.0)
   )
 
   # The default sample window (2007-06-27..2007-07-27) includes the only
@@ -331,8 +329,7 @@ test_that("pulls url from available files and reads parquet", {
     get_available_huggingface_files = function(...) available
   )
   testthat::local_mocked_bindings(
-    read_parquet = function(...) mock_grid,
-    .package = "arrow"
+    read_parquet_url = function(...) mock_grid
   )
 
   expect_equal(download_factor_library_grid(), mock_grid)
@@ -402,8 +399,7 @@ test_that("downloads returns and joins grid metadata", {
     }
   )
   testthat::local_mocked_bindings(
-    read_parquet = function(...) mock_returns,
-    .package = "arrow"
+    read_parquet_url = function(...) mock_returns
   )
 
   result <- download_factor_library_ids(1L)
