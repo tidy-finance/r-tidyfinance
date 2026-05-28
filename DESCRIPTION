@@ -28,6 +28,7 @@ Depends:
 Imports:
     cli,
     dplyr (>= 1.1.4),
+    dbplyr (>= 2.5.0),
     lifecycle,
     lubridate (>= 1.9.3),
     nanoparquet (>= 0.5.1),
@@ -43,7 +44,6 @@ Imports:
     RPostgres (>= 1.4.5),
     sandwich (>= 3.1-0)
 Suggests:
-    dbplyr (>= 2.5.0),
     furrr (>= 0.3.1),
     testthat (>= 3.2.0),
     withr
