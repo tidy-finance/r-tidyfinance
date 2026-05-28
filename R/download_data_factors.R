@@ -1,15 +1,15 @@
 #' Download and Process Fama-French Factor Data
 #'
 #' Downloads and processes Fama-French factor data based on the specified
-#' dataset name and date range. The function requires the `frenchdata`
-#' package to download the data. It processes the raw data into a structured
-#' format, including date conversion, scaling factor values, and filtering by
-#' the specified date range.
+#' dataset name and date range. The data is downloaded directly from Kenneth
+#' French's data library and processed into a structured format, including
+#' date conversion, scaling factor values, and filtering by the specified date
+#' range.
 #'
 #' If there are multiple tables in the raw Fama-French data (e.g.,
 #' value-weighted and equal-weighted returns), then the function only returns
-#' the first table because these are the most popular. Please use the
-#' `frenchdata` package directly if you need less commonly used tables.
+#' the first table because these are the most popular. Download the source ZIP
+#' archive directly if you need less commonly used tables.
 #'
 #' @param dataset The name of the Fama-French dataset to download (e.g.,
 #'   "Fama/French 3 Factors").
@@ -87,25 +87,25 @@ download_data_factors_ff <- function(
     cli::cli_abort("Argument {.arg dataset} is required.")
   }
 
-  check_supported_dataset_ff(dataset)
+  file_url <- check_supported_dataset_ff(dataset)
 
   dates <- validate_dates(start_date, end_date)
   start_date <- dates$start_date
   end_date <- dates$end_date
 
   raw_data <- handle_download_error(
-    function() suppressMessages(frenchdata::download_french_data(dataset)),
+    function() download_french_data_factors(file_url),
     fallback = tibble(
       date = Date()
     )
   )
 
-  if (!inherits(raw_data, "french_dataset")) {
-    cli::cli_inform("Returning an empty data set due to download failure.")
+  if (nrow(raw_data) == 0) {
+    cli::cli_inform(
+      "Returning an empty data set due to a download or parsing failure."
+    )
     return(raw_data)
   }
-
-  raw_data <- raw_data$subsets$data[[1]]
 
   frequency <- determine_frequency_ff(dataset)
 
@@ -124,9 +124,16 @@ download_data_factors_ff <- function(
   processed_data <- processed_data |>
     mutate(
       across(-date, ~ na_if(., -99.99)),
-      across(-date, ~ na_if(., -999)),
-      across(-date, ~ . / 100)
+      across(-date, ~ na_if(., -999))
     )
+
+  # Factor files report percentage returns and are divided by 100. Breakpoints
+  # files instead report dollar levels and share counts, which must not be
+  # rescaled.
+  if (!is_breakpoints_ff(dataset)) {
+    processed_data <- processed_data |>
+      mutate(across(-date, ~ . / 100))
+  }
 
   colnames_lower <- tolower(colnames(processed_data))
   colnames_clean <- gsub("-rf", "_excess", colnames_lower, fixed = TRUE)
@@ -238,7 +245,9 @@ download_data_factors_q <- function(
   )
 
   if (nrow(raw_data) == 0) {
-    cli::cli_inform("Returning an empty data set due to download failure.")
+    cli::cli_inform(
+      "Returning an empty data set due to a download or parsing failure."
+    )
     return(raw_data)
   }
 
@@ -305,6 +314,16 @@ determine_frequency_ff <- function(dataset) {
   }
 }
 
+#' Check if a Fama-French dataset reports breakpoints
+#'
+#' Breakpoints files report dollar levels and share counts rather than
+#' percentage returns, so the percentage scaling (dividing by 100) applied to
+#' factor files must be skipped for them.
+#' @noRd
+is_breakpoints_ff <- function(dataset) {
+  grepl("Breakpoints", dataset, fixed = TRUE)
+}
+
 #' Determine frequency from Global Q dataset name
 #' @noRd
 determine_frequency_q <- function(dataset) {
@@ -325,7 +344,10 @@ determine_frequency_q <- function(dataset) {
   }
 }
 
-#' Check if Fama-French dataset is supported
+#' Validate a Fama-French dataset and return its source file URL
+#'
+#' Builds the combined Fama-French registry once, aborting if the dataset is
+#' not supported, and returns the matching `file_url`.
 #' @noRd
 check_supported_dataset_ff <- function(dataset) {
   ff_datasets <- dplyr::bind_rows(
@@ -333,7 +355,8 @@ check_supported_dataset_ff <- function(dataset) {
     list_supported_datasets_ff_legacy()
   )
 
-  if (!dataset %in% ff_datasets$dataset_name) {
+  idx <- match(dataset, ff_datasets$dataset_name)
+  if (is.na(idx)) {
     cli::cli_abort(c(
       "Unsupported Fama-French dataset: {.val {dataset}}",
       "i" = paste0(
@@ -343,6 +366,8 @@ check_supported_dataset_ff <- function(dataset) {
       "to see available datasets."
     ))
   }
+
+  ff_datasets$file_url[idx]
 }
 
 #' Check if Global Q dataset is supported
