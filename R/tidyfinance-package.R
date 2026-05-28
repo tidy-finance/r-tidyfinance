@@ -18,5 +18,6 @@
 #' @importFrom nanoparquet read_parquet
 #' @importFrom RPostgres Postgres
 #' @importFrom sandwich NeweyWest
+#' @importFrom dbplyr translate_sql
 ## usethis namespace: end
 NULL
