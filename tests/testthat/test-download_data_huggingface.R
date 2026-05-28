@@ -18,17 +18,22 @@ make_grid <- function(id = 1L) {
   )
 }
 
-# Mocks the full httr2 chain for one page.
-# page_df is returned by resp_body_json so the rest of
+# Mocks the full httr2 chain + jsonlite::fromJSON for one page.
+# page_df is passed straight through fromJSON so the rest of
 # the pipeline (tibble(), filter(), select()) runs for real.
 mock_httr2 <- function(page_df, link = NULL) {
   testthat::local_mocked_bindings(
     request = function(url) list(url = url),
     req_user_agent = function(req, ...) req,
     req_perform = function(req, ...) list(),
-    resp_body_json = function(resp, ...) page_df,
+    resp_body_string = function(resp) "[]",
     resp_headers = function(resp) list(link = link),
     .package = "httr2",
+    .env = parent.frame()
+  )
+  testthat::local_mocked_bindings(
+    fromJSON = function(...) page_df,
+    .package = "jsonlite",
     .env = parent.frame()
   )
 }
@@ -76,9 +81,13 @@ test_that("multi-page: paginates until rel=next link absent", {
       page_n <<- page_n + 1L
       list()
     },
-    resp_body_json = function(resp, ...) pages[[page_n]],
+    resp_body_string = function(resp) "[]",
     resp_headers = function(resp) list(link = links[[page_n]]),
     .package = "httr2"
+  )
+  testthat::local_mocked_bindings(
+    fromJSON = function(...) pages[[page_n]],
+    .package = "jsonlite"
   )
 
   result <- get_available_huggingface_files("org", "ds")

@@ -40,7 +40,8 @@ get_available_huggingface_files <- function(organization, dataset) {
       httr2::req_perform()
 
     body <- resp |>
-      httr2::resp_body_json(simplifyVector = TRUE) |>
+      httr2::resp_body_string() |>
+      jsonlite::fromJSON(simplifyDataFrame = TRUE) |>
       tibble::tibble() |>
       dplyr::filter(
         .data$type == "file" &

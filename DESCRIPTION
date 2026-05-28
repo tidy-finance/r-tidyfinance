@@ -29,6 +29,7 @@ Imports:
     cli,
     dplyr (>= 1.1.4),
     dbplyr (>= 2.5.0),
+    jsonlite,
     lifecycle,
     lubridate (>= 1.9.3),
     nanoparquet (>= 0.5.1),
