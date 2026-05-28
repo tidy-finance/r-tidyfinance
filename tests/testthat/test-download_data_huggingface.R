@@ -214,8 +214,7 @@ test_that("high_frequency_sp500: uses sample window when no dates", {
     get_available_huggingface_files = function(...) available
   )
   testthat::local_mocked_bindings(
-    read_parquet = function(...) tibble::tibble(price = 100.0),
-    .package = "arrow"
+    read_parquet_url = function(...) tibble::tibble(price = 100.0)
   )
 
   # The default sample window (2007-06-27..2007-07-27) includes the only
