@@ -16,7 +16,7 @@ test_that("require_column supports a custom hint", {
   d <- data.frame(x = 1:3)
   expect_error(
     require_column(d, "exchange", "data_options$exchange", info = "NYSE hint"),
-    "not found"
+    "NYSE hint"
   )
 })
 
