@@ -10,7 +10,7 @@
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![](https://img.shields.io/badge/devel%20version-0.5.0.9002-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
+[![](https://img.shields.io/badge/devel%20version-0.5.0.9005-blue.svg)](https://github.com/tidy-finance/r-tidyfinance)
 [![R-CMD-check](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml)
 [![Lint](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/lint.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/lint.yaml/badge.svg)
 [![Codecov test
@@ -297,7 +297,7 @@ download_data(
   start_date = "2020-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 11,989 × 25
+#> # A tibble: 11,990 × 25
 #>    gvkey  date       datadate        seq     ceq      at      lt  txditc    txdb
 #>    <chr>  <date>     <date>        <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
 #>  1 001004 2020-05-01 2020-05-31   903.    9.03e2 2.08e+3 1.18e+3 0       0      
@@ -310,7 +310,7 @@ download_data(
 #>  8 001078 2020-12-01 2020-12-31 32784     3.28e4 7.25e+4 3.95e+4 1.41e+3 1.41e+3
 #>  9 001084 2020-12-01 2020-12-31    -2.67 -2.67e0 6.92e-1 3.36e+0 0       0      
 #> 10 001096 2020-12-01 2020-12-31  3372.    3.37e3 1.11e+4 6.69e+3 6.48e+2 6.48e+2
-#> # ℹ 11,979 more rows
+#> # ℹ 11,980 more rows
 #> # ℹ 16 more variables: itcb <dbl>, pstkrv <dbl>, pstkl <dbl>, pstk <dbl>,
 #> #   capx <dbl>, oancf <dbl>, sale <dbl>, cogs <dbl>, xint <dbl>, xsga <dbl>,
 #> #   ib <dbl>, curcd <chr>, be <dbl>, op <dbl>, at_lag <dbl>, inv <dbl>
@@ -330,7 +330,7 @@ download_data(
 #>  2  10015 001001 1983-09-20 1986-07-31
 #>  3  10023 001002 1972-12-14 1973-06-05
 #>  4  10031 001003 1983-12-07 1989-08-16
-#>  5  54594 001004 1972-04-24 2026-05-21
+#>  5  54594 001004 1972-04-24 2026-05-29
 #>  6  61903 001005 1973-01-31 1983-01-31
 #>  7  10058 001007 1973-10-01 1979-01-30
 #>  8  10058 001007 1979-01-31 1984-09-28
@@ -378,6 +378,26 @@ download_data(
   dataset = "factor_library",
   sorting_variable = "ag"
 )
+#> No `start_date` or `end_date` provided. Returning the full data set.
+#> # A data frame: 779 × 17
+#>        id date       ret_type   ret sorting_variable min_size_quantile
+#>     <int> <date>     <chr>    <dbl> <chr>                        <dbl>
+#>  1 297554 1960-02-01 vw           0 ag                             0.2
+#>  2 297554 1960-03-01 vw           0 ag                             0.2
+#>  3 297554 1960-04-01 vw           0 ag                             0.2
+#>  4 297554 1960-05-01 vw           0 ag                             0.2
+#>  5 297554 1960-06-01 vw           0 ag                             0.2
+#>  6 297554 1960-07-01 vw           0 ag                             0.2
+#>  7 297554 1960-08-01 vw           0 ag                             0.2
+#>  8 297554 1960-09-01 vw           0 ag                             0.2
+#>  9 297554 1960-10-01 vw           0 ag                             0.2
+#> 10 297554 1960-11-01 vw           0 ag                             0.2
+#> # ℹ 769 more rows
+#> # ℹ 11 more variables: exclude_financials <lgl>, exclude_utilities <lgl>,
+#> #   exclude_negative_earnings <lgl>, sorting_variable_lag <chr>,
+#> #   rebalancing <chr>, n_portfolios_main <chr>, sorting_method <chr>,
+#> #   breakpoints_min_size_threshold <dbl>, n_portfolios_secondary <dbl>,
+#> #   breakpoints_exchanges <chr>, weighting_scheme <chr>
 ```
 
 The package also provides functions to construct your own factor

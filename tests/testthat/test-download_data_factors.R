@@ -1,10 +1,3 @@
-make_ff_dataset <- function(df) {
-  structure(
-    list(subsets = list(data = list(df))),
-    class = "french_dataset"
-  )
-}
-
 test_that("determine_frequency_ff: daily, weekly, and monthly paths", {
   expect_equal(
     determine_frequency_ff("Factors [Daily]"),
@@ -55,13 +48,15 @@ test_that("check_supported_dataset_ff: no error for known dataset", {
     list_supported_datasets_ff = function() {
       tibble::tibble(
         dataset_name = "FF 3 Factors",
-        type = NA_character_
+        type = NA_character_,
+        file_url = "ftp/dummy_CSV.zip"
       )
     },
     list_supported_datasets_ff_legacy = function() {
       tibble::tibble(
         dataset_name = character(),
-        type = character()
+        type = character(),
+        file_url = character()
       )
     }
   )
@@ -73,13 +68,15 @@ test_that("check_supported_dataset_ff: aborts for unknown dataset", {
     list_supported_datasets_ff = function() {
       tibble::tibble(
         dataset_name = "FF 3 Factors",
-        type = NA_character_
+        type = NA_character_,
+        file_url = "ftp/dummy_CSV.zip"
       )
     },
     list_supported_datasets_ff_legacy = function() {
       tibble::tibble(
         dataset_name = character(),
-        type = character()
+        type = character(),
+        file_url = character()
       )
     }
   )
@@ -229,9 +226,7 @@ test_that("download_data_factors_ff: monthly path with date filter", {
         end_date = as.Date("2020-01-31")
       )
     },
-    handle_download_error = function(fn, ...) {
-      make_ff_dataset(raw_df)
-    },
+    handle_download_error = function(fn, ...) raw_df,
     determine_frequency_ff = function(x) "monthly"
   )
   result <- download_data_factors_ff(
@@ -241,6 +236,22 @@ test_that("download_data_factors_ff: monthly path with date filter", {
   )
   expect_equal(nrow(result), 1)
   expect_named(result, c("date", "mkt_excess", "risk_free"))
+})
+
+test_that("download_data_factors_ff: threads registry url to downloader", {
+  captured_url <- NULL
+  local_mocked_bindings(
+    is_legacy_type_ff = function(x) FALSE,
+    determine_frequency_ff = function(x) "monthly",
+    download_french_data_factors = function(file_url, ...) {
+      captured_url <<- file_url
+      tibble::tibble(date = "202001", `Mkt-RF` = 1.0, RF = 0.1)
+    }
+  )
+  suppressMessages(
+    download_data_factors_ff("Fama/French 3 Factors")
+  )
+  expect_equal(captured_url, "ftp/F-F_Research_Data_Factors_CSV.zip")
 })
 
 test_that("download_data_factors_ff: daily path, no date filter", {
@@ -255,9 +266,7 @@ test_that("download_data_factors_ff: daily path, no date filter", {
     validate_dates = function(s, e) {
       list(start_date = NULL, end_date = NULL)
     },
-    handle_download_error = function(fn, ...) {
-      make_ff_dataset(raw_df)
-    },
+    handle_download_error = function(fn, ...) raw_df,
     determine_frequency_ff = function(x) "daily"
   )
   result <- download_data_factors_ff("Factors [Daily]")
@@ -276,9 +285,7 @@ test_that("download_data_factors_ff: aborts on unknown frequency", {
     validate_dates = function(s, e) {
       list(start_date = NULL, end_date = NULL)
     },
-    handle_download_error = function(fn, ...) {
-      make_ff_dataset(raw_df)
-    },
+    handle_download_error = function(fn, ...) raw_df,
     determine_frequency_ff = function(x) "unknown"
   )
   expect_error(
@@ -460,4 +467,267 @@ test_that("download_data_factors_q: weekly path", {
   )
   result <- download_data_factors_q("q5_factors_weekly_2024")
   expect_equal(nrow(result), 2)
+})
+
+test_that("check_supported_dataset_ff: returns file_url for known dataset", {
+  expect_equal(
+    check_supported_dataset_ff("Fama/French 3 Factors"),
+    "ftp/F-F_Research_Data_Factors_CSV.zip"
+  )
+})
+
+test_that("parse_french_data_factors: keeps first table, names date column", {
+  csv <- withr::local_tempfile(fileext = ".csv")
+  writeLines(
+    c(
+      "This file was created by a test",
+      "",
+      ",Mkt-RF,SMB,RF",
+      "202001,  1.00, -0.50, 0.10",
+      "202002,  2.00,  0.50, 0.10",
+      "",
+      "  Annual Factors:",
+      ",Mkt-RF,SMB,RF",
+      "2020, 12.00, -1.00, 1.20"
+    ),
+    csv
+  )
+
+  result <- parse_french_data_factors(csv)
+
+  expect_named(result, c("date", "Mkt-RF", "SMB", "RF"))
+  expect_equal(nrow(result), 2)
+  expect_equal(result$date, c(202001, 202002))
+  expect_equal(result[["Mkt-RF"]], c(1.0, 2.0))
+})
+
+test_that("parse_french_data_factors: aborts when no table present", {
+  csv <- withr::local_tempfile(fileext = ".csv")
+  writeLines(c("Only header text", "no data here"), csv)
+  expect_error(
+    parse_french_data_factors(csv),
+    "Could not locate a data table"
+  )
+})
+
+test_that("parse_french_data_factors: parses positionally without header", {
+  csv <- withr::local_tempfile(fileext = ".csv")
+  writeLines(c("202001,  1.00, -0.50", "202002,  2.00,  0.25"), csv)
+  result <- parse_french_data_factors(csv)
+  expect_equal(nrow(result), 2)
+  expect_named(result, c("date", "V2", "V3"))
+  expect_equal(result$date, c(202001, 202002))
+})
+
+test_that("parse_french_data_factors: blank line above data is headerless", {
+  csv <- withr::local_tempfile(fileext = ".csv")
+  writeLines(c("Some title text", "", "202001,  1.00, -0.50"), csv)
+  result <- parse_french_data_factors(csv)
+  expect_equal(nrow(result), 1)
+  expect_named(result, c("date", "V2", "V3"))
+})
+
+test_that("parse_french_data_factors: prose line above data is headerless", {
+  csv <- withr::local_tempfile(fileext = ".csv")
+  writeLines(c("Average Value Weight Returns", "202001,1.0,0.1"), csv)
+  result <- parse_french_data_factors(csv)
+  expect_equal(nrow(result), 1)
+  expect_named(result, c("date", "V2", "V3"))
+})
+
+test_that("parse_french_data_factors: accepts named first column", {
+  csv <- withr::local_tempfile(fileext = ".csv")
+  writeLines(
+    c("Count,P5,P10", "202001,100,5.0", "202002,101,5.1"),
+    csv
+  )
+  result <- parse_french_data_factors(csv)
+  expect_equal(nrow(result), 2)
+  expect_named(result, c("date", "P5", "P10"))
+})
+
+test_that("parse_french_data_factors: parses breakpoints file layout", {
+  # Breakpoints files have a prose title, a blank line, then headerless data:
+  # date, Count, and percentile columns.
+  csv <- withr::local_tempfile(fileext = ".csv")
+  writeLines(
+    c(
+      "This file was created using the CRSP database.",
+      "",
+      "192512,   488,        1.40,        2.38,     1319.00",
+      "192601,   492,        1.38,        2.54,     1331.71"
+    ),
+    csv
+  )
+  result <- parse_french_data_factors(csv)
+  expect_equal(nrow(result), 2)
+  expect_equal(result$date, c(192512, 192601))
+  expect_named(result, c("date", "V2", "V3", "V4", "V5"))
+  # The integer-looking "Count" column must be coerced to double so the
+  # downstream na_if(., -99.99) pipeline does not fail on a strict vctrs cast.
+  expect_type(result$V2, "double")
+})
+
+test_that("parse_french_data_factors: drops merged annual rows", {
+  csv <- withr::local_tempfile(fileext = ".csv")
+  writeLines(
+    c(
+      ",Mkt-RF,RF",
+      "202001,1.0,0.1",
+      "202002,2.0,0.1",
+      "2020,12.0,1.2"
+    ),
+    csv
+  )
+  expect_warning(
+    result <- parse_french_data_factors(csv),
+    "different date-key width"
+  )
+  expect_equal(nrow(result), 2)
+  expect_equal(result$date, c(202001, 202002))
+})
+
+test_that("download_french_data_factors: parses first table", {
+  local_mocked_bindings(
+    get_random_user_agent = function() "test-agent"
+  )
+  local_mocked_bindings(
+    request = function(url) list(url = url),
+    req_user_agent = function(req, ...) req,
+    req_timeout = function(req, ...) req,
+    req_retry = function(req, ...) req,
+    req_perform = function(req, path = NULL) {
+      if (!is.null(path)) file.create(path)
+      invisible(req)
+    },
+    .package = "httr2"
+  )
+  local_mocked_bindings(
+    unzip = function(zipfile, exdir, ...) {
+      writeLines(
+        c(",Mkt-RF,RF", "202001,1.0,0.1", "202002,2.0,0.1"),
+        file.path(exdir, "data.csv")
+      )
+      invisible(NULL)
+    },
+    .package = "utils"
+  )
+
+  result <- download_french_data_factors("ftp/Some_File_CSV.zip")
+
+  expect_named(result, c("date", "Mkt-RF", "RF"))
+  expect_equal(nrow(result), 2)
+})
+
+test_that("download_data_factors_ff: full path converts integer dates", {
+  local_mocked_bindings(
+    is_legacy_type_ff = function(x) FALSE,
+    determine_frequency_ff = function(x) "monthly",
+    get_random_user_agent = function() "test-agent"
+  )
+  local_mocked_bindings(
+    request = function(url) list(url = url),
+    req_user_agent = function(req, ...) req,
+    req_timeout = function(req, ...) req,
+    req_retry = function(req, ...) req,
+    req_perform = function(req, path = NULL) {
+      if (!is.null(path)) file.create(path)
+      invisible(req)
+    },
+    .package = "httr2"
+  )
+  local_mocked_bindings(
+    unzip = function(zipfile, exdir, ...) {
+      writeLines(
+        c(",Mkt-RF,RF", "202001,1.0,0.1", "202002,2.0,0.1"),
+        file.path(exdir, "data.csv")
+      )
+      invisible(NULL)
+    },
+    .package = "utils"
+  )
+
+  result <- suppressMessages(
+    download_data_factors_ff("Fama/French 3 Factors")
+  )
+
+  expect_named(result, c("date", "mkt_excess", "risk_free"))
+  expect_s3_class(result$date, "Date")
+  expect_equal(result$date[1], as.Date("2020-01-01"))
+  expect_equal(result$mkt_excess, c(0.01, 0.02))
+})
+
+test_that("is_breakpoints_ff: detects breakpoints datasets", {
+  expect_true(is_breakpoints_ff("ME Breakpoints"))
+  expect_true(is_breakpoints_ff("Prior (2-12) Return Breakpoints"))
+  expect_false(is_breakpoints_ff("Fama/French 3 Factors"))
+})
+
+test_that("download_data_factors_ff: does not rescale breakpoints", {
+  local_mocked_bindings(
+    is_legacy_type_ff = function(x) FALSE,
+    get_random_user_agent = function() "test-agent"
+  )
+  local_mocked_bindings(
+    request = function(url) list(url = url),
+    req_user_agent = function(req, ...) req,
+    req_timeout = function(req, ...) req,
+    req_retry = function(req, ...) req,
+    req_perform = function(req, path = NULL) {
+      if (!is.null(path)) file.create(path)
+      invisible(req)
+    },
+    .package = "httr2"
+  )
+  local_mocked_bindings(
+    unzip = function(zipfile, exdir, ...) {
+      writeLines(
+        c(
+          "This file was created using the CRSP database.",
+          "",
+          "202001,   488,   1.40,   1319.00",
+          "202002,   492,   1.38,   1331.71"
+        ),
+        file.path(exdir, "data.csv")
+      )
+      invisible(NULL)
+    },
+    .package = "utils"
+  )
+
+  result <- suppressMessages(
+    download_data_factors_ff("ME Breakpoints")
+  )
+
+  expect_s3_class(result$date, "Date")
+  # Dollar levels and share counts must be returned unscaled (not divided by
+  # 100), unlike percentage-return factor files.
+  expect_equal(result$v2, c(488, 492))
+  expect_equal(result$v4, c(1319.00, 1331.71))
+})
+
+test_that("download_french_data_factors: aborts when archive has no CSV", {
+  local_mocked_bindings(
+    get_random_user_agent = function() "test-agent"
+  )
+  local_mocked_bindings(
+    request = function(url) list(url = url),
+    req_user_agent = function(req, ...) req,
+    req_timeout = function(req, ...) req,
+    req_retry = function(req, ...) req,
+    req_perform = function(req, path = NULL) {
+      if (!is.null(path)) file.create(path)
+      invisible(req)
+    },
+    .package = "httr2"
+  )
+  local_mocked_bindings(
+    unzip = function(zipfile, exdir, ...) invisible(NULL),
+    .package = "utils"
+  )
+
+  expect_error(
+    download_french_data_factors("ftp/Empty_CSV.zip"),
+    "No CSV file found"
+  )
 })
