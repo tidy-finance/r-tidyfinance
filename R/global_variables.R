@@ -15,6 +15,7 @@ utils::globalVariables(
     ".lower",
     ".src_date",
     ".upper",
+    "closest",
     "cntra_mp_id",
     "cusip_id",
     "date",
