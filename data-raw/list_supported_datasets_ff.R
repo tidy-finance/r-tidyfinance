@@ -34,7 +34,10 @@ matches <- gregexpr(
 captured <- regmatches(html, matches)[[1]]
 
 file_url <- sub(
-  "(?s).*href=\"([^\"]*?_CSV\\.zip)\".*", "\\1", captured, perl = TRUE
+  "(?s).*href=\"([^\"]*?_CSV\\.zip)\".*",
+  "\\1",
+  captured,
+  perl = TRUE
 )
 raw_name <- sub("(?s)<b>(.*?)</b>.*", "\\1", captured, perl = TRUE)
 raw_name <- gsub("<[^>]*>", "", raw_name)
