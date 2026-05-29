@@ -196,9 +196,9 @@ estimate_betas <- function(
   }
 
   betas <- betas |>
-    tidyr::unnest(beta, names_sep = "_") |>
+    tidyr::unnest("beta", names_sep = "_") |>
     select(-data) |>
-    rename("{data_options$date}" := beta_date)
+    rename("{data_options$date}" := "beta_date")
 
   if ("beta_intercept" %in% colnames(betas)) {
     colnames(betas)[colnames(betas) == "beta_intercept"] <- "intercept"

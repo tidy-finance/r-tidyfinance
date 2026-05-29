@@ -241,7 +241,7 @@ download_data_huggingface <- function(
     ) |>
       dplyr::inner_join(available_files, dplyr::join_by(date)) |>
       dplyr::transmute(
-        data = purrr::map(url, ~ read_parquet_url(.x))
+        data = purrr::map(.data[["url"]], ~ read_parquet_url(.x))
       ) |>
       tidyr::unnest("data")
   } else if (dataset == "factor_library") {
@@ -575,7 +575,7 @@ download_factor_library_ids <- function(ids) {
 
   relevant_files |>
     dplyr::inner_join(
-      id_grid |> dplyr::select(-c(url, path, size)),
+      id_grid |> dplyr::select(-c("url", "path", "size")),
       by = dplyr::join_by(id)
     )
 }

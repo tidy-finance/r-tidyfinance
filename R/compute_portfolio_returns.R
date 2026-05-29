@@ -327,7 +327,7 @@ compute_portfolio_returns <- function(
     }
 
     portfolio_returns <- portfolio_returns |>
-      dplyr::group_by(portfolio, .data[[date_col]]) |>
+      dplyr::group_by(.data[["portfolio"]], .data[[date_col]]) |>
       summarise_portfolio_returns(
         ret_col,
         w_col,
@@ -355,7 +355,7 @@ compute_portfolio_returns <- function(
           )
         ) |>
         dplyr::ungroup() |>
-        dplyr::group_by(.data[[date_col]], portfolio_secondary) |>
+        dplyr::group_by(.data[[date_col]], .data[["portfolio_secondary"]]) |>
         dplyr::mutate(
           portfolio_main = assign_portfolio(
             dplyr::pick(dplyr::everything()),
@@ -381,7 +381,7 @@ compute_portfolio_returns <- function(
           )
         ) |>
         dplyr::ungroup() |>
-        dplyr::group_by(.data[[date_col]], portfolio_secondary) |>
+        dplyr::group_by(.data[[date_col]], .data[["portfolio_secondary"]]) |>
         dplyr::mutate(
           portfolio_main = assign_portfolio(
             dplyr::pick(dplyr::everything()),
@@ -613,21 +613,28 @@ aggregate_bivariate_returns <- function(
   min_portfolio_size
 ) {
   n_per_main_date <- portfolio_returns |>
-    dplyr::filter(!is.na(portfolio_main), !is.na(portfolio_secondary)) |>
-    dplyr::count(portfolio_main, .data[[date_col]], name = "n_firms")
+    dplyr::filter(
+      !is.na(.data[["portfolio_main"]]),
+      !is.na(.data[["portfolio_secondary"]])
+    ) |>
+    dplyr::count(.data[["portfolio_main"]], .data[[date_col]], name = "n_firms")
 
   portfolio_returns |>
-    dplyr::group_by(portfolio_main, portfolio_secondary, .data[[date_col]]) |>
+    dplyr::group_by(
+      .data[["portfolio_main"]],
+      .data[["portfolio_secondary"]],
+      .data[[date_col]]
+    ) |>
     summarise_portfolio_returns(
       ret_col,
       w_col,
       w_capped_col,
       min_portfolio_size = 0L
     ) |>
-    dplyr::group_by(portfolio = portfolio_main, .data[[date_col]]) |>
+    dplyr::group_by(portfolio = .data[["portfolio_main"]], .data[[date_col]]) |>
     dplyr::summarise(
       dplyr::across(
-        c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped),
+        c("ret_excess_vw", "ret_excess_ew", "ret_excess_vw_capped"),
         \(x) mean(x, na.rm = TRUE)
       ),
       .groups = "drop"
@@ -641,17 +648,19 @@ aggregate_bivariate_returns <- function(
     ) |>
     dplyr::mutate(
       dplyr::across(
-        c(ret_excess_vw, ret_excess_ew, ret_excess_vw_capped),
+        c("ret_excess_vw", "ret_excess_ew", "ret_excess_vw_capped"),
         \(x) {
           dplyr::if_else(
-            is.nan(x) | is.na(n_firms) | n_firms < min_portfolio_size,
+            is.nan(x) |
+              is.na(.data[["n_firms"]]) |
+              .data[["n_firms"]] < min_portfolio_size,
             NA_real_,
             x
           )
         }
       )
     ) |>
-    dplyr::select(-n_firms)
+    dplyr::select(-"n_firms")
 }
 
 #' Join rebalanced portfolio assignments to sorting data (internal helper)

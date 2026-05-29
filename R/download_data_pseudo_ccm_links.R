@@ -34,5 +34,5 @@ download_data_pseudo_ccm_links <- function(
       linkdt = as.Date("1925-12-31"),
       linkenddt = as.Date("2099-12-31")
     ) |>
-    select(permno, gvkey, linkdt, linkenddt)
+    select("permno", "gvkey", "linkdt", "linkenddt")
 }

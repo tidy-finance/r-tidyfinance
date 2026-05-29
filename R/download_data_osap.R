@@ -55,13 +55,13 @@ download_data_osap <- function(
   }
 
   processed_data <- raw_data |>
-    mutate(date = ymd(date))
+    mutate(date = ymd(.data[["date"]]))
 
   colnames(processed_data) <- to_snake_case(colnames(processed_data))
 
   if (!is.null(start_date) && !is.null(end_date)) {
     processed_data <- processed_data |>
-      filter(between(date, start_date, end_date))
+      filter(between(.data[["date"]], start_date, end_date))
   }
 
   processed_data

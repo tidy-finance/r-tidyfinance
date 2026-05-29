@@ -131,43 +131,50 @@ download_data_wrds_crsp <- function(
 
       first_crsp_date <- msenames_db |>
         group_by(permno) |>
-        summarise(first_crsp_date = min(namedt, na.rm = TRUE)) |>
+        summarise(
+          first_crsp_date = min(.data[["namedt"]], na.rm = TRUE)
+        ) |>
         collect()
 
       crsp_monthly <- msf_db |>
-        filter(between(date, start_date, end_date)) |>
+        filter(between(.data[["date"]], start_date, end_date)) |>
         select(all_of(msf_db_columns)) |>
         inner_join(
           msenames_db |>
-            filter(shrcd %in% c(10, 11)),
+            filter(.data[["shrcd"]] %in% c(10, 11)),
           join_by(permno)
         ) |>
-        filter(between(date, namedt, nameendt)) |>
-        mutate(calculation_date = date, date = floor_date(date, "month")) |>
+        filter(
+          between(.data[["date"]], .data[["namedt"]], .data[["nameendt"]])
+        ) |>
+        mutate(
+          calculation_date = .data[["date"]],
+          date = floor_date(.data[["date"]], "month")
+        ) |>
         left_join(
           msedelist_db |>
-            select(permno, dlstdt, dlret, dlstcd) |>
-            mutate(date = floor_date(dlstdt, "month")),
+            select("permno", "dlstdt", "dlret", "dlstcd") |>
+            mutate(date = floor_date(.data[["dlstdt"]], "month")),
           join_by(permno, date)
         ) |>
         select(
-          permno,
-          date,
-          calculation_date,
-          ret,
-          shrout,
-          altprc,
-          cfacpr,
-          exchcd,
-          siccd,
-          dlret,
-          dlstcd,
+          "permno",
+          "date",
+          "calculation_date",
+          "ret",
+          "shrout",
+          "altprc",
+          "cfacpr",
+          "exchcd",
+          "siccd",
+          "dlret",
+          "dlstcd",
           all_of(additional_columns)
         ) |>
         collect() |>
         mutate(
-          date = ymd(date),
-          shrout = shrout * 1000
+          date = ymd(.data[["date"]]),
+          shrout = .data[["shrout"]] * 1000
         )
 
       disconnect_connection(con)
@@ -177,22 +184,26 @@ download_data_wrds_crsp <- function(
         mutate(
           listing_age = pmax(
             as.integer(
-              lubridate::interval(first_crsp_date, date) %/% months(1)
+              lubridate::interval(
+                .data[["first_crsp_date"]],
+                .data[["date"]]
+              ) %/%
+                months(1)
             ),
             0L
           )
         ) |>
-        select(-first_crsp_date)
+        select(-"first_crsp_date")
 
       crsp_monthly <- crsp_monthly |>
         mutate(
-          mktcap = abs(shrout * altprc) / 10^6,
-          mktcap = na_if(mktcap, 0)
+          mktcap = abs(.data[["shrout"]] * .data[["altprc"]]) / 10^6,
+          mktcap = na_if(.data[["mktcap"]], 0)
         )
 
       mktcap_lag <- crsp_monthly |>
-        mutate(date = date %m+% months(1)) |>
-        select(permno, date, mktcap_lag = mktcap)
+        mutate(date = .data[["date"]] %m+% months(1)) |>
+        select("permno", "date", mktcap_lag = "mktcap")
 
       crsp_monthly <- crsp_monthly |>
         left_join(mktcap_lag, join_by(permno, date))
@@ -200,9 +211,9 @@ download_data_wrds_crsp <- function(
       crsp_monthly <- crsp_monthly |>
         mutate(
           exchange = case_when(
-            exchcd %in% c(1, 31) ~ "NYSE",
-            exchcd %in% c(2, 32) ~ "AMEX",
-            exchcd %in% c(3, 33) ~ "NASDAQ",
+            .data[["exchcd"]] %in% c(1, 31) ~ "NYSE",
+            .data[["exchcd"]] %in% c(2, 32) ~ "AMEX",
+            .data[["exchcd"]] %in% c(3, 33) ~ "NASDAQ",
             .default = "Other"
           )
         )
@@ -210,17 +221,20 @@ download_data_wrds_crsp <- function(
       crsp_monthly <- crsp_monthly |>
         mutate(
           industry = case_when(
-            siccd >= 1 & siccd <= 999 ~ "Agriculture",
-            siccd >= 1000 & siccd <= 1499 ~ "Mining",
-            siccd >= 1500 & siccd <= 1799 ~ "Construction",
-            siccd >= 2000 & siccd <= 3999 ~ "Manufacturing",
-            siccd >= 4000 & siccd <= 4899 ~ "Transportation",
-            siccd >= 4900 & siccd <= 4999 ~ "Utilities",
-            siccd >= 5000 & siccd <= 5199 ~ "Wholesale",
-            siccd >= 5200 & siccd <= 5999 ~ "Retail",
-            siccd >= 6000 & siccd <= 6799 ~ "Finance",
-            siccd >= 7000 & siccd <= 8999 ~ "Services",
-            siccd >= 9000 & siccd <= 9999 ~ "Public",
+            .data[["siccd"]] >= 1 & .data[["siccd"]] <= 999 ~ "Agriculture",
+            .data[["siccd"]] >= 1000 & .data[["siccd"]] <= 1499 ~ "Mining",
+            .data[["siccd"]] >= 1500 &
+              .data[["siccd"]] <= 1799 ~ "Construction",
+            .data[["siccd"]] >= 2000 &
+              .data[["siccd"]] <= 3999 ~ "Manufacturing",
+            .data[["siccd"]] >= 4000 &
+              .data[["siccd"]] <= 4899 ~ "Transportation",
+            .data[["siccd"]] >= 4900 & .data[["siccd"]] <= 4999 ~ "Utilities",
+            .data[["siccd"]] >= 5000 & .data[["siccd"]] <= 5199 ~ "Wholesale",
+            .data[["siccd"]] >= 5200 & .data[["siccd"]] <= 5999 ~ "Retail",
+            .data[["siccd"]] >= 6000 & .data[["siccd"]] <= 6799 ~ "Finance",
+            .data[["siccd"]] >= 7000 & .data[["siccd"]] <= 8999 ~ "Services",
+            .data[["siccd"]] >= 9000 & .data[["siccd"]] <= 9999 ~ "Public",
             .default = "Missing"
           )
         )
@@ -228,22 +242,27 @@ download_data_wrds_crsp <- function(
       crsp_monthly <- crsp_monthly |>
         mutate(
           ret_adj = case_when(
-            is.na(dlstcd) ~ ret,
-            !is.na(dlstcd) & !is.na(dlret) ~ dlret,
-            dlstcd %in%
+            is.na(.data[["dlstcd"]]) ~ .data[["ret"]],
+            !is.na(.data[["dlstcd"]]) & !is.na(.data[["dlret"]]) ~
+              .data[["dlret"]],
+            .data[["dlstcd"]] %in%
               c(500, 520, 580, 584) |
-              (dlstcd >= 551 & dlstcd <= 574) ~
+              (.data[["dlstcd"]] >= 551 & .data[["dlstcd"]] <= 574) ~
               -0.30,
-            dlstcd == 100 ~ ret,
+            .data[["dlstcd"]] == 100 ~ .data[["ret"]],
             .default = -1
           )
         ) |>
-        select(-c(dlret, dlstcd))
+        select(-c("dlret", "dlstcd"))
 
       crsp_monthly <- crsp_monthly |>
         mutate(
-          prc_adj = abs(na_if(altprc, 0)) / cfacpr,
-          prc_adj = if_else(is.infinite(prc_adj), NA_real_, prc_adj)
+          prc_adj = abs(na_if(.data[["altprc"]], 0)) / .data[["cfacpr"]],
+          prc_adj = if_else(
+            is.infinite(.data[["prc_adj"]]),
+            NA_real_,
+            .data[["prc_adj"]]
+          )
         )
 
       risk_free_monthly <- download_data_risk_free(
@@ -254,9 +273,9 @@ download_data_wrds_crsp <- function(
       crsp_monthly <- crsp_monthly |>
         left_join(risk_free_monthly, join_by(date)) |>
         mutate(
-          ret_excess = ret_adj - risk_free
+          ret_excess = .data[["ret_adj"]] - .data[["risk_free"]]
         ) |>
-        select(-risk_free)
+        select(-"risk_free")
 
       processed_data <- crsp_monthly |>
         tidyr::drop_na(ret_excess, mktcap)
@@ -273,43 +292,51 @@ download_data_wrds_crsp <- function(
 
       first_crsp_date <- stksecurityinfohist_db |>
         group_by(permno) |>
-        summarise(first_crsp_date = min(secinfostartdt, na.rm = TRUE)) |>
+        summarise(
+          first_crsp_date = min(.data[["secinfostartdt"]], na.rm = TRUE)
+        ) |>
         collect()
 
       crsp_monthly <- msf_db |>
-        filter(between(mthcaldt, start_date, end_date)) |>
+        filter(between(.data[["mthcaldt"]], start_date, end_date)) |>
         select(all_of(msf_db_columns)) |>
         inner_join(
           stksecurityinfohist_db |>
             filter(
-              sharetype == "NS" &
-                securitytype == "EQTY" &
-                securitysubtype == "COM" &
-                usincflg == "Y" &
-                issuertype %in% c("ACOR", "CORP") &
-                primaryexch %in% c("N", "A", "Q") &
-                conditionaltype %in% c("RW", "NW") &
-                tradingstatusflg == "A"
+              .data[["sharetype"]] == "NS" &
+                .data[["securitytype"]] == "EQTY" &
+                .data[["securitysubtype"]] == "COM" &
+                .data[["usincflg"]] == "Y" &
+                .data[["issuertype"]] %in% c("ACOR", "CORP") &
+                .data[["primaryexch"]] %in% c("N", "A", "Q") &
+                .data[["conditionaltype"]] %in% c("RW", "NW") &
+                .data[["tradingstatusflg"]] == "A"
             ),
           join_by(permno)
         ) |>
-        filter(between(mthcaldt, secinfostartdt, secinfoenddt)) |>
-        mutate(date = floor_date(mthcaldt, "month")) |>
+        filter(
+          between(
+            .data[["mthcaldt"]],
+            .data[["secinfostartdt"]],
+            .data[["secinfoenddt"]]
+          )
+        ) |>
+        mutate(date = floor_date(.data[["mthcaldt"]], "month")) |>
         select(
-          permno,
-          date,
-          calculation_date = mthcaldt,
-          ret = mthret,
-          shrout,
-          prc = mthprc,
-          primaryexch,
-          siccd,
+          "permno",
+          "date",
+          calculation_date = "mthcaldt",
+          ret = "mthret",
+          "shrout",
+          prc = "mthprc",
+          "primaryexch",
+          "siccd",
           all_of(additional_columns)
         ) |>
         collect() |>
         mutate(
-          date = ymd(date),
-          shrout = shrout * 1000
+          date = ymd(.data[["date"]]),
+          shrout = .data[["shrout"]] * 1000
         )
 
       disconnect_connection(con)
@@ -319,22 +346,26 @@ download_data_wrds_crsp <- function(
         mutate(
           listing_age = pmax(
             as.integer(
-              lubridate::interval(first_crsp_date, date) %/% months(1)
+              lubridate::interval(
+                .data[["first_crsp_date"]],
+                .data[["date"]]
+              ) %/%
+                months(1)
             ),
             0L
           )
         ) |>
-        select(-first_crsp_date)
+        select(-"first_crsp_date")
 
       crsp_monthly <- crsp_monthly |>
         mutate(
-          mktcap = shrout * prc / 10^6,
-          mktcap = na_if(mktcap, 0)
+          mktcap = .data[["shrout"]] * .data[["prc"]] / 10^6,
+          mktcap = na_if(.data[["mktcap"]], 0)
         )
 
       mktcap_lag <- crsp_monthly |>
-        mutate(date = date %m+% months(1)) |>
-        select(permno, date, mktcap_lag = mktcap)
+        mutate(date = .data[["date"]] %m+% months(1)) |>
+        select("permno", "date", mktcap_lag = "mktcap")
 
       crsp_monthly <- crsp_monthly |>
         left_join(mktcap_lag, join_by(permno, date))
@@ -342,9 +373,9 @@ download_data_wrds_crsp <- function(
       crsp_monthly <- crsp_monthly |>
         mutate(
           exchange = case_when(
-            primaryexch == "N" ~ "NYSE",
-            primaryexch == "A" ~ "AMEX",
-            primaryexch == "Q" ~ "NASDAQ",
+            .data[["primaryexch"]] == "N" ~ "NYSE",
+            .data[["primaryexch"]] == "A" ~ "AMEX",
+            .data[["primaryexch"]] == "Q" ~ "NASDAQ",
             .default = "Other"
           )
         )
@@ -352,17 +383,20 @@ download_data_wrds_crsp <- function(
       crsp_monthly <- crsp_monthly |>
         mutate(
           industry = case_when(
-            siccd >= 1 & siccd <= 999 ~ "Agriculture",
-            siccd >= 1000 & siccd <= 1499 ~ "Mining",
-            siccd >= 1500 & siccd <= 1799 ~ "Construction",
-            siccd >= 2000 & siccd <= 3999 ~ "Manufacturing",
-            siccd >= 4000 & siccd <= 4899 ~ "Transportation",
-            siccd >= 4900 & siccd <= 4999 ~ "Utilities",
-            siccd >= 5000 & siccd <= 5199 ~ "Wholesale",
-            siccd >= 5200 & siccd <= 5999 ~ "Retail",
-            siccd >= 6000 & siccd <= 6799 ~ "Finance",
-            siccd >= 7000 & siccd <= 8999 ~ "Services",
-            siccd >= 9000 & siccd <= 9999 ~ "Public",
+            .data[["siccd"]] >= 1 & .data[["siccd"]] <= 999 ~ "Agriculture",
+            .data[["siccd"]] >= 1000 & .data[["siccd"]] <= 1499 ~ "Mining",
+            .data[["siccd"]] >= 1500 &
+              .data[["siccd"]] <= 1799 ~ "Construction",
+            .data[["siccd"]] >= 2000 &
+              .data[["siccd"]] <= 3999 ~ "Manufacturing",
+            .data[["siccd"]] >= 4000 &
+              .data[["siccd"]] <= 4899 ~ "Transportation",
+            .data[["siccd"]] >= 4900 & .data[["siccd"]] <= 4999 ~ "Utilities",
+            .data[["siccd"]] >= 5000 & .data[["siccd"]] <= 5199 ~ "Wholesale",
+            .data[["siccd"]] >= 5200 & .data[["siccd"]] <= 5999 ~ "Retail",
+            .data[["siccd"]] >= 6000 & .data[["siccd"]] <= 6799 ~ "Finance",
+            .data[["siccd"]] >= 7000 & .data[["siccd"]] <= 8999 ~ "Services",
+            .data[["siccd"]] >= 9000 & .data[["siccd"]] <= 9999 ~ "Public",
             .default = "Missing"
           )
         )
@@ -375,9 +409,9 @@ download_data_wrds_crsp <- function(
       crsp_monthly <- crsp_monthly |>
         left_join(risk_free_monthly, join_by(date)) |>
         mutate(
-          ret_excess = ret - risk_free
+          ret_excess = .data[["ret"]] - .data[["risk_free"]]
         ) |>
-        select(-risk_free)
+        select(-"risk_free")
 
       processed_data <- crsp_monthly |>
         tidyr::drop_na(ret_excess, mktcap)
@@ -397,7 +431,7 @@ download_data_wrds_crsp <- function(
       }
 
       dsf_db <- tbl(con, I("crsp.dsf")) |>
-        filter(between(date, start_date, end_date))
+        filter(between(.data[["date"]], start_date, end_date))
       msenames_db <- tbl(con, I("crsp.msenames"))
       msedelist_db <- tbl(con, I("crsp.msedelist"))
 

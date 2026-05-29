@@ -116,32 +116,32 @@ download_data_wrds_compustat <- function(
 
     compustat <- funda_db |>
       filter(
-        indfmt == "INDL" &
-          datafmt == "STD" &
-          consol == "C" &
-          between(datadate, start_date, end_date)
+        .data[["indfmt"]] == "INDL" &
+          .data[["datafmt"]] == "STD" &
+          .data[["consol"]] == "C" &
+          between(.data[["datadate"]], start_date, end_date)
       ) |>
       select(
-        gvkey,
-        datadate,
-        seq,
-        ceq,
-        at,
-        lt,
-        txditc,
-        txdb,
-        itcb,
-        pstkrv,
-        pstkl,
-        pstk,
-        capx,
-        oancf,
-        sale,
-        cogs,
-        xint,
-        xsga,
-        ib,
-        curcd,
+        "gvkey",
+        "datadate",
+        "seq",
+        "ceq",
+        "at",
+        "lt",
+        "txditc",
+        "txdb",
+        "itcb",
+        "pstkrv",
+        "pstkl",
+        "pstk",
+        "capx",
+        "oancf",
+        "sale",
+        "cogs",
+        "xint",
+        "xsga",
+        "ib",
+        "curcd",
         all_of(additional_columns_safe)
       ) |>
       # nolint start
@@ -155,40 +155,59 @@ download_data_wrds_compustat <- function(
 
     compustat <- compustat |>
       mutate(
-        be = coalesce(seq, ceq + pstk, at - lt) +
-          coalesce(txditc, txdb + itcb, 0) -
-          coalesce(pstkrv, pstkl, pstk, 0),
-        op = (sale -
-          coalesce(cogs, 0) -
-          coalesce(xsga, 0) -
-          coalesce(xint, 0)) /
-          be
+        be = coalesce(
+          .data[["seq"]],
+          .data[["ceq"]] + .data[["pstk"]],
+          .data[["at"]] - .data[["lt"]]
+        ) +
+          coalesce(
+            .data[["txditc"]],
+            .data[["txdb"]] + .data[["itcb"]],
+            0
+          ) -
+          coalesce(
+            .data[["pstkrv"]],
+            .data[["pstkl"]],
+            .data[["pstk"]],
+            0
+          ),
+        op = (.data[["sale"]] -
+          coalesce(.data[["cogs"]], 0) -
+          coalesce(.data[["xsga"]], 0) -
+          coalesce(.data[["xint"]], 0)) /
+          .data[["be"]]
       )
 
     compustat <- compustat |>
-      mutate(year = year(datadate)) |>
-      group_by(gvkey, year) |>
-      filter(datadate == max(datadate)) |>
+      mutate(year = year(.data[["datadate"]])) |>
+      group_by(.data[["gvkey"]], .data[["year"]]) |>
+      filter(.data[["datadate"]] == max(.data[["datadate"]])) |>
       ungroup() |>
-      mutate(date = floor_date(datadate, "month"))
+      mutate(date = floor_date(.data[["datadate"]], "month"))
 
     if (isTRUE(only_usd)) {
       compustat <- compustat |>
-        filter(.data$curcd == "USD")
+        filter(.data[["curcd"]] == "USD")
     }
 
     processed_data <- compustat |>
       left_join(
         compustat |>
-          select(gvkey, year, at_lag = at) |>
-          mutate(year = year + 1),
+          select("gvkey", "year", at_lag = "at") |>
+          mutate(year = .data[["year"]] + 1),
         join_by(gvkey, year)
       ) |>
       mutate(
-        inv = at / at_lag - 1,
-        inv = if_else(at_lag <= 0, NA, inv)
+        inv = .data[["at"]] / .data[["at_lag"]] - 1,
+        inv = if_else(.data[["at_lag"]] <= 0, NA, .data[["inv"]])
       ) |>
-      select(gvkey, date, datadate, everything(), -year)
+      select(
+        "gvkey",
+        "date",
+        "datadate",
+        everything(),
+        -"year"
+      )
   } else if (dataset == "compustat_quarterly") {
     fundq_db <- tbl(con, I("comp.fundq"))
 

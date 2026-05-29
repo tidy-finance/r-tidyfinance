@@ -110,7 +110,7 @@ download_data_pseudo_crsp <- function(
   if (isTRUE(add_ccm_links)) {
     panel <- panel |>
       left_join(
-        identifiers |> select(permno, gvkey),
+        identifiers |> select("permno", "gvkey"),
         join_by(permno)
       )
   }
@@ -140,23 +140,25 @@ simulate_pseudo_crsp_monthly <- function(
     identifiers,
     tibble(date = months)
   ) |>
-    arrange(permno, date) |>
+    arrange(.data[["permno"]], .data[["date"]]) |>
     mutate(
-      calculation_date = lubridate::ceiling_date(date, "month") - 1L,
+      calculation_date = lubridate::ceiling_date(.data[["date"]], "month") - 1L,
       shrout = stats::runif(dplyr::n(), 1, 50) * 1000,
       prc = stats::runif(dplyr::n(), 1, 1000),
       ret = stats::rnorm(dplyr::n(), mean = 0.008, sd = 0.10),
-      mktcap = shrout * prc / 1000,
-      primaryexch = unname(primaryexch_lookup[exchange])
+      mktcap = .data[["shrout"]] * .data[["prc"]] / 1000,
+      primaryexch = unname(primaryexch_lookup[.data[["exchange"]]])
     ) |>
-    group_by(permno) |>
+    group_by(.data[["permno"]]) |>
     mutate(
       listing_age = seq_len(dplyr::n()) - 1L,
-      mktcap_lag = dplyr::lag(mktcap)
+      mktcap_lag = dplyr::lag(.data[["mktcap"]])
     ) |>
     ungroup() |>
     mutate(
-      ret_excess = pmax(ret - stats::runif(dplyr::n(), 0, 0.004), -1)
+      ret_excess = pmax(
+        .data[["ret"]] - stats::runif(dplyr::n(), 0, 0.004), -1
+      )
     )
 
   if (length(additional_columns) > 0L) {
@@ -169,20 +171,20 @@ simulate_pseudo_crsp_monthly <- function(
 
   panel |>
     select(
-      permno,
-      date,
-      calculation_date,
-      ret,
-      shrout,
-      prc,
-      primaryexch,
-      siccd,
-      listing_age,
-      mktcap,
-      mktcap_lag,
-      exchange,
-      industry,
-      ret_excess,
+      "permno",
+      "date",
+      "calculation_date",
+      "ret",
+      "shrout",
+      "prc",
+      "primaryexch",
+      "siccd",
+      "listing_age",
+      "mktcap",
+      "mktcap_lag",
+      "exchange",
+      "industry",
+      "ret_excess",
       dplyr::any_of(additional_columns)
     )
 }
@@ -201,13 +203,15 @@ simulate_pseudo_crsp_daily <- function(
 
   set.seed(seed + 2L)
   panel <- tidyr::expand_grid(
-    identifiers |> select(permno),
+    identifiers |> select("permno"),
     tibble(date = days)
   ) |>
-    arrange(permno, date) |>
+    arrange(.data[["permno"]], .data[["date"]]) |>
     mutate(
       ret = stats::rnorm(dplyr::n(), mean = 0.0004, sd = 0.02),
-      ret_excess = pmax(ret - stats::runif(dplyr::n(), 0, 0.0002), -1)
+      ret_excess = pmax(
+        .data[["ret"]] - stats::runif(dplyr::n(), 0, 0.0002), -1
+      )
     )
 
   if (length(additional_columns) > 0L) {
@@ -220,10 +224,10 @@ simulate_pseudo_crsp_daily <- function(
 
   panel |>
     select(
-      permno,
-      date,
-      ret,
-      ret_excess,
+      "permno",
+      "date",
+      "ret",
+      "ret_excess",
       dplyr::any_of(additional_columns)
     )
 }

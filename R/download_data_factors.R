@@ -111,10 +111,12 @@ download_data_factors_ff <- function(
 
   if (frequency == "monthly") {
     processed_data <- raw_data |>
-      mutate(date = floor_date(ymd(paste0(date, "01")), "month"))
+      mutate(
+        date = floor_date(ymd(paste0(.data[["date"]], "01")), "month")
+      )
   } else if (frequency %in% c("daily", "weekly")) {
     processed_data <- raw_data |>
-      mutate(date = ymd(date))
+      mutate(date = ymd(.data[["date"]]))
   } else {
     cli::cli_abort(
       "This dataset has neither daily, weekly, nor monthly frequency."
@@ -123,8 +125,8 @@ download_data_factors_ff <- function(
 
   processed_data <- processed_data |>
     mutate(
-      across(-date, ~ na_if(., -99.99)),
-      across(-date, ~ na_if(., -999))
+      across(-"date", ~ na_if(., -99.99)),
+      across(-"date", ~ na_if(., -999))
     )
 
   # Factor files report percentage returns and are divided by 100. Breakpoints
@@ -132,7 +134,7 @@ download_data_factors_ff <- function(
   # rescaled.
   if (!is_breakpoints_ff(dataset)) {
     processed_data <- processed_data |>
-      mutate(across(-date, ~ . / 100))
+      mutate(across(-"date", ~ . / 100))
   }
 
   colnames_lower <- tolower(colnames(processed_data))
@@ -142,7 +144,7 @@ download_data_factors_ff <- function(
 
   if (!is.null(start_date) && !is.null(end_date)) {
     processed_data <- processed_data |>
-      filter(between(date, start_date, end_date))
+      filter(between(.data[["date"]], start_date, end_date))
   }
 
   processed_data
@@ -395,29 +397,35 @@ download_data_factors_q <- function(
 
   if (frequency == "monthly") {
     processed_data <- raw_data |>
-      mutate(date = ymd(paste(year, month, "01", sep = "-"))) |>
-      select(-c(year, month))
+      mutate(date = ymd(paste(
+        .data[["year"]], .data[["month"]], "01", sep = "-"
+      ))) |>
+      select(-c("year", "month"))
   } else if (frequency == "daily") {
     processed_data <- raw_data |>
-      mutate(DATE = ymd(DATE))
+      mutate(DATE = ymd(.data[["DATE"]]))
   } else if (frequency == "annual") {
     processed_data <- raw_data |>
-      mutate(date = year)
+      mutate(date = .data[["year"]])
   } else if (frequency %in% c("weekly", "quarterly")) {
     processed_data <- raw_data |>
-      mutate(date = ymd(paste(year, month, day, sep = "-"))) |>
-      select(-c(year, month, day))
+      mutate(date = ymd(paste(
+        .data[["year"]], .data[["month"]], .data[["day"]], sep = "-"
+      ))) |>
+      select(-c("year", "month", "day"))
   }
 
   processed_data <- processed_data |>
     rename_with(~ sub("R_", "", ., fixed = TRUE)) |>
     rename_with(tolower) |>
-    mutate(across(-date, ~ . / 100)) |>
-    select(date, risk_free = f, mkt_excess = mkt, everything())
+    mutate(across(-"date", ~ . / 100)) |>
+    select(
+      "date", risk_free = "f", mkt_excess = "mkt", everything()
+    )
 
   if (!is.null(start_date) && !is.null(end_date)) {
     processed_data <- processed_data |>
-      filter(between(date, start_date, end_date))
+      filter(between(.data[["date"]], start_date, end_date))
   }
 
   processed_data
