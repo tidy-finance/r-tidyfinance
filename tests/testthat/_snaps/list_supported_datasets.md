@@ -3,19 +3,19 @@
     Code
       result
     Output
-      # A tibble: 297 x 3
-         type                                dataset_name                       domain
-         <chr>                               <chr>                              <chr> 
-       1 factors_ff_3_monthly                Fama/French 3 Factors              Fama-~
-       2 factors_ff_3_weekly                 Fama/French 3 Factors [Weekly]     Fama-~
-       3 factors_ff_3_daily                  Fama/French 3 Factors [Daily]      Fama-~
-       4 factors_ff_5_2x3_monthly            Fama/French 5 Factors (2x3)        Fama-~
-       5 factors_ff_5_2x3_daily              Fama/French 5 Factors (2x3) [Dail~ Fama-~
-       6 factors_ff_size_monthly             Portfolios Formed on Size          Fama-~
-       7 factors_ff_size_exdividends_monthly Portfolios Formed on Size [ex.Div~ Fama-~
-       8 factors_ff_size_daily               Portfolios Formed on Size [Daily]  Fama-~
-       9 factors_ff_bm_monthly               Portfolios Formed on Book-to-Mark~ Fama-~
-      10 factors_ff_bm_exdividends_monthly   Portfolios Formed on Book-to-Mark~ Fama-~
+      # A tibble: 297 x 4
+         type                                dataset_name              file_url domain
+         <chr>                               <chr>                     <chr>    <chr> 
+       1 factors_ff_3_monthly                Fama/French 3 Factors     ftp/F-F~ Fama-~
+       2 factors_ff_3_weekly                 Fama/French 3 Factors [W~ ftp/F-F~ Fama-~
+       3 factors_ff_3_daily                  Fama/French 3 Factors [D~ ftp/F-F~ Fama-~
+       4 factors_ff_5_2x3_monthly            Fama/French 5 Factors (2~ ftp/F-F~ Fama-~
+       5 factors_ff_5_2x3_daily              Fama/French 5 Factors (2~ ftp/F-F~ Fama-~
+       6 factors_ff_size_monthly             Portfolios Formed on Size ftp/Por~ Fama-~
+       7 factors_ff_size_exdividends_monthly Portfolios Formed on Siz~ ftp/Por~ Fama-~
+       8 factors_ff_size_daily               Portfolios Formed on Siz~ ftp/Por~ Fama-~
+       9 factors_ff_bm_monthly               Portfolios Formed on Boo~ ftp/Por~ Fama-~
+      10 factors_ff_bm_exdividends_monthly   Portfolios Formed on Boo~ ftp/Por~ Fama-~
       # i 287 more rows
 
 # list_supported_datasets_ff_legacy returns expected structure
@@ -23,26 +23,26 @@
     Code
       result
     Output
-      # A tibble: 17 x 3
-         type                           dataset_name                        domain    
-         <chr>                          <chr>                               <chr>     
-       1 factors_ff3_daily              Fama/French 3 Factors [Daily]       Fama-Fren~
-       2 factors_ff3_weekly             Fama/French 3 Factors [Weekly]      Fama-Fren~
-       3 factors_ff3_monthly            Fama/French 3 Factors               Fama-Fren~
-       4 factors_ff5_daily              Fama/French 5 Factors (2x3) [Daily] Fama-Fren~
-       5 factors_ff5_monthly            Fama/French 5 Factors (2x3)         Fama-Fren~
-       6 factors_ff_industry_5_monthly  5 Industry Portfolios               Fama-Fren~
-       7 factors_ff_industry_5_daily    5 Industry Portfolios [Daily]       Fama-Fren~
-       8 factors_ff_industry_10_monthly 10 Industry Portfolios              Fama-Fren~
-       9 factors_ff_industry_10_daily   10 Industry Portfolios [Daily]      Fama-Fren~
-      10 factors_ff_industry_30_monthly 30 Industry Portfolios              Fama-Fren~
-      11 factors_ff_industry_30_daily   30 Industry Portfolios [Daily]      Fama-Fren~
-      12 factors_ff_industry_38_monthly 38 Industry Portfolios              Fama-Fren~
-      13 factors_ff_industry_38_daily   38 Industry Portfolios [Daily]      Fama-Fren~
-      14 factors_ff_industry_48_monthly 48 Industry Portfolios              Fama-Fren~
-      15 factors_ff_industry_48_daily   48 Industry Portfolios [Daily]      Fama-Fren~
-      16 factors_ff_industry_49_monthly 49 Industry Portfolios              Fama-Fren~
-      17 factors_ff_industry_49_daily   49 Industry Portfolios [Daily]      Fama-Fren~
+      # A tibble: 17 x 4
+         type                           dataset_name                   file_url domain
+         <chr>                          <chr>                          <chr>    <chr> 
+       1 factors_ff3_daily              Fama/French 3 Factors [Daily]  ftp/F-F~ Fama-~
+       2 factors_ff3_weekly             Fama/French 3 Factors [Weekly] ftp/F-F~ Fama-~
+       3 factors_ff3_monthly            Fama/French 3 Factors          ftp/F-F~ Fama-~
+       4 factors_ff5_daily              Fama/French 5 Factors (2x3) [~ ftp/F-F~ Fama-~
+       5 factors_ff5_monthly            Fama/French 5 Factors (2x3)    ftp/F-F~ Fama-~
+       6 factors_ff_industry_5_monthly  5 Industry Portfolios          ftp/5_I~ Fama-~
+       7 factors_ff_industry_5_daily    5 Industry Portfolios [Daily]  ftp/5_I~ Fama-~
+       8 factors_ff_industry_10_monthly 10 Industry Portfolios         ftp/10_~ Fama-~
+       9 factors_ff_industry_10_daily   10 Industry Portfolios [Daily] ftp/10_~ Fama-~
+      10 factors_ff_industry_30_monthly 30 Industry Portfolios         ftp/30_~ Fama-~
+      11 factors_ff_industry_30_daily   30 Industry Portfolios [Daily] ftp/30_~ Fama-~
+      12 factors_ff_industry_38_monthly 38 Industry Portfolios         ftp/38_~ Fama-~
+      13 factors_ff_industry_38_daily   38 Industry Portfolios [Daily] ftp/38_~ Fama-~
+      14 factors_ff_industry_48_monthly 48 Industry Portfolios         ftp/48_~ Fama-~
+      15 factors_ff_industry_48_daily   48 Industry Portfolios [Daily] ftp/48_~ Fama-~
+      16 factors_ff_industry_49_monthly 49 Industry Portfolios         ftp/49_~ Fama-~
+      17 factors_ff_industry_49_daily   49 Industry Portfolios [Daily] ftp/49_~ Fama-~
 
 # list_supported_datasets_q returns expected structure
 
