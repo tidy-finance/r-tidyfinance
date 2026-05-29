@@ -376,7 +376,7 @@ Face:
 download_data(
   domain = "tidyfinance",
   dataset = "factor_library",
-  sorting_variable = "size"
+  sorting_variable = "ag"
 )
 ```
 
