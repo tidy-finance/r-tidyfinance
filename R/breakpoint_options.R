@@ -84,31 +84,24 @@ breakpoint_options <- function(
   }
 
   # Error handling for smooth_bunching
-  if (
-    !is.logical(smooth_bunching) ||
-      length(smooth_bunching) != 1 ||
-      is.na(smooth_bunching)
-  ) {
-    cli::cli_abort(
-      "{.arg smooth_bunching} must be a single logical value (TRUE or FALSE)."
-    )
-  }
+  validate_flag(
+    smooth_bunching,
+    "smooth_bunching",
+    "{.arg smooth_bunching} must be a single logical value (TRUE or FALSE)."
+  )
 
   # Error handling for breakpoints_min_size_threshold
-  if (
-    !is.null(breakpoints_min_size_threshold) &&
-      (length(breakpoints_min_size_threshold) != 1L ||
-        !is.numeric(breakpoints_min_size_threshold) ||
-        breakpoints_min_size_threshold <= 0 ||
-        breakpoints_min_size_threshold >= 1)
-  ) {
-    cli::cli_abort(
-      paste0(
-        "{.arg breakpoints_min_size_threshold} must be NULL or a single ",
-        "numeric value between 0 and 1 (exclusive)."
-      )
-    )
-  }
+  validate_optional_number(
+    breakpoints_min_size_threshold,
+    paste0(
+      "{.arg breakpoints_min_size_threshold} must be NULL or a single ",
+      "numeric value between 0 and 1 (exclusive)."
+    ),
+    min = 0,
+    max = 1,
+    min_strict = TRUE,
+    max_strict = TRUE
+  )
 
   # Create the list structure with class attribute
   structure(

@@ -50,92 +50,36 @@ filter_options <- function(
   exclude_negative_earnings = FALSE,
   ...
 ) {
-  # Error handling for exclude_financials
-  if (
-    !is.logical(exclude_financials) ||
-      length(exclude_financials) != 1 ||
-      is.na(exclude_financials)
-  ) {
-    cli::cli_abort("{.arg exclude_financials} must be a single logical.")
-  }
+  validate_flag(exclude_financials, "exclude_financials")
+  validate_flag(exclude_utilities, "exclude_utilities")
+  validate_flag(exclude_negative_book_equity, "exclude_negative_book_equity")
+  validate_flag(exclude_negative_earnings, "exclude_negative_earnings")
 
-  # Error handling for exclude_utilities
-  if (
-    !is.logical(exclude_utilities) ||
-      length(exclude_utilities) != 1 ||
-      is.na(exclude_utilities)
-  ) {
-    cli::cli_abort("{.arg exclude_utilities} must be a single logical.")
-  }
-
-  # Error handling for min_stock_price
-  if (!is.null(min_stock_price)) {
-    if (
-      !is.numeric(min_stock_price) ||
-        length(min_stock_price) != 1 ||
-        is.na(min_stock_price) ||
-        min_stock_price <= 0
-    ) {
-      cli::cli_abort(
-        "{.arg min_stock_price} must be a single positive numeric."
-      )
-    }
-  }
-
-  # Error handling for min_size_quantile
-  if (!is.null(min_size_quantile)) {
-    if (
-      !is.numeric(min_size_quantile) ||
-        length(min_size_quantile) != 1 ||
-        is.na(min_size_quantile) ||
-        min_size_quantile <= 0 ||
-        min_size_quantile >= 1
-    ) {
-      cli::cli_abort(
-        paste0(
-          "{.arg min_size_quantile} must be a single numeric ",
-          "strictly between 0 and 1."
-        )
-      )
-    }
-  }
-
-  # Error handling for min_listing_age
-  if (!is.null(min_listing_age)) {
-    if (
-      !is.numeric(min_listing_age) ||
-        length(min_listing_age) != 1 ||
-        is.na(min_listing_age) ||
-        min_listing_age < 0
-    ) {
-      cli::cli_abort(
-        paste0(
-          "{.arg min_listing_age} must be a single ",
-          "non-negative integer or numeric."
-        )
-      )
-    }
-  }
-
-  # Error handling for exclude_negative_book_equity
-  if (
-    !is.logical(exclude_negative_book_equity) ||
-      length(exclude_negative_book_equity) != 1 ||
-      is.na(exclude_negative_book_equity)
-  ) {
-    cli::cli_abort(
-      "{.arg exclude_negative_book_equity} must be a single logical."
-    )
-  }
-
-  # Error handling for exclude_negative_earnings
-  if (
-    !is.logical(exclude_negative_earnings) ||
-      length(exclude_negative_earnings) != 1 ||
-      is.na(exclude_negative_earnings)
-  ) {
-    cli::cli_abort("{.arg exclude_negative_earnings} must be a single logical.")
-  }
+  validate_optional_number(
+    min_stock_price,
+    "{.arg min_stock_price} must be a single positive numeric.",
+    min = 0,
+    min_strict = TRUE
+  )
+  validate_optional_number(
+    min_size_quantile,
+    paste0(
+      "{.arg min_size_quantile} must be a single numeric ",
+      "strictly between 0 and 1."
+    ),
+    min = 0,
+    max = 1,
+    min_strict = TRUE,
+    max_strict = TRUE
+  )
+  validate_optional_number(
+    min_listing_age,
+    paste0(
+      "{.arg min_listing_age} must be a single ",
+      "non-negative integer or numeric."
+    ),
+    min = 0
+  )
 
   # Create the list structure with class attribute
   structure(
