@@ -1,8 +1,7 @@
 # tidyfinance (development version)
 
-- Removed the dependency on the `frenchdata` package. Fama-French factor
-  data is now downloaded and parsed internally via `httr2` and base R, so
-  `frenchdata` is no longer declared in `Imports`. The behavior of
+- Fama-French factor data is now downloaded and parsed internally via `httr2`, 
+  so `frenchdata` is no longer declared in `Imports`. The behavior of
   `download_data_factors_ff()` is unchanged.
 - `download_data("tidyfinance", "factor_library", ...)` now honors the
   canonical `start_date` and `end_date` arguments, filtering the returned
