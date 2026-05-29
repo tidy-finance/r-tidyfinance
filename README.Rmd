@@ -182,11 +182,11 @@ download_data(
 
 You can download pre-computed portfolio returns from the [Tidy Finance Factor Library](https://factors.tidy-finance.org) hosted on Hugging Face:
 
-```r
+```{r}
 download_data(
   domain = "tidyfinance",
   dataset = "factor_library",
-  sorting_variable = "size"
+  sorting_variable = "ag"
 )
 ```
 

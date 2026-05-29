@@ -13,7 +13,6 @@
 #' @importFrom utils read.csv
 #' @importFrom tidyr pivot_longer unnest nest fill drop_na
 #' @importFrom rlang := enquo syms quo_is_null
-#' @importFrom frenchdata download_french_data
 #' @importFrom jsonlite fromJSON
 #' @importFrom nanoparquet read_parquet
 #' @importFrom RPostgres Postgres

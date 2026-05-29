@@ -8,8 +8,9 @@ list_supported_datasets_ff()
 }
 \value{
 A tibble with columns: \code{type} (the type of dataset),
-\code{dataset_name} (a descriptive name of the dataset), and \code{domain} (the
-domain to which the dataset belongs, always "Fama-French").
+\code{dataset_name} (a descriptive name of the dataset), \code{file_url} (the
+path of the source ZIP relative to Kenneth French's data library), and
+\code{domain} (the domain to which the dataset belongs, always "Fama-French").
 }
 \description{
 Returns a tibble with the supported Fama-French datasets, including
