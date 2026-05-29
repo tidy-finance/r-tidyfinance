@@ -89,8 +89,8 @@ compute_long_short_returns <- function(
       values_to = "ret"
     ) |>
     tidyr::pivot_wider(
-      names_from = portfolio,
-      values_from = ret,
+      names_from = "portfolio",
+      values_from = "ret",
       names_expand = TRUE
     ) |>
     check_new_col("long_short_return") |>

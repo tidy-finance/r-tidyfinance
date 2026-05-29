@@ -104,11 +104,13 @@ download_data_constituents <- function(index) {
       }
 
       constituents_processed <- constituents_processed |>
-        mutate(symbol = trimws(symbol)) |>
-        filter(!symbol %in% symbol_blacklist) |>
-        filter(!grepl(tolower(index), tolower(name))) |>
-        filter(!grepl("CASH", name)) |>
-        filter(!grepl(tolower(gsub("\\s+", "", index)), tolower(name))) |>
+        mutate(symbol = trimws(.data[["symbol"]])) |>
+        filter(!.data[["symbol"]] %in% symbol_blacklist) |>
+        filter(!grepl(tolower(index), tolower(.data[["name"]]))) |>
+        filter(!grepl("CASH", .data[["name"]])) |>
+        filter(
+          !grepl(tolower(gsub("\\s+", "", index)), tolower(.data[["name"]]))
+        ) |>
         as_tibble() |>
         mutate(
           symbol = case_when(

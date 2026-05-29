@@ -213,20 +213,20 @@ download_data_wrds_compustat <- function(
 
     compustat <- fundq_db |>
       filter(
-        indfmt == "INDL" &
-          datafmt == "STD" &
-          consol == "C" &
-          between(datadate, start_date, end_date)
+        .data[["indfmt"]] == "INDL" &
+          .data[["datafmt"]] == "STD" &
+          .data[["consol"]] == "C" &
+          between(.data[["datadate"]], start_date, end_date)
       ) |>
       select(
-        gvkey,
-        datadate,
-        rdq,
-        fqtr,
-        fyearq,
-        atq,
-        ceqq,
-        curcdq,
+        "gvkey",
+        "datadate",
+        "rdq",
+        "fqtr",
+        "fyearq",
+        "atq",
+        "ceqq",
+        "curcdq",
         all_of(additional_columns)
       ) |>
       collect()
@@ -234,25 +234,36 @@ download_data_wrds_compustat <- function(
     disconnect_connection(con)
 
     compustat <- compustat |>
-      tidyr::drop_na(gvkey, datadate, fyearq, fqtr) |>
-      mutate(date = floor_date(datadate, "month")) |>
-      group_by(gvkey, fyearq, fqtr) |>
-      filter(datadate == max(datadate)) |>
+      tidyr::drop_na("gvkey", "datadate", "fyearq", "fqtr") |>
+      mutate(date = floor_date(.data[["datadate"]], "month")) |>
+      group_by(.data[["gvkey"]], .data[["fyearq"]], .data[["fqtr"]]) |>
+      filter(.data[["datadate"]] == max(.data[["datadate"]])) |>
       slice_head(n = 1) |>
       ungroup() |>
-      group_by(gvkey, date) |>
-      arrange(gvkey, date, rdq) |>
+      group_by(.data[["gvkey"]], .data[["date"]]) |>
+      arrange(.data[["gvkey"]], .data[["date"]], .data[["rdq"]]) |>
       slice_head(n = 1) |>
       ungroup() |>
-      filter(if_else(is.na(rdq), TRUE, date < rdq))
+      filter(if_else(
+        is.na(.data[["rdq"]]),
+        TRUE,
+        .data[["date"]] < .data[["rdq"]]
+      ))
 
     if (isTRUE(only_usd)) {
       compustat <- compustat |>
-        filter(.data$curcdq == "USD")
+        filter(.data[["curcdq"]] == "USD")
     }
 
     processed_data <- compustat |>
-      select(gvkey, date, datadate, atq, ceqq, all_of(additional_columns))
+      select(
+        "gvkey",
+        "date",
+        "datadate",
+        "atq",
+        "ceqq",
+        all_of(additional_columns)
+      )
   } else {
     cli::cli_abort("Unsupported Compustat dataset: {.val {dataset}}")
   }

@@ -130,7 +130,7 @@ download_data_wrds_crsp <- function(
       )
 
       first_crsp_date <- msenames_db |>
-        group_by(permno) |>
+        group_by(.data[["permno"]]) |>
         summarise(
           first_crsp_date = min(.data[["namedt"]], na.rm = TRUE)
         ) |>
@@ -278,7 +278,7 @@ download_data_wrds_crsp <- function(
         select(-"risk_free")
 
       processed_data <- crsp_monthly |>
-        tidyr::drop_na(ret_excess, mktcap)
+        tidyr::drop_na("ret_excess", "mktcap")
     } else {
       msf_db <- tbl(con, I("crsp.msf_v2"))
       stksecurityinfohist_db <- tbl(con, I("crsp.stksecurityinfohist"))
@@ -291,7 +291,7 @@ download_data_wrds_crsp <- function(
       )
 
       first_crsp_date <- stksecurityinfohist_db |>
-        group_by(permno) |>
+        group_by(.data[["permno"]]) |>
         summarise(
           first_crsp_date = min(.data[["secinfostartdt"]], na.rm = TRUE)
         ) |>
@@ -414,7 +414,7 @@ download_data_wrds_crsp <- function(
         select(-"risk_free")
 
       processed_data <- crsp_monthly |>
-        tidyr::drop_na(ret_excess, mktcap)
+        tidyr::drop_na("ret_excess", "mktcap")
     }
   } else if (dataset == "crsp_daily") {
     if (version == "v1") {
@@ -441,7 +441,7 @@ download_data_wrds_crsp <- function(
       )
 
       permnos <- dsf_db |>
-        distinct(permno) |>
+        distinct(.data[["permno"]]) |>
         pull()
 
       risk_free_daily <- download_data_risk_free(
@@ -466,22 +466,24 @@ download_data_wrds_crsp <- function(
         ]
 
         crsp_daily_sub <- dsf_db |>
-          filter(permno %in% permno_batch) |>
+          filter(.data[["permno"]] %in% permno_batch) |>
           select(all_of(dsf_db_columns)) |>
           inner_join(
             msenames_db |>
-              filter(shrcd %in% c(10, 11)),
+              filter(.data[["shrcd"]] %in% c(10, 11)),
             join_by(permno)
           ) |>
-          filter(between(date, namedt, nameendt)) |>
-          select(permno, date, ret, all_of(additional_columns)) |>
+          filter(
+            between(.data[["date"]], .data[["namedt"]], .data[["nameendt"]])
+          ) |>
+          select("permno", "date", "ret", all_of(additional_columns)) |>
           collect() |>
-          tidyr::drop_na(permno, date, ret)
+          tidyr::drop_na("permno", "date", "ret")
 
         if (nrow(crsp_daily_sub) > 0) {
           msedelist_sub <- msedelist_db |>
-            filter(permno %in% permno_batch) |>
-            select(permno, dlstdt, dlret) |>
+            filter(.data[["permno"]] %in% permno_batch) |>
+            select("permno", "dlstdt", "dlret") |>
             collect() |>
             tidyr::drop_na()
 
@@ -492,25 +494,35 @@ download_data_wrds_crsp <- function(
                 anti_join(crsp_daily_sub, join_by(permno, dlstdt == date))
             ) |>
             mutate(
-              ret = if_else(!is.na(dlret), dlret, ret),
-              date = if_else(!is.na(dlstdt), dlstdt, date)
+              ret = if_else(
+                !is.na(.data[["dlret"]]),
+                .data[["dlret"]],
+                .data[["ret"]]
+              ),
+              date = if_else(
+                !is.na(.data[["dlstdt"]]),
+                .data[["dlstdt"]],
+                .data[["date"]]
+              )
             ) |>
-            select(-c(dlret, dlstdt)) |>
+            select(-c("dlret", "dlstdt")) |>
             left_join(
               msedelist_sub |>
-                select(permno, dlstdt),
+                select("permno", "dlstdt"),
               join_by(permno)
             ) |>
-            mutate(dlstdt = tidyr::replace_na(dlstdt, as.Date(end_date))) |>
-            filter(date <= dlstdt) |>
-            select(-dlstdt)
+            mutate(
+              dlstdt = tidyr::replace_na(.data[["dlstdt"]], as.Date(end_date))
+            ) |>
+            filter(.data[["date"]] <= .data[["dlstdt"]]) |>
+            select(-"dlstdt")
 
           crsp_daily_sub <- crsp_daily_sub |>
             left_join(risk_free_daily, join_by(date)) |>
             mutate(
-              ret_excess = ret - risk_free
+              ret_excess = .data[["ret"]] - .data[["risk_free"]]
             ) |>
-            select(-risk_free)
+            select(-"risk_free")
 
           if (isTRUE(adjust_volume)) {
             # Gao and Ritter (2010) volume adjustment for NASDAQ trading volume
@@ -520,20 +532,30 @@ download_data_wrds_crsp <- function(
 
             crsp_daily_sub <- crsp_daily_sub |>
               mutate(
-                vol = na_if(vol, -99),
-                prc = na_if(prc, 0),
-                prc_adj = abs(prc) / cfacpr,
-                prc_adj = if_else(is.infinite(prc_adj), NA_real_, prc_adj)
+                vol = na_if(.data[["vol"]], -99),
+                prc = na_if(.data[["prc"]], 0),
+                prc_adj = abs(.data[["prc"]]) / .data[["cfacpr"]],
+                prc_adj = if_else(
+                  is.infinite(.data[["prc_adj"]]),
+                  NA_real_,
+                  .data[["prc_adj"]]
+                )
               ) |>
               mutate(
                 vol_adj = case_when(
-                  exchcd == 3 & date < gr_date_1 ~ vol / 2.0,
-                  exchcd == 3 & date >= gr_date_1 & date < gr_date_2 ~ vol /
+                  .data[["exchcd"]] == 3 &
+                    .data[["date"]] < gr_date_1 ~ .data[["vol"]] / 2.0,
+                  .data[["exchcd"]] == 3 &
+                    .data[["date"]] >= gr_date_1 &
+                    .data[["date"]] < gr_date_2 ~ .data[["vol"]] /
                     1.8,
-                  exchcd == 3 & date >= gr_date_2 & date < gr_date_3 ~ vol /
+                  .data[["exchcd"]] == 3 &
+                    .data[["date"]] >= gr_date_2 &
+                    .data[["date"]] < gr_date_3 ~ .data[["vol"]] /
                     1.6,
-                  exchcd == 3 & date >= gr_date_3 ~ vol / 1.0,
-                  .default = vol
+                  .data[["exchcd"]] == 3 &
+                    .data[["date"]] >= gr_date_3 ~ .data[["vol"]] / 1.0,
+                  .default = .data[["vol"]]
                 )
               )
           }
@@ -565,7 +587,7 @@ download_data_wrds_crsp <- function(
       }
 
       dsf_db <- tbl(con, I("crsp.dsf_v2")) |>
-        filter(between(dlycaldt, start_date, end_date))
+        filter(between(.data[["dlycaldt"]], start_date, end_date))
       stksecurityinfohist_db <- tbl(con, I("crsp.stksecurityinfohist"))
 
       dsf_db_columns <- c(
@@ -576,7 +598,7 @@ download_data_wrds_crsp <- function(
       )
 
       permnos <- dsf_db |>
-        distinct(permno) |>
+        distinct(.data[["permno"]]) |>
         pull()
 
       risk_free_daily <- download_data_risk_free(
@@ -601,46 +623,52 @@ download_data_wrds_crsp <- function(
         ]
 
         crsp_daily_sub <- dsf_db |>
-          filter(permno %in% permno_batch) |>
+          filter(.data[["permno"]] %in% permno_batch) |>
           select(all_of(dsf_db_columns)) |>
           inner_join(
             stksecurityinfohist_db |>
               filter(
-                sharetype == "NS" &
-                  securitytype == "EQTY" &
-                  securitysubtype == "COM" &
-                  usincflg == "Y" &
-                  issuertype %in% c("ACOR", "CORP") &
-                  primaryexch %in% c("N", "A", "Q") &
-                  conditionaltype %in% c("RW", "NW") &
-                  tradingstatusflg == "A"
+                .data[["sharetype"]] == "NS" &
+                  .data[["securitytype"]] == "EQTY" &
+                  .data[["securitysubtype"]] == "COM" &
+                  .data[["usincflg"]] == "Y" &
+                  .data[["issuertype"]] %in% c("ACOR", "CORP") &
+                  .data[["primaryexch"]] %in% c("N", "A", "Q") &
+                  .data[["conditionaltype"]] %in% c("RW", "NW") &
+                  .data[["tradingstatusflg"]] == "A"
               ),
             join_by(permno)
           ) |>
-          filter(between(dlycaldt, secinfostartdt, secinfoenddt)) |>
+          filter(
+            between(
+              .data[["dlycaldt"]],
+              .data[["secinfostartdt"]],
+              .data[["secinfoenddt"]]
+            )
+          ) |>
           select(
-            permno,
-            date = dlycaldt,
-            ret = dlyret,
+            "permno",
+            date = "dlycaldt",
+            ret = "dlyret",
             all_of(additional_columns)
           ) |>
           collect() |>
-          tidyr::drop_na(permno, date, ret)
+          tidyr::drop_na("permno", "date", "ret")
 
         if (nrow(crsp_daily_sub) > 0) {
           crsp_daily_sub <- crsp_daily_sub |>
             left_join(risk_free_daily, join_by(date)) |>
             mutate(
-              ret_excess = ret - risk_free
+              ret_excess = .data[["ret"]] - .data[["risk_free"]]
             ) |>
-            select(-risk_free)
+            select(-"risk_free")
 
           if (isTRUE(adjust_volume)) {
             crsp_daily_sub <- crsp_daily_sub |>
-              group_by(permno) |>
-              arrange(date) |>
+              group_by(.data[["permno"]]) |>
+              arrange(.data[["date"]]) |>
               mutate(
-                cfacpr = cumprod(dlyfacprc)
+                cfacpr = cumprod(.data[["dlyfacprc"]])
               ) |>
               ungroup()
 
@@ -650,27 +678,33 @@ download_data_wrds_crsp <- function(
 
             crsp_daily_sub <- crsp_daily_sub |>
               mutate(
-                vol = na_if(dlyvol, -99),
-                prc = na_if(dlyprc, 0),
-                prc_adj = abs(prc) / cfacpr,
-                prc_adj = if_else(is.infinite(prc_adj), NA_real_, prc_adj)
+                vol = na_if(.data[["dlyvol"]], -99),
+                prc = na_if(.data[["dlyprc"]], 0),
+                prc_adj = abs(.data[["prc"]]) / .data[["cfacpr"]],
+                prc_adj = if_else(
+                  is.infinite(.data[["prc_adj"]]),
+                  NA_real_,
+                  .data[["prc_adj"]]
+                )
               ) |>
               mutate(
                 vol_adj = case_when(
-                  primaryexch == "Q" & date < gr_date_1 ~ vol / 2.0,
-                  primaryexch == "Q" &
-                    date >= gr_date_1 &
-                    date < gr_date_2 ~ vol /
+                  .data[["primaryexch"]] == "Q" &
+                    .data[["date"]] < gr_date_1 ~ .data[["vol"]] / 2.0,
+                  .data[["primaryexch"]] == "Q" &
+                    .data[["date"]] >= gr_date_1 &
+                    .data[["date"]] < gr_date_2 ~ .data[["vol"]] /
                     1.8,
-                  primaryexch == "Q" &
-                    date >= gr_date_2 &
-                    date < gr_date_3 ~ vol /
+                  .data[["primaryexch"]] == "Q" &
+                    .data[["date"]] >= gr_date_2 &
+                    .data[["date"]] < gr_date_3 ~ .data[["vol"]] /
                     1.6,
-                  primaryexch == "Q" & date >= gr_date_3 ~ vol / 1.0,
-                  .default = vol
+                  .data[["primaryexch"]] == "Q" &
+                    .data[["date"]] >= gr_date_3 ~ .data[["vol"]] / 1.0,
+                  .default = .data[["vol"]]
                 )
               ) |>
-              select(-c(dlyvol, dlyprc, dlyfacprc))
+              select(-c("dlyvol", "dlyprc", "dlyfacprc"))
           }
 
           crsp_daily_list[[j]] <- crsp_daily_sub
@@ -694,8 +728,12 @@ download_data_wrds_crsp <- function(
         relationship = "many-to-many",
         multiple = "all"
       ) |>
-      filter(!is.na(gvkey) & (date >= linkdt & date <= linkenddt)) |>
-      select(permno, gvkey, date)
+      filter(
+        !is.na(.data[["gvkey"]]) &
+          (.data[["date"]] >= .data[["linkdt"]] &
+            .data[["date"]] <= .data[["linkenddt"]])
+      ) |>
+      select("permno", "gvkey", "date")
 
     processed_data <- processed_data |>
       left_join(valid_links, join_by(permno, date))
