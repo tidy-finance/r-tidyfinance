@@ -95,13 +95,13 @@ compute_long_short_returns <- function(
     ) |>
     check_new_col("long_short_return") |>
     mutate(
-      long_short_return = (top - bottom) *
+      long_short_return = (.data[["top"]] - .data[["bottom"]]) *
         if_else(direction == "bottom_minus_top", -1, 1)
     ) |>
     arrange(..date) |>
-    select(-c(top, bottom, ..date)) |>
+    select(-c("top", "bottom", "..date")) |>
     tidyr::pivot_wider(
-      names_from = ret_measure,
-      values_from = long_short_return
+      names_from = "ret_measure",
+      values_from = "long_short_return"
     )
 }

@@ -84,7 +84,7 @@ download_data_constituents <- function(index) {
 
       if (grepl(column_names, "Anlageklasse")) {
         constituents_processed <- constituents_raw |>
-          filter(Anlageklasse == "Aktien") |>
+          filter(.data[["Anlageklasse"]] == "Aktien") |>
           select(
             symbol = "Emittententicker",
             name = "Name",
@@ -94,7 +94,7 @@ download_data_constituents <- function(index) {
       }
       if (grepl(column_names, "Asset.Class")) {
         constituents_processed <- constituents_raw |>
-          filter(Asset.Class == "Equity") |>
+          filter(.data[["Asset.Class"]] == "Equity") |>
           select(
             symbol = "Ticker",
             name = "Name",
