@@ -96,65 +96,40 @@ filter_sorting_data <- function(
       isTRUE(filter_options$exclude_utilities)
   ) {
     col_siccd <- data_options$siccd
-    if (!col_siccd %in% colnames(data)) {
-      cli::cli_abort(c(
-        "Column {.val {col_siccd}} not found in {.arg data}.",
-        "i" = "Set {.arg data_options$siccd} to the correct column name."
-      ))
-    }
+    require_column(data, col_siccd, "data_options$siccd")
 
     if (isTRUE(filter_options$exclude_financials)) {
-      n_before <- nrow(data)
-      data <- data |>
-        dplyr::filter(
-          is.na(.data[[col_siccd]]) |
-            !(.data[[col_siccd]] >= 6000 & .data[[col_siccd]] <= 6799)
-        )
-      n_dropped <- n_before - nrow(data)
-      if (!quiet && n_dropped > 0) {
-        cli::cli_inform(
-          "Filter 'exclude_financials': removed {n_dropped} observation{?s}."
-        )
-      }
+      data <- filter_with_log(
+        data,
+        is.na(.data[[col_siccd]]) |
+          !(.data[[col_siccd]] >= 6000 & .data[[col_siccd]] <= 6799),
+        "exclude_financials",
+        quiet
+      )
     }
 
     if (isTRUE(filter_options$exclude_utilities)) {
-      n_before <- nrow(data)
-      data <- data |>
-        dplyr::filter(
-          is.na(.data[[col_siccd]]) |
-            !(.data[[col_siccd]] >= 4900 & .data[[col_siccd]] <= 4999)
-        )
-      n_dropped <- n_before - nrow(data)
-      if (!quiet && n_dropped > 0) {
-        cli::cli_inform(
-          "Filter 'exclude_utilities': removed {n_dropped} observation{?s}."
-        )
-      }
+      data <- filter_with_log(
+        data,
+        is.na(.data[[col_siccd]]) |
+          !(.data[[col_siccd]] >= 4900 & .data[[col_siccd]] <= 4999),
+        "exclude_utilities",
+        quiet
+      )
     }
   }
 
   # min_stock_price
   if (!is.null(filter_options$min_stock_price)) {
     col_price <- data_options$price
-    if (!col_price %in% colnames(data)) {
-      cli::cli_abort(c(
-        "Column {.val {col_price}} not found in {.arg data}.",
-        "i" = "Set {.arg data_options$price} to the correct column name."
-      ))
-    }
-    n_before <- nrow(data)
-    data <- data |>
-      dplyr::filter(
-        !is.na(.data[[col_price]]) &
-          .data[[col_price]] >= filter_options$min_stock_price
-      )
-    n_dropped <- n_before - nrow(data)
-    if (!quiet && n_dropped > 0) {
-      cli::cli_inform(
-        "Filter 'min_stock_price': removed {n_dropped} observation{?s}."
-      )
-    }
+    require_column(data, col_price, "data_options$price")
+    data <- filter_with_log(
+      data,
+      !is.na(.data[[col_price]]) &
+        .data[[col_price]] >= filter_options$min_stock_price,
+      "min_stock_price",
+      quiet
+    )
   }
 
   # min_size_quantile
@@ -162,27 +137,17 @@ filter_sorting_data <- function(
     col_mktcap_lag <- data_options$mktcap_lag
     col_date <- data_options$date
     col_exchange <- data_options$exchange
-    if (!col_mktcap_lag %in% colnames(data)) {
-      cli::cli_abort(c(
-        "Column {.val {col_mktcap_lag}} not found in {.arg data}.",
-        "i" = "Set {.arg data_options$mktcap_lag} to the correct column name."
-      ))
-    }
-    if (!col_date %in% colnames(data)) {
-      cli::cli_abort(c(
-        "Column {.val {col_date}} not found in {.arg data}.",
-        "i" = "Set {.arg data_options$date} to the correct column name."
-      ))
-    }
-    if (!col_exchange %in% colnames(data)) {
-      cli::cli_abort(c(
-        "Column {.val {col_exchange}} not found in {.arg data}.",
-        "i" = paste0(
-          "The size quantile cutoff is computed from NYSE stocks. ",
-          "Set {.arg data_options$exchange} to the correct column name."
-        )
-      ))
-    }
+    require_column(data, col_mktcap_lag, "data_options$mktcap_lag")
+    require_column(data, col_date, "data_options$date")
+    require_column(
+      data,
+      col_exchange,
+      "data_options$exchange",
+      info = paste0(
+        "The size quantile cutoff is computed from NYSE stocks. ",
+        "Set {.arg data_options$exchange} to the correct column name."
+      )
+    )
     n_before <- nrow(data)
     size_threshold <- filter_options$min_size_quantile
     size_cutoffs <- data |>
@@ -233,75 +198,93 @@ filter_sorting_data <- function(
   # min_listing_age
   if (!is.null(filter_options$min_listing_age)) {
     col_listing_age <- data_options$listing_age
-    if (!col_listing_age %in% colnames(data)) {
-      cli::cli_abort(c(
-        "Column {.val {col_listing_age}} not found in {.arg data}.",
-        "i" = "Set {.arg data_options$listing_age} to the correct column name."
-      ))
-    }
-    n_before <- nrow(data)
-    data <- data |>
-      dplyr::filter(
-        !is.na(.data[[col_listing_age]]) &
-          .data[[col_listing_age]] >= filter_options$min_listing_age
-      )
-    n_dropped <- n_before - nrow(data)
-    if (!quiet && n_dropped > 0) {
-      cli::cli_inform(
-        "Filter 'min_listing_age': removed {n_dropped} observation{?s}."
-      )
-    }
+    require_column(data, col_listing_age, "data_options$listing_age")
+    data <- filter_with_log(
+      data,
+      !is.na(.data[[col_listing_age]]) &
+        .data[[col_listing_age]] >= filter_options$min_listing_age,
+      "min_listing_age",
+      quiet
+    )
   }
 
   # exclude_negative_book_equity
   if (isTRUE(filter_options$exclude_negative_book_equity)) {
     col_be <- data_options$be
-    if (!col_be %in% colnames(data)) {
-      cli::cli_abort(c(
-        "Column {.val {col_be}} not found in {.arg data}.",
-        "i" = "Set {.arg data_options$be} to the correct column name."
-      ))
-    }
-    n_before <- nrow(data)
-    data <- data |>
-      dplyr::filter(
-        !is.na(.data[[col_be]]) & .data[[col_be]] > 0
-      )
-    n_dropped <- n_before - nrow(data)
-    if (!quiet && n_dropped > 0) {
-      cli::cli_inform(
-        paste0(
-          "Filter 'exclude_negative_book_equity': ",
-          "removed {n_dropped} observation{?s}."
-        )
-      )
-    }
+    require_column(data, col_be, "data_options$be")
+    data <- filter_with_log(
+      data,
+      !is.na(.data[[col_be]]) & .data[[col_be]] > 0,
+      "exclude_negative_book_equity",
+      quiet
+    )
   }
 
   # exclude_negative_earnings
   if (isTRUE(filter_options$exclude_negative_earnings)) {
     col_earn <- data_options$earnings
-    if (!col_earn %in% colnames(data)) {
-      cli::cli_abort(c(
-        "Column {.val {col_earn}} not found in {.arg data}.",
-        "i" = "Set {.arg data_options$earnings} to the correct column name."
-      ))
-    }
-    n_before <- nrow(data)
-    data <- data |>
-      dplyr::filter(
-        !is.na(.data[[col_earn]]) & .data[[col_earn]] > 0
-      )
-    n_dropped <- n_before - nrow(data)
-    if (!quiet && n_dropped > 0) {
-      cli::cli_inform(
-        paste0(
-          "Filter 'exclude_negative_earnings': ",
-          "removed {n_dropped} observation{?s}."
-        )
-      )
-    }
+    require_column(data, col_earn, "data_options$earnings")
+    data <- filter_with_log(
+      data,
+      !is.na(.data[[col_earn]]) & .data[[col_earn]] > 0,
+      "exclude_negative_earnings",
+      quiet
+    )
   }
 
+  data
+}
+
+#' Abort if a mapped column is missing from the data
+#'
+#' Shared guard used by [filter_sorting_data()] to verify that a column mapped
+#' through [data_options()] is present before it is used in a filter.
+#'
+#' @param data A data frame to check.
+#' @param col A single string giving the column name that must be present.
+#' @param arg A single string naming the `data_options` element to reference in
+#'   the default hint (e.g., `"data_options$siccd"`).
+#' @param info Optional replacement for the default hint shown under the error.
+#'
+#' @returns Invisibly returns `data`; called for its side effect of aborting
+#'   when `col` is missing.
+#' @noRd
+require_column <- function(data, col, arg, info = NULL) {
+  if (!col %in% colnames(data)) {
+    if (is.null(info)) {
+      info <- "Set {.arg {arg}} to the correct column name."
+    }
+    cli::cli_abort(
+      c(
+        "Column {.val {col}} not found in {.arg data}.",
+        "i" = info
+      ),
+      call = rlang::caller_env()
+    )
+  }
+  invisible(data)
+}
+
+#' Apply a row filter and report how many observations were removed
+#'
+#' Shared helper used by [filter_sorting_data()]. Applies `condition` via
+#' [dplyr::filter()], then emits an informational message reporting the number
+#' of dropped observations unless `quiet` is `TRUE` or nothing was removed.
+#'
+#' @param data A data frame to filter.
+#' @param condition An unquoted filter expression, evaluated in the context of
+#'   `data` (it may reference columns via the `.data` pronoun).
+#' @param label A single string naming the filter, used in the message.
+#' @param quiet A logical; if `TRUE`, no message is emitted.
+#'
+#' @returns The filtered data frame.
+#' @noRd
+filter_with_log <- function(data, condition, label, quiet) {
+  n_before <- nrow(data)
+  data <- dplyr::filter(data, {{ condition }})
+  n_dropped <- n_before - nrow(data)
+  if (!quiet && n_dropped > 0) {
+    cli::cli_inform("Filter '{label}': removed {n_dropped} observation{?s}.")
+  }
   data
 }
