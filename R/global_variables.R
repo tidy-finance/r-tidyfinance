@@ -38,13 +38,6 @@ utils::globalVariables(
     "trd_exctn_dt",
     "trd_exctn_tm",
     "upper_bound",
-    "year",
-    # remaining bare column references / locally bound helpers
-    "exchange",
-    "first_crsp_date",
-    "mktcap_lag",
-    "name",
-    "symbol",
-    "url"
+    "year"
   )
 )
