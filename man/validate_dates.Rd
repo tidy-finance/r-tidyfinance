@@ -12,8 +12,8 @@ validate_dates(start_date, end_date, use_default_range = FALSE)
 \item{end_date}{A scalar coercible to \code{Date} via \code{as.Date()}, or \code{NULL}.}
 
 \item{use_default_range}{A logical scalar. If \code{TRUE} and both date arguments
-are \code{NULL}, a default one-year range is used instead of returning
-\code{NULL}. Defaults to \code{FALSE}.}
+are \code{NULL}, a default range spanning from two years ago to one year ago is
+used instead of returning \code{NULL}. Defaults to \code{FALSE}.}
 }
 \value{
 A named list with elements \code{start_date} and \code{end_date}, both of
@@ -23,8 +23,8 @@ class \code{Date} (or \code{NULL} when no dates are provided and
 \description{
 Checks that \code{start_date} and \code{end_date} are a valid pair, coerces them to
 \code{Date}, and handles the case where both are \code{NULL}. When both are \code{NULL} and
-\code{use_default_range = TRUE}, a two-year default window ending one year ago is
-applied and reported to the user.
+\code{use_default_range = TRUE}, a default range spanning from two years ago to
+one year ago is applied and reported to the user.
 }
 \seealso{
 Other utility functions: 
