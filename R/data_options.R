@@ -58,115 +58,21 @@ data_options <- function(
   earnings = "ib",
   ...
 ) {
-  # Error handling for id
-  if (!is.character(id) || length(id) != 1) {
-    cli::cli_abort(
-      paste0(
-        "{.arg id} must be a string indicating the column name ",
-        "for the entity variable."
-      )
-    )
-  }
-
-  # Error handling for date
-  if (!is.character(date) || length(date) != 1) {
-    cli::cli_abort(
-      paste0(
-        "{.arg date} must be a string indicating the column name ",
-        "for the date variable."
-      )
-    )
-  }
-
-  # Error handling for exchange
-  if (!is.character(exchange) || length(exchange) != 1) {
-    cli::cli_abort(
-      paste0(
-        "{.arg exchange} must be a string indicating the column name ",
-        "for the exchange variable."
-      )
-    )
-  }
-
-  # Error handling for mktcap_lag
-  if (!is.character(mktcap_lag) || length(mktcap_lag) != 1) {
-    cli::cli_abort(
-      paste0(
-        "{.arg mktcap_lag} must be a string indicating the column name ",
-        "for the market capitalization lag variable."
-      )
-    )
-  }
-
-  # Error handling for ret_excess
-  if (!is.character(ret_excess) || length(ret_excess) != 1) {
-    cli::cli_abort(
-      paste0(
-        "{.arg ret_excess} must be a string indicating the column name ",
-        "for the excess return variable."
-      )
-    )
-  }
-
-  # Error handling for portfolio
-  if (!is.character(portfolio) || length(portfolio) != 1) {
-    cli::cli_abort(
-      paste0(
-        "{.arg portfolio} must be a string indicating the column name ",
-        "for the portfolio variable."
-      )
-    )
-  }
-
-  # Error handling for siccd
-  if (!is.character(siccd) || length(siccd) != 1) {
-    cli::cli_abort(
-      paste0(
-        "{.arg siccd} must be a string indicating the column name for ",
-        "the Standard Industrial Classification code variable."
-      )
-    )
-  }
-
-  # Error handling for price
-  if (!is.character(price) || length(price) != 1) {
-    cli::cli_abort(
-      paste0(
-        "{.arg price} must be a string indicating the column name ",
-        "for the (adjusted) price variable."
-      )
-    )
-  }
-
-  # Error handling for listing_age
-  if (!is.character(listing_age) || length(listing_age) != 1) {
-    cli::cli_abort(
-      paste0(
-        "{.arg listing_age} must be a string indicating the column name ",
-        "for the listing age variable."
-      )
-    )
-  }
-
-  # Error handling for be
-  if (!is.character(be) || length(be) != 1) {
-    cli::cli_abort(
-      paste0(
-        "{.arg be} must be a string indicating the column name ",
-        "for the book equity variable."
-      )
-    )
-  }
-
-  # Error handling for earnings
-  if (!is.character(earnings) || length(earnings) != 1) {
-    cli::cli_abort(
-      paste0(
-        "{.arg earnings} must be a string indicating the column ",
-        "name for the earnings variable."
-      )
-    )
-  }
+  validate_column_name(id, "id", "entity")
+  validate_column_name(date, "date", "date")
+  validate_column_name(exchange, "exchange", "exchange")
+  validate_column_name(mktcap_lag, "mktcap_lag", "market capitalization lag")
+  validate_column_name(ret_excess, "ret_excess", "excess return")
+  validate_column_name(portfolio, "portfolio", "portfolio")
+  validate_column_name(
+    siccd,
+    "siccd",
+    "Standard Industrial Classification code"
+  )
+  validate_column_name(price, "price", "(adjusted) price")
+  validate_column_name(listing_age, "listing_age", "listing age")
+  validate_column_name(be, "be", "book equity")
+  validate_column_name(earnings, "earnings", "earnings")
 
   # Create the list structure with class attribute
   structure(
