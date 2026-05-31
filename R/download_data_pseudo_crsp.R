@@ -111,7 +111,7 @@ download_data_pseudo_crsp <- function(
     panel <- panel |>
       left_join(
         identifiers |> select("permno", "gvkey"),
-        join_by(permno)
+        by = "permno"
       )
   }
 

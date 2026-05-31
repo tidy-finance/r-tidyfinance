@@ -91,7 +91,7 @@ download_data_wrds_fisd <- function(additional_columns = NULL) {
   disconnect_connection(con)
 
   fisd <- fisd |>
-    inner_join(fisd_issuer, join_by(issuer_id))
+    inner_join(fisd_issuer, by = "issuer_id")
 
   fisd
 }

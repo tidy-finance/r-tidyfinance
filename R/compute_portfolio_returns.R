@@ -683,6 +683,10 @@ join_rebalanced_portfolios <- function(
   date_col,
   id_col
 ) {
+  # To avoid undefined global variable notes in checks, the columns used in
+  # the join_by() below are defined explicitly here.
+  ..id <- ..date <- lower_bound <- upper_bound <- NULL
+
   data |>
     dplyr::rename(
       "..date" = dplyr::all_of(date_col),

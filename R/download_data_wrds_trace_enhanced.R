@@ -131,15 +131,15 @@ download_data_wrds_trace_enhanced <- function(
   trace_post <- trace_post_TR |>
     anti_join(
       trace_post_Y,
-      by = join_by(
-        cusip_id,
-        msg_seq_nb == orig_msg_seq_nb,
-        entrd_vol_qt,
-        rptd_pr,
-        rpt_side_cd,
-        cntra_mp_id,
-        trd_exctn_dt,
-        trd_exctn_tm
+      by = c(
+        "cusip_id",
+        "msg_seq_nb" = "orig_msg_seq_nb",
+        "entrd_vol_qt",
+        "rptd_pr",
+        "rpt_side_cd",
+        "cntra_mp_id",
+        "trd_exctn_dt",
+        "trd_exctn_tm"
       )
     )
 
@@ -161,15 +161,15 @@ download_data_wrds_trace_enhanced <- function(
     ) |>
     anti_join(
       trace_pre_C,
-      by = join_by(
-        cusip_id,
-        msg_seq_nb == orig_msg_seq_nb,
-        entrd_vol_qt,
-        rptd_pr,
-        rpt_side_cd,
-        cntra_mp_id,
-        trd_exctn_dt,
-        trd_exctn_tm
+      by = c(
+        "cusip_id",
+        "msg_seq_nb" = "orig_msg_seq_nb",
+        "entrd_vol_qt",
+        "rptd_pr",
+        "rpt_side_cd",
+        "cntra_mp_id",
+        "trd_exctn_dt",
+        "trd_exctn_tm"
       )
     )
 
@@ -191,21 +191,21 @@ download_data_wrds_trace_enhanced <- function(
     trace_pre_W_correcting <- trace_pre_W |>
       semi_join(
         trace_pre_T,
-        by = join_by(cusip_id, trd_exctn_dt, orig_msg_seq_nb == msg_seq_nb)
+        by = c("cusip_id", "trd_exctn_dt", "orig_msg_seq_nb" = "msg_seq_nb")
       )
 
     # Corrections that do not correct some msg
     trace_pre_W <- trace_pre_W |>
       anti_join(
         trace_pre_T,
-        by = join_by(cusip_id, trd_exctn_dt, orig_msg_seq_nb == msg_seq_nb)
+        by = c("cusip_id", "trd_exctn_dt", "orig_msg_seq_nb" = "msg_seq_nb")
       )
 
     # Delete msgs that are corrected and add correction msgs
     trace_pre_T <- trace_pre_T |>
       anti_join(
         trace_pre_W_correcting,
-        by = join_by(cusip_id, trd_exctn_dt, msg_seq_nb == orig_msg_seq_nb)
+        by = c("cusip_id", "trd_exctn_dt", "msg_seq_nb" = "orig_msg_seq_nb")
       ) |>
       union_all(trace_pre_W_correcting)
 
@@ -262,14 +262,14 @@ download_data_wrds_trace_enhanced <- function(
     ungroup() |>
     anti_join(
       trace_pre_R,
-      by = join_by(
-        cusip_id,
-        trd_exctn_dt,
-        entrd_vol_qt,
-        rptd_pr,
-        rpt_side_cd,
-        cntra_mp_id,
-        seq
+      by = c(
+        "cusip_id",
+        "trd_exctn_dt",
+        "entrd_vol_qt",
+        "rptd_pr",
+        "rpt_side_cd",
+        "cntra_mp_id",
+        "seq"
       )
     ) |>
     select(-"seq")
@@ -289,7 +289,7 @@ download_data_wrds_trace_enhanced <- function(
     filter(.data[["cntra_mp_id"]] == "D", .data[["rpt_side_cd"]] == "B") |>
     anti_join(
       trace_agency_sells,
-      by = join_by(cusip_id, trd_exctn_dt, entrd_vol_qt, rptd_pr)
+      by = c("cusip_id", "trd_exctn_dt", "entrd_vol_qt", "rptd_pr")
     )
 
   # Agency clean

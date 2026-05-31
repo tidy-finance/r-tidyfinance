@@ -195,7 +195,7 @@ download_data_wrds_compustat <- function(
         compustat |>
           select("gvkey", "year", at_lag = "at") |>
           mutate(year = .data[["year"]] + 1),
-        join_by(gvkey, year)
+        by = c("gvkey", "year")
       ) |>
       mutate(
         inv = .data[["at"]] / .data[["at_lag"]] - 1,

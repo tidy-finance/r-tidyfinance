@@ -79,6 +79,10 @@ add_lagged_columns <- function(
   ff_adjustment = FALSE,
   data_options = NULL
 ) {
+  # To avoid undefined global variable notes in checks, the columns used in
+  # the join_by() below are defined explicitly here.
+  .src_date <- .upper <- NULL
+
   if (is.null(data_options)) {
     data_options <- data_options()
   }

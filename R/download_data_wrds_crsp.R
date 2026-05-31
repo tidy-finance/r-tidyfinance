@@ -142,7 +142,7 @@ download_data_wrds_crsp <- function(
         inner_join(
           msenames_db |>
             filter(.data[["shrcd"]] %in% c(10, 11)),
-          join_by(permno)
+          by = "permno"
         ) |>
         filter(
           between(.data[["date"]], .data[["namedt"]], .data[["nameendt"]])
@@ -155,7 +155,7 @@ download_data_wrds_crsp <- function(
           msedelist_db |>
             select("permno", "dlstdt", "dlret", "dlstcd") |>
             mutate(date = floor_date(.data[["dlstdt"]], "month")),
-          join_by(permno, date)
+          by = c("permno", "date")
         ) |>
         select(
           "permno",
@@ -206,7 +206,7 @@ download_data_wrds_crsp <- function(
         select("permno", "date", mktcap_lag = "mktcap")
 
       crsp_monthly <- crsp_monthly |>
-        left_join(mktcap_lag, join_by(permno, date))
+        left_join(mktcap_lag, by = c("permno", "date"))
 
       crsp_monthly <- crsp_monthly |>
         mutate(
@@ -271,7 +271,7 @@ download_data_wrds_crsp <- function(
       )
 
       crsp_monthly <- crsp_monthly |>
-        left_join(risk_free_monthly, join_by(date)) |>
+        left_join(risk_free_monthly, by = "date") |>
         mutate(
           ret_excess = .data[["ret_adj"]] - .data[["risk_free"]]
         ) |>
@@ -312,7 +312,7 @@ download_data_wrds_crsp <- function(
                 .data[["conditionaltype"]] %in% c("RW", "NW") &
                 .data[["tradingstatusflg"]] == "A"
             ),
-          join_by(permno)
+          by = "permno"
         ) |>
         filter(
           between(
@@ -368,7 +368,7 @@ download_data_wrds_crsp <- function(
         select("permno", "date", mktcap_lag = "mktcap")
 
       crsp_monthly <- crsp_monthly |>
-        left_join(mktcap_lag, join_by(permno, date))
+        left_join(mktcap_lag, by = c("permno", "date"))
 
       crsp_monthly <- crsp_monthly |>
         mutate(
@@ -407,7 +407,7 @@ download_data_wrds_crsp <- function(
       )
 
       crsp_monthly <- crsp_monthly |>
-        left_join(risk_free_monthly, join_by(date)) |>
+        left_join(risk_free_monthly, by = "date") |>
         mutate(
           ret_excess = .data[["ret"]] - .data[["risk_free"]]
         ) |>
@@ -471,7 +471,7 @@ download_data_wrds_crsp <- function(
           inner_join(
             msenames_db |>
               filter(.data[["shrcd"]] %in% c(10, 11)),
-            join_by(permno)
+            by = "permno"
           ) |>
           filter(
             between(.data[["date"]], .data[["namedt"]], .data[["nameendt"]])
@@ -488,10 +488,10 @@ download_data_wrds_crsp <- function(
             tidyr::drop_na()
 
           crsp_daily_sub <- crsp_daily_sub |>
-            left_join(msedelist_sub, join_by(permno, date == dlstdt)) |>
+            left_join(msedelist_sub, by = c("permno", "date" = "dlstdt")) |>
             bind_rows(
               msedelist_sub |>
-                anti_join(crsp_daily_sub, join_by(permno, dlstdt == date))
+                anti_join(crsp_daily_sub, by = c("permno", "dlstdt" = "date"))
             ) |>
             mutate(
               ret = if_else(
@@ -509,7 +509,7 @@ download_data_wrds_crsp <- function(
             left_join(
               msedelist_sub |>
                 select("permno", "dlstdt"),
-              join_by(permno)
+              by = "permno"
             ) |>
             mutate(
               dlstdt = tidyr::replace_na(.data[["dlstdt"]], as.Date(end_date))
@@ -518,7 +518,7 @@ download_data_wrds_crsp <- function(
             select(-"dlstdt")
 
           crsp_daily_sub <- crsp_daily_sub |>
-            left_join(risk_free_daily, join_by(date)) |>
+            left_join(risk_free_daily, by = "date") |>
             mutate(
               ret_excess = .data[["ret"]] - .data[["risk_free"]]
             ) |>
@@ -637,7 +637,7 @@ download_data_wrds_crsp <- function(
                   .data[["conditionaltype"]] %in% c("RW", "NW") &
                   .data[["tradingstatusflg"]] == "A"
               ),
-            join_by(permno)
+            by = "permno"
           ) |>
           filter(
             between(
@@ -657,7 +657,7 @@ download_data_wrds_crsp <- function(
 
         if (nrow(crsp_daily_sub) > 0) {
           crsp_daily_sub <- crsp_daily_sub |>
-            left_join(risk_free_daily, join_by(date)) |>
+            left_join(risk_free_daily, by = "date") |>
             mutate(
               ret_excess = .data[["ret"]] - .data[["risk_free"]]
             ) |>
@@ -724,7 +724,7 @@ download_data_wrds_crsp <- function(
     valid_links <- processed_data |>
       inner_join(
         ccm_links,
-        join_by(permno),
+        by = "permno",
         relationship = "many-to-many",
         multiple = "all"
       ) |>
@@ -736,7 +736,7 @@ download_data_wrds_crsp <- function(
       select("permno", "gvkey", "date")
 
     processed_data <- processed_data |>
-      left_join(valid_links, join_by(permno, date))
+      left_join(valid_links, by = c("permno", "date"))
   }
 
   processed_data

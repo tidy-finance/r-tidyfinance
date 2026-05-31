@@ -239,7 +239,7 @@ download_data_huggingface <- function(
     tibble::tibble(
       date = seq.Date(as.Date(start_date), as.Date(end_date), by = "day")
     ) |>
-      dplyr::inner_join(available_files, dplyr::join_by(date)) |>
+      dplyr::inner_join(available_files, by = "date") |>
       dplyr::transmute(
         data = purrr::map(.data[["url"]], ~ read_parquet_url(.x))
       ) |>
@@ -486,18 +486,18 @@ download_factor_library_ids <- function(ids) {
   id_values <- data.frame(id = ids)
 
   id_grid <- download_factor_library_grid() |>
-    dplyr::inner_join(id_values, dplyr::join_by(id)) |>
+    dplyr::inner_join(id_values, by = "id") |>
     dplyr::mutate(
       sorting_variable = sub("sv_", "", .data$sorting_variable),
       n_portfolios_main = as.character(.data$n_portfolios_main)
     ) |>
     dplyr::left_join(
       available_files,
-      dplyr::join_by(
-        sorting_variable,
-        sorting_variable_lag,
-        sorting_method,
-        n_portfolios_main
+      by = c(
+        "sorting_variable",
+        "sorting_variable_lag",
+        "sorting_method",
+        "n_portfolios_main"
       )
     )
 
@@ -534,11 +534,11 @@ download_factor_library_ids <- function(ids) {
             "sorting_method",
             "n_portfolios_main"
           ),
-        dplyr::join_by(
-          sorting_variable,
-          sorting_variable_lag,
-          sorting_method,
-          n_portfolios_main
+        by = c(
+          "sorting_variable",
+          "sorting_variable_lag",
+          "sorting_method",
+          "n_portfolios_main"
         )
       ) |>
       dplyr::mutate(
@@ -576,7 +576,7 @@ download_factor_library_ids <- function(ids) {
   relevant_files |>
     dplyr::inner_join(
       id_grid |> dplyr::select(-c("url", "path", "size")),
-      by = dplyr::join_by(id)
+      by = "id"
     )
 }
 

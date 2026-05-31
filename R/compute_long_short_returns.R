@@ -63,7 +63,7 @@ compute_long_short_returns <- function(
     dplyr::mutate(..date = .data[[data_options$date]])
 
   data |>
-    group_by(..date) |>
+    group_by(.data[["..date"]]) |>
     filter(
       .data[[data_options$portfolio]] %in%
         c(
@@ -98,7 +98,7 @@ compute_long_short_returns <- function(
       long_short_return = (.data[["top"]] - .data[["bottom"]]) *
         if_else(direction == "bottom_minus_top", -1, 1)
     ) |>
-    arrange(..date) |>
+    arrange(.data[["..date"]]) |>
     select(-c("top", "bottom", "..date")) |>
     tidyr::pivot_wider(
       names_from = "ret_measure",

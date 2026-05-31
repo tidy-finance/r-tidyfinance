@@ -169,7 +169,7 @@ simulate_pseudo_compustat_annual <- function(
       panel |>
         select("gvkey", "year", at_lag = "at") |>
         mutate(year = .data[["year"]] + 1L),
-      join_by(gvkey, year)
+      by = c("gvkey", "year")
     ) |>
     mutate(
       inv = .data[["at"]] / .data[["at_lag"]] - 1,
