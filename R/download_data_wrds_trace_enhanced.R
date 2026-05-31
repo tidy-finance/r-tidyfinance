@@ -59,8 +59,8 @@ download_data_wrds_trace_enhanced <- function(
 
   trace_all <- trace_enhanced_db |>
     filter(
-      .data[["cusip_id"]] %in% cusips,
-      between(.data[["trd_exctn_dt"]], start_date, end_date)
+      .data$cusip_id %in% cusips,
+      between(.data$trd_exctn_dt, start_date, end_date)
     ) |>
     select(
       "cusip_id",
@@ -91,15 +91,15 @@ download_data_wrds_trace_enhanced <- function(
   # Trades (trc_st = T) and correction (trc_st = R)
   trace_post_TR <- trace_all |>
     filter(
-      (.data[["trc_st"]] == "T" | .data[["trc_st"]] == "R"),
-      .data[["trd_rpt_dt"]] >= as.Date("2012-02-06")
+      (.data$trc_st == "T" | .data$trc_st == "R"),
+      .data$trd_rpt_dt >= as.Date("2012-02-06")
     )
 
   # Cancelations (trc_st = X) and correction cancelations (trc_st = C)
   trace_post_XC <- trace_all |>
     filter(
-      (.data[["trc_st"]] == "X" | .data[["trc_st"]] == "C"),
-      .data[["trd_rpt_dt"]] >= as.Date("2012-02-06")
+      (.data$trc_st == "X" | .data$trc_st == "C"),
+      .data$trd_rpt_dt >= as.Date("2012-02-06")
     )
 
   # Cleaning corrected and cancelled trades
@@ -121,8 +121,8 @@ download_data_wrds_trace_enhanced <- function(
   # Reversals (trc_st = Y)
   trace_post_Y <- trace_all |>
     filter(
-      .data[["trc_st"]] == "Y",
-      .data[["trd_rpt_dt"]] >= as.Date("2012-02-06")
+      .data$trc_st == "Y",
+      .data$trd_rpt_dt >= as.Date("2012-02-06")
     )
 
   # Clean reversals
@@ -147,8 +147,8 @@ download_data_wrds_trace_enhanced <- function(
   # Cancelations (trc_st = C)
   trace_pre_C <- trace_all |>
     filter(
-      .data[["trc_st"]] == "C",
-      .data[["trd_rpt_dt"]] < as.Date("2012-02-06")
+      .data$trc_st == "C",
+      .data$trd_rpt_dt < as.Date("2012-02-06")
     )
 
   # Trades w/o cancelations
@@ -156,8 +156,8 @@ download_data_wrds_trace_enhanced <- function(
   ## to the msg_seq_nb of the main message
   trace_pre_T <- trace_all |>
     filter(
-      .data[["trc_st"]] == "T",
-      .data[["trd_rpt_dt"]] < as.Date("2012-02-06")
+      .data$trc_st == "T",
+      .data$trd_rpt_dt < as.Date("2012-02-06")
     ) |>
     anti_join(
       trace_pre_C,
@@ -176,8 +176,8 @@ download_data_wrds_trace_enhanced <- function(
   # Corrections (trc_st = W) - W can also correct a previous W
   trace_pre_W <- trace_all |>
     filter(
-      .data[["trc_st"]] == "W",
-      .data[["trd_rpt_dt"]] < as.Date("2012-02-06")
+      .data$trc_st == "W",
+      .data$trd_rpt_dt < as.Date("2012-02-06")
     )
 
   # Implement corrections in a loop
@@ -222,19 +222,19 @@ download_data_wrds_trace_enhanced <- function(
   # Clean reversals
   ## Record reversals
   trace_pre_R <- trace_pre_T |>
-    filter(.data[["asof_cd"]] == "R") |>
+    filter(.data$asof_cd == "R") |>
     group_by(
-      .data[["cusip_id"]],
-      .data[["trd_exctn_dt"]],
-      .data[["entrd_vol_qt"]],
-      .data[["rptd_pr"]],
-      .data[["rpt_side_cd"]],
-      .data[["cntra_mp_id"]]
+      .data$cusip_id,
+      .data$trd_exctn_dt,
+      .data$entrd_vol_qt,
+      .data$rptd_pr,
+      .data$rpt_side_cd,
+      .data$cntra_mp_id
     ) |>
     arrange(
-      .data[["trd_exctn_tm"]],
-      .data[["trd_rpt_dt"]],
-      .data[["trd_rpt_tm"]]
+      .data$trd_exctn_tm,
+      .data$trd_rpt_dt,
+      .data$trd_rpt_tm
     ) |>
     mutate(seq = row_number()) |>
     ungroup()
@@ -242,21 +242,21 @@ download_data_wrds_trace_enhanced <- function(
   ## Remove reversals and the reversed trade
   trace_pre <- trace_pre_T |>
     filter(
-      is.na(.data[["asof_cd"]]) |
-        !(.data[["asof_cd"]] %in% c("R", "X", "D"))
+      is.na(.data$asof_cd) |
+        !(.data$asof_cd %in% c("R", "X", "D"))
     ) |>
     group_by(
-      .data[["cusip_id"]],
-      .data[["trd_exctn_dt"]],
-      .data[["entrd_vol_qt"]],
-      .data[["rptd_pr"]],
-      .data[["rpt_side_cd"]],
-      .data[["cntra_mp_id"]]
+      .data$cusip_id,
+      .data$trd_exctn_dt,
+      .data$entrd_vol_qt,
+      .data$rptd_pr,
+      .data$rpt_side_cd,
+      .data$cntra_mp_id
     ) |>
     arrange(
-      .data[["trd_exctn_tm"]],
-      .data[["trd_rpt_dt"]],
-      .data[["trd_rpt_tm"]]
+      .data$trd_exctn_tm,
+      .data$trd_rpt_dt,
+      .data$trd_rpt_tm
     ) |>
     mutate(seq = row_number()) |>
     ungroup() |>
@@ -282,11 +282,11 @@ download_data_wrds_trace_enhanced <- function(
   # Keep angency sells and unmatched agency buys
   ## Agency sells
   trace_agency_sells <- trace_clean |>
-    filter(.data[["cntra_mp_id"]] == "D", .data[["rpt_side_cd"]] == "S")
+    filter(.data$cntra_mp_id == "D", .data$rpt_side_cd == "S")
 
   # Agency buys that are unmatched
   trace_agency_buys_filtered <- trace_clean |>
-    filter(.data[["cntra_mp_id"]] == "D", .data[["rpt_side_cd"]] == "B") |>
+    filter(.data$cntra_mp_id == "D", .data$rpt_side_cd == "B") |>
     anti_join(
       trace_agency_sells,
       by = c("cusip_id", "trd_exctn_dt", "entrd_vol_qt", "rptd_pr")
@@ -294,32 +294,32 @@ download_data_wrds_trace_enhanced <- function(
 
   # Agency clean
   trace_clean <- trace_clean |>
-    filter(.data[["cntra_mp_id"]] == "C") |>
+    filter(.data$cntra_mp_id == "C") |>
     union_all(trace_agency_sells) |>
     union_all(trace_agency_buys_filtered)
 
   # Additional Filters ------------------------------------------------------
   trace_add_filters <- trace_clean |>
     mutate(
-      days_to_sttl_ct2 = .data[["stlmnt_dt"]] - .data[["trd_exctn_dt"]]
+      days_to_sttl_ct2 = .data$stlmnt_dt - .data$trd_exctn_dt
     ) |>
     filter(
-      is.na(.data[["days_to_sttl_ct"]]) |
-        as.numeric(.data[["days_to_sttl_ct"]]) <= 7,
-      is.na(.data[["days_to_sttl_ct2"]]) |
-        as.numeric(.data[["days_to_sttl_ct2"]]) <= 7,
-      .data[["wis_fl"]] == "N",
-      is.na(.data[["spcl_trd_fl"]]) | .data[["spcl_trd_fl"]] == "",
-      is.na(.data[["asof_cd"]]) | .data[["asof_cd"]] == ""
+      is.na(.data$days_to_sttl_ct) |
+        as.numeric(.data$days_to_sttl_ct) <= 7,
+      is.na(.data$days_to_sttl_ct2) |
+        as.numeric(.data$days_to_sttl_ct2) <= 7,
+      .data$wis_fl == "N",
+      is.na(.data$spcl_trd_fl) | .data$spcl_trd_fl == "",
+      is.na(.data$asof_cd) | .data$asof_cd == ""
     )
 
   # Output ------------------------------------------------------------------
   # Only keep necessary columns
   trace_final <- trace_add_filters |>
     arrange(
-      .data[["cusip_id"]],
-      .data[["trd_exctn_dt"]],
-      .data[["trd_exctn_tm"]]
+      .data$cusip_id,
+      .data$trd_exctn_dt,
+      .data$trd_exctn_tm
     ) |>
     select(
       "cusip_id",

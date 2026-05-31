@@ -95,7 +95,7 @@ compute_long_short_returns <- function(
     ) |>
     check_new_col("long_short_return") |>
     mutate(
-      long_short_return = (.data[["top"]] - .data[["bottom"]]) *
+      long_short_return = (.data$top - .data$bottom) *
         if_else(direction == "bottom_minus_top", -1, 1)
     ) |>
     arrange(.data[["..date"]]) |>

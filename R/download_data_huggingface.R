@@ -241,7 +241,7 @@ download_data_huggingface <- function(
     ) |>
       dplyr::inner_join(available_files, by = "date") |>
       dplyr::transmute(
-        data = purrr::map(.data[["url"]], ~ read_parquet_url(.x))
+        data = purrr::map(.data$url, ~ read_parquet_url(.x))
       ) |>
       tidyr::unnest("data")
   } else if (dataset == "factor_library") {

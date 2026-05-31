@@ -112,11 +112,11 @@ download_data_factors_ff <- function(
   if (frequency == "monthly") {
     processed_data <- raw_data |>
       mutate(
-        date = floor_date(ymd(paste0(.data[["date"]], "01")), "month")
+        date = floor_date(ymd(paste0(.data$date, "01")), "month")
       )
   } else if (frequency %in% c("daily", "weekly")) {
     processed_data <- raw_data |>
-      mutate(date = ymd(.data[["date"]]))
+      mutate(date = ymd(.data$date))
   } else {
     cli::cli_abort(
       "This dataset has neither daily, weekly, nor monthly frequency."
@@ -144,7 +144,7 @@ download_data_factors_ff <- function(
 
   if (!is.null(start_date) && !is.null(end_date)) {
     processed_data <- processed_data |>
-      filter(between(.data[["date"]], start_date, end_date))
+      filter(between(.data$date, start_date, end_date))
   }
 
   processed_data
@@ -398,19 +398,19 @@ download_data_factors_q <- function(
   if (frequency == "monthly") {
     processed_data <- raw_data |>
       mutate(date = ymd(paste(
-        .data[["year"]], .data[["month"]], "01", sep = "-"
+        .data$year, .data$month, "01", sep = "-"
       ))) |>
       select(-c("year", "month"))
   } else if (frequency == "daily") {
     processed_data <- raw_data |>
-      mutate(DATE = ymd(.data[["DATE"]]))
+      mutate(DATE = ymd(.data$DATE))
   } else if (frequency == "annual") {
     processed_data <- raw_data |>
-      mutate(date = .data[["year"]])
+      mutate(date = .data$year)
   } else if (frequency %in% c("weekly", "quarterly")) {
     processed_data <- raw_data |>
       mutate(date = ymd(paste(
-        .data[["year"]], .data[["month"]], .data[["day"]], sep = "-"
+        .data$year, .data$month, .data$day, sep = "-"
       ))) |>
       select(-c("year", "month", "day"))
   }
@@ -425,7 +425,7 @@ download_data_factors_q <- function(
 
   if (!is.null(start_date) && !is.null(end_date)) {
     processed_data <- processed_data |>
-      filter(between(.data[["date"]], start_date, end_date))
+      filter(between(.data$date, start_date, end_date))
   }
 
   processed_data

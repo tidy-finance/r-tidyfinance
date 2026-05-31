@@ -158,27 +158,27 @@ simulate_pseudo_identifiers <- function(n_assets = 1000L, seed = 1234L) {
   ) |>
     mutate(
       siccd = dplyr::case_when(
-        .data[["industry"]] == "Agriculture" ~
+        .data$industry == "Agriculture" ~
           sample(100:999, dplyr::n(), replace = TRUE),
-        .data[["industry"]] == "Mining" ~
+        .data$industry == "Mining" ~
           sample(1000:1499, dplyr::n(), replace = TRUE),
-        .data[["industry"]] == "Construction" ~
+        .data$industry == "Construction" ~
           sample(1500:1799, dplyr::n(), replace = TRUE),
-        .data[["industry"]] == "Manufacturing" ~
+        .data$industry == "Manufacturing" ~
           sample(1800:3999, dplyr::n(), replace = TRUE),
-        .data[["industry"]] == "Transportation" ~
+        .data$industry == "Transportation" ~
           sample(4000:4899, dplyr::n(), replace = TRUE),
-        .data[["industry"]] == "Utilities" ~
+        .data$industry == "Utilities" ~
           sample(4900:4999, dplyr::n(), replace = TRUE),
-        .data[["industry"]] == "Wholesale" ~
+        .data$industry == "Wholesale" ~
           sample(5000:5199, dplyr::n(), replace = TRUE),
-        .data[["industry"]] == "Retail" ~
+        .data$industry == "Retail" ~
           sample(5200:5999, dplyr::n(), replace = TRUE),
-        .data[["industry"]] == "Finance" ~
+        .data$industry == "Finance" ~
           sample(6000:6799, dplyr::n(), replace = TRUE),
-        .data[["industry"]] == "Services" ~
+        .data$industry == "Services" ~
           sample(7000:8999, dplyr::n(), replace = TRUE),
-        .data[["industry"]] == "Public" ~
+        .data$industry == "Public" ~
           sample(9000:9999, dplyr::n(), replace = TRUE)
       )
     )

@@ -116,10 +116,10 @@ download_data_wrds_compustat <- function(
 
     compustat <- funda_db |>
       filter(
-        .data[["indfmt"]] == "INDL" &
-          .data[["datafmt"]] == "STD" &
-          .data[["consol"]] == "C" &
-          between(.data[["datadate"]], start_date, end_date)
+        .data$indfmt == "INDL" &
+          .data$datafmt == "STD" &
+          .data$consol == "C" &
+          between(.data$datadate, start_date, end_date)
       ) |>
       select(
         "gvkey",
@@ -156,50 +156,50 @@ download_data_wrds_compustat <- function(
     compustat <- compustat |>
       mutate(
         be = coalesce(
-          .data[["seq"]],
-          .data[["ceq"]] + .data[["pstk"]],
-          .data[["at"]] - .data[["lt"]]
+          .data$seq,
+          .data$ceq + .data$pstk,
+          .data$at - .data$lt
         ) +
           coalesce(
-            .data[["txditc"]],
-            .data[["txdb"]] + .data[["itcb"]],
+            .data$txditc,
+            .data$txdb + .data$itcb,
             0
           ) -
           coalesce(
-            .data[["pstkrv"]],
-            .data[["pstkl"]],
-            .data[["pstk"]],
+            .data$pstkrv,
+            .data$pstkl,
+            .data$pstk,
             0
           ),
-        op = (.data[["sale"]] -
-          coalesce(.data[["cogs"]], 0) -
-          coalesce(.data[["xsga"]], 0) -
-          coalesce(.data[["xint"]], 0)) /
-          .data[["be"]]
+        op = (.data$sale -
+          coalesce(.data$cogs, 0) -
+          coalesce(.data$xsga, 0) -
+          coalesce(.data$xint, 0)) /
+          .data$be
       )
 
     compustat <- compustat |>
-      mutate(year = year(.data[["datadate"]])) |>
-      group_by(.data[["gvkey"]], .data[["year"]]) |>
-      filter(.data[["datadate"]] == max(.data[["datadate"]])) |>
+      mutate(year = year(.data$datadate)) |>
+      group_by(.data$gvkey, .data$year) |>
+      filter(.data$datadate == max(.data$datadate)) |>
       ungroup() |>
-      mutate(date = floor_date(.data[["datadate"]], "month"))
+      mutate(date = floor_date(.data$datadate, "month"))
 
     if (isTRUE(only_usd)) {
       compustat <- compustat |>
-        filter(.data[["curcd"]] == "USD")
+        filter(.data$curcd == "USD")
     }
 
     processed_data <- compustat |>
       left_join(
         compustat |>
           select("gvkey", "year", at_lag = "at") |>
-          mutate(year = .data[["year"]] + 1),
+          mutate(year = .data$year + 1),
         by = c("gvkey", "year")
       ) |>
       mutate(
-        inv = .data[["at"]] / .data[["at_lag"]] - 1,
-        inv = if_else(.data[["at_lag"]] <= 0, NA, .data[["inv"]])
+        inv = .data$at / .data$at_lag - 1,
+        inv = if_else(.data$at_lag <= 0, NA, .data$inv)
       ) |>
       select(
         "gvkey",
@@ -213,10 +213,10 @@ download_data_wrds_compustat <- function(
 
     compustat <- fundq_db |>
       filter(
-        .data[["indfmt"]] == "INDL" &
-          .data[["datafmt"]] == "STD" &
-          .data[["consol"]] == "C" &
-          between(.data[["datadate"]], start_date, end_date)
+        .data$indfmt == "INDL" &
+          .data$datafmt == "STD" &
+          .data$consol == "C" &
+          between(.data$datadate, start_date, end_date)
       ) |>
       select(
         "gvkey",
@@ -235,24 +235,24 @@ download_data_wrds_compustat <- function(
 
     compustat <- compustat |>
       tidyr::drop_na("gvkey", "datadate", "fyearq", "fqtr") |>
-      mutate(date = floor_date(.data[["datadate"]], "month")) |>
-      group_by(.data[["gvkey"]], .data[["fyearq"]], .data[["fqtr"]]) |>
-      filter(.data[["datadate"]] == max(.data[["datadate"]])) |>
+      mutate(date = floor_date(.data$datadate, "month")) |>
+      group_by(.data$gvkey, .data$fyearq, .data$fqtr) |>
+      filter(.data$datadate == max(.data$datadate)) |>
       slice_head(n = 1) |>
       ungroup() |>
-      group_by(.data[["gvkey"]], .data[["date"]]) |>
-      arrange(.data[["gvkey"]], .data[["date"]], .data[["rdq"]]) |>
+      group_by(.data$gvkey, .data$date) |>
+      arrange(.data$gvkey, .data$date, .data$rdq) |>
       slice_head(n = 1) |>
       ungroup() |>
       filter(if_else(
-        is.na(.data[["rdq"]]),
+        is.na(.data$rdq),
         TRUE,
-        .data[["date"]] < .data[["rdq"]]
+        .data$date < .data$rdq
       ))
 
     if (isTRUE(only_usd)) {
       compustat <- compustat |>
-        filter(.data[["curcdq"]] == "USD")
+        filter(.data$curcdq == "USD")
     }
 
     processed_data <- compustat |>

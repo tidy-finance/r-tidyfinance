@@ -184,13 +184,13 @@ estimate_fama_macbeth <- function(
         model,
         \(x) compute_standard_error(x, vcov, vcov_options)
       ),
-      t_statistic = .data[["risk_premium"]] / .data[["standard_error"]]
+      t_statistic = .data$risk_premium / .data$standard_error
     )
 
   if (vcov == "iid") {
     aggregations <- aggregations |>
       mutate(
-        t_statistic = .data[["t_statistic"]] * sqrt(.data[["n"]])
+        t_statistic = .data$t_statistic * sqrt(.data$n)
       )
   }
 

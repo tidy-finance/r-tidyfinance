@@ -35,12 +35,12 @@ download_data_wrds_ccm_links <- function(
 
   ccm_links <- ccm_linking_table_db |>
     filter(
-      .data[["linktype"]] %in% par$linktype &
-        .data[["linkprim"]] %in% par$linkprim
+      .data$linktype %in% par$linktype &
+        .data$linkprim %in% par$linkprim
     ) |>
     select(permno = "lpermno", "gvkey", "linkdt", "linkenddt") |>
     collect() |>
-    mutate(linkenddt = tidyr::replace_na(.data[["linkenddt"]], today()))
+    mutate(linkenddt = tidyr::replace_na(.data$linkenddt, today()))
 
   disconnect_connection(con)
 

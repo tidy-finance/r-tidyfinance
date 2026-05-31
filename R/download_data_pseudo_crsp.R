@@ -140,24 +140,24 @@ simulate_pseudo_crsp_monthly <- function(
     identifiers,
     tibble(date = months)
   ) |>
-    arrange(.data[["permno"]], .data[["date"]]) |>
+    arrange(.data$permno, .data$date) |>
     mutate(
-      calculation_date = lubridate::ceiling_date(.data[["date"]], "month") - 1L,
+      calculation_date = lubridate::ceiling_date(.data$date, "month") - 1L,
       shrout = stats::runif(dplyr::n(), 1, 50) * 1000,
       prc = stats::runif(dplyr::n(), 1, 1000),
       ret = stats::rnorm(dplyr::n(), mean = 0.008, sd = 0.10),
-      mktcap = .data[["shrout"]] * .data[["prc"]] / 1000,
-      primaryexch = unname(primaryexch_lookup[.data[["exchange"]]])
+      mktcap = .data$shrout * .data$prc / 1000,
+      primaryexch = unname(primaryexch_lookup[.data$exchange])
     ) |>
-    group_by(.data[["permno"]]) |>
+    group_by(.data$permno) |>
     mutate(
       listing_age = seq_len(dplyr::n()) - 1L,
-      mktcap_lag = dplyr::lag(.data[["mktcap"]])
+      mktcap_lag = dplyr::lag(.data$mktcap)
     ) |>
     ungroup() |>
     mutate(
       ret_excess = pmax(
-        .data[["ret"]] - stats::runif(dplyr::n(), 0, 0.004), -1
+        .data$ret - stats::runif(dplyr::n(), 0, 0.004), -1
       )
     )
 
@@ -206,11 +206,11 @@ simulate_pseudo_crsp_daily <- function(
     identifiers |> select("permno"),
     tibble(date = days)
   ) |>
-    arrange(.data[["permno"]], .data[["date"]]) |>
+    arrange(.data$permno, .data$date) |>
     mutate(
       ret = stats::rnorm(dplyr::n(), mean = 0.0004, sd = 0.02),
       ret_excess = pmax(
-        .data[["ret"]] - stats::runif(dplyr::n(), 0, 0.0002), -1
+        .data$ret - stats::runif(dplyr::n(), 0, 0.0002), -1
       )
     )
 

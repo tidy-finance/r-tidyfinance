@@ -109,7 +109,7 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
   if (!is.null(start_date) && !is.null(end_date)) {
     fred_processed <- fred_processed |>
       filter(
-        .data[["date"]] >= start_date & .data[["date"]] <= end_date
+        .data$date >= start_date & .data$date <= end_date
       )
   }
 
