@@ -1,13 +1,13 @@
 test_that("list_supported_datasets_ff returns expected structure", {
   result <- list_supported_datasets_ff()
-  expect_named(result, c("type", "dataset_name", "domain"))
+  expect_named(result, c("type", "dataset_name", "file_url", "domain"))
   expect_true(all(result$domain == "Fama-French"))
   expect_snapshot(result)
 })
 
 test_that("list_supported_datasets_ff_legacy returns expected structure", {
   result <- list_supported_datasets_ff_legacy()
-  expect_named(result, c("type", "dataset_name", "domain"))
+  expect_named(result, c("type", "dataset_name", "file_url", "domain"))
   expect_true(all(result$domain == "Fama-French"))
   expect_snapshot(result)
 })
