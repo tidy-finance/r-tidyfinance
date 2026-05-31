@@ -1,14 +1,9 @@
 # tidyfinance (development version)
 
-- Fama-French factor data is now downloaded and parsed internally via `httr2`, 
-  so `frenchdata` is no longer declared in `Imports`. The behavior of
-  `download_data_factors_ff()` is unchanged.
-- `download_data("tidyfinance", "factor_library", ...)` now honors the
-  canonical `start_date` and `end_date` arguments, filtering the returned
-  portfolio returns to the requested range. When both are omitted, the full
-  history is returned and the standard "Returning the full data set" message
-  is emitted (via `validate_dates()`). Previously these arguments were
-  accepted but silently ignored for the factor library.
+# tidyfinance 0.6.0
+
+## New features
+
 - Added `domain = "pseudo"` to `download_data()` for generating pseudo
   data with the same schema as the corresponding real domain. Supported
   datasets in this release: `"crsp_monthly"`, `"crsp_daily"`,
@@ -22,6 +17,23 @@
   `(seed, n_assets)` yields the same identifier universe across datasets,
   so pseudo CRSP and Compustat join cleanly via `add_ccm_links = TRUE`
   or `ccm_links`. Daily CRSP is generated on weekdays only.
+- Added `download_factor_library_grid()` to fetch the
+  `tidy-finance/factor-library-grid` dataset from Hugging Face. Also
+  accessible via `download_data("tidyfinance", "factor_library_grid")`.
+
+## Improvements
+
+- Added `test-coverage.yaml` workflow and badge to README.
+- Added tests to get coverage to 100% (excl. `set_wrds_credentials()`).
+- Fama-French factor data is now downloaded and parsed internally via `httr2`, 
+  so `frenchdata` is no longer declared in `Imports`. The behavior of
+  `download_data_factors_ff()` is unchanged.
+- `download_data("tidyfinance", "factor_library", ...)` now honors the
+  canonical `start_date` and `end_date` arguments, filtering the returned
+  portfolio returns to the requested range. When both are omitted, the full
+  history is returned and the standard "Returning the full data set" message
+  is emitted (via `validate_dates()`). Previously these arguments were
+  accepted but silently ignored for the factor library.
 - Removed the `using-tidyfinance` and `dates-in-tidyfinance` vignettes.
   Both predated the current `download_data()` interface and are
   superseded by the package manuscript. `knitr` and `rmarkdown` are no
@@ -37,14 +49,9 @@
   new function. Internal helpers were renamed accordingly
   (e.g. `list_supported_types_ff()` -> `list_supported_datasets_ff()`).
 - `download_data_constituents()` now drops symbols equal to `"-"`.
-- Added `download_factor_library_grid()` to fetch the
-  `tidy-finance/factor-library-grid` dataset from Hugging Face. Also
-  accessible via `download_data("tidyfinance", "factor_library_grid")`.
 - Renamed `only_us` parameter in `download_data_wrds_compustat()` to `only_usd`
   to reflect that the filter keeps USD-denominated shares only. The old name
   is deprecated and forwards to `only_usd` with a warning.
-- Added `test-coverage.yaml` workflow and badge to README.
-- Added tests to get coverage to 100% (excl. `set_wrds_credentials()`).
 - Removed `arrow`, `glue`, and `stringr` dependencies and added `nanoparquet`.
 
 # tidyfinance 0.5.0
