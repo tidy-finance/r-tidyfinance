@@ -12,3 +12,4 @@
 ^\.github$
 .lintr
 ^data-raw$
+^CLAUDE\.md$
