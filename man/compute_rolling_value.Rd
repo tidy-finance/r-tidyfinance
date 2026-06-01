@@ -37,8 +37,6 @@ used to specify the date column. Uses \code{\link[=data_options]{data_options()}
 A numeric vector aligned with the rows of \code{data}.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 Applies an arbitrary summary function over rolling time-period windows.
 Each window spans \code{periods} units of \code{period} (e.g., 12 months). Before
 calling \code{.f}, rows with any missing values are dropped from the window;

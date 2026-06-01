@@ -31,8 +31,6 @@ vector of length \code{nrow(data)} with \code{NA} for rows with missing data or
 insufficient observations.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 Estimates a linear model specified by one or more independent
 variables. It checks for the presence of the specified independent variables
 in the dataset and whether the dataset has a sufficient number of

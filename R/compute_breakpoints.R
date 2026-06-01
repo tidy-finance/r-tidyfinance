@@ -1,7 +1,5 @@
 #' Compute Breakpoints Based on Sorting Variable
 #'
-#' @description `r lifecycle::badge('experimental')`
-#'
 #' Computes breakpoints based on a specified sorting. It can optionally filter
 #' the data by exchanges or lagged size quantiles before computing the
 #' breakpoints. The function requires either the number of portfolios to be

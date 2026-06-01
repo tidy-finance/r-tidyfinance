@@ -43,8 +43,6 @@ A data frame with all columns from \code{original_data} plus the
 lagged columns from \code{new_data} (keeping their original names).
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 Joins lagged values of selected variables from one dataset (\code{new_data})
 into another (\code{original_data}), based on date ranges defined by \code{min_lag}
 and \code{max_lag}. Unlike \code{\link[=add_lagged_columns]{add_lagged_columns()}}, this function supports

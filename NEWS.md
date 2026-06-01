@@ -1,5 +1,11 @@
 # tidyfinance (development version)
 
+## Improvements
+
+- Removed the "experimental" lifecycle badge from `assign_portfolio()`,
+  `compute_breakpoints()`, `compute_rolling_value()`, `estimate_model()`,
+  and `join_lagged_values()`, which are now considered stable.
+
 # tidyfinance 0.6.0
 
 ## New features

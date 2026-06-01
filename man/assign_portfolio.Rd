@@ -38,8 +38,6 @@ A vector of integer portfolio assignments for each row in the
 input \code{data}.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 Assigns data points to portfolios based on a specified sorting variable and
 the selected function to compute breakpoints. Users can specify a function
 to compute breakpoints. The function must take \code{data} and

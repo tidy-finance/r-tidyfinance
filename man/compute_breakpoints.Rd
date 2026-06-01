@@ -55,8 +55,6 @@ specify the market capitalization. Uses \code{\link[=data_options]{data_options(
 A numeric vector of breakpoints of the desired length.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 Computes breakpoints based on a specified sorting. It can optionally filter
 the data by exchanges or lagged size quantiles before computing the
 breakpoints. The function requires either the number of portfolios to be
