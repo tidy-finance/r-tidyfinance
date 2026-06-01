@@ -4,7 +4,7 @@
 # llms.txt convention (https://llmstxt.org). They are plain text and live on
 # their own -- they do NOT require a pkgdown/Quarto site. The convention is to
 # serve them at a site root (e.g. https://www.tidy-finance.org/r/llms.txt), but
-# they work equally well from the repository root or shipped inside the package.
+# they work equally well from the repository root or shipped in the package.
 #
 # `llms.txt`       -- a compact, grouped index of every exported function with a
 #                     one-line description and a link to its annotated source.
@@ -14,10 +14,30 @@
 # Run from the package root with:  Rscript data-raw/generate_llms_txt.R
 # Re-run whenever the documentation in man/*.Rd changes.
 
-repo   <- "tidy-finance/r-tidyfinance"
+repo <- "tidy-finance/r-tidyfinance"
 branch <- "main"
 
 # ---- small Rd parsing helpers (base R only) --------------------------------
+
+# Given the index of an opening `{`, return list(content, end) where `end` is
+# the index just after the matching `}`.
+brace_after <- function(txt, open_idx) {
+  n <- nchar(txt)
+  i <- open_idx + 1L
+  depth <- 1L
+  start <- i
+  while (i <= n && depth > 0L) {
+    ch <- substr(txt, i, i)
+    if (ch == "{") {
+      depth <- depth + 1L
+    } else if (ch == "}") {
+      depth <- depth - 1L
+      if (depth == 0L) break
+    }
+    i <- i + 1L
+  }
+  list(content = substr(txt, start, i - 1L), end = i + 1L)
+}
 
 # Return the content of the first `\tag{...}` block, NULL if absent. Handles
 # nested braces.
@@ -44,25 +64,6 @@ find_all <- function(txt, tag) {
   out
 }
 
-# Given the index of an opening `{`, return list(content, end) where `end` is
-# the index just after the matching `}`.
-brace_after <- function(txt, open_idx) {
-  n <- nchar(txt)
-  i <- open_idx + 1L
-  depth <- 1L
-  start <- i
-  while (i <= n && depth > 0L) {
-    c <- substr(txt, i, i)
-    if (c == "{") depth <- depth + 1L
-    else if (c == "}") {
-      depth <- depth - 1L
-      if (depth == 0L) break
-    }
-    i <- i + 1L
-  }
-  list(content = substr(txt, start, i - 1L), end = i + 1L)
-}
-
 # Resolve `\ifelse{html}{a}{b}` -> b, then `\href{url}{text}` -> text,
 # drop `\figure{...}`, unwrap single-argument formatting macros, and unescape
 # Rd specials. Leaves plain text suitable for Markdown.
@@ -75,7 +76,9 @@ strip_inline <- function(s) {
       m <- regexpr(pat, t)
       if (m == -1L) break
       a <- brace_after(t, m + attr(m, "match.length") - 2L)
-      if (a$end - 1L <= nchar(t) && substr(t, a$end - 1L, a$end - 1L) == "{") {
+      has_second <- a$end - 1L <= nchar(t) &&
+        substr(t, a$end - 1L, a$end - 1L) == "{"
+      if (has_second) {
         b <- brace_after(t, a$end - 1L)
         rep <- switch(keep, first = a$content, second = b$content, "")
         t <- paste0(substr(t, 1L, m - 1L), rep, substring(t, b$end))
@@ -91,8 +94,8 @@ strip_inline <- function(s) {
     m <- regexpr("\\\\ifelse\\{", s)
     if (m == -1L) break
     cond <- brace_after(s, m + attr(m, "match.length") - 2L)
-    yes  <- brace_after(s, cond$end - 1L)
-    no   <- brace_after(s, yes$end - 1L)
+    yes <- brace_after(s, cond$end - 1L)
+    no <- brace_after(s, yes$end - 1L)
     s <- paste0(substr(s, 1L, m - 1L), no$content, substring(s, no$end))
   }
   s <- repl_two(s, "href", "second")
@@ -115,7 +118,8 @@ strip_inline <- function(s) {
   s <- gsub("\\\\dots|\\\\ldots", "...", s)
   s <- gsub("(?<!\\\\)%.*", "", s, perl = TRUE)       # Rd comments, not \%
   s <- gsub("\\\\%", "%", s)
-  s <- gsub("\\\\\\{", "{", s); s <- gsub("\\\\\\}", "}", s)
+  s <- gsub("\\\\\\{", "{", s)
+  s <- gsub("\\\\\\}", "}", s)
   s <- gsub("\\\\&", "&", s)
   s <- gsub("[ \t]+", " ", s)
   trimws(s)
@@ -132,7 +136,10 @@ parse_items <- function(block) {
     open <- pos + m + attr(m, "match.length") - 2L
     nm <- brace_after(block, open)
     j <- nm$end - 1L
-    while (j <= nchar(block) && substr(block, j, j) %in% c(" ", "\t", "\n")) j <- j + 1L
+    while (j <= nchar(block) &&
+           substr(block, j, j) %in% c(" ", "\t", "\n")) {
+      j <- j + 1L
+    }
     if (j <= nchar(block) && substr(block, j, j) == "{") {
       ds <- brace_after(block, j)
     } else {
@@ -146,6 +153,7 @@ parse_items <- function(block) {
   items
 }
 
+# Strip Rd comments from a verbatim block (usage/examples), keeping `\%`.
 strip_comments_code <- function(s) {
   s <- gsub("(?<!\\\\)%.*", "", s, perl = TRUE)
   gsub("\\\\%", "%", s)
@@ -154,8 +162,8 @@ strip_comments_code <- function(s) {
 # ---- read package metadata --------------------------------------------------
 
 d <- read.dcf("DESCRIPTION")
-pkg     <- d[1, "Package"]
-title   <- gsub("\\s+", " ", d[1, "Title"])
+pkg <- d[1, "Package"]
+title <- gsub("\\s+", " ", d[1, "Title"])
 pkgdesc <- gsub("\\s+", " ", d[1, "Description"])
 
 # ---- parse all man/*.Rd -----------------------------------------------------
@@ -166,17 +174,21 @@ funcs <- lapply(rd_files, function(f) {
   name <- find_block(txt, "name")
   if (is.null(name)) return(NULL)
   src <- regmatches(txt, regexpr("edit documentation in (\\S+)", txt))
-  src <- if (length(src)) sub("edit documentation in ", "", src) else NA_character_
+  src <- if (length(src)) {
+    sub("edit documentation in ", "", src)
+  } else {
+    NA_character_
+  }
   concept <- find_all(txt, "concept")
   list(
-    name     = trimws(name),
-    src      = src,
-    concept  = if (length(concept)) concept[1] else NA_character_,
-    title    = strip_inline(find_block(txt, "title")),
-    desc     = find_block(txt, "description"),
-    usage    = find_block(txt, "usage"),
-    args     = find_block(txt, "arguments"),
-    value    = find_block(txt, "value"),
+    name = trimws(name),
+    src = src,
+    concept = if (length(concept)) concept[1] else NA_character_,
+    title = strip_inline(find_block(txt, "title")),
+    desc = find_block(txt, "description"),
+    usage = find_block(txt, "usage"),
+    args = find_block(txt, "arguments"),
+    value = find_block(txt, "value"),
     examples = find_block(txt, "examples")
   )
 })
@@ -186,41 +198,51 @@ funcs <- Filter(function(x) x$name != paste0(pkg, "-package"), funcs)
 # ---- section ordering / titles ---------------------------------------------
 
 section_titles <- c(
-  "download functions"            = "Download functions",
-  "WRDS functions"                = "WRDS functions",
-  "pseudo functions"              = "Pseudo-data functions (no credentials required)",
-  "estimation functions"          = "Estimation functions",
-  "portfolio functions"           = "Portfolio sorting functions",
+  "download functions" = "Download functions",
+  "WRDS functions" = "WRDS functions",
+  "pseudo functions" = "Pseudo-data functions (no credentials required)",
+  "estimation functions" = "Estimation functions",
+  "portfolio functions" = "Portfolio sorting functions",
   "rolling and lagging functions" = "Rolling and lagging functions",
-  "utility functions"             = "Utility and helper functions"
+  "utility functions" = "Utility and helper functions"
 )
 
 url_for <- function(fn) {
-  if (!is.na(fn$src)) paste0("https://github.com/", repo, "/blob/", branch, "/", fn$src)
-  else paste0("https://github.com/", repo)
+  if (is.na(fn$src)) {
+    return(paste0("https://github.com/", repo))
+  }
+  paste0("https://github.com/", repo, "/blob/", branch, "/", fn$src)
 }
 
 by_name <- function(fns) fns[order(vapply(fns, function(x) x$name, ""))]
 
-groups <- setNames(vector("list", length(section_titles)), names(section_titles))
+groups <- setNames(
+  vector("list", length(section_titles)), names(section_titles)
+)
 other <- list()
 for (fn in funcs) {
-  c <- fn$concept
-  if (!is.na(c) && c %in% names(groups)) groups[[c]] <- c(groups[[c]], list(fn))
-  else other <- c(other, list(fn))
+  con <- fn$concept
+  if (!is.na(con) && con %in% names(groups)) {
+    groups[[con]] <- c(groups[[con]], list(fn))
+  } else {
+    other <- c(other, list(fn))
+  }
 }
 
 # ---- write llms.txt ---------------------------------------------------------
 
+intro <- paste0(
+  pkg, " is an R package of helper functions for empirical research in ",
+  "financial economics, accompanying the book Tidy Finance with R ",
+  "(Scheuch, Voigt, and Weiss, 2023). Each link points to the function's ",
+  "annotated source on GitHub. For complete inline reference (signatures, ",
+  "arguments, return values, and runnable examples) see llms-full.txt in ",
+  "the same location."
+)
 out <- c(
   paste0("# ", pkg), "",
   paste0("> ", title, ". ", pkgdesc), "",
-  paste0(pkg, " is an R package of helper functions for empirical research in ",
-         "financial economics, accompanying the book Tidy Finance with R ",
-         "(Scheuch, Voigt, and Weiss, 2023). Each link points to the function's ",
-         "annotated source on GitHub. For complete inline reference (signatures, ",
-         "arguments, return values, and runnable examples) see llms-full.txt in ",
-         "the same location."), ""
+  intro, ""
 )
 for (key in names(section_titles)) {
   fns <- groups[[key]]
@@ -238,12 +260,21 @@ if (length(other)) {
   }
   out <- c(out, "")
 }
-out <- c(out,
+out <- c(
+  out,
   "## Optional", "",
-  paste0("- [Package overview](https://github.com/", repo,
-         "): README, installation, and contribution guide"),
-  "- [Tidy Finance with R (book)](https://www.tidy-finance.org/r/): full methodology and chapter-by-chapter explanations",
-  "- [llms-full.txt](llms-full.txt): full inline documentation for every exported function"
+  paste0(
+    "- [Package overview](https://github.com/", repo,
+    "): README, installation, and contribution guide"
+  ),
+  paste0(
+    "- [Tidy Finance with R (book)](https://www.tidy-finance.org/r/): ",
+    "full methodology and chapter-by-chapter explanations"
+  ),
+  paste0(
+    "- [llms-full.txt](llms-full.txt): full inline documentation for ",
+    "every exported function"
+  )
 )
 writeLines(out, "llms.txt")
 
@@ -252,9 +283,15 @@ writeLines(out, "llms.txt")
 full <- c(
   paste0("# ", pkg, " — full function reference"), "",
   paste0("> ", title, ". ", pkgdesc), "",
-  "Generated from the package documentation (man/*.Rd). One section per exported function.", ""
+  paste0(
+    "Generated from the package documentation (man/*.Rd). One section per ",
+    "exported function."
+  ), ""
 )
-ordered <- unlist(lapply(names(section_titles), function(k) by_name(groups[[k]])), recursive = FALSE)
+ordered <- unlist(
+  lapply(names(section_titles), function(k) by_name(groups[[k]])),
+  recursive = FALSE
+)
 ordered <- c(ordered, by_name(other))
 for (fn in ordered) {
   full <- c(full, paste0("## ", fn$name), "", fn$title, "")
@@ -284,7 +321,9 @@ for (fn in ordered) {
         m <- regexpr(pat, ex)
         if (m == -1L) break
         inner <- brace_after(ex, m + attr(m, "match.length") - 2L)
-        ex <- paste0(substr(ex, 1L, m - 1L), inner$content, substring(ex, inner$end))
+        ex <- paste0(
+          substr(ex, 1L, m - 1L), inner$content, substring(ex, inner$end)
+        )
       }
     }
     ex <- trimws(ex)
