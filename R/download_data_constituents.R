@@ -84,7 +84,7 @@ download_data_constituents <- function(index) {
 
       if (grepl(column_names, "Anlageklasse")) {
         constituents_processed <- constituents_raw |>
-          filter(Anlageklasse == "Aktien") |>
+          filter(.data$Anlageklasse == "Aktien") |>
           select(
             symbol = "Emittententicker",
             name = "Name",
@@ -94,7 +94,7 @@ download_data_constituents <- function(index) {
       }
       if (grepl(column_names, "Asset.Class")) {
         constituents_processed <- constituents_raw |>
-          filter(Asset.Class == "Equity") |>
+          filter(.data$Asset.Class == "Equity") |>
           select(
             symbol = "Ticker",
             name = "Name",
@@ -104,52 +104,90 @@ download_data_constituents <- function(index) {
       }
 
       constituents_processed <- constituents_processed |>
-        mutate(symbol = trimws(symbol)) |>
-        filter(!symbol %in% symbol_blacklist) |>
-        filter(!grepl(tolower(index), tolower(name))) |>
-        filter(!grepl("CASH", name)) |>
-        filter(!grepl(tolower(gsub("\\s+", "", index)), tolower(name))) |>
+        mutate(symbol = trimws(.data$symbol)) |>
+        filter(!.data$symbol %in% symbol_blacklist) |>
+        filter(!grepl(tolower(index), tolower(.data$name))) |>
+        filter(!grepl("CASH", .data$name)) |>
+        filter(
+          !grepl(tolower(gsub("\\s+", "", index)), tolower(.data$name))
+        ) |>
         as_tibble() |>
         mutate(
           symbol = case_when(
             name == "NATIONAL BANK OF CANADA" ~ "NA",
-            TRUE ~ symbol
+            TRUE ~ .data$symbol
           ),
-          symbol = gsub(" ", "-", symbol),
-          symbol = gsub("/", "-", symbol)
+          symbol = gsub(" ", "-", .data$symbol),
+          symbol = gsub("/", "-", .data$symbol)
         ) |>
         mutate(
           symbol = case_when(
             exchange %in% c("Xetra", "Deutsche B\u00f6rse AG") ~
-              paste0(symbol, ".DE"),
-            exchange == "Boerse Berlin" ~ paste0(symbol, ".BE"),
-            exchange == "Borsa Italiana" ~ paste0(symbol, ".MI"),
+              paste0(.data$symbol, ".DE"),
+            exchange == "Boerse Berlin" ~ paste0(.data$symbol, ".BE"),
+            exchange == "Borsa Italiana" ~ paste0(.data$symbol, ".MI"),
             exchange == "Nyse Euronext - Euronext Paris" ~
-              paste0(symbol, ".PA"),
-            exchange == "Euronext Amsterdam" ~ paste0(symbol, ".AS"),
-            exchange == "Nasdaq Omx Helsinki Ltd." ~ paste0(symbol, ".HE"),
-            exchange == "Singapore Exchange" ~ paste0(symbol, ".SI"),
-            exchange == "Asx - All Markets" ~ paste0(symbol, ".AX"),
-            exchange == "London Stock Exchange" ~ paste0(symbol, ".L"),
-            exchange == "SIX Swiss Exchange" ~ paste0(symbol, ".SW"),
-            exchange == "Tel Aviv Stock Exchange" ~ paste0(symbol, ".TA"),
-            exchange == "Tokyo Stock Exchange" ~ paste0(symbol, ".T"),
-            exchange == "Hong Kong Stock Exchange" ~ paste0(symbol, ".HK"),
-            exchange == "Toronto Stock Exchange" ~ paste0(symbol, ".TO"),
-            exchange == "Euronext Brussels" ~ paste0(symbol, ".BR"),
-            exchange == "Euronext Lisbon" ~ paste0(symbol, ".LS"),
-            exchange == "Bovespa" ~ paste0(symbol, ".SA"),
-            exchange == "Mexican Stock Exchange" ~ paste0(symbol, ".MX"),
-            exchange == "Stockholm Stock Exchange" ~ paste0(symbol, ".ST"),
-            exchange == "Oslo Stock Exchange" ~ paste0(symbol, ".OL"),
-            exchange == "Johannesburg Stock Exchange" ~ paste0(symbol, ".J"),
-            exchange == "Korea Exchange" ~ paste0(symbol, ".KS"),
-            exchange == "Shanghai Stock Exchange" ~ paste0(symbol, ".SS"),
-            exchange == "Shenzhen Stock Exchange" ~ paste0(symbol, ".SZ"),
-            TRUE ~ symbol
+              paste0(.data$symbol, ".PA"),
+            exchange == "Euronext Amsterdam" ~ paste0(.data$symbol, ".AS"),
+            exchange == "Nasdaq Omx Helsinki Ltd." ~ paste0(
+              .data$symbol,
+              ".HE"
+            ),
+            exchange == "Singapore Exchange" ~ paste0(.data$symbol, ".SI"),
+            exchange == "Asx - All Markets" ~ paste0(.data$symbol, ".AX"),
+            exchange == "London Stock Exchange" ~ paste0(
+              .data$symbol,
+              ".L"
+            ),
+            exchange == "SIX Swiss Exchange" ~ paste0(.data$symbol, ".SW"),
+            exchange == "Tel Aviv Stock Exchange" ~ paste0(
+              .data$symbol,
+              ".TA"
+            ),
+            exchange == "Tokyo Stock Exchange" ~ paste0(
+              .data$symbol,
+              ".T"
+            ),
+            exchange == "Hong Kong Stock Exchange" ~ paste0(
+              .data$symbol,
+              ".HK"
+            ),
+            exchange == "Toronto Stock Exchange" ~ paste0(
+              .data$symbol,
+              ".TO"
+            ),
+            exchange == "Euronext Brussels" ~ paste0(.data$symbol, ".BR"),
+            exchange == "Euronext Lisbon" ~ paste0(.data$symbol, ".LS"),
+            exchange == "Bovespa" ~ paste0(.data$symbol, ".SA"),
+            exchange == "Mexican Stock Exchange" ~ paste0(
+              .data$symbol,
+              ".MX"
+            ),
+            exchange == "Stockholm Stock Exchange" ~ paste0(
+              .data$symbol,
+              ".ST"
+            ),
+            exchange == "Oslo Stock Exchange" ~ paste0(
+              .data$symbol,
+              ".OL"
+            ),
+            exchange == "Johannesburg Stock Exchange" ~ paste0(
+              .data$symbol,
+              ".J"
+            ),
+            exchange == "Korea Exchange" ~ paste0(.data$symbol, ".KS"),
+            exchange == "Shanghai Stock Exchange" ~ paste0(
+              .data$symbol,
+              ".SS"
+            ),
+            exchange == "Shenzhen Stock Exchange" ~ paste0(
+              .data$symbol,
+              ".SZ"
+            ),
+            TRUE ~ .data$symbol
           )
         ) |>
-        mutate(symbol = gsub("\\.\\.", "\\.", symbol)) |>
+        mutate(symbol = gsub("\\.\\.", "\\.", .data$symbol)) |>
         mutate(
           currency = case_when(
             exchange %in%

@@ -135,7 +135,7 @@ estimate_fama_macbeth <- function(
   }
 
   cross_sections <- cross_sections |>
-    select(-row_check) |>
+    select(-"row_check") |>
     mutate(
       cross_fit = purrr::map(data, ~ lm(as.formula(model), data = .)),
       estimates = purrr::map(
@@ -162,7 +162,7 @@ estimate_fama_macbeth <- function(
 
   cross_sections <- cross_sections |>
     select(-"r_squared", -"adj_r_squared", -"n_obs") |>
-    tidyr::unnest(estimates) |>
+    tidyr::unnest("estimates") |>
     select(-data) |>
     tidyr::pivot_longer(-all_of(data_options$date))
 
@@ -175,7 +175,7 @@ estimate_fama_macbeth <- function(
   }
 
   aggregations <- cross_sections |>
-    tidyr::nest(data = c(all_of(data_options$date), value)) |>
+    tidyr::nest(data = c(all_of(data_options$date), "value")) |>
     mutate(
       model = purrr::map(data, ~ lm("value ~ 1", data = .)),
       risk_premium = purrr::map_dbl(model, ~ .$coefficients),
@@ -184,16 +184,24 @@ estimate_fama_macbeth <- function(
         model,
         \(x) compute_standard_error(x, vcov, vcov_options)
       ),
-      t_statistic = risk_premium / standard_error
+      t_statistic = .data$risk_premium / .data$standard_error
     )
 
   if (vcov == "iid") {
     aggregations <- aggregations |>
-      mutate(t_statistic = t_statistic * sqrt(n))
+      mutate(
+        t_statistic = .data$t_statistic * sqrt(.data$n)
+      )
   }
 
   aggregations <- aggregations |>
-    select(factor = name, risk_premium, n, standard_error, t_statistic)
+    select(
+      factor = "name",
+      "risk_premium",
+      "n",
+      "standard_error",
+      "t_statistic"
+    )
 
   if (detail) {
     avg_r_squared <- mean(cross_section_stats$r_squared)

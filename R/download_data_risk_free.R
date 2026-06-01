@@ -96,7 +96,7 @@ download_data_risk_free <- function(
 
   if (!is.null(start_date)) {
     risk_free_data <- risk_free_data |>
-      filter(between(date, start_date, end_date))
+      filter(between(.data$date, start_date, end_date))
   }
 
   risk_free_data

@@ -111,34 +111,34 @@ simulate_pseudo_compustat_annual <- function(
 
   set.seed(seed + 4L)
   panel <- tidyr::expand_grid(
-    identifiers |> select(gvkey),
+    identifiers |> select("gvkey"),
     tibble(year = years)
   ) |>
-    arrange(gvkey, year) |>
-    group_by(gvkey) |>
+    arrange(.data$gvkey, .data$year) |>
+    group_by(.data$gvkey) |>
     mutate(
       at = 100 * exp(cumsum(stats::rnorm(dplyr::n(), mean = 0.05, sd = 0.30)))
     ) |>
     ungroup() |>
     mutate(
-      datadate = ymd(paste0(year, "-12-31")),
-      date = lubridate::floor_date(datadate, "month"),
-      seq = at * stats::runif(dplyr::n(), 0.3, 0.7),
-      ceq = seq * stats::runif(dplyr::n(), 0.8, 1.0),
-      lt = at - seq,
-      txditc = at * stats::runif(dplyr::n(), 0.00, 0.05),
-      txdb = txditc * stats::runif(dplyr::n(), 0.0, 1.0),
-      itcb = txditc - txdb,
-      pstkrv = at * stats::runif(dplyr::n(), 0.0, 0.02),
-      pstkl = pstkrv,
-      pstk = pstkrv,
-      capx = at * stats::runif(dplyr::n(), 0.02, 0.10),
-      oancf = at * stats::rnorm(dplyr::n(), mean = 0.07, sd = 0.05),
-      sale = at * stats::runif(dplyr::n(), 0.5, 1.5),
-      cogs = sale * stats::runif(dplyr::n(), 0.5, 0.8),
-      xsga = sale * stats::runif(dplyr::n(), 0.05, 0.20),
-      xint = at * stats::runif(dplyr::n(), 0.005, 0.03),
-      ib = at * stats::rnorm(dplyr::n(), mean = 0.05, sd = 0.10),
+      datadate = ymd(paste0(.data$year, "-12-31")),
+      date = lubridate::floor_date(.data$datadate, "month"),
+      seq = .data$at * stats::runif(dplyr::n(), 0.3, 0.7),
+      ceq = .data$seq * stats::runif(dplyr::n(), 0.8, 1.0),
+      lt = .data$at - .data$seq,
+      txditc = .data$at * stats::runif(dplyr::n(), 0.00, 0.05),
+      txdb = .data$txditc * stats::runif(dplyr::n(), 0.0, 1.0),
+      itcb = .data$txditc - .data$txdb,
+      pstkrv = .data$at * stats::runif(dplyr::n(), 0.0, 0.02),
+      pstkl = .data$pstkrv,
+      pstk = .data$pstkrv,
+      capx = .data$at * stats::runif(dplyr::n(), 0.02, 0.10),
+      oancf = .data$at * stats::rnorm(dplyr::n(), mean = 0.07, sd = 0.05),
+      sale = .data$at * stats::runif(dplyr::n(), 0.5, 1.5),
+      cogs = .data$sale * stats::runif(dplyr::n(), 0.5, 0.8),
+      xsga = .data$sale * stats::runif(dplyr::n(), 0.05, 0.20),
+      xint = .data$at * stats::runif(dplyr::n(), 0.005, 0.03),
+      ib = .data$at * stats::rnorm(dplyr::n(), mean = 0.05, sd = 0.10),
       curcd = "USD"
     )
 
@@ -152,26 +152,30 @@ simulate_pseudo_compustat_annual <- function(
 
   panel |>
     mutate(
-      be = coalesce(seq, ceq + pstk, at - lt) +
-        coalesce(txditc, txdb + itcb, 0) -
-        coalesce(pstkrv, pstkl, pstk, 0),
-      op = (sale -
-        coalesce(cogs, 0) -
-        coalesce(xsga, 0) -
-        coalesce(xint, 0)) /
-        be
+      be = coalesce(
+        .data$seq,
+        .data$ceq + .data$pstk,
+        .data$at - .data$lt
+      ) +
+        coalesce(.data$txditc, .data$txdb + .data$itcb, 0) -
+        coalesce(.data$pstkrv, .data$pstkl, .data$pstk, 0),
+      op = (.data$sale -
+        coalesce(.data$cogs, 0) -
+        coalesce(.data$xsga, 0) -
+        coalesce(.data$xint, 0)) /
+        .data$be
     ) |>
     left_join(
       panel |>
-        select(gvkey, year, at_lag = at) |>
-        mutate(year = year + 1L),
-      join_by(gvkey, year)
+        select("gvkey", "year", at_lag = "at") |>
+        mutate(year = .data$year + 1L),
+      by = c("gvkey", "year")
     ) |>
     mutate(
-      inv = at / at_lag - 1,
-      inv = if_else(at_lag <= 0, NA_real_, inv)
+      inv = .data$at / .data$at_lag - 1,
+      inv = if_else(.data$at_lag <= 0, NA_real_, .data$inv)
     ) |>
-    select(gvkey, date, datadate, dplyr::everything(), -year)
+    select("gvkey", "date", "datadate", dplyr::everything(), -"year")
 }
 
 #' Quarterly Compustat pseudo panel
@@ -194,18 +198,18 @@ simulate_pseudo_compustat_quarterly <- function(
 
   set.seed(seed + 3L)
   panel <- tidyr::expand_grid(
-    identifiers |> select(gvkey),
+    identifiers |> select("gvkey"),
     tibble(datadate = quarter_ends)
   ) |>
-    arrange(gvkey, datadate) |>
-    group_by(gvkey) |>
+    arrange(.data$gvkey, .data$datadate) |>
+    group_by(.data$gvkey) |>
     mutate(
       atq = 100 * exp(cumsum(stats::rnorm(dplyr::n(), mean = 0.012, sd = 0.15)))
     ) |>
     ungroup() |>
     mutate(
-      date = lubridate::floor_date(datadate, "month"),
-      ceqq = atq * stats::runif(dplyr::n(), 0.2, 0.6)
+      date = lubridate::floor_date(.data$datadate, "month"),
+      ceqq = .data$atq * stats::runif(dplyr::n(), 0.2, 0.6)
     )
 
   if (length(additional_columns) > 0L) {
@@ -218,11 +222,11 @@ simulate_pseudo_compustat_quarterly <- function(
 
   panel |>
     select(
-      gvkey,
-      date,
-      datadate,
-      atq,
-      ceqq,
+      "gvkey",
+      "date",
+      "datadate",
+      "atq",
+      "ceqq",
       dplyr::any_of(additional_columns)
     )
 }

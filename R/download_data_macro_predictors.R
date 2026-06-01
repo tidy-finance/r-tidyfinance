@@ -103,7 +103,7 @@ download_data_macro_predictors <- function(
     }
 
     processed_data <- raw_data |>
-      mutate(date = ym(yyyymm))
+      mutate(date = ym(.data$yyyymm))
   } else if (dataset == "quarterly") {
     raw_data <- handle_download_error(
       function() {
@@ -121,10 +121,12 @@ download_data_macro_predictors <- function(
 
     processed_data <- raw_data |>
       mutate(
-        year = substr(yyyyq, 1, 4),
-        quarter = substr(yyyyq, 5, 5),
-        month = as.integer(quarter) * 3 - 2,
-        date = as.Date(paste0(year, "-", month, "-01"))
+        year = substr(.data$yyyyq, 1, 4),
+        quarter = substr(.data$yyyyq, 5, 5),
+        month = as.integer(.data$quarter) * 3 - 2,
+        date = as.Date(paste0(
+          .data$year, "-", .data$month, "-01"
+        ))
       )
   } else if (dataset == "annual") {
     raw_data <- handle_download_error(
@@ -142,46 +144,46 @@ download_data_macro_predictors <- function(
     }
 
     processed_data <- raw_data |>
-      mutate(date = as.Date(paste0(yyyy, "-01-01")))
+      mutate(date = as.Date(paste0(.data$yyyy, "-01-01")))
   }
 
   processed_data <- processed_data |>
     mutate(
       across(where(is.character), ~ as.numeric(gsub("\\,", "", .))),
-      IndexDiv = Index + D12,
-      logret = log(IndexDiv) - log(lag(IndexDiv)),
-      rp_div = lead(logret - Rfree, 1),
-      log_d12 = log(D12),
-      log_e12 = log(E12),
-      dp = log_d12 - log(Index),
-      dy = log_d12 - log(lag(Index)),
-      ep = log_e12 - log(Index),
-      de = log_d12 - log_e12,
-      tms = lty - tbl,
-      dfy = BAA - AAA
+      IndexDiv = .data$Index + .data$D12,
+      logret = log(.data$IndexDiv) - log(lag(.data$IndexDiv)),
+      rp_div = lead(.data$logret - .data$Rfree, 1),
+      log_d12 = log(.data$D12),
+      log_e12 = log(.data$E12),
+      dp = .data$log_d12 - log(.data$Index),
+      dy = .data$log_d12 - log(lag(.data$Index)),
+      ep = .data$log_e12 - log(.data$Index),
+      de = .data$log_d12 - .data$log_e12,
+      tms = .data$lty - .data$tbl,
+      dfy = .data$BAA - .data$AAA
     ) |>
     select(
-      date,
-      rp_div,
-      dp,
-      dy,
-      ep,
-      de,
-      svar,
-      bm = `b.m`,
-      ntis,
-      tbl,
-      lty,
-      ltr,
-      tms,
-      dfy,
-      infl
+      "date",
+      "rp_div",
+      "dp",
+      "dy",
+      "ep",
+      "de",
+      "svar",
+      bm = "b.m",
+      "ntis",
+      "tbl",
+      "lty",
+      "ltr",
+      "tms",
+      "dfy",
+      "infl"
     ) |>
     tidyr::drop_na()
 
   if (!is.null(start_date) && !is.null(end_date)) {
     processed_data <- processed_data |>
-      filter(between(date, start_date, end_date))
+      filter(between(.data$date, start_date, end_date))
   }
 
   processed_data

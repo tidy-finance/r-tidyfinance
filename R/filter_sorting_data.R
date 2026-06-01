@@ -184,9 +184,9 @@ filter_sorting_data <- function(
       dplyr::inner_join(size_cutoffs, by = col_date) |>
       dplyr::filter(
         !is.na(.data[[col_mktcap_lag]]) &
-          .data[[col_mktcap_lag]] >= .size_cutoff
+          .data[[col_mktcap_lag]] >= .data$.size_cutoff
       ) |>
-      dplyr::select(-.size_cutoff)
+      dplyr::select(-".size_cutoff")
     n_dropped <- n_before - nrow(data)
     if (!quiet && n_dropped > 0) {
       cli::cli_inform(

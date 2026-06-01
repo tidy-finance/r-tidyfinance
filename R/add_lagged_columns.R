@@ -79,6 +79,10 @@ add_lagged_columns <- function(
   ff_adjustment = FALSE,
   data_options = NULL
 ) {
+  # To avoid undefined global variable notes in checks, the columns and the
+  # closest() helper used in the join_by() below are defined explicitly here.
+  .src_date <- .upper <- closest <- NULL
+
   if (is.null(data_options)) {
     data_options <- data_options()
   }
@@ -173,8 +177,8 @@ add_lagged_columns <- function(
         ) |>
         dplyr::mutate(
           !!lag_col_name := dplyr::if_else(
-            !is.na(.data[[".src_date"]]) &
-              .data[[".src_date"]] >= .data[[".lower"]],
+            !is.na(.data$.src_date) &
+              .data$.src_date >= .data$.lower,
             .data[[lag_col_name]],
             .data[[lag_col_name]][NA_integer_]
           )
