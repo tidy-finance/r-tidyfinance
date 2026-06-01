@@ -13,3 +13,5 @@
 .lintr
 ^data-raw$
 ^CLAUDE\.md$
+^llms\.txt$
+^llms-full\.txt$

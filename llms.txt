@@ -1,0 +1,92 @@
+# tidyfinance
+
+> Tidy Finance Helper Functions. Helper functions for empirical research in financial economics, addressing a variety of topics covered in Scheuch, Voigt, and Weiss (2023) <doi:10.1201/b23237>. The package is designed to provide shortcuts for issues extensively discussed in the book, facilitating easier application of its concepts. For more information and resources related to the book, visit <https://www.tidy-finance.org/r/index.html>.
+
+tidyfinance is an R package of helper functions for empirical research in financial economics, accompanying the book Tidy Finance with R (Scheuch, Voigt, and Weiss, 2023). Each link points to the function's annotated source on GitHub. For complete inline reference (signatures, arguments, return values, and runnable examples) see llms-full.txt in the same location.
+
+## Download functions
+
+- [download_data](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data.R): Download and Process Data Based on Domain and Dataset
+- [download_data_constituents](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_constituents.R): Download Constituent Data
+- [download_data_factors_ff](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_factors.R): Download and Process Fama-French Factor Data
+- [download_data_factors_q](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_factors.R): Download and Process Global Q Factor Data
+- [download_data_fred](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_fred.R): Download and Process Data from FRED
+- [download_data_huggingface](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_huggingface.R): Download data from a Hugging Face dataset
+- [download_data_macro_predictors](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_macro_predictors.R): Download and Process Macro Predictor Data
+- [download_data_osap](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_osap.R): Download and Process Open Source Asset Pricing Data
+- [download_data_risk_free](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_risk_free.R): Download Risk-Free Rate Data
+- [download_data_stock_prices](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_stock_prices.R): Download Stock Data
+- [download_factor_library_grid](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_huggingface.R): Download the Factor Library Grid from Hugging Face
+- [download_factor_library_ids](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_huggingface.R): Download factor library returns for a vector of portfolio IDs
+
+## WRDS functions
+
+- [disconnect_connection](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/disconnect_connection.R): Disconnect Database Connection
+- [download_data_wrds](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_wrds.R): Download Data from WRDS
+- [download_data_wrds_ccm_links](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_wrds_ccm_links.R): Download CCM Links from WRDS
+- [download_data_wrds_compustat](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_wrds_compustat.R): Download Data from WRDS Compustat
+- [download_data_wrds_crsp](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_wrds_crsp.R): Download Data from WRDS CRSP
+- [download_data_wrds_fisd](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_wrds_fisd.R): Download Filtered FISD Data from WRDS
+- [download_data_wrds_trace_enhanced](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_wrds_trace_enhanced.R): Download Enhanced TRACE Data from WRDS
+- [get_wrds_connection](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/get_wrds_connection.R): Establish a Connection to the WRDS Database
+- [set_wrds_credentials](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/set_wrds_credentials.R): Set WRDS Credentials
+
+## Pseudo-data functions (no credentials required)
+
+- [download_data_pseudo_ccm_links](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_pseudo_ccm_links.R): Generate Pseudo CCM Links
+- [download_data_pseudo_compustat](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_pseudo_compustat.R): Generate Pseudo Compustat Data
+- [download_data_pseudo_crsp](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_pseudo_crsp.R): Generate Pseudo CRSP Data
+
+## Estimation functions
+
+- [estimate_betas](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/estimate_betas.R): Estimate Rolling Betas
+- [estimate_fama_macbeth](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/estimate_fama_macbeth.R): Estimate Fama-MacBeth Regressions
+- [estimate_model](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/estimate_model.R): Estimate a Linear Model
+
+## Portfolio sorting functions
+
+- [assign_portfolio](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/assign_portfolio.R): Assign Portfolios Based on Sorting Variable
+- [breakpoint_options](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/breakpoint_options.R): Create Breakpoint Options for Portfolio Sorting
+- [compute_breakpoints](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/compute_breakpoints.R): Compute Breakpoints Based on Sorting Variable
+- [compute_long_short_returns](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/compute_long_short_returns.R): Compute Long-Short Returns
+- [compute_portfolio_returns](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/compute_portfolio_returns.R): Compute Portfolio Returns
+- [data_options](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/data_options.R): Create Data Options
+- [filter_options](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/filter_options.R): Create Filter Options
+- [filter_sorting_data](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/filter_sorting_data.R): Filter Sorting Data
+- [implement_portfolio_sort](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/implement_portfolio_sort.R): Implement Portfolio Sort
+- [portfolio_sort_options](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/portfolio_sort_options.R): Create Portfolio Sort Options
+
+## Rolling and lagging functions
+
+- [add_lagged_columns](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/add_lagged_columns.R): Add Lagged Columns via Join
+- [compute_rolling_value](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/compute_rolling_value.R): Compute a Rolling Value by Period
+- [join_lagged_values](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/join_lagged_values.R): Join Lagged Variable Values over a Date Range
+
+## Utility and helper functions
+
+- [create_summary_statistics](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/create_summary_statistics.R): Create Summary Statistics for Specified Variables
+- [get_available_huggingface_files](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_huggingface.R): List Parquet Files in a Hugging Face Dataset
+- [list_supported_datasets](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/list_supported_datasets.R): List All Supported Datasets
+- [list_supported_datasets_ff](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/list_supported_datasets.R): List Supported Fama-French Datasets
+- [list_supported_datasets_ff_legacy](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/list_supported_datasets.R): List Supported Legacy Fama-French Datasets
+- [list_supported_datasets_macro_predictors](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/list_supported_datasets.R): List Supported Macro Predictor Datasets
+- [list_supported_datasets_other](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/list_supported_datasets.R): List Supported Other Datasets
+- [list_supported_datasets_pseudo](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/list_supported_datasets.R): List Supported Pseudo WRDS Datasets
+- [list_supported_datasets_wrds](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/list_supported_datasets.R): List Supported WRDS Datasets
+- [list_supported_indexes](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/list_supported_indexes.R): List Supported Indexes
+- [list_tidy_finance_chapters](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/list_tidy_finance_chapters.R): List Chapters of Tidy Finance
+- [open_tidy_finance_website](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/open_tidy_finance_website.R): Open Tidy Finance Website or Specific Chapter in Browser
+- [trim](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/trim.R): Trim a Numeric Vector
+- [validate_dates](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/validate.R): Validate and Coerce Date Range Arguments
+- [winsorize](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/winsorize.R): Winsorize a Numeric Vector
+
+## Other
+
+- [list_supported_datasets_q](https://github.com/tidy-finance/r-tidyfinance/blob/main/R/list_supported_datasets.R): List Supported Global Q Datasets
+
+## Optional
+
+- [Package overview](https://github.com/tidy-finance/r-tidyfinance): README, installation, and contribution guide
+- [Tidy Finance with R (book)](https://www.tidy-finance.org/r/): full methodology and chapter-by-chapter explanations
+- [llms-full.txt](llms-full.txt): full inline documentation for every exported function
+

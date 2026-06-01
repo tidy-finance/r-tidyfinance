@@ -2,6 +2,9 @@
 
 ## Improvements
 
+- Added `llms.txt` and `llms-full.txt` (following the llms.txt convention) to
+  expose the package API to LLM coding agents, generated from the package
+  documentation via `data-raw/generate_llms_txt.R`.
 - Removed the "experimental" lifecycle badge from `assign_portfolio()`,
   `compute_breakpoints()`, `compute_rolling_value()`, `estimate_model()`,
   and `join_lagged_values()`, which are now considered stable.
