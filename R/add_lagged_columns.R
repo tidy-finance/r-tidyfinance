@@ -177,8 +177,8 @@ add_lagged_columns <- function(
         ) |>
         dplyr::mutate(
           !!lag_col_name := dplyr::if_else(
-            !is.na(.data[[".src_date"]]) &
-              .data[[".src_date"]] >= .data[[".lower"]],
+            !is.na(.data$.src_date) &
+              .data$.src_date >= .data$.lower,
             .data[[lag_col_name]],
             .data[[lag_col_name]][NA_integer_]
           )
