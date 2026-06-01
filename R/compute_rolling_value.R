@@ -1,7 +1,5 @@
 #' Compute a Rolling Value by Period
 #'
-#' @description `r lifecycle::badge('experimental')`
-#'
 #' Applies an arbitrary summary function over rolling time-period windows.
 #' Each window spans `periods` units of `period` (e.g., 12 months). Before
 #' calling `.f`, rows with any missing values are dropped from the window;

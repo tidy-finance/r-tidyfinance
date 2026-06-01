@@ -1,7 +1,5 @@
 #' Join Lagged Variable Values over a Date Range
 #'
-#' @description `r lifecycle::badge('experimental')`
-#'
 #' Joins lagged values of selected variables from one dataset (`new_data`)
 #' into another (`original_data`), based on date ranges defined by `min_lag`
 #' and `max_lag`. Unlike [add_lagged_columns()], this function supports
