@@ -32,6 +32,28 @@ test_that("CRSP argument validation covers required inputs", {
     download_data_wrds_crsp("bad"),
     "Unsupported CRSP dataset"
   )
+
+  expect_error(
+    download_data_wrds_crsp(
+      "crsp_monthly",
+      end_date = "2025-01-01",
+      version = "v1"
+    ),
+    "end_date"
+  )
+})
+
+test_that("v1 end_date boundary: 2024-12-31 is allowed, 2025-01-01 is not", {
+  with_crsp_mocks({
+    expect_no_error(
+      download_data_wrds_crsp(
+        "crsp_monthly",
+        start_date = "2020-01-01",
+        end_date = "2024-12-31",
+        version = "v1"
+      )
+    )
+  })
 })
 
 test_that("deprecated type inputs are translated to dataset", {
