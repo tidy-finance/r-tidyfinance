@@ -5,7 +5,6 @@
 ^LICENSE\.md$
 ^cran-comments\.md$
 ^README\.Rmd$
-^revdep$
 ^CRAN-SUBMISSION$
 ^doc$
 ^Meta$
