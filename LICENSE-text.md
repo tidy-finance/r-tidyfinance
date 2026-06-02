@@ -1,0 +1,4 @@
+# License
+
+    YEAR: 2024
+    COPYRIGHT HOLDER: Christoph Scheuch, Stefan Voigt, and Patrick Weiss

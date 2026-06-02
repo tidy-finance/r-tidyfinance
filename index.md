@@ -1,0 +1,445 @@
+# tidyfinance
+
+This repository contains an R package that collects helper functions for
+developers and researchers familiar with [Tidy Finance with
+R](https://www.tidy-finance.org/r/index.html). The functions provide
+shortcuts to selected issues that the book discusses in detail.
+
+## Installation
+
+You can install the released version of `tidyfinance` [from
+CRAN](https://cran.r-project.org/package=tidyfinance) via:
+
+``` r
+
+install.packages("tidyfinance")
+```
+
+You can install the development version of `tidyfinance` from
+[GitHub](https://github.com/tidy-finance/r-tidyfinance) via:
+
+``` R
+# install.packages("pak")
+pak::pak("tidy-finance/r-tidyfinance")
+```
+
+## Usage
+
+Load the package:
+
+``` r
+
+library(tidyfinance)
+```
+
+## Download Open Source Data
+
+The main functionality of the `tidyfinance` package centers around data
+download. You can download most of the data that we used in [Tidy
+Finance with R](https://www.tidy-finance.org/r/index.html) using the
+[`download_data()`](https://package.tidy-finance.org/reference/download_data.md)
+function or its children.
+
+The function always requires a `domain` argument and depending on the
+domain typically also a `dataset`. For instance, to download monthly
+Fama-French factors, you have to provide the dataset name according to
+[Ken French’s Data
+Library](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html):
+
+``` r
+
+download_data(
+  domain = "factors_ff",
+  dataset = "Fama/French 5 Factors (2x3) [Daily]",
+  start_date = "2000-01-01",
+  end_date = "2020-12-31"
+)
+#> # A tibble: 5,284 × 7
+#>    date       mkt_excess     smb     hml     rmw     cma risk_free
+#>    <date>          <dbl>   <dbl>   <dbl>   <dbl>   <dbl>     <dbl>
+#>  1 2000-01-03    -0.0071 -0.0009 -0.0131 -0.0148 -0.007     0.0002
+#>  2 2000-01-04    -0.0406  0.0034  0.0207  0.0053  0.0136    0.0002
+#>  3 2000-01-05    -0.0009  0.0036 -0.0005  0.0045  0.0115    0.0002
+#>  4 2000-01-06    -0.0074 -0.0004  0.0124  0.0064  0.0121    0.0002
+#>  5 2000-01-07     0.0321 -0.0089 -0.0157 -0.0083 -0.01      0.0002
+#>  6 2000-01-10     0.0175  0.0043 -0.0135 -0.022  -0.0024    0.0002
+#>  7 2000-01-11    -0.0171  0.0033  0.0091  0.009   0.012     0.0002
+#>  8 2000-01-12    -0.0069 -0.0022  0.0074  0.0042  0.0085    0.0002
+#>  9 2000-01-13     0.0159  0.0047 -0.0084 -0.0172 -0.0103    0.0002
+#> 10 2000-01-14     0.0114  0.0022 -0.0048 -0.0034 -0.006     0.0002
+#> # ℹ 5,274 more rows
+```
+
+For [q factors](https://global-q.org/index.html), you provide the
+relevant file name:
+
+``` r
+
+download_data(
+  domain = "factors_q",
+  dataset = "q5_factors_monthly_2024",
+  start_date = "2000-01-01",
+  end_date = "2020-12-31"
+)
+#> # A tibble: 252 × 7
+#>    date       risk_free mkt_excess       me       ia       roe       eg
+#>    <date>         <dbl>      <dbl>    <dbl>    <dbl>     <dbl>    <dbl>
+#>  1 2000-01-01   0.00434    -0.0476  0.0562   0.0294  -0.0500    0.00638
+#>  2 2000-02-01   0.00430     0.0246  0.221   -0.0539  -0.0755   -0.0311 
+#>  3 2000-03-01   0.00438     0.0523 -0.144    0.0183   0.0767    0.0356 
+#>  4 2000-04-01   0.00460    -0.0638 -0.0486   0.0379   0.0871    0.0510 
+#>  5 2000-05-01   0.00478    -0.0437 -0.0460   0.00508  0.000196  0.0370 
+#>  6 2000-06-01   0.00374     0.0466  0.103   -0.0338  -0.0479   -0.0172 
+#>  7 2000-07-01   0.00477    -0.0242  0.00995  0.0225   0.0343    0.0329 
+#>  8 2000-08-01   0.00500     0.0703  0.00449 -0.00800 -0.0208   -0.0101 
+#>  9 2000-09-01   0.00509    -0.0543  0.0158   0.0522   0.0209    0.00734
+#> 10 2000-10-01   0.00522    -0.0274 -0.0222   0.0292   0.0734    0.0656 
+#> # ℹ 242 more rows
+```
+
+To download the Welch and Goyal (2008) macroeconomic predictors for
+monthly, quarterly, or annual frequency:
+
+``` r
+
+download_data(
+  domain = "macro_predictors",
+  dataset = "monthly",
+  start_date = "2000-01-01",
+  end_date = "2020-12-31"
+)
+#> # A tibble: 252 × 15
+#>    date        rp_div    dp    dy    ep    de    svar    bm    ntis    tbl
+#>    <date>       <dbl> <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl>   <dbl>  <dbl>
+#>  1 2000-01-01 -0.0244 -4.42 -4.48 -3.35 -1.08 0.00521 0.155 0.0254  0.0532
+#>  2 2000-02-01  0.0866 -4.40 -4.42 -3.31 -1.09 0.00300 0.167 0.0274  0.0555
+#>  3 2000-03-01 -0.0355 -4.49 -4.40 -3.38 -1.11 0.00668 0.150 0.0183  0.0569
+#>  4 2000-04-01 -0.0269 -4.46 -4.49 -3.34 -1.12 0.00794 0.153 0.0119  0.0566
+#>  5 2000-05-01  0.0194 -4.44 -4.46 -3.32 -1.13 0.00519 0.156 0.00918 0.0579
+#>  6 2000-06-01 -0.0212 -4.47 -4.44 -3.33 -1.13 0.00236 0.157 0.00712 0.0569
+#>  7 2000-07-01  0.0532 -4.46 -4.47 -3.30 -1.15 0.00207 0.156 0.00471 0.0596
+#>  8 2000-08-01 -0.0595 -4.52 -4.46 -3.35 -1.17 0.00104 0.146 0.00467 0.0609
+#>  9 2000-09-01 -0.0105 -4.48 -4.53 -3.29 -1.19 0.00160 0.154 0.00447 0.06  
+#> 10 2000-10-01 -0.0876 -4.47 -4.48 -3.30 -1.17 0.00557 0.149 0.00374 0.0611
+#> # ℹ 242 more rows
+#> # ℹ 5 more variables: lty <dbl>, ltr <dbl>, tms <dbl>, dfy <dbl>, infl <dbl>
+```
+
+To download data from [Open Source Asset
+Pricing](https://www.openassetpricing.com/) (OSAP):
+
+``` r
+
+download_data(
+  domain = "osap",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+#> # A tibble: 12 × 213
+#>    date           am     aop abnormal_accruals accruals accruals_bm activism1
+#>    <date>      <dbl>   <dbl>             <dbl>    <dbl>       <dbl>     <dbl>
+#>  1 2020-01-31  -7.90 -2.55               1.56  -1.40           5.67        NA
+#>  2 2020-02-28  -4.44 -1.45              -1.39  -1.11          -3.23        NA
+#>  3 2020-03-31 -13.6   0.547             -3.61   1.74          -1.18        NA
+#>  4 2020-04-30  -3.33 -1.13               7.78   4.53          -2.38        NA
+#>  5 2020-05-29 -11.7   1.85               2.07  -0.361         -2.68        NA
+#>  6 2020-06-30   1.65 -0.604              3.30   0.00851        4.00        NA
+#>  7 2020-07-31  -3.66 -9.13              -2.09   3.00          -5.33        NA
+#>  8 2020-08-31   2.65  1.91              -2.49   0.0904         2.23        NA
+#>  9 2020-09-30  -3.66 -1.89              -2.35  -1.53          -4.60        NA
+#> 10 2020-10-30   7.11  3.04              -0.682 -0.440          3.32        NA
+#> 11 2020-11-30   7.39  2.02               2.61   2.42          19.3         NA
+#> 12 2020-12-31   1.48  0.0180            -0.594  2.04          -2.92        NA
+#> # ℹ 206 more variables: activism2 <dbl>, ad_exp <dbl>, age_ipo <dbl>,
+#> #   analyst_revision <dbl>, analyst_value <dbl>, announcement_return <dbl>,
+#> #   asset_growth <dbl>, bm <dbl>, bmdec <dbl>, bpebm <dbl>, beta <dbl>,
+#> #   beta_fp <dbl>, beta_liquidity_ps <dbl>, beta_tail_risk <dbl>,
+#> #   bid_ask_spread <dbl>, book_leverage <dbl>, brand_invest <dbl>,
+#> #   cboper_prof <dbl>, cf <dbl>, cpvol_spread <dbl>, cash <dbl>,
+#> #   cash_prod <dbl>, ch_asset_turnover <dbl>, ch_eq <dbl>, …
+```
+
+To download multiple series from the Federal Reserve Economic Data
+(FRED):
+
+``` r
+
+download_data(
+  domain = "fred",
+  series = c("GDP", "CPIAUCNS"),
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+#> # A tibble: 16 × 3
+#>    date        value series  
+#>    <date>      <dbl> <chr>   
+#>  1 2020-01-01 21751. GDP     
+#>  2 2020-04-01 19958. GDP     
+#>  3 2020-07-01 21704. GDP     
+#>  4 2020-10-01 22087. GDP     
+#>  5 2020-01-01   258. CPIAUCNS
+#>  6 2020-02-01   259. CPIAUCNS
+#>  7 2020-03-01   258. CPIAUCNS
+#>  8 2020-04-01   256. CPIAUCNS
+#>  9 2020-05-01   256. CPIAUCNS
+#> 10 2020-06-01   258. CPIAUCNS
+#> 11 2020-07-01   259. CPIAUCNS
+#> 12 2020-08-01   260. CPIAUCNS
+#> 13 2020-09-01   260. CPIAUCNS
+#> 14 2020-10-01   260. CPIAUCNS
+#> 15 2020-11-01   260. CPIAUCNS
+#> 16 2020-12-01   260. CPIAUCNS
+```
+
+To download stock prices from Yahoo Finance:
+
+``` r
+
+download_data(
+  domain = "stock_prices",
+  symbols = c("AAPL", "MSFT"),
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+#> # A tibble: 504 × 8
+#>    symbol date          volume  open   low  high close adjusted_close
+#>    <chr>  <date>         <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
+#>  1 AAPL   2020-01-02 135480400  74.1  73.8  75.2  75.1           72.3
+#>  2 AAPL   2020-01-03 146322800  74.3  74.1  75.1  74.4           71.6
+#>  3 AAPL   2020-01-06 118387200  73.4  73.2  75.0  74.9           72.2
+#>  4 AAPL   2020-01-07 108872000  75.0  74.4  75.2  74.6           71.9
+#>  5 AAPL   2020-01-08 132079200  74.3  74.3  76.1  75.8           73.0
+#>  6 AAPL   2020-01-09 170108400  76.8  76.6  77.6  77.4           74.6
+#>  7 AAPL   2020-01-10 140644800  77.7  77.1  78.2  77.6           74.7
+#>  8 AAPL   2020-01-13 121532000  77.9  77.8  79.3  79.2           76.3
+#>  9 AAPL   2020-01-14 161954400  79.2  78.0  79.4  78.2           75.3
+#> 10 AAPL   2020-01-15 121923600  78.0  77.4  78.9  77.8           75.0
+#> # ℹ 494 more rows
+```
+
+You can also download high-frequency data for the S&P 500 that we host
+on Hugging Face:
+
+``` r
+
+download_data(
+  domain = "tidyfinance",
+  dataset = "high_frequency_sp500",
+  start_date = "2007-07-26",
+  end_date = "2007-07-27"
+)
+#> # A tibble: 9,360 × 9
+#>    ts                  midquote signed_volume trading_volume depth0_ask
+#>    <dttm>                 <dbl>         <dbl>          <dbl>      <dbl>
+#>  1 2007-07-26 09:30:05     150.             0      11565577.     13841.
+#>  2 2007-07-26 09:30:10     150.             0       3017263.     10795.
+#>  3 2007-07-26 09:30:15     150.             0       6108290.     12371.
+#>  4 2007-07-26 09:30:20     150.         98630      21820258.     14069.
+#>  5 2007-07-26 09:30:25     150.             0        931698      15283.
+#>  6 2007-07-26 09:30:30     150.         -4400        661077       5307.
+#>  7 2007-07-26 09:30:35     150.        -12000       2102820       3192.
+#>  8 2007-07-26 09:30:40     150.         39927      12384621.      6234.
+#>  9 2007-07-26 09:30:45     150.        -14671       3105370.      9255.
+#> 10 2007-07-26 09:30:50     150.          5347       5518370.      5708.
+#> # ℹ 9,350 more rows
+#> # ℹ 4 more variables: depth0_bid <dbl>, depth5_ask <dbl>, depth5_bid <dbl>,
+#> #   spread <dbl>
+```
+
+## Download WRDS Data
+
+You can also download data directly from
+[WRDS](https://www.tidy-finance.org/r/wrds-crsp-and-compustat.html) if
+you have access to the underlying data and set your credentials via
+`Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")`
+or the
+[`set_wrds_credentials()`](https://package.tidy-finance.org/reference/set_wrds_credentials.md)
+helper function.
+
+To download monthly CRSP data:
+
+``` r
+
+download_data(
+  domain = "wrds",
+  dataset = "crsp_monthly",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+#> # A tibble: 43,329 × 14
+#>    permno date       calculation_date      ret   shrout    prc primaryexch siccd
+#>     <int> <date>     <date>              <dbl>    <dbl>  <dbl> <chr>       <int>
+#>  1  14313 2020-01-01 2020-01-31        0.00609   2.10e6   2.31 Q            3629
+#>  2  14316 2020-01-01 2020-01-31       -0.158     6.54e7  16.2  Q            2834
+#>  3  14317 2020-01-01 2020-01-31        0.129     2.54e7  79.7  Q            1542
+#>  4  14318 2020-01-01 2020-01-31       -0.0380    6.84e7  31.9  Q            6351
+#>  5  14325 2020-01-01 2020-01-31        0.276     5.94e7  76.0  Q            3841
+#>  6  14328 2020-01-01 2020-01-31       -0.0994    5.21e7   6.52 N            7832
+#>  7  14329 2020-01-01 2020-01-31        0.0171    2.49e8  44.1  N            5812
+#>  8  14338 2020-01-01 2020-01-31       -0.0280    2.82e8 108.   N            7011
+#>  9  14339 2020-01-01 2020-01-31        0.111     2.05e7   6.5  Q            6799
+#> 10  14352 2020-01-01 2020-01-31        0.0295    3.92e7   8.73 Q            2834
+#> # ℹ 43,319 more rows
+#> # ℹ 6 more variables: listing_age <int>, mktcap <dbl>, mktcap_lag <dbl>,
+#> #   exchange <chr>, industry <chr>, ret_excess <dbl>
+```
+
+To download annual (or quaterly) Compustat data:
+
+``` r
+
+download_data(
+  domain = "wrds",
+  dataset = "compustat_annual",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+#> # A tibble: 11,990 × 25
+#>    gvkey  date       datadate        seq     ceq      at      lt  txditc    txdb
+#>    <chr>  <date>     <date>        <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+#>  1 001004 2020-05-01 2020-05-31   903.    9.03e2 2.08e+3 1.18e+3 0       0      
+#>  2 001019 2020-12-01 2020-12-31    13.5   1.35e1 4.06e+1 2.71e+1 3.61e-1 3.61e-1
+#>  3 001045 2020-12-01 2020-12-31 -6867    -6.87e3 6.20e+4 6.89e+4 9   e+0 9   e+0
+#>  4 001050 2020-12-01 2020-12-31   203.    2.03e2 4.19e+2 2.16e+2 6.97e+0 6.97e+0
+#>  5 001062 2020-11-01 2020-11-30   464.    4.64e2 4.65e+2 8.04e-1 0       0      
+#>  6 001075 2020-12-01 2020-12-31  5634.    5.63e3 2.00e+4 1.43e+4 2.33e+3 2.14e+3
+#>  7 001076 2020-12-01 2020-12-31   986.    9.86e2 1.32e+3 3.31e+2 1.27e+2 1.27e+2
+#>  8 001078 2020-12-01 2020-12-31 32784     3.28e4 7.25e+4 3.95e+4 1.41e+3 1.41e+3
+#>  9 001084 2020-12-01 2020-12-31    -2.67 -2.67e0 6.92e-1 3.36e+0 0       0      
+#> 10 001096 2020-12-01 2020-12-31  3372.    3.37e3 1.11e+4 6.69e+3 6.48e+2 6.48e+2
+#> # ℹ 11,980 more rows
+#> # ℹ 16 more variables: itcb <dbl>, pstkrv <dbl>, pstkl <dbl>, pstk <dbl>,
+#> #   capx <dbl>, oancf <dbl>, sale <dbl>, cogs <dbl>, xint <dbl>, xsga <dbl>,
+#> #   ib <dbl>, curcd <chr>, be <dbl>, op <dbl>, at_lag <dbl>, inv <dbl>
+```
+
+To download the CRSP-Compustat linking table:
+
+``` r
+
+download_data(
+  domain = "wrds",
+  dataset = "ccm_links"
+)
+#> # A tibble: 33,324 × 4
+#>    permno gvkey  linkdt     linkenddt 
+#>     <dbl> <chr>  <date>     <date>    
+#>  1  25881 001000 1970-11-13 1978-06-30
+#>  2  10015 001001 1983-09-20 1986-07-31
+#>  3  10023 001002 1972-12-14 1973-06-05
+#>  4  10031 001003 1983-12-07 1989-08-16
+#>  5  54594 001004 1972-04-24 2026-06-02
+#>  6  61903 001005 1973-01-31 1983-01-31
+#>  7  10058 001007 1973-10-01 1979-01-30
+#>  8  10058 001007 1979-01-31 1984-09-28
+#>  9  10066 001008 1983-08-25 1987-02-26
+#> 10  10074 001009 1982-01-18 1996-03-13
+#> # ℹ 33,314 more rows
+```
+
+To download Enhanced TRACE data for selected bonds:
+
+``` r
+
+download_data(
+  domain = "wrds",
+  dataset = "trace_enhanced",
+  cusips = c("00101JAH9"),
+  start_date = "2019-01-01",
+  end_date = "2021-12-31"
+)
+#> # A tibble: 7,694 × 8
+#>    cusip_id  trd_exctn_dt trd_exctn_tm rptd_pr entrd_vol_qt yld_pt rpt_side_cd
+#>    <chr>     <date>       <time>         <dbl>        <dbl>  <dbl> <chr>      
+#>  1 00101JAH9 2019-01-02   09:22:14        92.3         5000   6.12 S          
+#>  2 00101JAH9 2019-01-02   09:22:14        92.3         5000   6.12 S          
+#>  3 00101JAH9 2019-01-02   12:14:09        91        3314000   6.49 B          
+#>  4 00101JAH9 2019-01-02   14:01:00        91.2         5000   6.43 S          
+#>  5 00101JAH9 2019-01-02   14:01:00        91.3        24000   6.41 S          
+#>  6 00101JAH9 2019-01-02   14:01:00        91.3         5000   6.41 S          
+#>  7 00101JAH9 2019-01-02   14:01:03        91.2        24000   6.43 S          
+#>  8 00101JAH9 2019-01-02   15:50:07        91.8       315000   6.28 S          
+#>  9 00101JAH9 2019-01-03   09:17:16        91.5        50000   6.34 S          
+#> 10 00101JAH9 2019-01-03   09:17:16        91.5        50000   6.34 S          
+#> # ℹ 7,684 more rows
+#> # ℹ 1 more variable: cntra_mp_id <chr>
+```
+
+### Factor Library Tools
+
+You can download pre-computed portfolio returns from the [Tidy Finance
+Factor Library](https://factors.tidy-finance.org) hosted on Hugging
+Face:
+
+``` r
+
+download_data(
+  domain = "tidyfinance",
+  dataset = "factor_library",
+  sorting_variable = "ag"
+)
+#> No `start_date` or `end_date` provided. Returning the full data set.
+#> # A data frame: 779 × 17
+#>        id date       ret_type   ret sorting_variable min_size_quantile
+#>     <int> <date>     <chr>    <dbl> <chr>                        <dbl>
+#>  1 297554 1960-02-01 vw           0 ag                             0.2
+#>  2 297554 1960-03-01 vw           0 ag                             0.2
+#>  3 297554 1960-04-01 vw           0 ag                             0.2
+#>  4 297554 1960-05-01 vw           0 ag                             0.2
+#>  5 297554 1960-06-01 vw           0 ag                             0.2
+#>  6 297554 1960-07-01 vw           0 ag                             0.2
+#>  7 297554 1960-08-01 vw           0 ag                             0.2
+#>  8 297554 1960-09-01 vw           0 ag                             0.2
+#>  9 297554 1960-10-01 vw           0 ag                             0.2
+#> 10 297554 1960-11-01 vw           0 ag                             0.2
+#> # ℹ 769 more rows
+#> # ℹ 11 more variables: exclude_financials <lgl>, exclude_utilities <lgl>,
+#> #   exclude_negative_earnings <lgl>, sorting_variable_lag <chr>,
+#> #   rebalancing <chr>, n_portfolios_main <chr>, sorting_method <chr>,
+#> #   breakpoints_min_size_threshold <dbl>, n_portfolios_secondary <dbl>,
+#> #   breakpoints_exchanges <chr>, weighting_scheme <chr>
+```
+
+The package also provides functions to construct your own factor
+portfolios:
+
+``` r
+
+# Portfolio sorts and long-short returns
+compute_portfolio_returns()
+compute_long_short_returns()
+
+# Configuration helpers
+breakpoint_options()
+data_options()
+
+# Rolling and lagging
+add_lagged_columns()
+join_lagged_values()
+compute_rolling_value()
+
+# Regression estimation
+estimate_model()
+estimate_betas()
+estimate_fama_macbeth()
+```
+
+### Other Helpers
+
+We include functions to check out content from
+[tidy-finance.org](https://www.tidy-finance.org/r/index.html):
+
+``` r
+
+list_tidy_finance_chapters()
+open_tidy_finance_website()
+```
+
+There are also some simple helpers for regression analyses:
+
+``` r
+
+winsorize()
+trim()
+create_summary_statistics()
+```

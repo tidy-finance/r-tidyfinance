@@ -1,0 +1,117 @@
+# Package index
+
+## All functions
+
+- [`add_lagged_columns()`](https://package.tidy-finance.org/reference/add_lagged_columns.md)
+  : Add Lagged Columns via Join
+- [`assign_portfolio()`](https://package.tidy-finance.org/reference/assign_portfolio.md)
+  : Assign Portfolios Based on Sorting Variable
+- [`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md)
+  : Create Breakpoint Options for Portfolio Sorting
+- [`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md)
+  : Compute Breakpoints Based on Sorting Variable
+- [`compute_long_short_returns()`](https://package.tidy-finance.org/reference/compute_long_short_returns.md)
+  : Compute Long-Short Returns
+- [`compute_portfolio_returns()`](https://package.tidy-finance.org/reference/compute_portfolio_returns.md)
+  : Compute Portfolio Returns
+- [`compute_rolling_value()`](https://package.tidy-finance.org/reference/compute_rolling_value.md)
+  : Compute a Rolling Value by Period
+- [`create_summary_statistics()`](https://package.tidy-finance.org/reference/create_summary_statistics.md)
+  : Create Summary Statistics for Specified Variables
+- [`data_options()`](https://package.tidy-finance.org/reference/data_options.md)
+  : Create Data Options
+- [`disconnect_connection()`](https://package.tidy-finance.org/reference/disconnect_connection.md)
+  : Disconnect Database Connection
+- [`download_data()`](https://package.tidy-finance.org/reference/download_data.md)
+  : Download and Process Data Based on Domain and Dataset
+- [`download_data_constituents()`](https://package.tidy-finance.org/reference/download_data_constituents.md)
+  : Download Constituent Data
+- [`download_data_factors_ff()`](https://package.tidy-finance.org/reference/download_data_factors_ff.md)
+  : Download and Process Fama-French Factor Data
+- [`download_data_factors_q()`](https://package.tidy-finance.org/reference/download_data_factors_q.md)
+  : Download and Process Global Q Factor Data
+- [`download_data_fred()`](https://package.tidy-finance.org/reference/download_data_fred.md)
+  : Download and Process Data from FRED
+- [`download_data_huggingface()`](https://package.tidy-finance.org/reference/download_data_huggingface.md)
+  : Download data from a Hugging Face dataset
+- [`download_data_macro_predictors()`](https://package.tidy-finance.org/reference/download_data_macro_predictors.md)
+  : Download and Process Macro Predictor Data
+- [`download_data_osap()`](https://package.tidy-finance.org/reference/download_data_osap.md)
+  : Download and Process Open Source Asset Pricing Data
+- [`download_data_pseudo_ccm_links()`](https://package.tidy-finance.org/reference/download_data_pseudo_ccm_links.md)
+  : Generate Pseudo CCM Links
+- [`download_data_pseudo_compustat()`](https://package.tidy-finance.org/reference/download_data_pseudo_compustat.md)
+  : Generate Pseudo Compustat Data
+- [`download_data_pseudo_crsp()`](https://package.tidy-finance.org/reference/download_data_pseudo_crsp.md)
+  : Generate Pseudo CRSP Data
+- [`download_data_risk_free()`](https://package.tidy-finance.org/reference/download_data_risk_free.md)
+  : Download Risk-Free Rate Data
+- [`download_data_stock_prices()`](https://package.tidy-finance.org/reference/download_data_stock_prices.md)
+  : Download Stock Data
+- [`download_data_wrds()`](https://package.tidy-finance.org/reference/download_data_wrds.md)
+  : Download Data from WRDS
+- [`download_data_wrds_ccm_links()`](https://package.tidy-finance.org/reference/download_data_wrds_ccm_links.md)
+  : Download CCM Links from WRDS
+- [`download_data_wrds_compustat()`](https://package.tidy-finance.org/reference/download_data_wrds_compustat.md)
+  : Download Data from WRDS Compustat
+- [`download_data_wrds_crsp()`](https://package.tidy-finance.org/reference/download_data_wrds_crsp.md)
+  : Download Data from WRDS CRSP
+- [`download_data_wrds_fisd()`](https://package.tidy-finance.org/reference/download_data_wrds_fisd.md)
+  : Download Filtered FISD Data from WRDS
+- [`download_data_wrds_trace_enhanced()`](https://package.tidy-finance.org/reference/download_data_wrds_trace_enhanced.md)
+  : Download Enhanced TRACE Data from WRDS
+- [`download_factor_library_grid()`](https://package.tidy-finance.org/reference/download_factor_library_grid.md)
+  : Download the Factor Library Grid from Hugging Face
+- [`download_factor_library_ids()`](https://package.tidy-finance.org/reference/download_factor_library_ids.md)
+  : Download factor library returns for a vector of portfolio IDs
+- [`estimate_betas()`](https://package.tidy-finance.org/reference/estimate_betas.md)
+  : Estimate Rolling Betas
+- [`estimate_fama_macbeth()`](https://package.tidy-finance.org/reference/estimate_fama_macbeth.md)
+  : Estimate Fama-MacBeth Regressions
+- [`estimate_model()`](https://package.tidy-finance.org/reference/estimate_model.md)
+  : Estimate a Linear Model
+- [`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md)
+  : Create Filter Options
+- [`filter_sorting_data()`](https://package.tidy-finance.org/reference/filter_sorting_data.md)
+  : Filter Sorting Data
+- [`get_available_huggingface_files()`](https://package.tidy-finance.org/reference/get_available_huggingface_files.md)
+  : List Parquet Files in a Hugging Face Dataset
+- [`get_wrds_connection()`](https://package.tidy-finance.org/reference/get_wrds_connection.md)
+  : Establish a Connection to the WRDS Database
+- [`implement_portfolio_sort()`](https://package.tidy-finance.org/reference/implement_portfolio_sort.md)
+  : Implement Portfolio Sort
+- [`join_lagged_values()`](https://package.tidy-finance.org/reference/join_lagged_values.md)
+  : Join Lagged Variable Values over a Date Range
+- [`list_supported_datasets()`](https://package.tidy-finance.org/reference/list_supported_datasets.md)
+  [`list_supported_types()`](https://package.tidy-finance.org/reference/list_supported_datasets.md)
+  : List All Supported Datasets
+- [`list_supported_datasets_ff()`](https://package.tidy-finance.org/reference/list_supported_datasets_ff.md)
+  : List Supported Fama-French Datasets
+- [`list_supported_datasets_ff_legacy()`](https://package.tidy-finance.org/reference/list_supported_datasets_ff_legacy.md)
+  : List Supported Legacy Fama-French Datasets
+- [`list_supported_datasets_macro_predictors()`](https://package.tidy-finance.org/reference/list_supported_datasets_macro_predictors.md)
+  : List Supported Macro Predictor Datasets
+- [`list_supported_datasets_other()`](https://package.tidy-finance.org/reference/list_supported_datasets_other.md)
+  : List Supported Other Datasets
+- [`list_supported_datasets_pseudo()`](https://package.tidy-finance.org/reference/list_supported_datasets_pseudo.md)
+  : List Supported Pseudo WRDS Datasets
+- [`list_supported_datasets_q()`](https://package.tidy-finance.org/reference/list_supported_datasets_q.md)
+  : List Supported Global Q Datasets
+- [`list_supported_datasets_wrds()`](https://package.tidy-finance.org/reference/list_supported_datasets_wrds.md)
+  : List Supported WRDS Datasets
+- [`list_supported_indexes()`](https://package.tidy-finance.org/reference/list_supported_indexes.md)
+  : List Supported Indexes
+- [`list_tidy_finance_chapters()`](https://package.tidy-finance.org/reference/list_tidy_finance_chapters.md)
+  : List Chapters of Tidy Finance
+- [`open_tidy_finance_website()`](https://package.tidy-finance.org/reference/open_tidy_finance_website.md)
+  : Open Tidy Finance Website or Specific Chapter in Browser
+- [`portfolio_sort_options()`](https://package.tidy-finance.org/reference/portfolio_sort_options.md)
+  : Create Portfolio Sort Options
+- [`set_wrds_credentials()`](https://package.tidy-finance.org/reference/set_wrds_credentials.md)
+  : Set WRDS Credentials
+- [`trim()`](https://package.tidy-finance.org/reference/trim.md) : Trim
+  a Numeric Vector
+- [`validate_dates()`](https://package.tidy-finance.org/reference/validate_dates.md)
+  : Validate and Coerce Date Range Arguments
+- [`winsorize()`](https://package.tidy-finance.org/reference/winsorize.md)
+  : Winsorize a Numeric Vector
