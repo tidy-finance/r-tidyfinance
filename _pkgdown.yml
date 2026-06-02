@@ -35,25 +35,6 @@ template:
         });
       });
       </script>
-    before_body: |
-      <div class="tf-global-header">
-        <div class="tf-global-header-inner">
-          <a class="tf-global-brand" href="https://www.tidy-finance.org/">
-            <span class="tf-global-logo" aria-hidden="true"></span>
-            <span>Tidy Finance</span>
-          </a>
-          <nav class="tf-global-nav">
-            <a href="https://www.tidy-finance.org/r/">R</a>
-            <a href="https://www.tidy-finance.org/python/">Python</a>
-            <a href="https://www.tidy-finance.org/blog.html">Blog</a>
-            <a href="https://www.tidy-finance.org/contribute.html">Contribute</a>
-            <a href="https://www.tidy-finance.org/support.html">Support</a>
-            <a href="https://talks.tidy-finance.org/">Talks</a>
-            <a href="https://www.tidy-finance.org/workshops/reproducible-research-workflows.html">Workshops</a>
-            <a href="https://bse.eu/summer-school/data-science-finance/tidy-finance-reproducible-research-in-data-science" target="_blank" rel="noopener">Summer School</a>
-          </nav>
-        </div>
-      </div>
 navbar:
   type: light
   bg: light
