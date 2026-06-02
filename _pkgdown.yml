@@ -1,15 +1,14 @@
 url: https://package.tidy-finance.org
-
 template:
   bootstrap: 5
   bootswatch: cosmo
   bslib:
-    primary: "#3b9ab2"
-    link-color: "#3b9ab2"
+    primary: '#3b9ab2'
+    link-color: '#3b9ab2'
   opengraph:
     image:
       src: cover.png
-      alt: "Tidy Finance"
+      alt: Tidy Finance
   includes:
     in_header: |
       <link rel="icon" href="/favicon.ico">
@@ -55,16 +54,16 @@ template:
           </nav>
         </div>
       </div>
-
 navbar:
   type: light
   bg: light
-
 footer:
   structure:
-    left: [developed_by, built_with]
-    right: [legal]
+    left:
+    - developed_by
+    - built_with
+    right: legal
   components:
-    legal: >
-      <a href="https://www.tidy-finance.org/disclaimer.html">Disclaimer</a> &middot;
+    legal: <a href="https://www.tidy-finance.org/disclaimer.html">Disclaimer</a> &middot;
       <a href="#" id="open_preferences_center">Cookie Preferences</a>
+
