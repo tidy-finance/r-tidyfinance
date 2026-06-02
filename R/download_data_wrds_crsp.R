@@ -119,8 +119,10 @@ download_data_wrds_crsp <- function(
   if (version == "v1" && end_date > as.Date("2024-12-31")) {
     cli::cli_abort(
       c(
-        "{.arg end_date} must not be later than December 2024 for
-        {.arg version} = {.str v1}.",
+        paste(
+          "{.arg end_date} must not be later than December 2024 for",
+          "{.arg version} = {.str v1}."
+        ),
         "i" = "CRSP discontinued the legacy version at the end of 2024.",
         "i" = "Use {.arg version} = {.str v2} for more recent data."
       )

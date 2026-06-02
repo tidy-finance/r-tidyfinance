@@ -43,7 +43,7 @@ test_that("CRSP argument validation covers required inputs", {
   )
 })
 
-test_that("v1 end_date boundary: 2024-12-31 is allowed, 2025-01-01 is not", {
+test_that("v1 end_date boundary: 2024-12-31 is allowed", {
   with_crsp_mocks({
     expect_no_error(
       download_data_wrds_crsp(
