@@ -43,19 +43,6 @@ test_that("CRSP argument validation covers required inputs", {
   )
 })
 
-test_that("v1 end_date boundary: 2024-12-31 is allowed", {
-  with_crsp_mocks({
-    expect_no_error(
-      download_data_wrds_crsp(
-        "crsp_monthly",
-        start_date = "2020-01-01",
-        end_date = "2024-12-31",
-        version = "v1"
-      )
-    )
-  })
-})
-
 test_that("deprecated type inputs are translated to dataset", {
   local_mocked_bindings(
     is_legacy_type_wrds = function(dataset) identical(dataset, "wrds_bad"),
@@ -243,6 +230,19 @@ with_crsp_mocks <- function(code) {
 
   force(code)
 }
+
+test_that("v1 end_date boundary: 2024-12-31 is allowed", {
+  with_crsp_mocks({
+    expect_no_error(
+      download_data_wrds_crsp(
+        "crsp_monthly",
+        start_date = "2020-01-01",
+        end_date = "2024-12-31",
+        version = "v1"
+      )
+    )
+  })
+})
 
 test_that("monthly CRSP v1 is processed", {
   with_crsp_mocks({
