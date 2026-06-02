@@ -10,5 +10,6 @@
 inst/doc
 /doc/
 /Meta/
+docs
 .claude/skills/doc-cleanup/SKILL.md
 .claude/settings.local.json

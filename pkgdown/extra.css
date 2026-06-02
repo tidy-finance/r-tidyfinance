@@ -1,0 +1,80 @@
+/* Tidy Finance global header --------------------------------------------------
+   A standalone, full-width header bar that mirrors the one on tidy-finance.org.
+   It sits above the regular pkgdown navbar (injected via template > includes >
+   before_body in _pkgdown.yml). */
+.tf-global-header {
+  background-color: #3b9ab2;
+}
+
+.tf-global-header-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0.4rem 1rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+}
+
+.tf-global-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: auto;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Logo as a background image: a url() in extra.css resolves relative to the
+   stylesheet, which pkgdown links with the right depth on every page -- so it
+   works at all depths, in local preview and in production. */
+.tf-global-logo {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 1.8rem;
+  height: 1.8rem;
+  background: url("logo-website-white.png") center / contain no-repeat;
+}
+
+.tf-global-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.tf-global-nav a {
+  color: #fff;
+  text-decoration: none;
+  opacity: 0.92;
+}
+
+.tf-global-nav a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* Stack the global header above the pkgdown navbar -----------------------------
+   By default pkgdown renders its navbar as fixed-top + headroom.js (slides away
+   on scroll), pinned to the viewport top -- which would cover and hide the
+   global header injected via before_body. Drop the navbar into normal document
+   flow so it sits directly below the global header instead. */
+.navbar.fixed-top {
+  position: static !important;
+  top: auto !important;
+}
+
+.navbar.headroom {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* pkgdown adds this margin to clear the (formerly) fixed navbar; not needed
+   once the navbar is in flow. */
+.row > main,
+.row > aside {
+  margin-top: 0 !important;
+}
+
+/* Quarto cookie-consent footer link styling (matches the family sites). */
+.cookie-consent-footer { text-decoration: none; }

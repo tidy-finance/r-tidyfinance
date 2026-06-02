@@ -1,0 +1,50 @@
+url: https://package.tidy-finance.org
+template:
+  bootstrap: 5
+  bootswatch: cosmo
+  bslib:
+    primary: '#3b9ab2'
+    link-color: '#3b9ab2'
+  opengraph:
+    image:
+      src: cover.png
+      alt: Tidy Finance
+  includes:
+    in_header: |
+      <link rel="icon" href="/favicon.ico">
+      <link rel="stylesheet" href="/site_libs/cookie-consent/cookie-consent.css">
+      <script src="/site_libs/cookie-consent/cookie-consent.js"></script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-DH3KZSMJ5W"></script>
+      <script type="text/plain" cookie-consent="tracking">
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-DH3KZSMJ5W', { 'anonymize_ip': true});
+      </script>
+      <script type="text/javascript" charset="UTF-8">
+      document.addEventListener('DOMContentLoaded', function () {
+        cookieconsent.run({
+          "notice_banner_type": "interstitial",
+          "consent_type": "express",
+          "palette": "light",
+          "language": "en",
+          "page_load_consent_levels": ["strictly-necessary"],
+          "notice_banner_reject_button_hide": false,
+          "preferences_center_close_button_hide": false,
+          "website_name": "tidyfinance"
+        });
+      });
+      </script>
+navbar:
+  type: light
+  bg: light
+footer:
+  structure:
+    left:
+    - developed_by
+    - built_with
+    right: legal
+  components:
+    legal: <a href="https://www.tidy-finance.org/disclaimer.html">Disclaimer</a> &middot;
+      <a href="#" id="open_preferences_center">Cookie Preferences</a>
+

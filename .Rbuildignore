@@ -12,3 +12,6 @@
 .lintr
 ^data-raw$
 ^CLAUDE\.md$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

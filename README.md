@@ -5,8 +5,10 @@
 
 <!-- badges: start -->
 
-[![](https://www.r-pkg.org/badges/version/tidyfinance)](https://cran.r-project.org/package=tidyfinance)
-[![](http://cranlogs.r-pkg.org/badges/grand-total/tidyfinance)](https://cran.r-project.org/package=tidyfinance)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/tidyfinance)](https://CRAN.R-project.org/package=tidyfinance)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/tidyfinance)](https://cran.r-project.org/package=tidyfinance)
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
@@ -272,16 +274,16 @@ download_data(
 #> # A tibble: 43,329 × 14
 #>    permno date       calculation_date      ret   shrout    prc primaryexch siccd
 #>     <int> <date>     <date>              <dbl>    <dbl>  <dbl> <chr>       <int>
-#>  1  10026 2020-01-01 2020-01-31       -0.100     1.89e7 166.   Q            2052
-#>  2  10028 2020-01-01 2020-01-31        0.607     2.69e7   2.17 A            5094
-#>  3  10032 2020-01-01 2020-01-31       -0.0756    2.92e7  71.1  Q            3672
-#>  4  10044 2020-01-01 2020-01-31       -0.0986    6   e6   8.32 Q            2060
-#>  5  10051 2020-01-01 2020-01-31       -0.115     3.73e7  24.4  N            8093
-#>  6  10104 2020-01-01 2020-01-31       -0.00561   3.21e9  52.4  N            7372
-#>  7  10107 2020-01-01 2020-01-31        0.0795    7.61e9 170.   Q            7370
-#>  8  10138 2020-01-01 2020-01-31        0.0959    2.35e8 134.   Q            6211
-#>  9  10145 2020-01-01 2020-01-31       -0.0214    7.15e8 173.   N            5099
-#> 10  10158 2020-01-01 2020-01-31        0.0966    2.90e7  19.2  N            8711
+#>  1  14313 2020-01-01 2020-01-31        0.00609   2.10e6   2.31 Q            3629
+#>  2  14316 2020-01-01 2020-01-31       -0.158     6.54e7  16.2  Q            2834
+#>  3  14317 2020-01-01 2020-01-31        0.129     2.54e7  79.7  Q            1542
+#>  4  14318 2020-01-01 2020-01-31       -0.0380    6.84e7  31.9  Q            6351
+#>  5  14325 2020-01-01 2020-01-31        0.276     5.94e7  76.0  Q            3841
+#>  6  14328 2020-01-01 2020-01-31       -0.0994    5.21e7   6.52 N            7832
+#>  7  14329 2020-01-01 2020-01-31        0.0171    2.49e8  44.1  N            5812
+#>  8  14338 2020-01-01 2020-01-31       -0.0280    2.82e8 108.   N            7011
+#>  9  14339 2020-01-01 2020-01-31        0.111     2.05e7   6.5  Q            6799
+#> 10  14352 2020-01-01 2020-01-31        0.0295    3.92e7   8.73 Q            2834
 #> # ℹ 43,319 more rows
 #> # ℹ 6 more variables: listing_age <int>, mktcap <dbl>, mktcap_lag <dbl>,
 #> #   exchange <chr>, industry <chr>, ret_excess <dbl>
@@ -329,7 +331,7 @@ download_data(
 #>  2  10015 001001 1983-09-20 1986-07-31
 #>  3  10023 001002 1972-12-14 1973-06-05
 #>  4  10031 001003 1983-12-07 1989-08-16
-#>  5  54594 001004 1972-04-24 2026-05-31
+#>  5  54594 001004 1972-04-24 2026-06-02
 #>  6  61903 001005 1973-01-31 1983-01-31
 #>  7  10058 001007 1973-10-01 1979-01-30
 #>  8  10058 001007 1979-01-31 1984-09-28
