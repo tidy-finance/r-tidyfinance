@@ -24,9 +24,10 @@ the user's default web browser. If a chapter is specified, the function
 constructs the URL to access the chapter directly.
 }
 \examples{
+\dontrun{
 open_tidy_finance_website()
 open_tidy_finance_website("beta-estimation")
-
+}
 }
 \seealso{
 Other utility functions: 

@@ -16,8 +16,8 @@ knitr::opts_chunk$set(
 # tidyfinance
 
 <!-- badges: start -->
-`r badger::badge_cran_release()`
-`r badger::badge_cran_download(type = "grand-total")`
+[![CRAN status](https://www.r-pkg.org/badges/version/tidyfinance)](https://CRAN.R-project.org/package=tidyfinance)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/tidyfinance)](https://cran.r-project.org/package=tidyfinance)
 `r badger::badge_repostatus("Active")`
 [![R-CMD-check](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/R-CMD-check.yaml)
 [![Lint](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/lint.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/lint.yaml/badge.svg)

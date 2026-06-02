@@ -18,8 +18,10 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' open_tidy_finance_website()
 #' open_tidy_finance_website("beta-estimation")
+#' }
 #'
 open_tidy_finance_website <- function(chapter = NULL) {
   base_url <- "https://www.tidy-finance.org/r/"
