@@ -2,6 +2,10 @@
 
 ## Improvements
 
+- `download_data_wrds_crsp()` now errors informatively when `version = "v1"`
+  is used with an `end_date` later than December 2024, reflecting the
+  discontinuation of the CRSP legacy version at the end of 2024.
+
 - Removed the "experimental" lifecycle badge from `assign_portfolio()`,
   `compute_breakpoints()`, `compute_rolling_value()`, `estimate_model()`,
   and `join_lagged_values()`, which are now considered stable.
