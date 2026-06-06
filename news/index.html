@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <h2 class="pkg-version" data-toc-text="development version" id="tidyfinance-development-version">tidyfinance (development version)<a class="anchor" aria-label="anchor" href="#tidyfinance-development-version"></a></h2>
 <div class="section level3">
 <h3 id="improvements-development-version">Improvements<a class="anchor" aria-label="anchor" href="#improvements-development-version"></a></h3>
-<ul><li>Removed the “experimental” lifecycle badge from <code><a href="../reference/assign_portfolio.html">assign_portfolio()</a></code>, <code><a href="../reference/compute_breakpoints.html">compute_breakpoints()</a></code>, <code><a href="../reference/compute_rolling_value.html">compute_rolling_value()</a></code>, <code><a href="../reference/estimate_model.html">estimate_model()</a></code>, and <code><a href="../reference/join_lagged_values.html">join_lagged_values()</a></code>, which are now considered stable.</li>
+<ul><li><p><code><a href="../reference/download_data_wrds_crsp.html">download_data_wrds_crsp()</a></code> now errors informatively when <code>version = "v1"</code> is used with an <code>end_date</code> later than December 2024, reflecting the discontinuation of the CRSP legacy version at the end of 2024.</p></li>
+<li><p>Removed the “experimental” lifecycle badge from <code><a href="../reference/assign_portfolio.html">assign_portfolio()</a></code>, <code><a href="../reference/compute_breakpoints.html">compute_breakpoints()</a></code>, <code><a href="../reference/compute_rolling_value.html">compute_rolling_value()</a></code>, <code><a href="../reference/estimate_model.html">estimate_model()</a></code>, and <code><a href="../reference/join_lagged_values.html">join_lagged_values()</a></code>, which are now considered stable.</p></li>
 </ul></div>
 </div>
     <div class="section level2">

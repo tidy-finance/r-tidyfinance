@@ -135,8 +135,8 @@ download_data("constituents", index = "DAX")
 #>  5 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
 #>  6 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
 #>  7 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
-#>  8 RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     
-#>  9 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
+#>  8 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
+#>  9 RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     
 #> 10 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
 #> # ℹ 30 more rows
 download_data("fred", series = c("GDP", "CPIAUCNS"))
@@ -156,22 +156,22 @@ download_data("fred", series = c("GDP", "CPIAUCNS"))
 #> 10 1949-04-01  271. GDP   
 #> # ℹ 1,667 more rows
 download_data("stock_prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-06-02 to
-#> 2025-06-02 to avoid downloading large amounts of data.
-#> # A tibble: 498 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-06-06 to
+#> 2025-06-06 to avoid downloading large amounts of data.
+#> # A tibble: 500 × 8
 #>    symbol date          volume  open   low  high close adjusted_close
 #>    <chr>  <date>         <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-06-03  50080500  193.  193.  195.  194.           192.
-#>  2 AAPL   2024-06-04  47471400  195.  193.  195.  194.           193.
-#>  3 AAPL   2024-06-05  54156800  195.  195.  197.  196.           194.
-#>  4 AAPL   2024-06-06  41181800  196.  194.  196.  194.           193.
-#>  5 AAPL   2024-06-07  53103900  195.  194.  197.  197.           195.
-#>  6 AAPL   2024-06-10  97010200  197.  192.  197.  193.           191.
-#>  7 AAPL   2024-06-11 172373300  194.  194.  207.  207.           205.
-#>  8 AAPL   2024-06-12 198134300  207.  207.  220.  213.           211.
-#>  9 AAPL   2024-06-13  97862700  215.  212.  217.  214.           212.
-#> 10 AAPL   2024-06-14  70122700  214.  211.  215.  212.           211.
-#> # ℹ 488 more rows
+#>  1 AAPL   2024-06-06  41181800  196.  194.  196.  194.           193.
+#>  2 AAPL   2024-06-07  53103900  195.  194.  197.  197.           195.
+#>  3 AAPL   2024-06-10  97010200  197.  192.  197.  193.           191.
+#>  4 AAPL   2024-06-11 172373300  194.  194.  207.  207.           205.
+#>  5 AAPL   2024-06-12 198134300  207.  207.  220.  213.           211.
+#>  6 AAPL   2024-06-13  97862700  215.  212.  217.  214.           212.
+#>  7 AAPL   2024-06-14  70122700  214.  211.  215.  212.           211.
+#>  8 AAPL   2024-06-17  93728300  213.  213.  219.  217.           215.
+#>  9 AAPL   2024-06-18  79943300  218.  213   219.  214.           212.
+#> 10 AAPL   2024-06-20  86172500  214.  209.  214.  210.           208.
+#> # ℹ 490 more rows
 download_data(
   "tidyfinance",
   "risk_free",

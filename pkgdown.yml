@@ -2,7 +2,7 @@ pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles: {}
-last_built: 2026-06-02T10:54Z
+last_built: 2026-06-06T06:47Z
 urls:
   reference: https://package.tidy-finance.org/reference
   article: https://package.tidy-finance.org/articles

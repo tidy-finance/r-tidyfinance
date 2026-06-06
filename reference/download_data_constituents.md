@@ -86,8 +86,8 @@ Other download functions:
 #>  5 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
 #>  6 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
 #>  7 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
-#>  8 RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     
-#>  9 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
+#>  8 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
+#>  9 RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     
 #> 10 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
 #> # ℹ 30 more rows
 # }

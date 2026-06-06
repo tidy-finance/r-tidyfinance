@@ -4,6 +4,11 @@
 
 ### Improvements
 
+- [`download_data_wrds_crsp()`](https://package.tidy-finance.org/reference/download_data_wrds_crsp.md)
+  now errors informatively when `version = "v1"` is used with an
+  `end_date` later than December 2024, reflecting the discontinuation of
+  the CRSP legacy version at the end of 2024.
+
 - Removed the “experimental” lifecycle badge from
   [`assign_portfolio()`](https://package.tidy-finance.org/reference/assign_portfolio.md),
   [`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md),
