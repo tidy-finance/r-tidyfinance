@@ -11,8 +11,8 @@ Helper functions for empirical research in financial economics, addressing a var
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://package.tidy-finance.org/}
   \item \url{https://www.tidy-finance.org/r/}
-  \item \url{https://github.com/tidy-finance/r-tidyfinance}
   \item Report bugs at \url{https://github.com/tidy-finance/r-tidyfinance/issues}
 }
 

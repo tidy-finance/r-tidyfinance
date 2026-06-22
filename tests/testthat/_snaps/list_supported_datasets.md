@@ -99,8 +99,8 @@
       2 constituents         various                   Index Constituents       
       3 fred                 various                   FRED                     
       4 osap                 Open Source Asset Pricing Open Source Asset Pricing
-      5 risk_free            Risk-Free Rate            tidyfinance              
-      6 high_frequency_sp500 High Frequency S&P 500    tidyfinance              
-      7 factor_library       Factor Library            tidyfinance              
-      8 factor_library_grid  Factor Library Grid       tidyfinance              
+      5 risk_free            Risk-Free Rate            Tidy Finance             
+      6 high_frequency_sp500 High Frequency S&P 500    Tidy Finance             
+      7 factor_library       Factor Library            Tidy Finance             
+      8 factor_library_grid  Factor Library Grid       Tidy Finance             
 

@@ -49,7 +49,7 @@ test_that("download_data routes pseudo to simulate_pseudo_data", {
   )
 
   out <- download_data(
-    domain = "pseudo",
+    domain = "Pseudo Data",
     dataset = "crsp_monthly",
     start_date = "2020-01-01",
     end_date = "2020-06-30"

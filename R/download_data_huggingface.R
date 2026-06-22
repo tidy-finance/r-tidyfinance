@@ -405,7 +405,7 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
 #' [download_factor_library_ids()].
 #'
 #' Equivalent to calling
-#' `download_data("tidyfinance", "factor_library_grid")`.
+#' `download_data("Tidy Finance", "factor_library_grid")`.
 #'
 #' @returns A tibble with one row per portfolio construction in the factor
 #'   library, including the integer `id` column used by

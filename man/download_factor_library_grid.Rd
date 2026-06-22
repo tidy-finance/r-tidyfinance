@@ -21,7 +21,7 @@ exist before requesting their returns with
 }
 \details{
 Equivalent to calling
-\code{download_data("tidyfinance", "factor_library_grid")}.
+\code{download_data("Tidy Finance", "factor_library_grid")}.
 }
 \examples{
 \dontrun{
