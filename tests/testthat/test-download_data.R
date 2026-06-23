@@ -16,16 +16,16 @@ test_that("download_data dispatches supported domains", {
   )
 
   cases <- list(
-    list("famafrench", "d"),
-    list("globalq", "d"),
-    list("macro_predictors", "d"),
-    list("wrds", "d"),
-    list("constituents", NULL),
-    list("fred", NULL),
-    list("stock_prices", NULL),
-    list("osap", NULL),
-    list("tidyfinance", "risk_free"),
-    list("tidyfinance", "factor_library")
+    list("Fama-French", "d"),
+    list("Global Q", "d"),
+    list("Goyal-Welch", "d"),
+    list("WRDS", "d"),
+    list("Index Constituents", NULL),
+    list("FRED", NULL),
+    list("Stock Prices", NULL),
+    list("Open Source Asset Pricing", NULL),
+    list("Tidy Finance", "risk_free"),
+    list("Tidy Finance", "factor_library")
   )
 
   for (case in cases) {
@@ -43,7 +43,7 @@ test_that("download_data handles argument errors and legacy inputs", {
     check_supported_domain = function(domain) NULL,
     is_legacy_type = function(x) identical(x, "legacy"),
     parse_type_to_domain_dataset = function(type) {
-      list(domain = "fred", dataset = NULL)
+      list(domain = "FRED", dataset = NULL)
     },
     download_data_fred = function(...) out
   )
@@ -110,33 +110,50 @@ test_that("parse_type_to_domain_dataset parses all legacy formats", {
 
   expect_equal(
     parse_type_to_domain_dataset("ff"),
-    list(domain = "factors_ff", dataset = "ff_data")
+    list(domain = "Fama-French", dataset = "ff_data")
   )
   expect_equal(
     parse_type_to_domain_dataset("q"),
-    list(domain = "factors_q", dataset = "q")
+    list(domain = "Global Q", dataset = "q")
   )
   expect_equal(
     parse_type_to_domain_dataset("macro_predictors_monthly"),
-    list(domain = "macro_predictors", dataset = "monthly")
+    list(domain = "Goyal-Welch", dataset = "monthly")
   )
   expect_equal(
     parse_type_to_domain_dataset("wrds_crsp"),
-    list(domain = "wrds", dataset = "crsp")
+    list(domain = "WRDS", dataset = "crsp")
   )
   expect_equal(
     parse_type_to_domain_dataset("hf_sp500"),
-    list(domain = "tidyfinance", dataset = "sp500")
+    list(domain = "Tidy Finance", dataset = "sp500")
   )
   expect_equal(
     parse_type_to_domain_dataset("osap"),
-    list(domain = "osap", dataset = NULL)
+    list(domain = "Open Source Asset Pricing", dataset = NULL)
   )
 })
 
+test_that("resolve_domain_alias maps deprecated names and warns", {
+  expect_warning(
+    expect_identical(resolve_domain_alias("famafrench"), "Fama-French"),
+    "deprecated"
+  )
+  expect_warning(
+    expect_identical(resolve_domain_alias("pseudo"), "Pseudo Data"),
+    "deprecated"
+  )
+  expect_warning(
+    expect_identical(resolve_domain_alias("tidyfinance"), "Tidy Finance"),
+    "deprecated"
+  )
+  # Canonical names pass through unchanged without a warning
+  expect_identical(resolve_domain_alias("WRDS"), "WRDS")
+})
+
 test_that("check_supported_domain accepts known domains and rejects others", {
-  expect_no_error(check_supported_domain("famafrench"))
-  expect_no_error(check_supported_domain("tidyfinance"))
+  expect_no_error(check_supported_domain("Fama-French"))
+  expect_no_error(check_supported_domain("Tidy Finance"))
 })
 
 test_that("download_data requires domain", {

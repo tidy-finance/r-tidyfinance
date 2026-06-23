@@ -1,10 +1,11 @@
-#' Internal Router for `domain = "pseudo"`
+#' Internal Router for `domain = "Pseudo Data"`
 #'
-#' Single entry point invoked by [download_data()] when `domain = "pseudo"`.
-#' Emits the pseudo-data notice, validates the requested `dataset`, and
-#' dispatches to the corresponding per-dataset generator. Not exported; users
-#' access pseudo data via `download_data(domain = "pseudo", ...)` or the
-#' per-dataset `download_data_pseudo_*()` functions.
+#' Single entry point invoked by [download_data()] when
+#' `domain = "Pseudo Data"`. Emits the pseudo-data notice, validates the
+#' requested `dataset`, and dispatches to the corresponding per-dataset
+#' generator. Not exported; users access pseudo data via
+#' `download_data(domain = "Pseudo Data", ...)` or the per-dataset
+#' `download_data_pseudo_*()` functions.
 #'
 #' @param dataset A string identifying the pseudo dataset to return.
 #'   Supported: `"crsp_monthly"`, `"crsp_daily"`, `"compustat_annual"`,
@@ -33,8 +34,8 @@ simulate_pseudo_data <- function(
 
   cli::cli_inform(c(
     i = paste(
-      "Returning pseudo data from {.code domain = \"pseudo\"}.",
-      "Schema matches {.code domain = \"wrds\"}, but values are simulated",
+      "Returning pseudo data from {.code domain = \"Pseudo Data\"}.",
+      "Schema matches {.code domain = \"WRDS\"}, but values are simulated",
       "and not suitable for inference."
     )
   ))

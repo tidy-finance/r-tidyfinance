@@ -2,6 +2,13 @@
 
 ## Improvements
 
+- `download_data()` now uses the human-readable domain names returned by
+  `list_supported_datasets()` (e.g., `"Fama-French"`, `"Global Q"`,
+  `"WRDS"`, `"Tidy Finance"`). The `"pseudo"` and `"tidyfinance"` domains
+  were renamed to `"Pseudo Data"` and `"Tidy Finance"`. The previous
+  machine-readable domain names (e.g., `"famafrench"`, `"wrds"`,
+  `"pseudo"`, `"tidyfinance"`) are soft-deprecated but still accepted.
+
 - `download_data_wrds_crsp()` now errors informatively when `version = "v1"`
   is used with an `end_date` later than December 2024, reflecting the
   discontinuation of the CRSP legacy version at the end of 2024.
