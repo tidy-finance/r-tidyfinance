@@ -4,6 +4,15 @@
 
 ### Improvements
 
+- [`download_data()`](https://package.tidy-finance.org/reference/download_data.md)
+  now uses the human-readable domain names returned by
+  [`list_supported_datasets()`](https://package.tidy-finance.org/reference/list_supported_datasets.md)
+  (e.g., `"Fama-French"`, `"Global Q"`, `"WRDS"`, `"Tidy Finance"`). The
+  `"pseudo"` and `"tidyfinance"` domains were renamed to `"Pseudo Data"`
+  and `"Tidy Finance"`. The previous machine-readable domain names
+  (e.g., `"famafrench"`, `"wrds"`, `"pseudo"`, `"tidyfinance"`) are
+  soft-deprecated but still accepted.
+
 - [`download_data_wrds_crsp()`](https://package.tidy-finance.org/reference/download_data_wrds_crsp.md)
   now errors informatively when `version = "v1"` is used with an
   `end_date` later than December 2024, reflecting the discontinuation of

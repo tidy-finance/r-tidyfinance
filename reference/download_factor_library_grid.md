@@ -22,7 +22,7 @@ including the integer `id` column used by
 ## Details
 
 Equivalent to calling
-`download_data("tidyfinance", "factor_library_grid")`.
+`download_data("Tidy Finance", "factor_library_grid")`.
 
 ## See also
 

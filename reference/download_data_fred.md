@@ -76,7 +76,7 @@ Other download functions:
 # \donttest{
   download_data_fred("CPIAUCNS")
 #> No `start_date` or `end_date` provided. Returning the full data set.
-#> # A tibble: 1,360 × 3
+#> # A tibble: 1,361 × 3
 #>    date       value series  
 #>    <date>     <dbl> <chr>   
 #>  1 1913-01-01   9.8 CPIAUCNS
@@ -89,7 +89,7 @@ Other download functions:
 #>  8 1913-08-01   9.9 CPIAUCNS
 #>  9 1913-09-01  10   CPIAUCNS
 #> 10 1913-10-01  10   CPIAUCNS
-#> # ℹ 1,350 more rows
+#> # ℹ 1,351 more rows
   download_data_fred(c("GDP", "CPIAUCNS"), "2010-01-01", "2010-12-31")
 #> # A tibble: 16 × 3
 #>    date        value series  

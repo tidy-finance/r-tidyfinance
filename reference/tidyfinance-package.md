@@ -12,9 +12,9 @@ For more information and resources related to the book, visit
 
 Useful links:
 
-- <https://www.tidy-finance.org/r/>
+- <https://package.tidy-finance.org/>
 
-- <https://github.com/tidy-finance/r-tidyfinance>
+- <https://www.tidy-finance.org/r/>
 
 - Report bugs at <https://github.com/tidy-finance/r-tidyfinance/issues>
 

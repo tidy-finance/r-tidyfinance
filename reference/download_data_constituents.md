@@ -76,19 +76,19 @@ Other download functions:
 ``` r
 # \donttest{
   download_data_constituents("DAX")
-#> # A tibble: 40 × 5
+#> # A tibble: 41 × 5
 #>    symbol  name                               location    exchange      currency
 #>    <chr>   <chr>                              <chr>       <chr>         <chr>   
 #>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
-#>  2 SAP.DE  SAP                                Deutschland Xetra         EUR     
-#>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
-#>  4 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
-#>  5 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
-#>  6 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  2 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
+#>  3 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
+#>  4 SAP.DE  SAP                                Deutschland Xetra         EUR     
+#>  5 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  6 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
 #>  7 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
 #>  8 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
-#>  9 RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     
-#> 10 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
-#> # ℹ 30 more rows
+#>  9 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
+#> 10 RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     
+#> # ℹ 31 more rows
 # }
 ```

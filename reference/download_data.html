@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,11 +84,15 @@ processing the data.</p>
 
 
 <dl><dt id="arg-domain">domain<a class="anchor" aria-label="anchor" href="#arg-domain"></a></dt>
-<dd><p>The domain of the dataset to download (e.g.,
-"famafrench", "globalq", "macro_predictors", "wrds", "pseudo",
-"constituents", "fred", "stock_prices", "osap", "tidyfinance").
-Use <code>"pseudo"</code> to obtain pseudo data with the same schema as
-<code>"wrds"</code> for testing or rendering without a WRDS subscription.</p></dd>
+<dd><p>The domain of the dataset to download, using the names
+returned by <code><a href="list_supported_datasets.html">list_supported_datasets()</a></code>: <code>"Fama-French"</code>, <code>"Global Q"</code>,
+<code>"Goyal-Welch"</code>, <code>"WRDS"</code>, <code>"Pseudo Data"</code>, <code>"Index Constituents"</code>,
+<code>"FRED"</code>, <code>"Stock Prices"</code>, <code>"Open Source Asset Pricing"</code>, or
+<code>"Tidy Finance"</code>. Use <code>"Pseudo Data"</code> to obtain pseudo data with the
+same schema as <code>"WRDS"</code> for testing or rendering without a WRDS
+subscription. The previous machine-readable names (e.g., <code>"famafrench"</code>,
+<code>"wrds"</code>, <code>"pseudo"</code>, <code>"tidyfinance"</code>) are soft-deprecated but still
+accepted.</p></dd>
 
 
 <dt id="arg-dataset">dataset<a class="anchor" aria-label="anchor" href="#arg-dataset"></a></dt>
@@ -118,8 +122,8 @@ dataset type.</p></dd>
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments passed to specific download functions
 depending on the <code>domain</code>. For instance, if <code>domain</code> is
-<code>"constituents"</code>, arguments are passed to
-<code><a href="download_data_constituents.html">download_data_constituents()</a></code>. If <code>domain</code> is <code>"tidyfinance"</code> and
+<code>"Index Constituents"</code>, arguments are passed to
+<code><a href="download_data_constituents.html">download_data_constituents()</a></code>. If <code>domain</code> is <code>"Tidy Finance"</code> and
 <code>dataset</code> is <code>"factor_library"</code>, arguments are either filter inputs
 (e.g., <code>sorting_variable</code>, <code>rebalancing</code>, <code>fill_all</code>) or an explicit
 <code>ids</code> vector that bypasses the grid filter and downloads the
@@ -152,7 +156,7 @@ financial metrics, filtered by the specified date range.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"famafrench"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Fama-French"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"Fama/French 5 Factors (2x3) [Daily]"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"2000-01-01"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"2020-12-31"</span></span></span>
@@ -171,7 +175,7 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2000-01-13     0.015<span style="text-decoration: underline;">9</span>  0.004<span style="text-decoration: underline;">7</span> -<span style="color: #BB0000;">0.008</span><span style="color: #BB0000; text-decoration: underline;">4</span> -<span style="color: #BB0000;">0.017</span><span style="color: #BB0000; text-decoration: underline;">2</span> -<span style="color: #BB0000;">0.010</span><span style="color: #BB0000; text-decoration: underline;">3</span>    0.000<span style="text-decoration: underline;">2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2000-01-14     0.011<span style="text-decoration: underline;">4</span>  0.002<span style="text-decoration: underline;">2</span> -<span style="color: #BB0000;">0.004</span><span style="color: #BB0000; text-decoration: underline;">8</span> -<span style="color: #BB0000;">0.003</span><span style="color: #BB0000; text-decoration: underline;">4</span> -<span style="color: #BB0000;">0.006</span>     0.000<span style="text-decoration: underline;">2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 5,274 more rows</span></span>
-<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"macro_predictors"</span>, <span class="st">"monthly"</span>, <span class="st">"2000-01-01"</span>, <span class="st">"2020-12-31"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Goyal-Welch"</span>, <span class="st">"monthly"</span>, <span class="st">"2000-01-01"</span>, <span class="st">"2020-12-31"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 252 × 15</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    date        rp_div    dp    dy    ep    de    svar    bm    ntis    tbl</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -187,24 +191,24 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2000-10-01 -<span style="color: #BB0000;">0.087</span><span style="color: #BB0000; text-decoration: underline;">6</span> -<span style="color: #BB0000;">4.47</span> -<span style="color: #BB0000;">4.48</span> -<span style="color: #BB0000;">3.30</span> -<span style="color: #BB0000;">1.17</span> 0.005<span style="text-decoration: underline;">57</span> 0.149 0.003<span style="text-decoration: underline;">74</span> 0.061<span style="text-decoration: underline;">1</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 242 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 5 more variables: lty &lt;dbl&gt;, ltr &lt;dbl&gt;, tms &lt;dbl&gt;, dfy &lt;dbl&gt;, infl &lt;dbl&gt;</span></span>
-<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"constituents"</span>, index <span class="op">=</span> <span class="st">"DAX"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 40 × 5</span></span>
+<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Index Constituents"</span>, index <span class="op">=</span> <span class="st">"DAX"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 41 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    symbol  name                               location    exchange      currency</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> SAP.DE  SAP                                Deutschland Xetra         EUR     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> SAP.DE  SAP                                Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 30 more rows</span></span>
-<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"fred"</span>, series <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GDP"</span>, <span class="st">"CPIAUCNS"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 31 more rows</span></span>
+<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"FRED"</span>, series <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GDP"</span>, <span class="st">"CPIAUCNS"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Returning the full data set.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,677 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,678 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    date       value series</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 1947-01-01  243. GDP   </span>
@@ -217,26 +221,26 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 1948-10-01  280. GDP   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 1949-01-01  275. GDP   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 1949-04-01  271. GDP   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,667 more rows</span></span>
-<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"stock_prices"</span>, symbols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AAPL"</span>, <span class="st">"MSFT"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-06-06 to</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-06-06 to avoid downloading large amounts of data.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 500 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    symbol date          volume  open   low  high close adjusted_close</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AAPL   2024-06-06  41<span style="text-decoration: underline;">181</span>800  196.  194.  196.  194.           193.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AAPL   2024-06-07  53<span style="text-decoration: underline;">103</span>900  195.  194.  197.  197.           195.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AAPL   2024-06-10  97<span style="text-decoration: underline;">010</span>200  197.  192.  197.  193.           191.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AAPL   2024-06-11 172<span style="text-decoration: underline;">373</span>300  194.  194.  207.  207.           205.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AAPL   2024-06-12 198<span style="text-decoration: underline;">134</span>300  207.  207.  220.  213.           211.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AAPL   2024-06-13  97<span style="text-decoration: underline;">862</span>700  215.  212.  217.  214.           212.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AAPL   2024-06-14  70<span style="text-decoration: underline;">122</span>700  214.  211.  215.  212.           211.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AAPL   2024-06-17  93<span style="text-decoration: underline;">728</span>300  213.  213.  219.  217.           215.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AAPL   2024-06-18  79<span style="text-decoration: underline;">943</span>300  218.  213   219.  214.           212.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AAPL   2024-06-20  86<span style="text-decoration: underline;">172</span>500  214.  209.  214.  210.           208.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 490 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,668 more rows</span></span>
+<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Stock Prices"</span>, symbols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AAPL"</span>, <span class="st">"MSFT"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-06-23 to</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-06-23 to avoid downloading large amounts of data.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 498 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    symbol date         volume  open   low  high close adjusted_close</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AAPL   2024-06-24 80<span style="text-decoration: underline;">727</span>000  208.  207.  213.  208.           206.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AAPL   2024-06-25 55<span style="text-decoration: underline;">549</span>700  209.  209.  211.  209.           207.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AAPL   2024-06-26 66<span style="text-decoration: underline;">213</span>200  212.  211.  215.  213.           211.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AAPL   2024-06-27 49<span style="text-decoration: underline;">772</span>700  215.  212.  216.  214.           212.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AAPL   2024-06-28 82<span style="text-decoration: underline;">542</span>700  216.  210.  216.  211.           209.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AAPL   2024-07-01 60<span style="text-decoration: underline;">402</span>900  212.  212.  218.  217.           215.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AAPL   2024-07-02 58<span style="text-decoration: underline;">046</span>200  216.  215.  220.  220.           218.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AAPL   2024-07-03 37<span style="text-decoration: underline;">369</span>800  220   219.  222.  222.           220.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AAPL   2024-07-05 60<span style="text-decoration: underline;">412</span>400  222.  222.  226.  226.           224.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AAPL   2024-07-08 59<span style="text-decoration: underline;">085</span>900  227.  223.  228.  228.           226.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 488 more rows</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"tidyfinance"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Tidy Finance"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"risk_free"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"2020-01-01"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"2020-12-31"</span></span></span>
@@ -257,7 +261,7 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> 2020-11-01 0.000<span style="text-decoration: underline;">067</span>6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> 2020-12-01 0.000<span style="text-decoration: underline;">067</span>6</span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"tidyfinance"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Tidy Finance"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"high_frequency_sp500"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"2007-07-26"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"2007-07-27"</span></span></span>
@@ -279,7 +283,7 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: depth0_bid &lt;dbl&gt;, depth5_ask &lt;dbl&gt;, depth5_bid &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   spread &lt;dbl&gt;</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"tidyfinance"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"Tidy Finance"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"factor_library"</span>,</span></span>
 <span class="r-in"><span>  sorting_variable <span class="op">=</span> <span class="st">"52w"</span>,</span></span>
 <span class="r-in"><span>  rebalancing <span class="op">=</span> <span class="st">"annual"</span></span></span>
@@ -304,7 +308,7 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   rebalancing &lt;chr&gt;, n_portfolios_main &lt;chr&gt;, sorting_method &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   breakpoints_min_size_threshold &lt;dbl&gt;, n_portfolios_secondary &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   breakpoints_exchanges &lt;chr&gt;, weighting_scheme &lt;chr&gt;</span></span>
-<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"tidyfinance"</span>, <span class="st">"factor_library"</span>, ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">3L</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Tidy Finance"</span>, <span class="st">"factor_library"</span>, ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">3L</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Returning the full data set.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 2,331 × 17</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       id date       ret_type        ret sorting_variable min_size_quantile</span>
@@ -325,7 +329,7 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   rebalancing &lt;chr&gt;, n_portfolios_main &lt;chr&gt;, sorting_method &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   breakpoints_min_size_threshold &lt;dbl&gt;, n_portfolios_secondary &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   breakpoints_exchanges &lt;chr&gt;, weighting_scheme &lt;chr&gt;</span></span>
-<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"tidyfinance"</span>, <span class="st">"factor_library_grid"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Tidy Finance"</span>, <span class="st">"factor_library_grid"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 841,536 × 14</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       id sorting_variable min_size_quantile exclude_financials exclude_utilities</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>            </span>

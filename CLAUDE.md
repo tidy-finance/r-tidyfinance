@@ -5,10 +5,9 @@
 - **Never edit `README.md` directly.** It is generated from `README.Rmd`
   (the file header says so: *“README.md is generated from README.Rmd”*).
 - If a change should appear in the README, edit `README.Rmd` and
-  regenerate `README.md`
-  (e.g. [`devtools::build_readme()`](https://devtools.r-lib.org/reference/build_readme.html)),
-  then commit **both** files together. A `README.md` change must never
-  be committed without the corresponding `README.Rmd` change.
+  regenerate `README.md` (e.g. `devtools::build_readme()`), then commit
+  **both** files together. A `README.md` change must never be committed
+  without the corresponding `README.Rmd` change.
 
 ## Versioning
 

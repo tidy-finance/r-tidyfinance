@@ -23,11 +23,15 @@ download_data(
 
 - domain:
 
-  The domain of the dataset to download (e.g., "famafrench", "globalq",
-  "macro_predictors", "wrds", "pseudo", "constituents", "fred",
-  "stock_prices", "osap", "tidyfinance"). Use `"pseudo"` to obtain
-  pseudo data with the same schema as `"wrds"` for testing or rendering
-  without a WRDS subscription.
+  The domain of the dataset to download, using the names returned by
+  [`list_supported_datasets()`](https://package.tidy-finance.org/reference/list_supported_datasets.md):
+  `"Fama-French"`, `"Global Q"`, `"Goyal-Welch"`, `"WRDS"`,
+  `"Pseudo Data"`, `"Index Constituents"`, `"FRED"`, `"Stock Prices"`,
+  `"Open Source Asset Pricing"`, or `"Tidy Finance"`. Use
+  `"Pseudo Data"` to obtain pseudo data with the same schema as `"WRDS"`
+  for testing or rendering without a WRDS subscription. The previous
+  machine-readable names (e.g., `"famafrench"`, `"wrds"`, `"pseudo"`,
+  `"tidyfinance"`) are soft-deprecated but still accepted.
 
 - dataset:
 
@@ -52,10 +56,10 @@ download_data(
 - ...:
 
   Additional arguments passed to specific download functions depending
-  on the `domain`. For instance, if `domain` is `"constituents"`,
+  on the `domain`. For instance, if `domain` is `"Index Constituents"`,
   arguments are passed to
   [`download_data_constituents()`](https://package.tidy-finance.org/reference/download_data_constituents.md).
-  If `domain` is `"tidyfinance"` and `dataset` is `"factor_library"`,
+  If `domain` is `"Tidy Finance"` and `dataset` is `"factor_library"`,
   arguments are either filter inputs (e.g., `sorting_variable`,
   `rebalancing`, `fill_all`) or an explicit `ids` vector that bypasses
   the grid filter and downloads the specified portfolios directly via
@@ -89,7 +93,7 @@ Other download functions:
 ``` r
 # \donttest{
 download_data(
-  "famafrench",
+  "Fama-French",
   "Fama/French 5 Factors (2x3) [Daily]",
   "2000-01-01",
   "2020-12-31"
@@ -108,7 +112,7 @@ download_data(
 #>  9 2000-01-13     0.0159  0.0047 -0.0084 -0.0172 -0.0103    0.0002
 #> 10 2000-01-14     0.0114  0.0022 -0.0048 -0.0034 -0.006     0.0002
 #> # ℹ 5,274 more rows
-download_data("macro_predictors", "monthly", "2000-01-01", "2020-12-31")
+download_data("Goyal-Welch", "monthly", "2000-01-01", "2020-12-31")
 #> # A tibble: 252 × 15
 #>    date        rp_div    dp    dy    ep    de    svar    bm    ntis    tbl
 #>    <date>       <dbl> <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl>   <dbl>  <dbl>
@@ -124,24 +128,24 @@ download_data("macro_predictors", "monthly", "2000-01-01", "2020-12-31")
 #> 10 2000-10-01 -0.0876 -4.47 -4.48 -3.30 -1.17 0.00557 0.149 0.00374 0.0611
 #> # ℹ 242 more rows
 #> # ℹ 5 more variables: lty <dbl>, ltr <dbl>, tms <dbl>, dfy <dbl>, infl <dbl>
-download_data("constituents", index = "DAX")
-#> # A tibble: 40 × 5
+download_data("Index Constituents", index = "DAX")
+#> # A tibble: 41 × 5
 #>    symbol  name                               location    exchange      currency
 #>    <chr>   <chr>                              <chr>       <chr>         <chr>   
 #>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
-#>  2 SAP.DE  SAP                                Deutschland Xetra         EUR     
-#>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
-#>  4 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
-#>  5 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
-#>  6 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  2 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
+#>  3 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
+#>  4 SAP.DE  SAP                                Deutschland Xetra         EUR     
+#>  5 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  6 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
 #>  7 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
 #>  8 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
-#>  9 RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     
-#> 10 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
-#> # ℹ 30 more rows
-download_data("fred", series = c("GDP", "CPIAUCNS"))
+#>  9 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
+#> 10 RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     
+#> # ℹ 31 more rows
+download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> No `start_date` or `end_date` provided. Returning the full data set.
-#> # A tibble: 1,677 × 3
+#> # A tibble: 1,678 × 3
 #>    date       value series
 #>    <date>     <dbl> <chr> 
 #>  1 1947-01-01  243. GDP   
@@ -154,26 +158,26 @@ download_data("fred", series = c("GDP", "CPIAUCNS"))
 #>  8 1948-10-01  280. GDP   
 #>  9 1949-01-01  275. GDP   
 #> 10 1949-04-01  271. GDP   
-#> # ℹ 1,667 more rows
-download_data("stock_prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-06-06 to
-#> 2025-06-06 to avoid downloading large amounts of data.
-#> # A tibble: 500 × 8
-#>    symbol date          volume  open   low  high close adjusted_close
-#>    <chr>  <date>         <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-06-06  41181800  196.  194.  196.  194.           193.
-#>  2 AAPL   2024-06-07  53103900  195.  194.  197.  197.           195.
-#>  3 AAPL   2024-06-10  97010200  197.  192.  197.  193.           191.
-#>  4 AAPL   2024-06-11 172373300  194.  194.  207.  207.           205.
-#>  5 AAPL   2024-06-12 198134300  207.  207.  220.  213.           211.
-#>  6 AAPL   2024-06-13  97862700  215.  212.  217.  214.           212.
-#>  7 AAPL   2024-06-14  70122700  214.  211.  215.  212.           211.
-#>  8 AAPL   2024-06-17  93728300  213.  213.  219.  217.           215.
-#>  9 AAPL   2024-06-18  79943300  218.  213   219.  214.           212.
-#> 10 AAPL   2024-06-20  86172500  214.  209.  214.  210.           208.
-#> # ℹ 490 more rows
+#> # ℹ 1,668 more rows
+download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
+#> No `start_date` or `end_date` provided. Using the range 2024-06-23 to
+#> 2025-06-23 to avoid downloading large amounts of data.
+#> # A tibble: 498 × 8
+#>    symbol date         volume  open   low  high close adjusted_close
+#>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
+#>  1 AAPL   2024-06-24 80727000  208.  207.  213.  208.           206.
+#>  2 AAPL   2024-06-25 55549700  209.  209.  211.  209.           207.
+#>  3 AAPL   2024-06-26 66213200  212.  211.  215.  213.           211.
+#>  4 AAPL   2024-06-27 49772700  215.  212.  216.  214.           212.
+#>  5 AAPL   2024-06-28 82542700  216.  210.  216.  211.           209.
+#>  6 AAPL   2024-07-01 60402900  212.  212.  218.  217.           215.
+#>  7 AAPL   2024-07-02 58046200  216.  215.  220.  220.           218.
+#>  8 AAPL   2024-07-03 37369800  220   219.  222.  222.           220.
+#>  9 AAPL   2024-07-05 60412400  222.  222.  226.  226.           224.
+#> 10 AAPL   2024-07-08 59085900  227.  223.  228.  228.           226.
+#> # ℹ 488 more rows
 download_data(
-  "tidyfinance",
+  "Tidy Finance",
   "risk_free",
   "2020-01-01",
   "2020-12-31"
@@ -194,7 +198,7 @@ download_data(
 #> 11 2020-11-01 0.0000676
 #> 12 2020-12-01 0.0000676
 download_data(
-  "tidyfinance",
+  "Tidy Finance",
   "high_frequency_sp500",
   "2007-07-26",
   "2007-07-27"
@@ -216,7 +220,7 @@ download_data(
 #> # ℹ 4 more variables: depth0_bid <dbl>, depth5_ask <dbl>, depth5_bid <dbl>,
 #> #   spread <dbl>
 download_data(
-  "tidyfinance",
+  "Tidy Finance",
   "factor_library",
   sorting_variable = "52w",
   rebalancing = "annual"
@@ -241,7 +245,7 @@ download_data(
 #> #   rebalancing <chr>, n_portfolios_main <chr>, sorting_method <chr>,
 #> #   breakpoints_min_size_threshold <dbl>, n_portfolios_secondary <dbl>,
 #> #   breakpoints_exchanges <chr>, weighting_scheme <chr>
-download_data("tidyfinance", "factor_library", ids = c(1L, 2L, 3L))
+download_data("Tidy Finance", "factor_library", ids = c(1L, 2L, 3L))
 #> No `start_date` or `end_date` provided. Returning the full data set.
 #> # A data frame: 2,331 × 17
 #>       id date       ret_type        ret sorting_variable min_size_quantile
@@ -262,7 +266,7 @@ download_data("tidyfinance", "factor_library", ids = c(1L, 2L, 3L))
 #> #   rebalancing <chr>, n_portfolios_main <chr>, sorting_method <chr>,
 #> #   breakpoints_min_size_threshold <dbl>, n_portfolios_secondary <dbl>,
 #> #   breakpoints_exchanges <chr>, weighting_scheme <chr>
-download_data("tidyfinance", "factor_library_grid")
+download_data("Tidy Finance", "factor_library_grid")
 #> # A data frame: 841,536 × 14
 #>       id sorting_variable min_size_quantile exclude_financials exclude_utilities
 #>    <int> <chr>                        <dbl> <lgl>              <lgl>            
