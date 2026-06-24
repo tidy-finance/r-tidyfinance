@@ -58,7 +58,7 @@ The function always requires a `domain` argument and depending on the domain typ
 
 ```{r}
 download_data(
-  domain = "factors_ff",
+  domain = "Fama-French",
   dataset = "Fama/French 5 Factors (2x3) [Daily]",
   start_date = "2000-01-01",
   end_date = "2020-12-31"
@@ -69,7 +69,7 @@ For [q factors](https://global-q.org/index.html), you provide the relevant file 
 
 ```{r}
 download_data(
-  domain = "factors_q",
+  domain = "Global Q",
   dataset = "q5_factors_monthly_2024",
   start_date = "2000-01-01",
   end_date = "2020-12-31"
@@ -80,7 +80,7 @@ To download the Welch and Goyal (2008) macroeconomic predictors for monthly, qua
 
 ```{r}
 download_data(
-  domain = "macro_predictors",
+  domain = "Goyal-Welch",
   dataset = "monthly",
   start_date = "2000-01-01",
   end_date = "2020-12-31"
@@ -91,7 +91,7 @@ To download data from [Open Source Asset Pricing](https://www.openassetpricing.c
 
 ```{r}
 download_data(
-  domain = "osap",
+  domain = "Open Source Asset Pricing",
   start_date = "2020-01-01",
   end_date = "2020-12-31"
 )
@@ -101,7 +101,7 @@ To download multiple series from the Federal Reserve Economic Data (FRED):
 
 ```{r}
 download_data(
-  domain = "fred",
+  domain = "FRED",
   series = c("GDP", "CPIAUCNS"),
   start_date = "2020-01-01",
   end_date = "2020-12-31"
@@ -112,7 +112,7 @@ To download stock prices from Yahoo Finance:
 
 ```{r}
 download_data(
-  domain = "stock_prices",
+  domain = "Stock Prices",
   symbols = c("AAPL", "MSFT"),
   start_date = "2020-01-01",
   end_date = "2020-12-31"
@@ -123,7 +123,7 @@ You can also download high-frequency data for the S&P 500 that we host on Huggin
 
 ```{r}
 download_data(
-  domain = "tidyfinance",
+  domain = "Tidy Finance",
   dataset = "high_frequency_sp500",
   start_date = "2007-07-26",
   end_date = "2007-07-27"
@@ -138,7 +138,7 @@ To download monthly CRSP data:
 
 ```{r}
 download_data(
-  domain = "wrds",
+  domain = "WRDS",
   dataset = "crsp_monthly",
   start_date = "2020-01-01",
   end_date = "2020-12-31"
@@ -149,7 +149,7 @@ To download annual (or quaterly) Compustat data:
 
 ```{r}
 download_data(
-  domain = "wrds",
+  domain = "WRDS",
   dataset = "compustat_annual",
   start_date = "2020-01-01",
   end_date = "2020-12-31"
@@ -160,7 +160,7 @@ To download the CRSP-Compustat linking table:
 
 ```{r}
 download_data(
-  domain = "wrds",
+  domain = "WRDS",
   dataset = "ccm_links"
 )
 ```
@@ -169,7 +169,7 @@ To download Enhanced TRACE data for selected bonds:
 
 ```{r}
 download_data(
-  domain = "wrds",
+  domain = "WRDS",
   dataset = "trace_enhanced",
   cusips = c("00101JAH9"),
   start_date = "2019-01-01",
@@ -183,7 +183,7 @@ You can download pre-computed portfolio returns from the [Tidy Finance Factor Li
 
 ```{r}
 download_data(
-  domain = "tidyfinance",
+  domain = "Tidy Finance",
   dataset = "factor_library",
   sorting_variable = "ag"
 )

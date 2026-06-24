@@ -10,11 +10,15 @@
   previous regression-based implementation. Windows with fewer than `min_obs`
   observations are now dropped from the output rather than returned with `NA`
   coefficients.
-
+- `download_data()` now uses the human-readable domain names returned by
+  `list_supported_datasets()` (e.g., `"Fama-French"`, `"Global Q"`,
+  `"WRDS"`, `"Tidy Finance"`). The `"pseudo"` and `"tidyfinance"` domains
+  were renamed to `"Pseudo Data"` and `"Tidy Finance"`. The previous
+  machine-readable domain names (e.g., `"famafrench"`, `"wrds"`,
+  `"pseudo"`, `"tidyfinance"`) are soft-deprecated but still accepted.
 - `download_data_wrds_crsp()` now errors informatively when `version = "v1"`
   is used with an `end_date` later than December 2024, reflecting the
   discontinuation of the CRSP legacy version at the end of 2024.
-
 - Removed the "experimental" lifecycle badge from `assign_portfolio()`,
   `compute_breakpoints()`, `compute_rolling_value()`, `estimate_model()`,
   and `join_lagged_values()`, which are now considered stable.

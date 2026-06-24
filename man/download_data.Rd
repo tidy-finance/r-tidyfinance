@@ -14,11 +14,15 @@ download_data(
 )
 }
 \arguments{
-\item{domain}{The domain of the dataset to download (e.g.,
-"famafrench", "globalq", "macro_predictors", "wrds", "pseudo",
-"constituents", "fred", "stock_prices", "osap", "tidyfinance").
-Use \code{"pseudo"} to obtain pseudo data with the same schema as
-\code{"wrds"} for testing or rendering without a WRDS subscription.}
+\item{domain}{The domain of the dataset to download, using the names
+returned by \code{\link[=list_supported_datasets]{list_supported_datasets()}}: \code{"Fama-French"}, \code{"Global Q"},
+\code{"Goyal-Welch"}, \code{"WRDS"}, \code{"Pseudo Data"}, \code{"Index Constituents"},
+\code{"FRED"}, \code{"Stock Prices"}, \code{"Open Source Asset Pricing"}, or
+\code{"Tidy Finance"}. Use \code{"Pseudo Data"} to obtain pseudo data with the
+same schema as \code{"WRDS"} for testing or rendering without a WRDS
+subscription. The previous machine-readable names (e.g., \code{"famafrench"},
+\code{"wrds"}, \code{"pseudo"}, \code{"tidyfinance"}) are soft-deprecated but still
+accepted.}
 
 \item{dataset}{Optional. The specific dataset to download within the
 domain.}
@@ -38,8 +42,8 @@ dataset type.}
 
 \item{...}{Additional arguments passed to specific download functions
 depending on the \code{domain}. For instance, if \code{domain} is
-\code{"constituents"}, arguments are passed to
-\code{download_data_constituents()}. If \code{domain} is \code{"tidyfinance"} and
+\code{"Index Constituents"}, arguments are passed to
+\code{download_data_constituents()}. If \code{domain} is \code{"Tidy Finance"} and
 \code{dataset} is \code{"factor_library"}, arguments are either filter inputs
 (e.g., \code{sorting_variable}, \code{rebalancing}, \code{fill_all}) or an explicit
 \code{ids} vector that bypasses the grid filter and downloads the
@@ -60,35 +64,35 @@ processing the data.
 \examples{
 \donttest{
 download_data(
-  "famafrench",
+  "Fama-French",
   "Fama/French 5 Factors (2x3) [Daily]",
   "2000-01-01",
   "2020-12-31"
 )
-download_data("macro_predictors", "monthly", "2000-01-01", "2020-12-31")
-download_data("constituents", index = "DAX")
-download_data("fred", series = c("GDP", "CPIAUCNS"))
-download_data("stock_prices", symbols = c("AAPL", "MSFT"))
+download_data("Goyal-Welch", "monthly", "2000-01-01", "2020-12-31")
+download_data("Index Constituents", index = "DAX")
+download_data("FRED", series = c("GDP", "CPIAUCNS"))
+download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
 download_data(
-  "tidyfinance",
+  "Tidy Finance",
   "risk_free",
   "2020-01-01",
   "2020-12-31"
 )
 download_data(
-  "tidyfinance",
+  "Tidy Finance",
   "high_frequency_sp500",
   "2007-07-26",
   "2007-07-27"
 )
 download_data(
-  "tidyfinance",
+  "Tidy Finance",
   "factor_library",
   sorting_variable = "52w",
   rebalancing = "annual"
 )
-download_data("tidyfinance", "factor_library", ids = c(1L, 2L, 3L))
-download_data("tidyfinance", "factor_library_grid")
+download_data("Tidy Finance", "factor_library", ids = c(1L, 2L, 3L))
+download_data("Tidy Finance", "factor_library_grid")
 }
 }
 \seealso{
