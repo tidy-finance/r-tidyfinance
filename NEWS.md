@@ -2,6 +2,15 @@
 
 ## Improvements
 
+- `estimate_betas()` now uses a fast, vectorized closed-form approach based on
+  rolling cumulants of the moment matrices instead of fitting one regression
+  per stock and window. This removes the need for per-stock nesting and the
+  optional `furrr` parallelization, so the `use_furrr` argument and the `furrr`
+  dependency have been dropped. Estimates are numerically identical to the
+  previous regression-based implementation. Windows with fewer than `min_obs`
+  observations are now dropped from the output rather than returned with `NA`
+  coefficients.
+
 - `download_data_wrds_crsp()` now errors informatively when `version = "v1"`
   is used with an `end_date` later than December 2024, reflecting the
   discontinuation of the CRSP legacy version at the end of 2024.

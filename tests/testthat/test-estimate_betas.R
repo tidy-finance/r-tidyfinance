@@ -148,18 +148,6 @@ test_that("min_obs <= 0 raises an error", {
   )
 })
 
-test_that("non-logical use_furrr raises an error", {
-  expect_error(
-    estimate_betas(
-      data_monthly,
-      "ret_excess ~ mkt_excess",
-      months(3),
-      use_furrr = "yes"
-    ),
-    regexp = "use_furrr"
-  )
-})
-
 test_that("lookback < num_params issues a warning", {
   expect_warning(
     estimate_betas(
@@ -171,17 +159,6 @@ test_that("lookback < num_params issues a warning", {
   )
 })
 
-test_that("use_furrr = TRUE uses furrr path", {
-  result <- estimate_betas(
-    data_monthly,
-    "ret_excess ~ mkt_excess",
-    months(3),
-    use_furrr = TRUE
-  )
-  expect_s3_class(result, "data.frame")
-  expect_true("beta_mkt_excess" %in% colnames(result))
-})
-
 test_that("intercept column is renamed from beta_intercept", {
   result <- estimate_betas(
     data_monthly,
@@ -190,4 +167,48 @@ test_that("intercept column is renamed from beta_intercept", {
   )
   expect_true("intercept" %in% colnames(result))
   expect_false("beta_intercept" %in% colnames(result))
+})
+
+test_that("estimates match a per-window lm fit", {
+  result <- estimate_betas(
+    data_monthly,
+    "ret_excess ~ mkt_excess + smb + hml",
+    months(12),
+    min_obs = 12
+  )
+
+  window <- data_monthly |>
+    dplyr::filter(permno == 1) |>
+    dplyr::arrange(date)
+  fit <- lm(ret_excess ~ mkt_excess + smb + hml, data = window)
+
+  estimated <- result |>
+    dplyr::filter(permno == 1, date == max(window$date))
+
+  expect_equal(estimated$intercept, unname(coef(fit)["(Intercept)"]))
+  expect_equal(estimated$beta_mkt_excess, unname(coef(fit)["mkt_excess"]))
+  expect_equal(estimated$beta_smb, unname(coef(fit)["smb"]))
+  expect_equal(estimated$beta_hml, unname(coef(fit)["hml"]))
+})
+
+test_that("windows with fewer than min_obs observations are dropped", {
+  result <- estimate_betas(
+    data_monthly,
+    "ret_excess ~ mkt_excess",
+    months(3),
+    min_obs = 3
+  )
+  # The first two months of each permno cannot reach three observations.
+  expect_false(any(result$date < as.Date("2020-03-01")))
+  expect_equal(nrow(result), 50 * 10)
+})
+
+test_that("model without intercept omits the intercept column", {
+  result <- estimate_betas(
+    data_monthly,
+    "ret_excess ~ mkt_excess - 1",
+    months(3)
+  )
+  expect_false("intercept" %in% colnames(result))
+  expect_true("beta_mkt_excess" %in% colnames(result))
 })
