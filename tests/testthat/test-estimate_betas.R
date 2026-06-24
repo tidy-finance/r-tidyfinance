@@ -203,6 +203,18 @@ test_that("windows with fewer than min_obs observations are dropped", {
   expect_equal(nrow(result), 50 * 10)
 })
 
+test_that("a regressor named 'intercept' raises an error", {
+  df <- dplyr::rename(data_monthly, intercept = mkt_excess)
+  expect_error(
+    estimate_betas(
+      df,
+      "ret_excess ~ intercept",
+      months(3)
+    ),
+    regexp = "intercept"
+  )
+})
+
 test_that("model without intercept omits the intercept column", {
   result <- estimate_betas(
     data_monthly,
