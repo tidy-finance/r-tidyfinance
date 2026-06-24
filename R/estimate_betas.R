@@ -198,11 +198,13 @@ estimate_betas <- function(
     dplyr::mutate(
       dplyr::across(
         dplyr::all_of(c("n", moment_cols)),
-        \(col) slider::slide_index_sum(
-          col,
-          .data[["period_index"]],
-          before = lookback - 1
-        )
+        \(col) {
+          slider::slide_index_sum(
+            col,
+            .data[["period_index"]],
+            before = lookback - 1
+          )
+        }
       ),
       .by = dplyr::all_of(id_col)
     ) |>
