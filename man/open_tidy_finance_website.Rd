@@ -28,6 +28,7 @@ constructs the URL to access the chapter directly.
 open_tidy_finance_website()
 open_tidy_finance_website("beta-estimation")
 }
+
 }
 \seealso{
 Other utility functions: 
