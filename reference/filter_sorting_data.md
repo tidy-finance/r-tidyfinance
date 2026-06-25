@@ -27,11 +27,11 @@ filter_sorting_data(
 - filter_options:
 
   A list of class `tidyfinance_filter_options` created by
-  [`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md).
+  [`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md).
   If `NULL` (the default), the defaults from
-  [`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md)
+  [`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md)
   are used (i.e., no filters are applied). The arguments accepted by
-  [`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md)
+  [`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md)
   include
 
   - `exclude_financials` A logical indicating whether to exclude
@@ -49,7 +49,7 @@ filter_sorting_data(
     lagged market cap) required to include an observation. `NULL` (the
     default) applies no size quantile filter. The cutoff is computed
     from NYSE stocks only; the `exchange` column (mapped via
-    [`data_options()`](https://package.tidy-finance.org/reference/data_options.md))
+    [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
     must be present in the data or an error is raised.
 
   - `min_listing_age` A single non-negative integer or numeric
@@ -66,7 +66,7 @@ filter_sorting_data(
 - data_options:
 
   A list of class `tidyfinance_data_options` (created via
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md))
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
   specifying column name mappings. The `siccd` element is used to
   specify the SIC code column, `price` is used to specify the (adjusted)
   price column, `mktcap_lag` is used to specify the market
@@ -74,7 +74,7 @@ filter_sorting_data(
   `listing_age` is used to specify the listing age column, `be` is used
   to specify the book equity column, and `earnings` is used to specify
   the earnings column. Uses
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md)
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)
   default if `NULL`: `"siccd" = "siccd"`, `"price" = "prc_adj"`,
   `"exchange" = "exchange"` `"mktcap_lag" = "mktcap_lag"`,
   `"date" = "date"`, `"listing_age" = "listing_age"`, `"be" = "be"`, and
@@ -93,15 +93,15 @@ input.
 ## See also
 
 Other portfolio functions:
-[`assign_portfolio()`](https://package.tidy-finance.org/reference/assign_portfolio.md),
-[`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md),
-[`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md),
-[`compute_long_short_returns()`](https://package.tidy-finance.org/reference/compute_long_short_returns.md),
-[`compute_portfolio_returns()`](https://package.tidy-finance.org/reference/compute_portfolio_returns.md),
-[`data_options()`](https://package.tidy-finance.org/reference/data_options.md),
-[`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md),
-[`implement_portfolio_sort()`](https://package.tidy-finance.org/reference/implement_portfolio_sort.md),
-[`portfolio_sort_options()`](https://package.tidy-finance.org/reference/portfolio_sort_options.md)
+[`assign_portfolio()`](https://r.tidy-finance.org/reference/assign_portfolio.md),
+[`breakpoint_options()`](https://r.tidy-finance.org/reference/breakpoint_options.md),
+[`compute_breakpoints()`](https://r.tidy-finance.org/reference/compute_breakpoints.md),
+[`compute_long_short_returns()`](https://r.tidy-finance.org/reference/compute_long_short_returns.md),
+[`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md),
+[`data_options()`](https://r.tidy-finance.org/reference/data_options.md),
+[`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md),
+[`implement_portfolio_sort()`](https://r.tidy-finance.org/reference/implement_portfolio_sort.md),
+[`portfolio_sort_options()`](https://r.tidy-finance.org/reference/portfolio_sort_options.md)
 
 ## Examples
 

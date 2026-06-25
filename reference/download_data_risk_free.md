@@ -81,17 +81,17 @@ Monthly data starts in 1934-01-01 (TB3MS). Daily data starts in
 ## See also
 
 Other download functions:
-[`download_data()`](https://package.tidy-finance.org/reference/download_data.md),
-[`download_data_constituents()`](https://package.tidy-finance.org/reference/download_data_constituents.md),
-[`download_data_factors_ff()`](https://package.tidy-finance.org/reference/download_data_factors_ff.md),
-[`download_data_factors_q()`](https://package.tidy-finance.org/reference/download_data_factors_q.md),
-[`download_data_fred()`](https://package.tidy-finance.org/reference/download_data_fred.md),
-[`download_data_huggingface()`](https://package.tidy-finance.org/reference/download_data_huggingface.md),
-[`download_data_macro_predictors()`](https://package.tidy-finance.org/reference/download_data_macro_predictors.md),
-[`download_data_osap()`](https://package.tidy-finance.org/reference/download_data_osap.md),
-[`download_data_stock_prices()`](https://package.tidy-finance.org/reference/download_data_stock_prices.md),
-[`download_factor_library_grid()`](https://package.tidy-finance.org/reference/download_factor_library_grid.md),
-[`download_factor_library_ids()`](https://package.tidy-finance.org/reference/download_factor_library_ids.md)
+[`download_data()`](https://r.tidy-finance.org/reference/download_data.md),
+[`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md),
+[`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md),
+[`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
+[`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),
+[`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md),
+[`download_data_macro_predictors()`](https://r.tidy-finance.org/reference/download_data_macro_predictors.md),
+[`download_data_osap()`](https://r.tidy-finance.org/reference/download_data_osap.md),
+[`download_data_stock_prices()`](https://r.tidy-finance.org/reference/download_data_stock_prices.md),
+[`download_factor_library_grid()`](https://r.tidy-finance.org/reference/download_factor_library_grid.md),
+[`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md)
 
 ## Examples
 

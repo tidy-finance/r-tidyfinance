@@ -34,12 +34,12 @@ compute_long_short_returns(
 - data_options:
 
   A list of class `tidyfinance_data_options` (created via
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md))
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
   specifying column name mappings. The `date` element is used to specify
   the date column, the `ret_excess` element is used to specify the
   excess return column, and `portfolio` is used to specify the assigned
   portfolio. Uses
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md)
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)
   default if `NULL`: `"date" = "date"`, `"ret_excess" = "ret_excess"`,
   and `"portfolio" = "portfolio"`.
 
@@ -53,15 +53,15 @@ as columns with their corresponding long-short returns.
 ## See also
 
 Other portfolio functions:
-[`assign_portfolio()`](https://package.tidy-finance.org/reference/assign_portfolio.md),
-[`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md),
-[`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md),
-[`compute_portfolio_returns()`](https://package.tidy-finance.org/reference/compute_portfolio_returns.md),
-[`data_options()`](https://package.tidy-finance.org/reference/data_options.md),
-[`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md),
-[`filter_sorting_data()`](https://package.tidy-finance.org/reference/filter_sorting_data.md),
-[`implement_portfolio_sort()`](https://package.tidy-finance.org/reference/implement_portfolio_sort.md),
-[`portfolio_sort_options()`](https://package.tidy-finance.org/reference/portfolio_sort_options.md)
+[`assign_portfolio()`](https://r.tidy-finance.org/reference/assign_portfolio.md),
+[`breakpoint_options()`](https://r.tidy-finance.org/reference/breakpoint_options.md),
+[`compute_breakpoints()`](https://r.tidy-finance.org/reference/compute_breakpoints.md),
+[`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md),
+[`data_options()`](https://r.tidy-finance.org/reference/data_options.md),
+[`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md),
+[`filter_sorting_data()`](https://r.tidy-finance.org/reference/filter_sorting_data.md),
+[`implement_portfolio_sort()`](https://r.tidy-finance.org/reference/implement_portfolio_sort.md),
+[`portfolio_sort_options()`](https://r.tidy-finance.org/reference/portfolio_sort_options.md)
 
 ## Examples
 

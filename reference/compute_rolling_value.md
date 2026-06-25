@@ -47,10 +47,10 @@ compute_rolling_value(
 - data_options:
 
   A list of class `tidyfinance_data_options` (created via
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md))
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
   specifying column name mappings. The `date` element is used to specify
   the date column. Uses
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md)
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)
   default if `NULL`: `"date" = "date"`.
 
 ## Value
@@ -60,8 +60,8 @@ A numeric vector aligned with the rows of `data`.
 ## See also
 
 Other rolling and lagging functions:
-[`add_lagged_columns()`](https://package.tidy-finance.org/reference/add_lagged_columns.md),
-[`join_lagged_values()`](https://package.tidy-finance.org/reference/join_lagged_values.md)
+[`add_lagged_columns()`](https://r.tidy-finance.org/reference/add_lagged_columns.md),
+[`join_lagged_values()`](https://r.tidy-finance.org/reference/join_lagged_values.md)
 
 ## Examples
 

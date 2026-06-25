@@ -3,7 +3,7 @@
 Joins lagged values of selected variables from one dataset (`new_data`)
 into another (`original_data`), based on date ranges defined by
 `min_lag` and `max_lag`. Unlike
-[`add_lagged_columns()`](https://package.tidy-finance.org/reference/add_lagged_columns.md),
+[`add_lagged_columns()`](https://r.tidy-finance.org/reference/add_lagged_columns.md),
 this function supports joining across data frames with different date
 grids (e.g., monthly source data into quarterly target data).
 
@@ -53,10 +53,10 @@ join_lagged_values(
 - data_options:
 
   A list of class `tidyfinance_data_options` (created via
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md))
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
   specifying column name mappings. The `date` element is used to
   identify the date column. Uses
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md)
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)
   default if `NULL`: `"date" = "date"`.
 
 ## Value
@@ -67,8 +67,8 @@ columns from `new_data` (keeping their original names).
 ## See also
 
 Other rolling and lagging functions:
-[`add_lagged_columns()`](https://package.tidy-finance.org/reference/add_lagged_columns.md),
-[`compute_rolling_value()`](https://package.tidy-finance.org/reference/compute_rolling_value.md)
+[`add_lagged_columns()`](https://r.tidy-finance.org/reference/add_lagged_columns.md),
+[`compute_rolling_value()`](https://r.tidy-finance.org/reference/compute_rolling_value.md)
 
 ## Examples
 

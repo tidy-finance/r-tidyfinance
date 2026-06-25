@@ -24,7 +24,7 @@ download_data(
 - domain:
 
   The domain of the dataset to download, using the names returned by
-  [`list_supported_datasets()`](https://package.tidy-finance.org/reference/list_supported_datasets.md):
+  [`list_supported_datasets()`](https://r.tidy-finance.org/reference/list_supported_datasets.md):
   `"Fama-French"`, `"Global Q"`, `"Goyal-Welch"`, `"WRDS"`,
   `"Pseudo Data"`, `"Index Constituents"`, `"FRED"`, `"Stock Prices"`,
   `"Open Source Asset Pricing"`, or `"Tidy Finance"`. Use
@@ -58,14 +58,14 @@ download_data(
   Additional arguments passed to specific download functions depending
   on the `domain`. For instance, if `domain` is `"Index Constituents"`,
   arguments are passed to
-  [`download_data_constituents()`](https://package.tidy-finance.org/reference/download_data_constituents.md).
+  [`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md).
   If `domain` is `"Tidy Finance"` and `dataset` is `"factor_library"`,
   arguments are either filter inputs (e.g., `sorting_variable`,
   `rebalancing`, `fill_all`) or an explicit `ids` vector that bypasses
   the grid filter and downloads the specified portfolios directly via
-  [`download_factor_library_ids()`](https://package.tidy-finance.org/reference/download_factor_library_ids.md);
+  [`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md);
   see
-  [`download_data_huggingface()`](https://package.tidy-finance.org/reference/download_data_huggingface.md)
+  [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md)
   for details.
 
 ## Value
@@ -76,17 +76,17 @@ metrics, filtered by the specified date range.
 ## See also
 
 Other download functions:
-[`download_data_constituents()`](https://package.tidy-finance.org/reference/download_data_constituents.md),
-[`download_data_factors_ff()`](https://package.tidy-finance.org/reference/download_data_factors_ff.md),
-[`download_data_factors_q()`](https://package.tidy-finance.org/reference/download_data_factors_q.md),
-[`download_data_fred()`](https://package.tidy-finance.org/reference/download_data_fred.md),
-[`download_data_huggingface()`](https://package.tidy-finance.org/reference/download_data_huggingface.md),
-[`download_data_macro_predictors()`](https://package.tidy-finance.org/reference/download_data_macro_predictors.md),
-[`download_data_osap()`](https://package.tidy-finance.org/reference/download_data_osap.md),
-[`download_data_risk_free()`](https://package.tidy-finance.org/reference/download_data_risk_free.md),
-[`download_data_stock_prices()`](https://package.tidy-finance.org/reference/download_data_stock_prices.md),
-[`download_factor_library_grid()`](https://package.tidy-finance.org/reference/download_factor_library_grid.md),
-[`download_factor_library_ids()`](https://package.tidy-finance.org/reference/download_factor_library_ids.md)
+[`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md),
+[`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md),
+[`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
+[`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),
+[`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md),
+[`download_data_macro_predictors()`](https://r.tidy-finance.org/reference/download_data_macro_predictors.md),
+[`download_data_osap()`](https://r.tidy-finance.org/reference/download_data_osap.md),
+[`download_data_risk_free()`](https://r.tidy-finance.org/reference/download_data_risk_free.md),
+[`download_data_stock_prices()`](https://r.tidy-finance.org/reference/download_data_stock_prices.md),
+[`download_factor_library_grid()`](https://r.tidy-finance.org/reference/download_factor_library_grid.md),
+[`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md)
 
 ## Examples
 
@@ -129,20 +129,20 @@ download_data("Goyal-Welch", "monthly", "2000-01-01", "2020-12-31")
 #> # ℹ 242 more rows
 #> # ℹ 5 more variables: lty <dbl>, ltr <dbl>, tms <dbl>, dfy <dbl>, infl <dbl>
 download_data("Index Constituents", index = "DAX")
-#> # A tibble: 41 × 5
+#> # A tibble: 40 × 5
 #>    symbol  name                               location    exchange      currency
 #>    <chr>   <chr>                              <chr>       <chr>         <chr>   
 #>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
 #>  2 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
-#>  3 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
-#>  4 SAP.DE  SAP                                Deutschland Xetra         EUR     
+#>  3 SAP.DE  SAP                                Deutschland Xetra         EUR     
+#>  4 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
 #>  5 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
 #>  6 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
 #>  7 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
 #>  8 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
 #>  9 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
-#> 10 RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     
-#> # ℹ 31 more rows
+#> 10 DHL.DE  DEUTSCHE POST AG                   Deutschland Xetra         EUR     
+#> # ℹ 30 more rows
 download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> No `start_date` or `end_date` provided. Returning the full data set.
 #> # A tibble: 1,678 × 3
@@ -160,22 +160,22 @@ download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> 10 1949-04-01  271. GDP   
 #> # ℹ 1,668 more rows
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-06-23 to
-#> 2025-06-23 to avoid downloading large amounts of data.
-#> # A tibble: 498 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-06-25 to
+#> 2025-06-25 to avoid downloading large amounts of data.
+#> # A tibble: 500 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-06-24 80727000  208.  207.  213.  208.           206.
-#>  2 AAPL   2024-06-25 55549700  209.  209.  211.  209.           207.
-#>  3 AAPL   2024-06-26 66213200  212.  211.  215.  213.           211.
-#>  4 AAPL   2024-06-27 49772700  215.  212.  216.  214.           212.
-#>  5 AAPL   2024-06-28 82542700  216.  210.  216.  211.           209.
-#>  6 AAPL   2024-07-01 60402900  212.  212.  218.  217.           215.
-#>  7 AAPL   2024-07-02 58046200  216.  215.  220.  220.           218.
-#>  8 AAPL   2024-07-03 37369800  220   219.  222.  222.           220.
-#>  9 AAPL   2024-07-05 60412400  222.  222.  226.  226.           224.
-#> 10 AAPL   2024-07-08 59085900  227.  223.  228.  228.           226.
-#> # ℹ 488 more rows
+#>  1 AAPL   2024-06-25 55549700  209.  209.  211.  209.           207.
+#>  2 AAPL   2024-06-26 66213200  212.  211.  215.  213.           211.
+#>  3 AAPL   2024-06-27 49772700  215.  212.  216.  214.           212.
+#>  4 AAPL   2024-06-28 82542700  216.  210.  216.  211.           209.
+#>  5 AAPL   2024-07-01 60402900  212.  212.  218.  217.           215.
+#>  6 AAPL   2024-07-02 58046200  216.  215.  220.  220.           218.
+#>  7 AAPL   2024-07-03 37369800  220   219.  222.  222.           220.
+#>  8 AAPL   2024-07-05 60412400  222.  222.  226.  226.           224.
+#>  9 AAPL   2024-07-08 59085900  227.  223.  228.  228.           226.
+#> 10 AAPL   2024-07-09 48076100  228.  226.  229.  229.           227.
+#> # ℹ 490 more rows
 download_data(
   "Tidy Finance",
   "risk_free",

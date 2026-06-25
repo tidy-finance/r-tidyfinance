@@ -65,10 +65,10 @@ add_lagged_columns(
 - data_options:
 
   A list of class `tidyfinance_data_options` (created via
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md))
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
   specifying column name mappings. The `date` element is used to specify
   the date column. Uses
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md)
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)
   default if `NULL`: `"date" = "date"`.
 
 ## Value
@@ -89,8 +89,8 @@ The combination of `by` and date columns must be unique in `data`. If
 ## See also
 
 Other rolling and lagging functions:
-[`compute_rolling_value()`](https://package.tidy-finance.org/reference/compute_rolling_value.md),
-[`join_lagged_values()`](https://package.tidy-finance.org/reference/join_lagged_values.md)
+[`compute_rolling_value()`](https://r.tidy-finance.org/reference/compute_rolling_value.md),
+[`join_lagged_values()`](https://r.tidy-finance.org/reference/join_lagged_values.md)
 
 ## Examples
 

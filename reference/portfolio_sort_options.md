@@ -3,7 +3,7 @@
 Creates a list of options of class `tidyfinance_portfolio_sort_options`
 that bundles sample construction filters and breakpoint specifications
 for use with
-[`implement_portfolio_sort()`](https://package.tidy-finance.org/reference/implement_portfolio_sort.md).
+[`implement_portfolio_sort()`](https://r.tidy-finance.org/reference/implement_portfolio_sort.md).
 
 ## Usage
 
@@ -21,10 +21,10 @@ portfolio_sort_options(
 - filter_options:
 
   A list of class `tidyfinance_filter_options` created by
-  [`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md),
+  [`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md),
   or `NULL` (the default, which applies no filters). The arguments
   accepted by
-  [`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md)
+  [`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md)
   include
 
   - `exclude_financials` A logical indicating whether to exclude
@@ -56,10 +56,10 @@ portfolio_sort_options(
 - breakpoint_options_main:
 
   A list of class `tidyfinance_breakpoint_options` created by
-  [`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md),
+  [`breakpoint_options()`](https://r.tidy-finance.org/reference/breakpoint_options.md),
   specifying breakpoints for the primary sorting variable. The arguments
   accepted by
-  [`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md)
+  [`breakpoint_options()`](https://r.tidy-finance.org/reference/breakpoint_options.md)
   include
 
   - `n_portfolios` An optional integer specifying the number of equally
@@ -86,10 +86,10 @@ portfolio_sort_options(
 - breakpoint_options_secondary:
 
   A list of class `tidyfinance_breakpoint_options` created by
-  [`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md),
+  [`breakpoint_options()`](https://r.tidy-finance.org/reference/breakpoint_options.md),
   specifying breakpoints for the secondary sorting variable, or `NULL`
   (the default) for univariate sorts. The arguments accepted by
-  [`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md)
+  [`breakpoint_options()`](https://r.tidy-finance.org/reference/breakpoint_options.md)
   are the same as for `breakpoint_options_main`.
 
 - ...:
@@ -104,15 +104,15 @@ specified options.
 ## See also
 
 Other portfolio functions:
-[`assign_portfolio()`](https://package.tidy-finance.org/reference/assign_portfolio.md),
-[`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md),
-[`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md),
-[`compute_long_short_returns()`](https://package.tidy-finance.org/reference/compute_long_short_returns.md),
-[`compute_portfolio_returns()`](https://package.tidy-finance.org/reference/compute_portfolio_returns.md),
-[`data_options()`](https://package.tidy-finance.org/reference/data_options.md),
-[`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md),
-[`filter_sorting_data()`](https://package.tidy-finance.org/reference/filter_sorting_data.md),
-[`implement_portfolio_sort()`](https://package.tidy-finance.org/reference/implement_portfolio_sort.md)
+[`assign_portfolio()`](https://r.tidy-finance.org/reference/assign_portfolio.md),
+[`breakpoint_options()`](https://r.tidy-finance.org/reference/breakpoint_options.md),
+[`compute_breakpoints()`](https://r.tidy-finance.org/reference/compute_breakpoints.md),
+[`compute_long_short_returns()`](https://r.tidy-finance.org/reference/compute_long_short_returns.md),
+[`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md),
+[`data_options()`](https://r.tidy-finance.org/reference/data_options.md),
+[`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md),
+[`filter_sorting_data()`](https://r.tidy-finance.org/reference/filter_sorting_data.md),
+[`implement_portfolio_sort()`](https://r.tidy-finance.org/reference/implement_portfolio_sort.md)
 
 ## Examples
 

@@ -37,7 +37,7 @@ library(tidyfinance)
 The main functionality of the `tidyfinance` package centers around data
 download. You can download most of the data that we used in [Tidy
 Finance with R](https://www.tidy-finance.org/r/index.html) using the
-[`download_data()`](https://package.tidy-finance.org/reference/download_data.md)
+[`download_data()`](https://r.tidy-finance.org/reference/download_data.md)
 function or its children.
 
 The function always requires a `domain` argument and depending on the
@@ -253,7 +253,7 @@ You can also download data directly from
 you have access to the underlying data and set your credentials via
 `Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")`
 or the
-[`set_wrds_credentials()`](https://package.tidy-finance.org/reference/set_wrds_credentials.md)
+[`set_wrds_credentials()`](https://r.tidy-finance.org/reference/set_wrds_credentials.md)
 helper function.
 
 To download monthly CRSP data:

@@ -49,10 +49,10 @@ estimate_fama_macbeth(
 - data_options:
 
   A list of class `tidyfinance_data_options` (created via
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md))
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
   specifying column name mappings. The `date` element is used to specify
   the date column. Uses
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md)
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)
   default if `NULL`: `"date" = "date"`.
 
 - detail:
@@ -95,8 +95,8 @@ heteroskedasticity and autocorrelation consistent covariance matrix.
 ## See also
 
 Other estimation functions:
-[`estimate_betas()`](https://package.tidy-finance.org/reference/estimate_betas.md),
-[`estimate_model()`](https://package.tidy-finance.org/reference/estimate_model.md)
+[`estimate_betas()`](https://r.tidy-finance.org/reference/estimate_betas.md),
+[`estimate_model()`](https://r.tidy-finance.org/reference/estimate_model.md)
 
 ## Examples
 

@@ -2,9 +2,9 @@
 
 A convenience wrapper that combines sample construction filtering and
 portfolio return computation into a single call. Equivalent to calling
-[`filter_sorting_data()`](https://package.tidy-finance.org/reference/filter_sorting_data.md)
+[`filter_sorting_data()`](https://r.tidy-finance.org/reference/filter_sorting_data.md)
 followed by
-[`compute_portfolio_returns()`](https://package.tidy-finance.org/reference/compute_portfolio_returns.md).
+[`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md).
 
 ## Usage
 
@@ -47,15 +47,15 @@ implement_portfolio_sort(
 - portfolio_sort_options:
 
   A list of class `tidyfinance_portfolio_sort_options` created by
-  [`portfolio_sort_options()`](https://package.tidy-finance.org/reference/portfolio_sort_options.md),
+  [`portfolio_sort_options()`](https://r.tidy-finance.org/reference/portfolio_sort_options.md),
   bundling filter and breakpoint specifications. The arguments accepted
   by
-  [`portfolio_sort_options()`](https://package.tidy-finance.org/reference/portfolio_sort_options.md)
+  [`portfolio_sort_options()`](https://r.tidy-finance.org/reference/portfolio_sort_options.md)
   include
 
   - `filter_options` A list of class `tidyfinance_filter_options`
     created by
-    [`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md),
+    [`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md),
     or `NULL` (the default, which applies no filters). Options include
     `exclude_financials`, `exclude_utilities`, `min_stock_price`,
     `min_size_quantile`, `min_listing_age`,
@@ -63,14 +63,14 @@ implement_portfolio_sort(
 
   - `breakpoint_options_main` A list of class
     `tidyfinance_breakpoint_options` created by
-    [`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md),
+    [`breakpoint_options()`](https://r.tidy-finance.org/reference/breakpoint_options.md),
     specifying breakpoints for the primary sorting variable. Options
     include `n_portfolios`, `percentiles`, `breakpoints_exchanges`,
     `smooth_bunching`, and `breakpoints_min_size_threshold`.
 
   - `breakpoint_options_secondary` A list of class
     `tidyfinance_breakpoint_options` created by
-    [`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md),
+    [`breakpoint_options()`](https://r.tidy-finance.org/reference/breakpoint_options.md),
     specifying breakpoints for the secondary sorting variable, or `NULL`
     (the default) for univariate sorts. Options are the same as for
     `breakpoint_options_main`.
@@ -79,13 +79,13 @@ implement_portfolio_sort(
 
   The function used to compute breakpoints for the main sorting
   variable. Defaults to
-  [`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md).
+  [`compute_breakpoints()`](https://r.tidy-finance.org/reference/compute_breakpoints.md).
 
 - breakpoint_function_secondary:
 
   The function used to compute breakpoints for the secondary sorting
   variable. Defaults to
-  [`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md).
+  [`compute_breakpoints()`](https://r.tidy-finance.org/reference/compute_breakpoints.md).
 
 - min_portfolio_size:
 
@@ -96,7 +96,7 @@ implement_portfolio_sort(
   main-portfolio-date summed across the secondary buckets.
   Cross-sections below the threshold have their returns set to `NA`. Set
   to `0L` to deactivate the check. See
-  [`compute_portfolio_returns()`](https://package.tidy-finance.org/reference/compute_portfolio_returns.md).
+  [`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md).
 
 - cap_weight:
 
@@ -107,13 +107,13 @@ implement_portfolio_sort(
 - data_options:
 
   A list of class `tidyfinance_data_options` (created via
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md))
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
   specifying column name mappings. All elements are forwarded to
-  [`filter_sorting_data()`](https://package.tidy-finance.org/reference/filter_sorting_data.md)
+  [`filter_sorting_data()`](https://r.tidy-finance.org/reference/filter_sorting_data.md)
   and
-  [`compute_portfolio_returns()`](https://package.tidy-finance.org/reference/compute_portfolio_returns.md).
+  [`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md).
   Uses
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md)
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)
   default if `NULL`: `"id" = "permno"`, `"date" = "date"`,
   `"exchange" = "exchange"`, `"mktcap_lag" = "mktcap_lag"`,
   `"ret_excess" = "ret_excess"`, `"siccd" = "siccd"`,
@@ -128,20 +128,20 @@ implement_portfolio_sort(
 ## Value
 
 A data frame of portfolio returns as returned by
-[`compute_portfolio_returns()`](https://package.tidy-finance.org/reference/compute_portfolio_returns.md).
+[`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md).
 
 ## See also
 
 Other portfolio functions:
-[`assign_portfolio()`](https://package.tidy-finance.org/reference/assign_portfolio.md),
-[`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md),
-[`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md),
-[`compute_long_short_returns()`](https://package.tidy-finance.org/reference/compute_long_short_returns.md),
-[`compute_portfolio_returns()`](https://package.tidy-finance.org/reference/compute_portfolio_returns.md),
-[`data_options()`](https://package.tidy-finance.org/reference/data_options.md),
-[`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md),
-[`filter_sorting_data()`](https://package.tidy-finance.org/reference/filter_sorting_data.md),
-[`portfolio_sort_options()`](https://package.tidy-finance.org/reference/portfolio_sort_options.md)
+[`assign_portfolio()`](https://r.tidy-finance.org/reference/assign_portfolio.md),
+[`breakpoint_options()`](https://r.tidy-finance.org/reference/breakpoint_options.md),
+[`compute_breakpoints()`](https://r.tidy-finance.org/reference/compute_breakpoints.md),
+[`compute_long_short_returns()`](https://r.tidy-finance.org/reference/compute_long_short_returns.md),
+[`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md),
+[`data_options()`](https://r.tidy-finance.org/reference/data_options.md),
+[`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md),
+[`filter_sorting_data()`](https://r.tidy-finance.org/reference/filter_sorting_data.md),
+[`portfolio_sort_options()`](https://r.tidy-finance.org/reference/portfolio_sort_options.md)
 
 ## Examples
 

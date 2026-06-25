@@ -49,7 +49,7 @@ breakpoint_options(
   computation. The quantile is computed among `breakpoints_exchanges`
   stocks if specified, otherwise among all stocks. Requires a market
   capitalization column in the data (see
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md)).
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)).
   Defaults to `NULL` (no size filtering).
 
 - ...:
@@ -66,15 +66,15 @@ via `...`.
 ## See also
 
 Other portfolio functions:
-[`assign_portfolio()`](https://package.tidy-finance.org/reference/assign_portfolio.md),
-[`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md),
-[`compute_long_short_returns()`](https://package.tidy-finance.org/reference/compute_long_short_returns.md),
-[`compute_portfolio_returns()`](https://package.tidy-finance.org/reference/compute_portfolio_returns.md),
-[`data_options()`](https://package.tidy-finance.org/reference/data_options.md),
-[`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md),
-[`filter_sorting_data()`](https://package.tidy-finance.org/reference/filter_sorting_data.md),
-[`implement_portfolio_sort()`](https://package.tidy-finance.org/reference/implement_portfolio_sort.md),
-[`portfolio_sort_options()`](https://package.tidy-finance.org/reference/portfolio_sort_options.md)
+[`assign_portfolio()`](https://r.tidy-finance.org/reference/assign_portfolio.md),
+[`compute_breakpoints()`](https://r.tidy-finance.org/reference/compute_breakpoints.md),
+[`compute_long_short_returns()`](https://r.tidy-finance.org/reference/compute_long_short_returns.md),
+[`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md),
+[`data_options()`](https://r.tidy-finance.org/reference/data_options.md),
+[`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md),
+[`filter_sorting_data()`](https://r.tidy-finance.org/reference/filter_sorting_data.md),
+[`implement_portfolio_sort()`](https://r.tidy-finance.org/reference/implement_portfolio_sort.md),
+[`portfolio_sort_options()`](https://r.tidy-finance.org/reference/portfolio_sort_options.md)
 
 ## Examples
 

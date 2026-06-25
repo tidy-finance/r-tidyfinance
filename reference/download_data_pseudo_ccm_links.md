@@ -2,7 +2,7 @@
 
 Returns a pseudo CRSP-Compustat linking table with the same column
 layout as
-[`download_data_wrds_ccm_links()`](https://package.tidy-finance.org/reference/download_data_wrds_ccm_links.md).
+[`download_data_wrds_ccm_links()`](https://r.tidy-finance.org/reference/download_data_wrds_ccm_links.md).
 Every pseudo `permno` is linked to its corresponding `gvkey` for the
 full sample horizon.
 
@@ -31,13 +31,13 @@ download_data_pseudo_ccm_links(
 - linktype:
 
   Accepted for API compatibility with
-  [`download_data_wrds_ccm_links()`](https://package.tidy-finance.org/reference/download_data_wrds_ccm_links.md);
+  [`download_data_wrds_ccm_links()`](https://r.tidy-finance.org/reference/download_data_wrds_ccm_links.md);
   ignored for pseudo data.
 
 - linkprim:
 
   Accepted for API compatibility with
-  [`download_data_wrds_ccm_links()`](https://package.tidy-finance.org/reference/download_data_wrds_ccm_links.md);
+  [`download_data_wrds_ccm_links()`](https://r.tidy-finance.org/reference/download_data_wrds_ccm_links.md);
   ignored for pseudo data.
 
 ## Value
@@ -48,8 +48,8 @@ row per pseudo firm.
 ## See also
 
 Other pseudo functions:
-[`download_data_pseudo_compustat()`](https://package.tidy-finance.org/reference/download_data_pseudo_compustat.md),
-[`download_data_pseudo_crsp()`](https://package.tidy-finance.org/reference/download_data_pseudo_crsp.md)
+[`download_data_pseudo_compustat()`](https://r.tidy-finance.org/reference/download_data_pseudo_compustat.md),
+[`download_data_pseudo_crsp()`](https://r.tidy-finance.org/reference/download_data_pseudo_crsp.md)
 
 ## Examples
 

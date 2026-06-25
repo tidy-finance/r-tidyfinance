@@ -1,7 +1,7 @@
 # Generate Pseudo Compustat Data
 
 Returns pseudo Compustat data with the same column layout as
-[`download_data_wrds_compustat()`](https://package.tidy-finance.org/reference/download_data_wrds_compustat.md).
+[`download_data_wrds_compustat()`](https://r.tidy-finance.org/reference/download_data_wrds_compustat.md).
 Useful for testing and for reproducing the workflow of analyses that
 rely on Compustat without a WRDS subscription. The returned values are
 simulated and not suitable for inference.
@@ -46,7 +46,7 @@ download_data_pseudo_compustat(
 - only_usd:
 
   Accepted for API compatibility with
-  [`download_data_wrds_compustat()`](https://package.tidy-finance.org/reference/download_data_wrds_compustat.md);
+  [`download_data_wrds_compustat()`](https://r.tidy-finance.org/reference/download_data_wrds_compustat.md);
   the pseudo universe is treated as USD-denominated, so this argument
   has no effect.
 
@@ -59,9 +59,9 @@ download_data_pseudo_compustat(
   Integer. Random seed; defaults to `1234`. Identical `(seed, n_assets)`
   produces identical output across calls and matches the identifier
   universe used by
-  [`download_data_pseudo_crsp()`](https://package.tidy-finance.org/reference/download_data_pseudo_crsp.md)
+  [`download_data_pseudo_crsp()`](https://r.tidy-finance.org/reference/download_data_pseudo_crsp.md)
   and
-  [`download_data_pseudo_ccm_links()`](https://package.tidy-finance.org/reference/download_data_pseudo_ccm_links.md).
+  [`download_data_pseudo_ccm_links()`](https://r.tidy-finance.org/reference/download_data_pseudo_ccm_links.md).
 
 ## Value
 
@@ -80,8 +80,8 @@ Both `"compustat_annual"` and `"compustat_quarterly"` are supported.
 ## See also
 
 Other pseudo functions:
-[`download_data_pseudo_ccm_links()`](https://package.tidy-finance.org/reference/download_data_pseudo_ccm_links.md),
-[`download_data_pseudo_crsp()`](https://package.tidy-finance.org/reference/download_data_pseudo_crsp.md)
+[`download_data_pseudo_ccm_links()`](https://r.tidy-finance.org/reference/download_data_pseudo_ccm_links.md),
+[`download_data_pseudo_crsp()`](https://r.tidy-finance.org/reference/download_data_pseudo_crsp.md)
 
 ## Examples
 

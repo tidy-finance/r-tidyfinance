@@ -21,14 +21,14 @@ download_data_stock_prices(symbols, start_date = NULL, end_date = NULL)
   Optional. A character string or Date object in "YYYY-MM-DD" format
   specifying the start date for the data. If not provided, a one-year
   subset of the dataset is returned (see
-  [`validate_dates()`](https://package.tidy-finance.org/reference/validate_dates.md)).
+  [`validate_dates()`](https://r.tidy-finance.org/reference/validate_dates.md)).
 
 - end_date:
 
   Optional. A character string or Date object in "YYYY-MM-DD" format
   specifying the end date for the data. If not provided, a one-year
   subset of the dataset is returned (see
-  [`validate_dates()`](https://package.tidy-finance.org/reference/validate_dates.md)).
+  [`validate_dates()`](https://r.tidy-finance.org/reference/validate_dates.md)).
 
 ## Value
 
@@ -38,39 +38,39 @@ date, volume, open, low, high, close, and adjusted_close.
 ## See also
 
 Other download functions:
-[`download_data()`](https://package.tidy-finance.org/reference/download_data.md),
-[`download_data_constituents()`](https://package.tidy-finance.org/reference/download_data_constituents.md),
-[`download_data_factors_ff()`](https://package.tidy-finance.org/reference/download_data_factors_ff.md),
-[`download_data_factors_q()`](https://package.tidy-finance.org/reference/download_data_factors_q.md),
-[`download_data_fred()`](https://package.tidy-finance.org/reference/download_data_fred.md),
-[`download_data_huggingface()`](https://package.tidy-finance.org/reference/download_data_huggingface.md),
-[`download_data_macro_predictors()`](https://package.tidy-finance.org/reference/download_data_macro_predictors.md),
-[`download_data_osap()`](https://package.tidy-finance.org/reference/download_data_osap.md),
-[`download_data_risk_free()`](https://package.tidy-finance.org/reference/download_data_risk_free.md),
-[`download_factor_library_grid()`](https://package.tidy-finance.org/reference/download_factor_library_grid.md),
-[`download_factor_library_ids()`](https://package.tidy-finance.org/reference/download_factor_library_ids.md)
+[`download_data()`](https://r.tidy-finance.org/reference/download_data.md),
+[`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md),
+[`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md),
+[`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
+[`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),
+[`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md),
+[`download_data_macro_predictors()`](https://r.tidy-finance.org/reference/download_data_macro_predictors.md),
+[`download_data_osap()`](https://r.tidy-finance.org/reference/download_data_osap.md),
+[`download_data_risk_free()`](https://r.tidy-finance.org/reference/download_data_risk_free.md),
+[`download_factor_library_grid()`](https://r.tidy-finance.org/reference/download_factor_library_grid.md),
+[`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md)
 
 ## Examples
 
 ``` r
 # \donttest{
   download_data_stock_prices(c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-06-23 to
-#> 2025-06-23 to avoid downloading large amounts of data.
-#> # A tibble: 498 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-06-25 to
+#> 2025-06-25 to avoid downloading large amounts of data.
+#> # A tibble: 500 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-06-24 80727000  208.  207.  213.  208.           206.
-#>  2 AAPL   2024-06-25 55549700  209.  209.  211.  209.           207.
-#>  3 AAPL   2024-06-26 66213200  212.  211.  215.  213.           211.
-#>  4 AAPL   2024-06-27 49772700  215.  212.  216.  214.           212.
-#>  5 AAPL   2024-06-28 82542700  216.  210.  216.  211.           209.
-#>  6 AAPL   2024-07-01 60402900  212.  212.  218.  217.           215.
-#>  7 AAPL   2024-07-02 58046200  216.  215.  220.  220.           218.
-#>  8 AAPL   2024-07-03 37369800  220   219.  222.  222.           220.
-#>  9 AAPL   2024-07-05 60412400  222.  222.  226.  226.           224.
-#> 10 AAPL   2024-07-08 59085900  227.  223.  228.  228.           226.
-#> # ℹ 488 more rows
+#>  1 AAPL   2024-06-25 55549700  209.  209.  211.  209.           207.
+#>  2 AAPL   2024-06-26 66213200  212.  211.  215.  213.           211.
+#>  3 AAPL   2024-06-27 49772700  215.  212.  216.  214.           212.
+#>  4 AAPL   2024-06-28 82542700  216.  210.  216.  211.           209.
+#>  5 AAPL   2024-07-01 60402900  212.  212.  218.  217.           215.
+#>  6 AAPL   2024-07-02 58046200  216.  215.  220.  220.           218.
+#>  7 AAPL   2024-07-03 37369800  220   219.  222.  222.           220.
+#>  8 AAPL   2024-07-05 60412400  222.  222.  226.  226.           224.
+#>  9 AAPL   2024-07-08 59085900  227.  223.  228.  228.           226.
+#> 10 AAPL   2024-07-09 48076100  228.  226.  229.  229.           227.
+#> # ℹ 490 more rows
   download_data_stock_prices("GOOGL", "2021-01-01", "2022-01-01" )
 #> # A tibble: 252 × 8
 #>    symbol date         volume  open   low  high close adjusted_close

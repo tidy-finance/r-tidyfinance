@@ -12,7 +12,7 @@ For more information and resources related to the book, visit
 
 Useful links:
 
-- <https://package.tidy-finance.org/>
+- <https://r.tidy-finance.org/>
 
 - <https://www.tidy-finance.org/r/>
 

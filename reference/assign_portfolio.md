@@ -5,12 +5,12 @@ and the selected function to compute breakpoints. Users can specify a
 function to compute breakpoints. The function must take `data` and
 `sorting_variable` as the first two arguments. Additional arguments are
 passed with a named list
-[`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md).
+[`breakpoint_options()`](https://r.tidy-finance.org/reference/breakpoint_options.md).
 The function needs to return an ascending vector of breakpoints. By
 default, breakpoints are computed with
-[`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md).
+[`compute_breakpoints()`](https://r.tidy-finance.org/reference/compute_breakpoints.md).
 The default column names can be modified using
-[`data_options()`](https://package.tidy-finance.org/reference/data_options.md).
+[`data_options()`](https://r.tidy-finance.org/reference/data_options.md).
 
 ## Usage
 
@@ -42,18 +42,18 @@ assign_portfolio(
 - breakpoint_function:
 
   A function to compute breakpoints. The default is set to
-  [`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md).
+  [`compute_breakpoints()`](https://r.tidy-finance.org/reference/compute_breakpoints.md).
 
 - data_options:
 
   A list of class `tidyfinance_data_options` (created via
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md))
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
   specifying column name mappings. Passed through to
   `breakpoint_function`. When using the default
-  [`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md),
+  [`compute_breakpoints()`](https://r.tidy-finance.org/reference/compute_breakpoints.md),
   the `exchange` element is used to specify the exchange column, and
   `mktcap_lag` is used to specify the market capitalization column. Uses
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md)
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)
   default if `NULL`: `"exchange" = "exchange"` and
   `"mktcap_lag" = "mktcap_lag"`.
 
@@ -65,15 +65,15 @@ A vector of integer portfolio assignments for each row in the input
 ## See also
 
 Other portfolio functions:
-[`breakpoint_options()`](https://package.tidy-finance.org/reference/breakpoint_options.md),
-[`compute_breakpoints()`](https://package.tidy-finance.org/reference/compute_breakpoints.md),
-[`compute_long_short_returns()`](https://package.tidy-finance.org/reference/compute_long_short_returns.md),
-[`compute_portfolio_returns()`](https://package.tidy-finance.org/reference/compute_portfolio_returns.md),
-[`data_options()`](https://package.tidy-finance.org/reference/data_options.md),
-[`filter_options()`](https://package.tidy-finance.org/reference/filter_options.md),
-[`filter_sorting_data()`](https://package.tidy-finance.org/reference/filter_sorting_data.md),
-[`implement_portfolio_sort()`](https://package.tidy-finance.org/reference/implement_portfolio_sort.md),
-[`portfolio_sort_options()`](https://package.tidy-finance.org/reference/portfolio_sort_options.md)
+[`breakpoint_options()`](https://r.tidy-finance.org/reference/breakpoint_options.md),
+[`compute_breakpoints()`](https://r.tidy-finance.org/reference/compute_breakpoints.md),
+[`compute_long_short_returns()`](https://r.tidy-finance.org/reference/compute_long_short_returns.md),
+[`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md),
+[`data_options()`](https://r.tidy-finance.org/reference/data_options.md),
+[`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md),
+[`filter_sorting_data()`](https://r.tidy-finance.org/reference/filter_sorting_data.md),
+[`implement_portfolio_sort()`](https://r.tidy-finance.org/reference/implement_portfolio_sort.md),
+[`portfolio_sort_options()`](https://r.tidy-finance.org/reference/portfolio_sort_options.md)
 
 ## Examples
 

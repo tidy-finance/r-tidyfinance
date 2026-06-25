@@ -50,8 +50,8 @@ insufficient observations.
 ## See also
 
 Other estimation functions:
-[`estimate_betas()`](https://package.tidy-finance.org/reference/estimate_betas.md),
-[`estimate_fama_macbeth()`](https://package.tidy-finance.org/reference/estimate_fama_macbeth.md)
+[`estimate_betas()`](https://r.tidy-finance.org/reference/estimate_betas.md),
+[`estimate_fama_macbeth()`](https://r.tidy-finance.org/reference/estimate_fama_macbeth.md)
 
 ## Examples
 

@@ -1,7 +1,7 @@
 # Generate Pseudo CRSP Data
 
 Returns pseudo CRSP data with the same column layout as
-[`download_data_wrds_crsp()`](https://package.tidy-finance.org/reference/download_data_wrds_crsp.md).
+[`download_data_wrds_crsp()`](https://r.tidy-finance.org/reference/download_data_wrds_crsp.md).
 Useful for testing and for reproducing the workflow of analyses that
 rely on CRSP without a WRDS subscription. The returned values are
 simulated and not suitable for inference.
@@ -43,7 +43,7 @@ download_data_pseudo_crsp(
 - version:
 
   Accepted for API compatibility with
-  [`download_data_wrds_crsp()`](https://package.tidy-finance.org/reference/download_data_wrds_crsp.md);
+  [`download_data_wrds_crsp()`](https://r.tidy-finance.org/reference/download_data_wrds_crsp.md);
   the pseudo schema follows the v2 output.
 
 - additional_columns:
@@ -57,18 +57,18 @@ download_data_pseudo_crsp(
   A logical indicating whether CRSP-Compustat links should be appended.
   When `TRUE`, the output gains a `gvkey` column whose values are
   derived from the same pseudo identifier universe used by
-  [`download_data_pseudo_ccm_links()`](https://package.tidy-finance.org/reference/download_data_pseudo_ccm_links.md).
+  [`download_data_pseudo_ccm_links()`](https://r.tidy-finance.org/reference/download_data_pseudo_ccm_links.md).
 
 - adjust_volume:
 
   Accepted for API compatibility with
-  [`download_data_wrds_crsp()`](https://package.tidy-finance.org/reference/download_data_wrds_crsp.md);
+  [`download_data_wrds_crsp()`](https://r.tidy-finance.org/reference/download_data_wrds_crsp.md);
   ignored for pseudo data.
 
 - batch_size:
 
   Accepted for API compatibility with
-  [`download_data_wrds_crsp()`](https://package.tidy-finance.org/reference/download_data_wrds_crsp.md);
+  [`download_data_wrds_crsp()`](https://r.tidy-finance.org/reference/download_data_wrds_crsp.md);
   ignored for pseudo data.
 
 - n_assets:
@@ -80,9 +80,9 @@ download_data_pseudo_crsp(
   Integer. Random seed; defaults to `1234`. Identical `(seed, n_assets)`
   produces identical output across calls and matches the identifier
   universe used by
-  [`download_data_pseudo_compustat()`](https://package.tidy-finance.org/reference/download_data_pseudo_compustat.md)
+  [`download_data_pseudo_compustat()`](https://r.tidy-finance.org/reference/download_data_pseudo_compustat.md)
   and
-  [`download_data_pseudo_ccm_links()`](https://package.tidy-finance.org/reference/download_data_pseudo_ccm_links.md).
+  [`download_data_pseudo_ccm_links()`](https://r.tidy-finance.org/reference/download_data_pseudo_ccm_links.md).
 
 ## Value
 
@@ -102,8 +102,8 @@ pseudo calendar approximates a trading-day grid.
 ## See also
 
 Other pseudo functions:
-[`download_data_pseudo_ccm_links()`](https://package.tidy-finance.org/reference/download_data_pseudo_ccm_links.md),
-[`download_data_pseudo_compustat()`](https://package.tidy-finance.org/reference/download_data_pseudo_compustat.md)
+[`download_data_pseudo_ccm_links()`](https://r.tidy-finance.org/reference/download_data_pseudo_ccm_links.md),
+[`download_data_pseudo_compustat()`](https://r.tidy-finance.org/reference/download_data_pseudo_compustat.md)
 
 ## Examples
 

@@ -48,11 +48,11 @@ estimate_betas(
 - data_options:
 
   A list of class `tidyfinance_data_options` (created via
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md))
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
   specifying column name mappings. The `id` is used to specify the
   entity (i.e., firm), and the `date` element is used to specify the
   date column. Uses
-  [`data_options()`](https://package.tidy-finance.org/reference/data_options.md)
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)
   default if `NULL`: `"id" = "permno"` and `"date" = "date"`.
 
 ## Value
@@ -62,8 +62,8 @@ A data frame with the estimated betas for each time period.
 ## See also
 
 Other estimation functions:
-[`estimate_fama_macbeth()`](https://package.tidy-finance.org/reference/estimate_fama_macbeth.md),
-[`estimate_model()`](https://package.tidy-finance.org/reference/estimate_model.md)
+[`estimate_fama_macbeth()`](https://r.tidy-finance.org/reference/estimate_fama_macbeth.md),
+[`estimate_model()`](https://r.tidy-finance.org/reference/estimate_model.md)
 
 ## Examples
 
