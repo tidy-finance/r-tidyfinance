@@ -43,7 +43,6 @@ Imports:
     RPostgres (>= 1.4.5),
     sandwich (>= 3.1-0)
 Suggests:
-    furrr (>= 0.3.1),
     testthat (>= 3.2.0),
     withr
 Config/testthat/edition: 3

@@ -4,14 +4,7 @@
 \alias{estimate_betas}
 \title{Estimate Rolling Betas}
 \usage{
-estimate_betas(
-  data,
-  model,
-  lookback,
-  min_obs = NULL,
-  use_furrr = FALSE,
-  data_options = NULL
-)
+estimate_betas(data, model, lookback, min_obs = NULL, data_options = NULL)
 }
 \arguments{
 \item{data}{A data frame containing the data with a date identifier
@@ -25,10 +18,8 @@ variables used in the model.}
 hours, minutes, or seconds to look back when estimating the rolling model.}
 
 \item{min_obs}{An integer specifying the minimum number of observations
-required to estimate the model. Defaults to 80\% of \code{lookback}.}
-
-\item{use_furrr}{A logical indicating whether to use the \code{furrr} package
-and its parallelization capabilities. Defaults to \code{FALSE}.}
+required to estimate the model. Defaults to 80\% of \code{lookback}. Windows
+with fewer observations are dropped from the output.}
 
 \item{data_options}{A list of class \code{tidyfinance_data_options} (created via
 \code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{id} is used to
@@ -37,12 +28,20 @@ the date column. Uses \code{\link[=data_options]{data_options()}} default if \co
 \code{"id" = "permno"} and \code{"date" = "date"}.}
 }
 \value{
-A data frame with the estimated betas for each time period.
+A data frame with the estimated betas for each entity and period.
+It contains the entity and date identifiers, an \code{intercept} column (if the
+model includes one), and one \verb{beta_<variable>} column per regressor.
 }
 \description{
-Estimates rolling betas for a given model using the provided data. It
-supports parallel processing for faster computation using the \code{furrr}
-package.
+Estimates rolling betas for a given linear model using a fast, vectorized
+approach. Instead of fitting one regression per stock and estimation window,
+the function collapses the data to additive cumulants (the entries of the
+moment matrices \eqn{X'X} and \eqn{X'y}) per stock and period, aggregates
+these cumulants over rolling calendar windows in a single pass with
+\code{\link[slider:summary-index]{slider::slide_index_sum()}}, and recovers the coefficients via the
+closed-form OLS solution \eqn{\hat\beta = (X'X)^{-1} X'y}. This produces
+estimates that are numerically identical to a per-window regression, but
+fast enough that no per-stock nesting or parallelization is required.
 }
 \examples{
 # Estimate monthly betas using monthly return data
@@ -69,7 +68,7 @@ data_monthly |>
   estimate_betas("ret_excess ~ mkt_excess", months(3),
                  data_options = data_options(id = "id"))
 
-# Estimate monthly betas using daily return data and parallelization
+# Estimate monthly betas using daily return data
 data_daily <- tibble::tibble(
   date = rep(seq.Date(from = as.Date("2020-01-01"),
                       to = as.Date("2020-12-31"), by = "day"), each = 50),
@@ -83,12 +82,10 @@ data_daily <- tibble::tibble(
 data_daily <- data_daily |>
   dplyr::mutate(date = lubridate::floor_date(date, "month"))
 
-# Change settings via future::plan(strategy = "multisession", workers = 4)
 estimate_betas(
   data_daily,
   "ret_excess ~ mkt_excess",
-  lubridate::days(90),
-  use_furrr = TRUE
+  lubridate::days(90)
 )
 
 }

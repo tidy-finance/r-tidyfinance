@@ -2,20 +2,25 @@
 
 ## Improvements
 
+- `estimate_betas()` now uses a fast, vectorized closed-form approach based on
+  rolling cumulants of the moment matrices instead of fitting one regression
+  per stock and window. This removes the need for per-stock nesting and the
+  optional `furrr` parallelization, so the `use_furrr` argument and the `furrr`
+  dependency have been dropped. Estimates are numerically identical to the
+  previous regression-based implementation. Windows with fewer than `min_obs`
+  observations are now dropped from the output rather than returned with `NA`
+  coefficients.
 - The package website moved from `package.tidy-finance.org` to
   `r.tidy-finance.org`.
-
 - `download_data()` now uses the human-readable domain names returned by
   `list_supported_datasets()` (e.g., `"Fama-French"`, `"Global Q"`,
   `"WRDS"`, `"Tidy Finance"`). The `"pseudo"` and `"tidyfinance"` domains
   were renamed to `"Pseudo Data"` and `"Tidy Finance"`. The previous
   machine-readable domain names (e.g., `"famafrench"`, `"wrds"`,
   `"pseudo"`, `"tidyfinance"`) are soft-deprecated but still accepted.
-
 - `download_data_wrds_crsp()` now errors informatively when `version = "v1"`
   is used with an `end_date` later than December 2024, reflecting the
   discontinuation of the CRSP legacy version at the end of 2024.
-
 - Removed the "experimental" lifecycle badge from `assign_portfolio()`,
   `compute_breakpoints()`, `compute_rolling_value()`, `estimate_model()`,
   and `join_lagged_values()`, which are now considered stable.
