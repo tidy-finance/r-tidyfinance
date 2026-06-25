@@ -2,6 +2,9 @@
 
 ## Improvements
 
+- The package website moved from `package.tidy-finance.org` to
+  `r.tidy-finance.org`.
+
 - `download_data()` now uses the human-readable domain names returned by
   `list_supported_datasets()` (e.g., `"Fama-French"`, `"Global Q"`,
   `"WRDS"`, `"Tidy Finance"`). The `"pseudo"` and `"tidyfinance"` domains
