@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Download and Process Data Based on Domain and Dataset</h1>
-      <small class="dont-index">Source: <a href="https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data.R" class="external-link"><code>R/download_data.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/tidy-finance/r-tidyfinance/blob/v0.7.0/R/download_data.R" class="external-link"><code>R/download_data.R</code></a></small>
       <div class="d-none name"><code>download_data.Rd</code></div>
     </div>
 
@@ -223,21 +223,21 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 1949-04-01  271. GDP   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,668 more rows</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Stock Prices"</span>, symbols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AAPL"</span>, <span class="st">"MSFT"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-06-25 to</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-06-25 to avoid downloading large amounts of data.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-06-28 to</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-06-28 to avoid downloading large amounts of data.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 500 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    symbol date         volume  open   low  high close adjusted_close</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AAPL   2024-06-25 55<span style="text-decoration: underline;">549</span>700  209.  209.  211.  209.           207.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AAPL   2024-06-26 66<span style="text-decoration: underline;">213</span>200  212.  211.  215.  213.           211.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AAPL   2024-06-27 49<span style="text-decoration: underline;">772</span>700  215.  212.  216.  214.           212.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AAPL   2024-06-28 82<span style="text-decoration: underline;">542</span>700  216.  210.  216.  211.           209.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AAPL   2024-07-01 60<span style="text-decoration: underline;">402</span>900  212.  212.  218.  217.           215.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AAPL   2024-07-02 58<span style="text-decoration: underline;">046</span>200  216.  215.  220.  220.           218.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AAPL   2024-07-03 37<span style="text-decoration: underline;">369</span>800  220   219.  222.  222.           220.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AAPL   2024-07-05 60<span style="text-decoration: underline;">412</span>400  222.  222.  226.  226.           224.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AAPL   2024-07-08 59<span style="text-decoration: underline;">085</span>900  227.  223.  228.  228.           226.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AAPL   2024-07-09 48<span style="text-decoration: underline;">076</span>100  228.  226.  229.  229.           227.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AAPL   2024-06-28 82<span style="text-decoration: underline;">542</span>700  216.  210.  216.  211.           209.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AAPL   2024-07-01 60<span style="text-decoration: underline;">402</span>900  212.  212.  218.  217.           215.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AAPL   2024-07-02 58<span style="text-decoration: underline;">046</span>200  216.  215.  220.  220.           218.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AAPL   2024-07-03 37<span style="text-decoration: underline;">369</span>800  220   219.  222.  222.           220.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AAPL   2024-07-05 60<span style="text-decoration: underline;">412</span>400  222.  222.  226.  226.           224.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AAPL   2024-07-08 59<span style="text-decoration: underline;">085</span>900  227.  223.  228.  228.           226.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AAPL   2024-07-09 48<span style="text-decoration: underline;">076</span>100  228.  226.  229.  229.           227.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AAPL   2024-07-10 62<span style="text-decoration: underline;">627</span>700  229.  229.  233.  233.           231.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AAPL   2024-07-11 64<span style="text-decoration: underline;">710</span>600  231.  226.  232.  228.           226.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AAPL   2024-07-12 53<span style="text-decoration: underline;">046</span>500  229.  229.  233.  231.           229.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 490 more rows</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"Tidy Finance"</span>,</span></span>
