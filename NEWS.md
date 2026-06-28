@@ -1,5 +1,7 @@
 # tidyfinance (development version)
 
+# tidyfinance 0.7.0
+
 ## Improvements
 
 - `estimate_betas()` now uses a fast, vectorized closed-form approach based on
