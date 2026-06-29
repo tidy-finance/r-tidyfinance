@@ -1,5 +1,13 @@
 # tidyfinance (development version)
 
+## Bug fixes
+
+- `download_data_huggingface("factor_library", ...)` now treats an explicit
+  `n_portfolios_secondary = NULL` as "remove the filter and return all values"
+  (univariate and bivariate sorts alike), consistent with the documented
+  behavior for every other column. Previously an explicit `NULL` was coerced to
+  `NA`, restricting the result to univariate sorts.
+
 # tidyfinance 0.7.0
 
 ## Improvements
