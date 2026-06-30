@@ -2,6 +2,13 @@
 
 ## Improvements
 
+- Added a `tidyfinance` vignette that walks through the complete
+  factor-construction workflow --- download, signal construction, fiscal-year
+  lagging, portfolio sorting, and a Fama-MacBeth test --- end to end. It builds
+  entirely on `download_data(domain = "Pseudo Data")`, so it compiles without a
+  WRDS subscription or network access. `knitr` and `rmarkdown` are added back to
+  `Suggests`, and `VignetteBuilder: knitr` is restored to `DESCRIPTION`.
+
 - `download_data("Open Source Asset Pricing")` now aligns the `date` column to
   the beginning of the month (the dataset previously returned end-of-month
   dates), matching the convention used by the other download functions. All
