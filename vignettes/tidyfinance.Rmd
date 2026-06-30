@@ -178,7 +178,10 @@ sorting_variable_data |>
   mutate(asset_growth = winsorize(asset_growth, cut = 0.01)) |>
   create_summary_statistics(asset_growth, detail = TRUE) |>
   select(variable, n, mean, sd, q05, q50, q95) |>
-  knitr::kable(digits = 3, caption = "Cross-sectional distribution of asset growth.")
+  knitr::kable(
+    digits = 3,
+    caption = "Cross-sectional distribution of asset growth."
+  )
 ```
 
 Even after winsorizing, the mean sits above the median: asset growth is
@@ -296,7 +299,13 @@ portfolio_summary |>
   knitr::kable(
     digits = 4,
     col.names = c("Portfolio", "Value-weighted", "Equal-weighted"),
-    caption = "Annualized mean excess returns by asset growth quintile, plus the long-short spread. On real data the value-weighted mean declines across quintiles and the long-short row is a sizable premium; here the quintile ordering and the long-short value (and its sign) are sampling noise."
+    caption = paste(
+      "Annualized mean excess returns by asset growth quintile, plus the",
+      "long-short spread. On real data the value-weighted mean declines",
+      "across quintiles and the long-short row is a sizable premium; here",
+      "the quintile ordering and the long-short value (and its sign) are",
+      "sampling noise."
+    )
   )
 ```
 
@@ -385,7 +394,14 @@ fm_results <- estimate_fama_macbeth(
 fm_results |>
   knitr::kable(
     digits = 4,
-    caption = "Fama-MacBeth regression of monthly excess returns on lagged asset growth and log market cap. On real data the asset growth slope is negative and significant; on pseudo data it is indistinguishable from zero. The large, 'significant' intercept is a mechanical artifact of the simulated returns' built-in positive drift, not an alpha."
+    caption = paste(
+      "Fama-MacBeth regression of monthly excess returns on lagged asset",
+      "growth and log market cap. On real data the asset growth slope is",
+      "negative and significant; on pseudo data it is indistinguishable",
+      "from zero. The large, 'significant' intercept is a mechanical",
+      "artifact of the simulated returns' built-in positive drift, not an",
+      "alpha."
+    )
   )
 ```
 
