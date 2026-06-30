@@ -360,7 +360,7 @@ test_that("list_supported_jkp_factors returns regions and per-region values", {
   expect_error(list_supported_jkp_factors("atlantis"), "Unsupported")
 })
 
-test_that("list_supported_jkp_factors returns empty vector on manifest failure", {
+test_that("list_supported_jkp_factors returns empty vector on failure", {
   local_mocked_bindings(
     fetch_jkp_availability = function(...) cli::cli_abort("boom")
   )
