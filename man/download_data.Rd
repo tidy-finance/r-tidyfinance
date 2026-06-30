@@ -45,8 +45,9 @@ dataset type.}
 depending on the \code{domain}. For instance, if \code{domain} is
 \code{"Index Constituents"}, arguments are passed to
 \code{download_data_constituents()}. If \code{domain} is \code{"Global Factor Data"},
-arguments such as \code{region}, \code{factors}, \code{frequency}, and \code{weighting} are
-passed to \code{download_data_jkp()}. If \code{domain} is \code{"Tidy Finance"} and
+the \code{dataset} argument and arguments such as \code{region}, \code{factors},
+\code{classification}, \code{frequency}, and \code{weighting} are passed to
+\code{download_data_jkp()}. If \code{domain} is \code{"Tidy Finance"} and
 \code{dataset} is \code{"factor_library"}, arguments are either filter inputs
 (e.g., \code{sorting_variable}, \code{rebalancing}, \code{fill_all}) or an explicit
 \code{ids} vector that bypasses the grid filter and downloads the

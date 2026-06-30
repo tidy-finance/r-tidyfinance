@@ -8,6 +8,7 @@ download_data_jkp(
   dataset = "factors",
   region = "usa",
   factors = "all_factors",
+  classification = "gics",
   frequency = "monthly",
   weighting = "vw_cap",
   start_date = NULL,
@@ -15,30 +16,41 @@ download_data_jkp(
 )
 }
 \arguments{
-\item{dataset}{The Global Factor Data product to download. Currently only
-\code{"factors"} (characteristic-managed portfolio returns) is supported.
-The argument is reserved for future support of \code{"portfolios"} and
-\code{"industry"} returns.}
+\item{dataset}{The Global Factor Data product to download, one of:
+\code{"factors"} (characteristic-managed portfolio returns, the default),
+\code{"portfolios"} (the underlying low/middle/high portfolios that make up
+each long-short factor), \code{"industry"} (industry returns), \code{"nyse_cutoffs"}
+(NYSE size breakpoints), or \code{"return_cutoffs"} (return winsorization
+cutoffs).}
 
 \item{region}{A character string with the region or country to download,
 using the codes from the availability manifest (e.g., \code{"usa"}, \code{"world"},
 \code{"developed"}, \code{"emerging"}, or an ISO-3 country code such as \code{"jpn"}).
-Defaults to \code{"usa"}. Call \code{list_supported_jkp_factors()} to see the
+Defaults to \code{"usa"}. Ignored for the reference datasets \code{"nyse_cutoffs"}
+and \code{"return_cutoffs"}. Call \code{list_supported_jkp_factors()} to see the
 available regions.}
 
-\item{factors}{A character string selecting the factor content: \code{"mkt"}
-(the market factor), \code{"all_factors"} (all 153 factors), \code{"all_themes"}
-(all 13 themes), a single theme (e.g., \code{"value"}, \code{"momentum"}), or a
-single factor code (e.g., \code{"be_me"}, \code{"ret_12_1"}). Defaults to
-\code{"all_factors"}. Call \code{list_supported_jkp_factors(region)} to see the
-values available for a region.}
+\item{factors}{A character string selecting the factor content for the
+\code{"factors"} and \code{"portfolios"} datasets. For \code{"factors"}: \code{"mkt"} (the
+market factor), \code{"all_factors"} (all 153 factors), \code{"all_themes"} (all 13
+themes), a single theme (e.g., \code{"value"}, \code{"momentum"}), or a single
+factor code (e.g., \code{"be_me"}, \code{"ret_12_1"}). For \code{"portfolios"}: a single
+factor code. Defaults to \code{"all_factors"}. Call
+\code{list_supported_jkp_factors(region, dataset)} to see the values available
+for a region.}
+
+\item{classification}{The industry classification for the \code{"industry"}
+dataset, either \code{"gics"} (default) or \code{"ff49"} (Fama-French 49
+industries).}
 
 \item{frequency}{The data frequency, either \code{"monthly"} (default) or
-\code{"daily"}.}
+\code{"daily"}. The \code{"industry"} dataset is only available at monthly
+frequency. For \code{"return_cutoffs"}, the frequency selects the monthly or
+daily cutoff file.}
 
 \item{weighting}{The portfolio weighting scheme: \code{"vw_cap"} (capped
 value-weighted, the default), \code{"vw"} (value-weighted), or \code{"ew"}
-(equal-weighted).}
+(equal-weighted). Ignored for the reference datasets.}
 
 \item{start_date}{Optional. A character string or Date object in
 "YYYY-MM-DD" format specifying the start date for the data. If not
@@ -49,19 +61,24 @@ format specifying the end date for the data. If not provided, the full
 dataset is returned.}
 }
 \value{
-A tibble with the processed factor returns. Columns are
-\code{location}, \code{name}, \code{freq}, \code{weighting}, \code{direction}, \code{n_stocks},
-\code{n_stocks_min}, \code{date} (aligned to the beginning of the month for monthly
-data), and \code{ret} (the return as a plain numeric value).
+A tibble with the processed data. The \code{date} column is aligned to
+the beginning of the month for monthly data, and all returns are plain
+numeric (decimal) values. The remaining columns depend on \code{dataset}: the
+\code{"factors"} data carry \code{location}, \code{name}, \code{freq}, \code{weighting},
+\code{direction}, \code{n_stocks}, \code{n_stocks_min}, and \code{ret}; the \code{"portfolios"}
+data add a \code{pf} portfolio identifier; the \code{"industry"} data carry the
+classification code alongside \code{ret}; and the reference datasets carry
+breakpoint or cutoff columns.
 }
 \description{
-Downloads and processes characteristic-managed portfolio (factor) returns
-from \href{https://jkpfactors.com/data}{Global Factor Data}, the public data
-library accompanying Jensen, Kelly, and Pedersen (2023). The data are stored
-as zipped CSV files in a public AWS S3 bucket. The function validates the
-requested selection against the library's live availability manifest, then
-downloads the matching archive, unzips it, aligns monthly dates to the
-beginning of the month, and optionally filters by a date range.
+Downloads and processes data from
+\href{https://jkpfactors.com/data}{Global Factor Data}, the public data library
+accompanying Jensen, Kelly, and Pedersen (2023). The data are stored as
+zipped CSV files (and a few plain CSV reference files) in a public AWS S3
+bucket. For the factor, portfolio, and industry products the function
+validates the requested selection against the library's live availability
+manifest, then downloads the matching archive, unzips it, aligns monthly
+dates to the beginning of the month, and optionally filters by a date range.
 }
 \details{
 Returns are already expressed as plain numeric (decimal) values in the
@@ -74,6 +91,14 @@ CC BY-NC 4.0 (non-commercial use).
     region = "usa", factors = "mkt",
     start_date = "2000-01-01", end_date = "2020-12-31"
   )
+  download_data_jkp(
+    dataset = "portfolios", region = "usa", factors = "be_me",
+    start_date = "2000-01-01", end_date = "2020-12-31"
+  )
+  download_data_jkp(
+    dataset = "industry", region = "usa", classification = "gics"
+  )
+  download_data_jkp(dataset = "nyse_cutoffs")
 }
 }
 \references{

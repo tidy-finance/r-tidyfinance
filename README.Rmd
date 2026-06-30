@@ -111,6 +111,19 @@ download_data(
 )
 ```
 
+The `dataset` argument also gives access to the underlying long-short portfolios (`"portfolios"`), industry returns (`"industry"`), and the reference files `"nyse_cutoffs"` and `"return_cutoffs"`:
+
+```{r}
+download_data(
+  domain = "Global Factor Data",
+  dataset = "industry",
+  region = "usa",
+  classification = "gics",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+```
+
 Use `list_supported_jkp_factors()` to see the available regions, or `list_supported_jkp_factors("usa")` to see the factors available for a region.
 
 To download multiple series from the Federal Reserve Economic Data (FRED):

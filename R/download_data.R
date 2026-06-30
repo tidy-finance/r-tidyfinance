@@ -32,8 +32,9 @@
 #'   depending on the `domain`. For instance, if `domain` is
 #'   `"Index Constituents"`, arguments are passed to
 #'   `download_data_constituents()`. If `domain` is `"Global Factor Data"`,
-#'   arguments such as `region`, `factors`, `frequency`, and `weighting` are
-#'   passed to `download_data_jkp()`. If `domain` is `"Tidy Finance"` and
+#'   the `dataset` argument and arguments such as `region`, `factors`,
+#'   `classification`, `frequency`, and `weighting` are passed to
+#'   `download_data_jkp()`. If `domain` is `"Tidy Finance"` and
 #'   `dataset` is `"factor_library"`, arguments are either filter inputs
 #'   (e.g., `sorting_variable`, `rebalancing`, `fill_all`) or an explicit
 #'   `ids` vector that bypasses the grid filter and downloads the
@@ -178,6 +179,7 @@ download_data <- function(
     )
   } else if (domain == "Global Factor Data") {
     processed_data <- download_data_jkp(
+      dataset = if (is.null(dataset)) "factors" else dataset,
       start_date = start_date,
       end_date = end_date,
       ...

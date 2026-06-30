@@ -4,26 +4,31 @@
 \alias{list_supported_jkp_factors}
 \title{List Supported Global Factor Data Regions and Factors}
 \usage{
-list_supported_jkp_factors(region = NULL)
+list_supported_jkp_factors(region = NULL, dataset = "factors")
 }
 \arguments{
 \item{region}{Optional. A region or country code. If provided, the function
-returns the factor codes available for that region. If \code{NULL} (the
+returns the selectors (factor codes, or industry classifications when
+\code{dataset = "industry"}) available for that region. If \code{NULL} (the
 default), it returns the available region codes.}
+
+\item{dataset}{The Global Factor Data product to query, one of \code{"factors"}
+(default), \code{"portfolios"}, or \code{"industry"}.}
 }
 \value{
 A character vector of region codes (when \code{region} is \code{NULL}) or of
-factor codes available for the requested region.
+the selectors available for the requested region.
 }
 \description{
 Queries the live availability manifest of
 \href{https://jkpfactors.com/data}{Global Factor Data} and returns the regions
-and factors that can be passed to \code{\link[=download_data_jkp]{download_data_jkp()}}.
+and selectors that can be passed to \code{\link[=download_data_jkp]{download_data_jkp()}}.
 }
 \examples{
 \donttest{
   list_supported_jkp_factors()
   list_supported_jkp_factors("usa")
+  list_supported_jkp_factors("usa", dataset = "portfolios")
 }
 }
 \seealso{

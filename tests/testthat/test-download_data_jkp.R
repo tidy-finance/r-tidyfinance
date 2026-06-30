@@ -4,6 +4,12 @@ test_helper_manifest <- function() {
       usa = c("mkt", "all_factors", "all_themes", "value", "be_me"),
       frontier = c("mkt", "all_factors", "aliq_mat")
     ),
+    portfolios = list(
+      usa = c("be_me", "ret_12_1")
+    ),
+    industry = list(
+      usa = c("gics", "ff49")
+    ),
     factors_monthly_only = list(
       frontier = c("aliq_mat")
     )
@@ -58,6 +64,88 @@ test_that("keeps daily dates as-is", {
   expect_equal(result$date, ymd(c("2020-01-02", "2020-01-03")))
 })
 
+test_that("downloads portfolios and coerces the pf identifier to integer", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    fetch_jkp_availability = function(...) test_helper_manifest(),
+    download_jkp_file = function(url, ...) {
+      tibble(
+        location = "usa", name = "be_me",
+        pf = c(1.0, 3.0), n = c(494, 497),
+        freq = "monthly", weighting = "vw_cap",
+        date = c("1926-01-31", "1926-01-31"), ret = c(0.001, -0.002)
+      )
+    }
+  )
+
+  result <- download_data_jkp(dataset = "portfolios", factors = "be_me")
+
+  expect_type(result$pf, "integer")
+  expect_equal(result$pf, c(1L, 3L))
+  expect_equal(result$date, ymd(c("1926-01-01", "1926-01-01")))
+})
+
+test_that("downloads industry returns at monthly frequency", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    fetch_jkp_availability = function(...) test_helper_manifest(),
+    download_jkp_file = function(url, ...) {
+      tibble(
+        gics = c(55, 15), date = c("1999-07-31", "1999-07-31"),
+        n = c(170, 376), location = "usa", ret = c(-0.004, -0.036),
+        freq = "monthly", weighting = "vw_cap"
+      )
+    }
+  )
+
+  result <- download_data_jkp(dataset = "industry", classification = "gics")
+
+  expect_equal(result$date, ymd(c("1999-07-01", "1999-07-01")))
+  expect_true("gics" %in% names(result))
+})
+
+test_that("downloads reference cutoffs and renames eom to date", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    download_jkp_csv = function(url, ...) {
+      tibble(
+        eom = c("1925-12-31", "1926-01-31"),
+        n = c(495, 508),
+        nyse_p50 = c(15.84, 16.25)
+      )
+    }
+  )
+
+  result <- download_data_jkp(dataset = "nyse_cutoffs")
+
+  expect_true("date" %in% names(result))
+  expect_false("eom" %in% names(result))
+  expect_equal(result$date, ymd(c("1925-12-01", "1926-01-01")))
+})
+
+test_that("return_cutoffs selects the daily file by frequency", {
+  captured_url <- NULL
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    download_jkp_csv = function(url, ...) {
+      captured_url <<- url
+      tibble(eom = "2020-01-31", ret_1 = -0.14)
+    }
+  )
+
+  download_data_jkp(dataset = "return_cutoffs", frequency = "daily")
+
+  expect_match(captured_url, "return_cutoffs_daily\\.csv$")
+})
+
 test_that("filters rows when both dates are supplied", {
   local_mocked_bindings(
     validate_dates = function(start_date, end_date) {
@@ -83,8 +171,15 @@ test_that("filters rows when both dates are supplied", {
 
 test_that("aborts on unsupported dataset", {
   expect_error(
-    download_data_jkp(dataset = "portfolios"),
-    "Only"
+    download_data_jkp(dataset = "bogus"),
+    "dataset"
+  )
+})
+
+test_that("aborts on daily request for the industry dataset", {
+  expect_error(
+    download_data_jkp(dataset = "industry", frequency = "daily"),
+    "monthly frequency"
   )
 })
 
@@ -116,6 +211,22 @@ test_that("aborts on factor not available in region", {
   )
 })
 
+test_that("aborts on invalid industry classification", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    fetch_jkp_availability = function(...) test_helper_manifest()
+  )
+
+  expect_error(
+    download_data_jkp(
+      dataset = "industry", region = "usa", classification = "naics"
+    ),
+    "Unsupported"
+  )
+})
+
 test_that("aborts on daily request for a monthly-only factor", {
   local_mocked_bindings(
     validate_dates = function(start_date, end_date) {
@@ -136,6 +247,11 @@ test_that("aborts on invalid frequency or weighting", {
   expect_error(
     download_data_jkp(frequency = "weekly"),
     "frequency"
+  )
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    }
   )
   expect_error(
     download_data_jkp(weighting = "gdp_weighted"),
@@ -159,23 +275,41 @@ test_that("returns empty tibble when the manifest is unavailable", {
   expect_equal(nrow(result), 0)
 })
 
-test_that("builds the bracketed S3 object key", {
-  url <- build_jkp_factors_url("usa", "all_factors", "monthly", "vw_cap")
+test_that("builds the bracketed S3 object keys", {
   expect_equal(
-    url,
+    build_jkp_url("factors", "usa", "all_factors", "monthly", "vw_cap"),
     paste0(
       "https://jkpfactors-data.s3.amazonaws.com/public/",
       "%5Busa%5D_%5Ball_factors%5D_%5Bmonthly%5D_%5Bvw_cap%5D.zip"
     )
   )
+  expect_equal(
+    build_jkp_url("portfolios", "usa", "be_me", "monthly", "vw_cap"),
+    paste0(
+      "https://jkpfactors-data.s3.amazonaws.com/public/portfolios/",
+      "%5Busa%5D_%5Bbe_me%5D_%5Bmonthly%5D_%5Bvw_cap%5D.zip"
+    )
+  )
+  # Industry always uses the monthly key regardless of the frequency argument.
+  expect_equal(
+    build_jkp_url("industry", "usa", "gics", "daily", "ew"),
+    paste0(
+      "https://jkpfactors-data.s3.amazonaws.com/public/industry/",
+      "%5Busa%5D_%5Bgics%5D_%5Bmonthly%5D_%5Bew%5D.zip"
+    )
+  )
 })
 
-test_that("list_supported_jkp_factors returns regions and per-region factors", {
+test_that("list_supported_jkp_factors returns regions and per-region values", {
   local_mocked_bindings(
     fetch_jkp_availability = function(...) test_helper_manifest()
   )
 
   expect_equal(list_supported_jkp_factors(), c("usa", "frontier"))
   expect_true("be_me" %in% list_supported_jkp_factors("usa"))
+  expect_equal(
+    list_supported_jkp_factors("usa", dataset = "industry"),
+    c("gics", "ff49")
+  )
   expect_error(list_supported_jkp_factors("atlantis"), "Unsupported")
 })

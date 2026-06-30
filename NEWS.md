@@ -3,11 +3,14 @@
 ## New features
 
 - Added `download_data_jkp()` and the `"Global Factor Data"` domain
-  for `download_data()`, which downloads characteristic-managed portfolio
-  (factor) returns from [Global Factor Data](https://jkpfactors.com/data)
-  (Jensen, Kelly, and Pedersen, 2023). The requested selection is validated
-  against the library's live availability manifest, and the helper
-  `list_supported_jkp_factors()` lists the available regions and factors.
+  for `download_data()`, which downloads data from
+  [Global Factor Data](https://jkpfactors.com/data) (Jensen, Kelly, and
+  Pedersen, 2023). The `dataset` argument selects between factor returns
+  (`"factors"`), the underlying long-short portfolios (`"portfolios"`),
+  industry returns (`"industry"`), and the reference files `"nyse_cutoffs"`
+  and `"return_cutoffs"`. The requested selection is validated against the
+  library's live availability manifest, and the helper
+  `list_supported_jkp_factors()` lists the available regions and selectors.
 
 ## Improvements
 
