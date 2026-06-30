@@ -92,11 +92,21 @@ download_data_jkp <- function(
   start_date = NULL,
   end_date = NULL
 ) {
-  dataset <- rlang::arg_match(
-    dataset,
-    c("factors", "portfolios", "industry", "nyse_cutoffs", "return_cutoffs")
+  supported_datasets <- c(
+    "factors", "portfolios", "industry", "nyse_cutoffs", "return_cutoffs"
   )
-  frequency <- rlang::arg_match(frequency, c("monthly", "daily"))
+  if (!(dataset %in% supported_datasets)) {
+    cli::cli_abort(c(
+      "Unsupported {.arg dataset}: {.val {dataset}}.",
+      "i" = "Supported datasets: {.val {supported_datasets}}."
+    ))
+  }
+
+  if (!(frequency %in% c("monthly", "daily"))) {
+    cli::cli_abort(
+      "{.arg frequency} must be {.str monthly} or {.str daily}."
+    )
+  }
 
   dates <- validate_dates(start_date, end_date)
   start_date <- dates$start_date
@@ -122,7 +132,11 @@ download_data_jkp <- function(
     ))
   }
 
-  weighting <- rlang::arg_match(weighting, c("vw_cap", "vw", "ew"))
+  if (!(weighting %in% c("vw_cap", "vw", "ew"))) {
+    cli::cli_abort(
+      "{.arg weighting} must be one of {.val {c('vw_cap', 'vw', 'ew')}}."
+    )
+  }
 
   if (dataset == "industry" && frequency == "daily") {
     cli::cli_abort(c(
@@ -185,8 +199,11 @@ download_data_jkp <- function(
 #' @param dataset The Global Factor Data product to query, one of `"factors"`
 #'   (default), `"portfolios"`, or `"industry"`.
 #'
-#' @returns A character vector of region codes (when `region` is `NULL`) or of
-#'   the selectors available for the requested region.
+#' @returns A tibble. When `region` is `NULL`, it has a single `region` column
+#'   listing the available region codes. When `region` is provided, it has a
+#'   `region` column and a `factor` column listing the selectors (factor codes,
+#'   or industry classifications when `dataset = "industry"`) available for that
+#'   region.
 #'
 #' @family utility functions
 #' @export
@@ -198,7 +215,13 @@ download_data_jkp <- function(
 #'   list_supported_jkp_factors("usa", dataset = "portfolios")
 #' }
 list_supported_jkp_factors <- function(region = NULL, dataset = "factors") {
-  dataset <- rlang::arg_match(dataset, c("factors", "portfolios", "industry"))
+  supported_datasets <- c("factors", "portfolios", "industry")
+  if (!(dataset %in% supported_datasets)) {
+    cli::cli_abort(c(
+      "Unsupported {.arg dataset}: {.val {dataset}}.",
+      "i" = "Supported datasets: {.val {supported_datasets}}."
+    ))
+  }
 
   availability <- handle_download_error(
     fetch_jkp_availability,
@@ -206,14 +229,14 @@ list_supported_jkp_factors <- function(region = NULL, dataset = "factors") {
   )
 
   if (is.null(availability)) {
-    cli::cli_inform("Returning an empty vector due to download failure.")
-    return(character())
+    cli::cli_inform("Returning an empty tibble due to download failure.")
+    return(tibble(region = character()))
   }
 
   regions <- names(availability[[dataset]])
 
   if (is.null(region)) {
-    return(regions)
+    return(tibble(region = regions))
   }
 
   if (!region %in% regions) {
@@ -223,7 +246,7 @@ list_supported_jkp_factors <- function(region = NULL, dataset = "factors") {
     ))
   }
 
-  availability[[dataset]][[region]]
+  tibble(region = region, factor = availability[[dataset]][[region]])
 }
 
 #' Fetch the Global Factor Data Availability Manifest

@@ -351,25 +351,28 @@ test_that("list_supported_jkp_factors returns regions and per-region values", {
     fetch_jkp_availability = function(...) test_helper_manifest()
   )
 
-  expect_equal(list_supported_jkp_factors(), c("usa", "frontier"))
-  expect_true("be_me" %in% list_supported_jkp_factors("usa"))
+  regions <- list_supported_jkp_factors()
+  expect_s3_class(regions, "tbl_df")
+  expect_equal(regions$region, c("usa", "frontier"))
+  expect_true("be_me" %in% list_supported_jkp_factors("usa")$factor)
   expect_equal(
-    list_supported_jkp_factors("usa", dataset = "industry"),
+    list_supported_jkp_factors("usa", dataset = "industry")$factor,
     c("gics", "ff49")
   )
   expect_error(list_supported_jkp_factors("atlantis"), "Unsupported")
 })
 
-test_that("list_supported_jkp_factors returns empty vector on failure", {
+test_that("list_supported_jkp_factors returns empty tibble on failure", {
   local_mocked_bindings(
     fetch_jkp_availability = function(...) cli::cli_abort("boom")
   )
 
   expect_message(
     result <- list_supported_jkp_factors(),
-    "Returning an empty vector due to download failure."
+    "Returning an empty tibble due to download failure."
   )
-  expect_equal(result, character())
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 0)
 })
 
 test_that("fetch_jkp_availability parses the JSON manifest", {

@@ -16,8 +16,11 @@ default), it returns the available region codes.}
 (default), \code{"portfolios"}, or \code{"industry"}.}
 }
 \value{
-A character vector of region codes (when \code{region} is \code{NULL}) or of
-the selectors available for the requested region.
+A tibble. When \code{region} is \code{NULL}, it has a single \code{region} column
+listing the available region codes. When \code{region} is provided, it has a
+\code{region} column and a \code{factor} column listing the selectors (factor codes,
+or industry classifications when \code{dataset = "industry"}) available for that
+region.
 }
 \description{
 Queries the live availability manifest of
