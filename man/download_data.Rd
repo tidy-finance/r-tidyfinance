@@ -18,7 +18,8 @@ download_data(
 returned by \code{\link[=list_supported_datasets]{list_supported_datasets()}}: \code{"Fama-French"}, \code{"Global Q"},
 \code{"Goyal-Welch"}, \code{"WRDS"}, \code{"Pseudo Data"}, \code{"Index Constituents"},
 \code{"FRED"}, \code{"Stock Prices"}, \code{"Open Source Asset Pricing"},
-\code{"Global Factor Data"}, or \code{"Tidy Finance"}. Use \code{"Pseudo Data"} to obtain
+\code{"Global Factor Data"}, \code{"Pastor-Stambaugh"}, \code{"Stambaugh-Yuan"}, or
+\code{"Tidy Finance"}. Use \code{"Pseudo Data"} to obtain
 pseudo data with the
 same schema as \code{"WRDS"} for testing or rendering without a WRDS
 subscription. The previous machine-readable names (e.g., \code{"famafrench"},
@@ -109,7 +110,9 @@ Other download functions:
 \code{\link{download_data_jkp}()},
 \code{\link{download_data_macro_predictors}()},
 \code{\link{download_data_osap}()},
+\code{\link{download_data_pastor_stambaugh}()},
 \code{\link{download_data_risk_free}()},
+\code{\link{download_data_stambaugh_yuan}()},
 \code{\link{download_data_stock_prices}()},
 \code{\link{download_factor_library_grid}()},
 \code{\link{download_factor_library_ids}()}

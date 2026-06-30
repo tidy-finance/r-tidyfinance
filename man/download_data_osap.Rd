@@ -63,7 +63,9 @@ Other download functions:
 \code{\link{download_data_huggingface}()},
 \code{\link{download_data_jkp}()},
 \code{\link{download_data_macro_predictors}()},
+\code{\link{download_data_pastor_stambaugh}()},
 \code{\link{download_data_risk_free}()},
+\code{\link{download_data_stambaugh_yuan}()},
 \code{\link{download_data_stock_prices}()},
 \code{\link{download_factor_library_grid}()},
 \code{\link{download_factor_library_ids}()}

@@ -92,16 +92,18 @@
     Code
       result
     Output
-      # A tibble: 9 x 3
-        type                 dataset_name              domain                   
-        <chr>                <chr>                     <chr>                    
-      1 stock_prices         YahooFinance              Stock Prices             
-      2 constituents         various                   Index Constituents       
-      3 fred                 various                   FRED                     
-      4 osap                 Open Source Asset Pricing Open Source Asset Pricing
-      5 jkp                  Global Factor Data        Global Factor Data       
-      6 risk_free            Risk-Free Rate            Tidy Finance             
-      7 high_frequency_sp500 High Frequency S&P 500    Tidy Finance             
-      8 factor_library       Factor Library            Tidy Finance             
-      9 factor_library_grid  Factor Library Grid       Tidy Finance             
+      # A tibble: 11 x 3
+         type                 dataset_name              domain                   
+         <chr>                <chr>                     <chr>                    
+       1 stock_prices         YahooFinance              Stock Prices             
+       2 constituents         various                   Index Constituents       
+       3 fred                 various                   FRED                     
+       4 osap                 Open Source Asset Pricing Open Source Asset Pricing
+       5 jkp                  Global Factor Data        Global Factor Data       
+       6 liquidity            Liquidity Factors         Pastor-Stambaugh         
+       7 mispricing           Mispricing Factors        Stambaugh-Yuan           
+       8 risk_free            Risk-Free Rate            Tidy Finance             
+       9 high_frequency_sp500 High Frequency S&P 500    Tidy Finance             
+      10 factor_library       Factor Library            Tidy Finance             
+      11 factor_library_grid  Factor Library Grid       Tidy Finance             
 

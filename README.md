@@ -235,6 +235,62 @@ Use `list_supported_jkp_factors()` to see the available regions, or
 `list_supported_jkp_factors("usa")` to see the factors available for a
 region.
 
+To download the liquidity factors of Pastor and Stambaugh (2003) from
+[Lubos Pastor’s data
+library](https://faculty.chicagobooth.edu/lubos-pastor/data):
+
+``` r
+download_data(
+  domain = "Pastor-Stambaugh",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+#> # A tibble: 12 × 4
+#>    date        agg_liq innov_liq traded_liq
+#>    <date>        <dbl>     <dbl>      <dbl>
+#>  1 2020-01-01 -0.0408    -0.0138   0.0191  
+#>  2 2020-02-01  0.00627    0.0236   0.0411  
+#>  3 2020-03-01 -0.260     -0.164   -0.125   
+#>  4 2020-04-01  0.0115    -0.0266   0.123   
+#>  5 2020-05-01 -0.0559    -0.0665   0.0691  
+#>  6 2020-06-01 -0.0151     0.0156   0.0661  
+#>  7 2020-07-01  0.0345     0.0742   0.000783
+#>  8 2020-08-01  0.00611   -0.0116   0.0426  
+#>  9 2020-09-01 -0.0996    -0.123   -0.000901
+#> 10 2020-10-01 -0.0431     0.0285   0.0392  
+#> 11 2020-11-01  0.0539     0.0689   0.0276  
+#> 12 2020-12-01  0.0249     0.0131   0.0545
+```
+
+To download the mispricing factors of Stambaugh and Yuan (2017) from
+[Robert Stambaugh’s data
+library](https://finance.wharton.upenn.edu/~stambaug/), optionally
+selecting `"monthly"` (the default) or `"daily"` data. Note that the
+source files currently end in December 2016:
+
+``` r
+download_data(
+  domain = "Stambaugh-Yuan",
+  dataset = "monthly",
+  start_date = "2015-01-01",
+  end_date = "2016-12-31"
+)
+#> # A tibble: 24 × 6
+#>    date       mkt_excess      smb     mgmt     perf risk_free
+#>    <date>          <dbl>    <dbl>    <dbl>    <dbl>     <dbl>
+#>  1 2015-01-01    -0.0311 -0.0271  -0.0227   0.0506          0
+#>  2 2015-02-01     0.0613  0.0245  -0.0124  -0.0300          0
+#>  3 2015-03-01    -0.0112  0.0214  -0.0192   0.00596         0
+#>  4 2015-04-01     0.0059 -0.0260   0.00818 -0.0418          0
+#>  5 2015-05-01     0.0136  0.0141  -0.00498  0.0108          0
+#>  6 2015-06-01    -0.0153  0.0301  -0.00718  0.00387         0
+#>  7 2015-07-01     0.0154 -0.0340   0.00419  0.0706          0
+#>  8 2015-08-01    -0.0604 -0.00684  0.00725  0.0133          0
+#>  9 2015-09-01    -0.0308 -0.0228   0.0373   0.0790          0
+#> 10 2015-10-01     0.0775 -0.0227   0.0240  -0.00612         0
+#> # ℹ 14 more rows
+```
+
 To download multiple series from the Federal Reserve Economic Data
 (FRED):
 

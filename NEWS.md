@@ -2,6 +2,20 @@
 
 ## New features
 
+- Added `download_data_pastor_stambaugh()` and the `"Pastor-Stambaugh"` domain
+  for `download_data()`, which downloads the liquidity factors of Pastor and
+  Stambaugh (2003) from
+  [Lubos Pastor's data library](https://faculty.chicagobooth.edu/lubos-pastor/data).
+  The result carries the levels of aggregate liquidity, the non-traded
+  liquidity factor (innovations), and the traded liquidity factor `LIQ_V`.
+
+- Added `download_data_stambaugh_yuan()` and the `"Stambaugh-Yuan"` domain for
+  `download_data()`, which downloads the mispricing factors (`mgmt` and `perf`)
+  of Stambaugh and Yuan (2017) from
+  [Robert Stambaugh's data library](https://finance.wharton.upenn.edu/~stambaug/).
+  The `dataset` argument selects between `"monthly"` and `"daily"` data. The
+  source files currently end in December 2016.
+
 - Added `download_data_jkp()` and the `"Global Factor Data"` domain
   for `download_data()`, which downloads data from
   [Global Factor Data](https://jkpfactors.com/data) (Jensen, Kelly, and

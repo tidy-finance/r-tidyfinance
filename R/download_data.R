@@ -10,7 +10,8 @@
 #'   returned by [list_supported_datasets()]: `"Fama-French"`, `"Global Q"`,
 #'   `"Goyal-Welch"`, `"WRDS"`, `"Pseudo Data"`, `"Index Constituents"`,
 #'   `"FRED"`, `"Stock Prices"`, `"Open Source Asset Pricing"`,
-#'   `"Global Factor Data"`, or `"Tidy Finance"`. Use `"Pseudo Data"` to obtain
+#'   `"Global Factor Data"`, `"Pastor-Stambaugh"`, `"Stambaugh-Yuan"`, or
+#'   `"Tidy Finance"`. Use `"Pseudo Data"` to obtain
 #'   pseudo data with the
 #'   same schema as `"WRDS"` for testing or rendering without a WRDS
 #'   subscription. The previous machine-readable names (e.g., `"famafrench"`,
@@ -184,6 +185,19 @@ download_data <- function(
       end_date = end_date,
       ...
     )
+  } else if (domain == "Pastor-Stambaugh") {
+    processed_data <- download_data_pastor_stambaugh(
+      start_date = start_date,
+      end_date = end_date,
+      ...
+    )
+  } else if (domain == "Stambaugh-Yuan") {
+    processed_data <- download_data_stambaugh_yuan(
+      dataset = if (is.null(dataset)) "monthly" else dataset,
+      start_date = start_date,
+      end_date = end_date,
+      ...
+    )
   } else if (domain == "Tidy Finance") {
     if (!is.null(dataset) && dataset == "risk_free") {
       processed_data <- download_data_risk_free(
@@ -223,7 +237,7 @@ is_legacy_type <- function(x) {
   other_datasets <- list_supported_datasets_other() |>
     dplyr::filter(
       .data$domain != "Tidy Finance",
-      !.data$type %in% c("osap", "jkp")
+      !.data$type %in% c("osap", "jkp", "liquidity", "mispricing")
     )
 
   all_datasets <- dplyr::bind_rows(
@@ -353,6 +367,8 @@ check_supported_domain <- function(domain) {
     "Stock Prices",
     "Open Source Asset Pricing",
     "Global Factor Data",
+    "Pastor-Stambaugh",
+    "Stambaugh-Yuan",
     "Tidy Finance"
   )
 
