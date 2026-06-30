@@ -300,6 +300,52 @@ test_that("builds the bracketed S3 object keys", {
   )
 })
 
+test_that("builds reference file urls", {
+  expect_match(
+    build_jkp_reference_url("nyse_cutoffs", "monthly"),
+    "/public/other/nyse_cutoffs\\.csv$"
+  )
+  expect_match(
+    build_jkp_reference_url("return_cutoffs", "monthly"),
+    "/public/other/return_cutoffs\\.csv$"
+  )
+  expect_match(
+    build_jkp_reference_url("return_cutoffs", "daily"),
+    "/public/other/return_cutoffs_daily\\.csv$"
+  )
+})
+
+test_that("returns empty tibble when a factor download fails", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    fetch_jkp_availability = function(...) test_helper_manifest(),
+    download_jkp_file = function(url, ...) tibble(date = Date())
+  )
+
+  expect_message(
+    result <- download_data_jkp(region = "usa", factors = "mkt"),
+    "download or parsing failure"
+  )
+  expect_equal(nrow(result), 0)
+})
+
+test_that("returns empty tibble when a reference download fails", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    download_jkp_csv = function(url, ...) tibble(date = Date())
+  )
+
+  expect_message(
+    result <- download_data_jkp(dataset = "nyse_cutoffs"),
+    "download or parsing failure"
+  )
+  expect_equal(nrow(result), 0)
+})
+
 test_that("list_supported_jkp_factors returns regions and per-region values", {
   local_mocked_bindings(
     fetch_jkp_availability = function(...) test_helper_manifest()
@@ -312,4 +358,108 @@ test_that("list_supported_jkp_factors returns regions and per-region values", {
     c("gics", "ff49")
   )
   expect_error(list_supported_jkp_factors("atlantis"), "Unsupported")
+})
+
+test_that("list_supported_jkp_factors returns empty vector on manifest failure", {
+  local_mocked_bindings(
+    fetch_jkp_availability = function(...) cli::cli_abort("boom")
+  )
+
+  expect_message(
+    result <- list_supported_jkp_factors(),
+    "Returning an empty vector due to download failure."
+  )
+  expect_equal(result, character())
+})
+
+test_that("fetch_jkp_availability parses the JSON manifest", {
+  local_mocked_bindings(get_random_user_agent = function() "test-agent")
+  local_mocked_bindings(
+    request = function(url) list(url = url),
+    req_user_agent = function(req, ...) req,
+    req_timeout = function(req, ...) req,
+    req_retry = function(req, ...) req,
+    req_perform = function(req, path = NULL) invisible(req),
+    resp_body_string = function(resp, ...) {
+      '{"factors":{"usa":["mkt","be_me"]}}'
+    },
+    .package = "httr2"
+  )
+
+  result <- fetch_jkp_availability()
+
+  expect_equal(result$factors$usa, c("mkt", "be_me"))
+})
+
+test_that("download_jkp_file unzips and reads the first CSV", {
+  local_mocked_bindings(get_random_user_agent = function() "test-agent")
+  local_mocked_bindings(
+    request = function(url) list(url = url),
+    req_user_agent = function(req, ...) req,
+    req_timeout = function(req, ...) req,
+    req_retry = function(req, ...) req,
+    req_perform = function(req, path = NULL) {
+      if (!is.null(path)) file.create(path)
+      invisible(req)
+    },
+    .package = "httr2"
+  )
+  local_mocked_bindings(
+    unzip = function(zipfile, exdir, ...) {
+      writeLines(
+        c("location,date,ret", "usa,2020-01-31,0.01"),
+        file.path(exdir, "data.csv")
+      )
+      invisible(NULL)
+    },
+    .package = "utils"
+  )
+
+  result <- download_jkp_file("https://example.com/x.zip")
+
+  expect_equal(result$location, "usa")
+  expect_equal(result$ret, 0.01)
+})
+
+test_that("download_jkp_file aborts when the archive has no CSV", {
+  local_mocked_bindings(get_random_user_agent = function() "test-agent")
+  local_mocked_bindings(
+    request = function(url) list(url = url),
+    req_user_agent = function(req, ...) req,
+    req_timeout = function(req, ...) req,
+    req_retry = function(req, ...) req,
+    req_perform = function(req, path = NULL) {
+      if (!is.null(path)) file.create(path)
+      invisible(req)
+    },
+    .package = "httr2"
+  )
+  local_mocked_bindings(
+    unzip = function(zipfile, exdir, ...) invisible(NULL),
+    .package = "utils"
+  )
+
+  expect_error(
+    download_jkp_file("https://example.com/x.zip"),
+    "No CSV file"
+  )
+})
+
+test_that("download_jkp_csv reads a plain CSV file", {
+  local_mocked_bindings(get_random_user_agent = function() "test-agent")
+  local_mocked_bindings(
+    request = function(url) list(url = url),
+    req_user_agent = function(req, ...) req,
+    req_timeout = function(req, ...) req,
+    req_retry = function(req, ...) req,
+    req_perform = function(req, path = NULL) {
+      if (!is.null(path)) writeLines(c("eom,n", "2020-01-31,5"), path)
+      invisible(req)
+    },
+    .package = "httr2"
+  )
+
+  result <- download_jkp_csv("https://example.com/x.csv")
+
+  expect_equal(result$n, 5L)
 })
