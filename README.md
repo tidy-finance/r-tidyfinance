@@ -147,20 +147,20 @@ download_data(
   end_date = "2020-12-31"
 )
 #> # A tibble: 12 × 213
-#>    date           am     aop abnormal_accruals accruals accruals_bm activism1
-#>    <date>      <dbl>   <dbl>             <dbl>    <dbl>       <dbl>     <dbl>
-#>  1 2020-01-31  -7.90 -2.55               1.56  -1.40           5.67        NA
-#>  2 2020-02-28  -4.44 -1.45              -1.39  -1.11          -3.23        NA
-#>  3 2020-03-31 -13.6   0.547             -3.61   1.74          -1.18        NA
-#>  4 2020-04-30  -3.33 -1.13               7.78   4.53          -2.38        NA
-#>  5 2020-05-29 -11.7   1.85               2.07  -0.361         -2.68        NA
-#>  6 2020-06-30   1.65 -0.604              3.30   0.00851        4.00        NA
-#>  7 2020-07-31  -3.66 -9.13              -2.09   3.00          -5.33        NA
-#>  8 2020-08-31   2.65  1.91              -2.49   0.0904         2.23        NA
-#>  9 2020-09-30  -3.66 -1.89              -2.35  -1.53          -4.60        NA
-#> 10 2020-10-30   7.11  3.04              -0.682 -0.440          3.32        NA
-#> 11 2020-11-30   7.39  2.02               2.61   2.42          19.3         NA
-#> 12 2020-12-31   1.48  0.0180            -0.594  2.04          -2.92        NA
+#>    date            am       aop abnormal_accruals accruals accruals_bm activism1
+#>    <date>       <dbl>     <dbl>             <dbl>    <dbl>       <dbl>     <dbl>
+#>  1 2020-01-01 -0.0790 -0.0255             0.0156  -1.40e-2      0.0567        NA
+#>  2 2020-02-01 -0.0444 -0.0145            -0.0139  -1.11e-2     -0.0323        NA
+#>  3 2020-03-01 -0.136   0.00547           -0.0361   1.74e-2     -0.0118        NA
+#>  4 2020-04-01 -0.0333 -0.0113             0.0778   4.53e-2     -0.0238        NA
+#>  5 2020-05-01 -0.117   0.0185             0.0207  -3.61e-3     -0.0268        NA
+#>  6 2020-06-01  0.0165 -0.00604            0.0330   8.51e-5      0.0400        NA
+#>  7 2020-07-01 -0.0366 -0.0913            -0.0209   3.00e-2     -0.0533        NA
+#>  8 2020-08-01  0.0265  0.0191            -0.0249   9.04e-4      0.0223        NA
+#>  9 2020-09-01 -0.0366 -0.0189            -0.0235  -1.53e-2     -0.0460        NA
+#> 10 2020-10-01  0.0711  0.0304            -0.00682 -4.40e-3      0.0332        NA
+#> 11 2020-11-01  0.0739  0.0202             0.0261   2.42e-2      0.193         NA
+#> 12 2020-12-01  0.0148  0.000180          -0.00594  2.04e-2     -0.0292        NA
 #> # ℹ 206 more variables: activism2 <dbl>, ad_exp <dbl>, age_ipo <dbl>,
 #> #   analyst_revision <dbl>, analyst_value <dbl>, announcement_return <dbl>,
 #> #   asset_growth <dbl>, bm <dbl>, bmdec <dbl>, bpebm <dbl>, beta <dbl>,
@@ -169,6 +169,42 @@ download_data(
 #> #   cboper_prof <dbl>, cf <dbl>, cpvol_spread <dbl>, cash <dbl>,
 #> #   cash_prod <dbl>, ch_asset_turnover <dbl>, ch_eq <dbl>, …
 ```
+
+To download characteristic-managed portfolio (factor) returns from
+[Global Factor Data](https://jkpfactors.com/data), select a region, the
+factor content (a single factor, a theme, `"all_themes"`, or
+`"all_factors"`), a frequency, and a weighting scheme:
+
+``` r
+download_data(
+  domain = "Global Factor Data",
+  region = "usa",
+  factors = "all_factors",
+  frequency = "monthly",
+  weighting = "vw_cap",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+#> # A tibble: 1,836 × 9
+#>    location name  freq    weighting direction n_stocks n_stocks_min date      
+#>    <chr>    <chr> <chr>   <chr>         <int>    <int>        <int> <date>    
+#>  1 usa      age   monthly vw_cap           -1     2858         1082 2020-01-01
+#>  2 usa      age   monthly vw_cap           -1     2863         1080 2020-02-01
+#>  3 usa      age   monthly vw_cap           -1     2864         1078 2020-03-01
+#>  4 usa      age   monthly vw_cap           -1     2800         1077 2020-04-01
+#>  5 usa      age   monthly vw_cap           -1     2800         1072 2020-05-01
+#>  6 usa      age   monthly vw_cap           -1     2846         1116 2020-06-01
+#>  7 usa      age   monthly vw_cap           -1     2801         1112 2020-07-01
+#>  8 usa      age   monthly vw_cap           -1     2820         1109 2020-08-01
+#>  9 usa      age   monthly vw_cap           -1     2851         1107 2020-09-01
+#> 10 usa      age   monthly vw_cap           -1     2806         1106 2020-10-01
+#> # ℹ 1,826 more rows
+#> # ℹ 1 more variable: ret <dbl>
+```
+
+Use `list_supported_jkp_factors()` to see the available regions, or
+`list_supported_jkp_factors("usa")` to see the factors available for a
+region.
 
 To download multiple series from the Federal Reserve Economic Data
 (FRED):
@@ -331,7 +367,7 @@ download_data(
 #>  2  10015 001001 1983-09-20 1986-07-31
 #>  3  10023 001002 1972-12-14 1973-06-05
 #>  4  10031 001003 1983-12-07 1989-08-16
-#>  5  54594 001004 1972-04-24 2026-06-22
+#>  5  54594 001004 1972-04-24 2026-06-30
 #>  6  61903 001005 1973-01-31 1983-01-31
 #>  7  10058 001007 1973-10-01 1979-01-30
 #>  8  10058 001007 1979-01-31 1984-09-28

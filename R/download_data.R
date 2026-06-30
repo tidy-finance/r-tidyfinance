@@ -9,8 +9,9 @@
 #' @param domain The domain of the dataset to download, using the names
 #'   returned by [list_supported_datasets()]: `"Fama-French"`, `"Global Q"`,
 #'   `"Goyal-Welch"`, `"WRDS"`, `"Pseudo Data"`, `"Index Constituents"`,
-#'   `"FRED"`, `"Stock Prices"`, `"Open Source Asset Pricing"`, or
-#'   `"Tidy Finance"`. Use `"Pseudo Data"` to obtain pseudo data with the
+#'   `"FRED"`, `"Stock Prices"`, `"Open Source Asset Pricing"`,
+#'   `"Global Factor Data"`, or `"Tidy Finance"`. Use `"Pseudo Data"` to obtain
+#'   pseudo data with the
 #'   same schema as `"WRDS"` for testing or rendering without a WRDS
 #'   subscription. The previous machine-readable names (e.g., `"famafrench"`,
 #'   `"wrds"`, `"pseudo"`, `"tidyfinance"`) are soft-deprecated but still
@@ -30,7 +31,9 @@
 #' @param ... Additional arguments passed to specific download functions
 #'   depending on the `domain`. For instance, if `domain` is
 #'   `"Index Constituents"`, arguments are passed to
-#'   `download_data_constituents()`. If `domain` is `"Tidy Finance"` and
+#'   `download_data_constituents()`. If `domain` is `"Global Factor Data"`,
+#'   arguments such as `region`, `factors`, `frequency`, and `weighting` are
+#'   passed to `download_data_jkp()`. If `domain` is `"Tidy Finance"` and
 #'   `dataset` is `"factor_library"`, arguments are either filter inputs
 #'   (e.g., `sorting_variable`, `rebalancing`, `fill_all`) or an explicit
 #'   `ids` vector that bypasses the grid filter and downloads the
@@ -173,6 +176,12 @@ download_data <- function(
       end_date = end_date,
       ...
     )
+  } else if (domain == "Global Factor Data") {
+    processed_data <- download_data_jkp(
+      start_date = start_date,
+      end_date = end_date,
+      ...
+    )
   } else if (domain == "Tidy Finance") {
     if (!is.null(dataset) && dataset == "risk_free") {
       processed_data <- download_data_risk_free(
@@ -196,7 +205,7 @@ download_data <- function(
 #' @noRd
 is_legacy_type <- function(x) {
   # These strings are valid domain names, not legacy datasets
-  valid_domains <- c("constituents", "fred", "stock_prices", "osap")
+  valid_domains <- c("constituents", "fred", "stock_prices", "osap", "jkp")
   if (x %in% valid_domains) {
     return(FALSE)
   }
@@ -210,7 +219,10 @@ is_legacy_type <- function(x) {
   macro_datasets <- list_supported_datasets_macro_predictors()
   wrds_datasets <- list_supported_datasets_wrds()
   other_datasets <- list_supported_datasets_other() |>
-    dplyr::filter(.data$domain != "Tidy Finance", .data$type != "osap")
+    dplyr::filter(
+      .data$domain != "Tidy Finance",
+      !.data$type %in% c("osap", "jkp")
+    )
 
   all_datasets <- dplyr::bind_rows(
     ff_datasets,
@@ -308,6 +320,7 @@ resolve_domain_alias <- function(domain) {
     "fred" = "FRED",
     "stock_prices" = "Stock Prices",
     "osap" = "Open Source Asset Pricing",
+    "jkp" = "Global Factor Data",
     "tidyfinance" = "Tidy Finance"
   )
 
@@ -337,6 +350,7 @@ check_supported_domain <- function(domain) {
     "FRED",
     "Stock Prices",
     "Open Source Asset Pricing",
+    "Global Factor Data",
     "Tidy Finance"
   )
 

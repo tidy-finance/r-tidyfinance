@@ -28,7 +28,7 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item Maximilian Mücke (\href{https://orcid.org/0009-0000-9432-9795}{ORCID}) [contributor]
+  \item Maximilian M<U+00FC>cke (\href{https://orcid.org/0009-0000-9432-9795}{ORCID}) [contributor]
 }
 
 }

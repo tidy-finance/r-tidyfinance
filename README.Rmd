@@ -97,6 +97,22 @@ download_data(
 )
 ```
 
+To download characteristic-managed portfolio (factor) returns from [Global Factor Data](https://jkpfactors.com/data), select a region, the factor content (a single factor, a theme, `"all_themes"`, or `"all_factors"`), a frequency, and a weighting scheme:
+
+```{r}
+download_data(
+  domain = "Global Factor Data",
+  region = "usa",
+  factors = "all_factors",
+  frequency = "monthly",
+  weighting = "vw_cap",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+```
+
+Use `list_supported_jkp_factors()` to see the available regions, or `list_supported_jkp_factors("usa")` to see the factors available for a region.
+
 To download multiple series from the Federal Reserve Economic Data (FRED):
 
 ```{r}
