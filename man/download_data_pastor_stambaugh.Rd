@@ -35,7 +35,7 @@ specified date range if \code{start_date} and \code{end_date} are provided.
 \description{
 Downloads and processes the liquidity factor data of Pastor and Stambaugh
 (2003) from
-\href{https://faculty.chicagobooth.edu/lubos-pastor/data}{Lubos Pastor's data library}.
+\href{https://faculty.chicagobooth.edu/lubos-pastor/data}{Pastor's data library}.
 The source is a whitespace-delimited text file whose header lines start with
 a percent sign. The function reads the three liquidity series, aligns the
 monthly date to the beginning of the month, and optionally filters the data

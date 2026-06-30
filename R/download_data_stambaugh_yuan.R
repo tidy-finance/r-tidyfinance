@@ -2,7 +2,7 @@
 #'
 #' Downloads and processes the mispricing factor data of Stambaugh and Yuan
 #' (2017) from
-#' [Robert Stambaugh's data library](https://finance.wharton.upenn.edu/~stambaug/).
+#' [Stambaugh's data library](https://finance.wharton.upenn.edu/~stambaug/).
 #' The four-factor model (M4) combines the market and size factors with two
 #' mispricing factors, `mgmt` (management) and `perf` (performance). The
 #' function downloads the requested frequency, aligns the date, renames the
@@ -100,17 +100,20 @@ download_data_stambaugh_yuan <- function(
     )
 
   if (!is.null(start_date) && !is.null(end_date)) {
-    available_range <- range(processed_data$date)
     filtered_data <- processed_data |>
       filter(between(.data$date, start_date, end_date))
 
     if (nrow(filtered_data) == 0) {
+      available_range <- range(processed_data$date)
       cli::cli_warn(c(
         paste0(
           "The requested date range lies outside the available ",
           "Stambaugh-Yuan data."
         ),
-        "i" = "Available data range: {available_range[1]} to {available_range[2]}."
+        "i" = paste0(
+          "Available data range: ", available_range[1], " to ",
+          available_range[2], "."
+        )
       ))
     }
 
