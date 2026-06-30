@@ -1,5 +1,13 @@
 # tidyfinance (development version)
 
+## Improvements
+
+- `download_data("Open Source Asset Pricing")` now aligns the `date` column to
+  the beginning of the month (the dataset previously returned end-of-month
+  dates), matching the convention used by the other download functions. All
+  predictor columns are monthly long-short returns expressed in percent and are
+  now divided by 100 to return plain numeric (decimal) returns.
+
 ## Bug fixes
 
 - `download_data_huggingface("factor_library", ...)` now treats an explicit
