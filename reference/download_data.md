@@ -160,8 +160,8 @@ download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> 10 1949-04-01  271. GDP   
 #> # ℹ 1,668 more rows
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-06-29 to
-#> 2025-06-29 to avoid downloading large amounts of data.
+#> No `start_date` or `end_date` provided. Using the range 2024-06-30 to
+#> 2025-06-30 to avoid downloading large amounts of data.
 #> # A tibble: 498 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
@@ -203,22 +203,7 @@ download_data(
   "2007-07-26",
   "2007-07-27"
 )
-#> # A tibble: 9,360 × 9
-#>    ts                  midquote signed_volume trading_volume depth0_ask
-#>    <dttm>                 <dbl>         <dbl>          <dbl>      <dbl>
-#>  1 2007-07-26 09:30:05     150.             0      11565577.     13841.
-#>  2 2007-07-26 09:30:10     150.             0       3017263.     10795.
-#>  3 2007-07-26 09:30:15     150.             0       6108290.     12371.
-#>  4 2007-07-26 09:30:20     150.         98630      21820258.     14069.
-#>  5 2007-07-26 09:30:25     150.             0        931698      15283.
-#>  6 2007-07-26 09:30:30     150.         -4400        661077       5307.
-#>  7 2007-07-26 09:30:35     150.        -12000       2102820       3192.
-#>  8 2007-07-26 09:30:40     150.         39927      12384621.      6234.
-#>  9 2007-07-26 09:30:45     150.        -14671       3105370.      9255.
-#> 10 2007-07-26 09:30:50     150.          5347       5518370.      5708.
-#> # ℹ 9,350 more rows
-#> # ℹ 4 more variables: depth0_bid <dbl>, depth5_ask <dbl>, depth5_bid <dbl>,
-#> #   spread <dbl>
+#> Error in httr2::req_perform(httr2::req_user_agent(httr2::request(next_url),     "httr2")): HTTP 504 Gateway Timeout.
 download_data(
   "Tidy Finance",
   "factor_library",
@@ -270,16 +255,16 @@ download_data("Tidy Finance", "factor_library_grid")
 #> # A data frame: 841,536 × 14
 #>       id sorting_variable min_size_quantile exclude_financials exclude_utilities
 #>    <int> <chr>                        <dbl> <lgl>              <lgl>            
-#>  1     1 sv_52w                          NA TRUE               TRUE             
-#>  2     2 sv_52w                          NA TRUE               TRUE             
-#>  3     3 sv_52w                          NA TRUE               TRUE             
-#>  4     4 sv_52w                          NA TRUE               TRUE             
-#>  5     5 sv_52w                          NA TRUE               TRUE             
-#>  6     6 sv_52w                          NA TRUE               TRUE             
-#>  7     7 sv_52w                          NA TRUE               TRUE             
-#>  8     8 sv_52w                          NA TRUE               TRUE             
-#>  9     9 sv_52w                          NA TRUE               TRUE             
-#> 10    10 sv_52w                          NA TRUE               TRUE             
+#>  1     1 52w                             NA TRUE               TRUE             
+#>  2     2 52w                             NA TRUE               TRUE             
+#>  3     3 52w                             NA TRUE               TRUE             
+#>  4     4 52w                             NA TRUE               TRUE             
+#>  5     5 52w                             NA TRUE               TRUE             
+#>  6     6 52w                             NA TRUE               TRUE             
+#>  7     7 52w                             NA TRUE               TRUE             
+#>  8     8 52w                             NA TRUE               TRUE             
+#>  9     9 52w                             NA TRUE               TRUE             
+#> 10    10 52w                             NA TRUE               TRUE             
 #> # ℹ 841,526 more rows
 #> # ℹ 9 more variables: exclude_negative_earnings <lgl>,
 #> #   sorting_variable_lag <chr>, rebalancing <chr>, n_portfolios_main <dbl>,

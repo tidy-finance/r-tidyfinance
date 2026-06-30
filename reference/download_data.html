@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -223,8 +223,8 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 1949-04-01  271. GDP   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,668 more rows</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Stock Prices"</span>, symbols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AAPL"</span>, <span class="st">"MSFT"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-06-29 to</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-06-29 to avoid downloading large amounts of data.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-06-30 to</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-06-30 to avoid downloading large amounts of data.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 498 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    symbol date         volume  open   low  high close adjusted_close</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -266,22 +266,7 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-in"><span>  <span class="st">"2007-07-26"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"2007-07-27"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 9,360 × 9</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    ts                  midquote signed_volume trading_volume depth0_ask</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2007-07-26 <span style="color: #949494;">09:30:05</span>     150.             0      11<span style="text-decoration: underline;">565</span>577.     <span style="text-decoration: underline;">13</span>841.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2007-07-26 <span style="color: #949494;">09:30:10</span>     150.             0       3<span style="text-decoration: underline;">017</span>263.     <span style="text-decoration: underline;">10</span>795.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2007-07-26 <span style="color: #949494;">09:30:15</span>     150.             0       6<span style="text-decoration: underline;">108</span>290.     <span style="text-decoration: underline;">12</span>371.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 2007-07-26 <span style="color: #949494;">09:30:20</span>     150.         <span style="text-decoration: underline;">98</span>630      21<span style="text-decoration: underline;">820</span>258.     <span style="text-decoration: underline;">14</span>069.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2007-07-26 <span style="color: #949494;">09:30:25</span>     150.             0        <span style="text-decoration: underline;">931</span>698      <span style="text-decoration: underline;">15</span>283.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 2007-07-26 <span style="color: #949494;">09:30:30</span>     150.         -<span style="color: #BB0000; text-decoration: underline;">4</span><span style="color: #BB0000;">400</span>        <span style="text-decoration: underline;">661</span>077       <span style="text-decoration: underline;">5</span>307.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2007-07-26 <span style="color: #949494;">09:30:35</span>     150.        -<span style="color: #BB0000; text-decoration: underline;">12</span><span style="color: #BB0000;">000</span>       2<span style="text-decoration: underline;">102</span>820       <span style="text-decoration: underline;">3</span>192.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 2007-07-26 <span style="color: #949494;">09:30:40</span>     150.         <span style="text-decoration: underline;">39</span>927      12<span style="text-decoration: underline;">384</span>621.      <span style="text-decoration: underline;">6</span>234.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2007-07-26 <span style="color: #949494;">09:30:45</span>     150.        -<span style="color: #BB0000; text-decoration: underline;">14</span><span style="color: #BB0000;">671</span>       3<span style="text-decoration: underline;">105</span>370.      <span style="text-decoration: underline;">9</span>255.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2007-07-26 <span style="color: #949494;">09:30:50</span>     150.          <span style="text-decoration: underline;">5</span>347       5<span style="text-decoration: underline;">518</span>370.      <span style="text-decoration: underline;">5</span>708.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 9,350 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: depth0_bid &lt;dbl&gt;, depth5_ask &lt;dbl&gt;, depth5_bid &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   spread &lt;dbl&gt;</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in httr2::req_perform(httr2::req_user_agent(httr2::request(next_url),     "httr2")):</span> HTTP 504 Gateway Timeout.</span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"Tidy Finance"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"factor_library"</span>,</span></span>
@@ -333,16 +318,16 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 841,536 × 14</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       id sorting_variable min_size_quantile exclude_financials exclude_utilities</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1 sv_52w                          <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2 sv_52w                          <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3 sv_52w                          <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4 sv_52w                          <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5 sv_52w                          <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6 sv_52w                          <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7 sv_52w                          <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8 sv_52w                          <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9 sv_52w                          <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10 sv_52w                          <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1 52w                             <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2 52w                             <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3 52w                             <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4 52w                             <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5 52w                             <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6 52w                             <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7 52w                             <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8 52w                             <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9 52w                             <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10 52w                             <span style="color: #BB0000;">NA</span> TRUE               TRUE             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 841,526 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 9 more variables: exclude_negative_earnings &lt;lgl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   sorting_variable_lag &lt;chr&gt;, rebalancing &lt;chr&gt;, n_portfolios_main &lt;dbl&gt;,</span></span>

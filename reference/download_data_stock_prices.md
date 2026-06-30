@@ -55,8 +55,8 @@ Other download functions:
 ``` r
 # \donttest{
   download_data_stock_prices(c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-06-29 to
-#> 2025-06-29 to avoid downloading large amounts of data.
+#> No `start_date` or `end_date` provided. Using the range 2024-06-30 to
+#> 2025-06-30 to avoid downloading large amounts of data.
 #> # A tibble: 498 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
