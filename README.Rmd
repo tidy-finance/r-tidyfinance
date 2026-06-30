@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 [![Lint](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/lint.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/lint.yaml/badge.svg)
 [![Codecov test coverage](https://codecov.io/gh/tidy-finance/r-tidyfinance/graph/badge.svg)](https://app.codecov.io/gh/tidy-finance/r-tidyfinance)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-<!-- badges: end -->
+<!-- badges: end --> 
 
 This repository contains an R package that collects helper functions for developers and researchers familiar with [Tidy Finance with R](https://www.tidy-finance.org/r/index.html). The functions provide shortcuts to selected issues that the book discusses in detail. 
 

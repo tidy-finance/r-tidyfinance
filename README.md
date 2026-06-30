@@ -202,6 +202,35 @@ download_data(
 #> # ℹ 1 more variable: ret <dbl>
 ```
 
+The `dataset` argument also gives access to the underlying long-short
+portfolios (`"portfolios"`), industry returns (`"industry"`), and the
+reference files `"nyse_cutoffs"` and `"return_cutoffs"`:
+
+``` r
+download_data(
+  domain = "Global Factor Data",
+  dataset = "industry",
+  region = "usa",
+  classification = "gics",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+#> # A tibble: 132 × 7
+#>     gics date           n location      ret freq    weighting
+#>    <int> <date>     <int> <chr>       <dbl> <chr>   <chr>    
+#>  1    30 2020-01-01   151 usa      -0.0190  monthly vw_cap   
+#>  2    45 2020-01-01   473 usa       0.0277  monthly vw_cap   
+#>  3    10 2020-01-01   227 usa      -0.143   monthly vw_cap   
+#>  4    35 2020-01-01   836 usa      -0.0156  monthly vw_cap   
+#>  5    60 2020-01-01    40 usa      -0.0148  monthly vw_cap   
+#>  6    25 2020-01-01   444 usa      -0.0228  monthly vw_cap   
+#>  7    15 2020-01-01   217 usa      -0.0631  monthly vw_cap   
+#>  8    50 2020-01-01   135 usa      -0.0178  monthly vw_cap   
+#>  9    20 2020-01-01   458 usa      -0.00683 monthly vw_cap   
+#> 10    55 2020-01-01    65 usa       0.0443  monthly vw_cap   
+#> # ℹ 122 more rows
+```
+
 Use `list_supported_jkp_factors()` to see the available regions, or
 `list_supported_jkp_factors("usa")` to see the factors available for a
 region.
