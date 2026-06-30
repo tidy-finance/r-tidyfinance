@@ -315,6 +315,38 @@ test_that("fill_all = TRUE: only explicit filters applied", {
   expect_equal(ids, 1L)
 })
 
+test_that("explicit n_portfolios_secondary = NULL returns all values", {
+  # Row 1 is a univariate sort (NA secondary); row 2 is a bivariate sort
+  # with a non-NA secondary. Passing NULL should remove the filter and
+  # return both, rather than restricting to the NA (univariate) row.
+  grid <- tibble::tibble(
+    id = c(1L, 2L),
+    sorting_variable = c("me", "me"),
+    min_size_quantile = c(0.2, 0.2),
+    exclude_financials = c(FALSE, FALSE),
+    exclude_utilities = c(FALSE, FALSE),
+    exclude_negative_earnings = c(FALSE, FALSE),
+    sorting_variable_lag = c("6m", "6m"),
+    rebalancing = c("monthly", "monthly"),
+    n_portfolios_main = c(10L, 10L),
+    sorting_method = c("univariate", "univariate"),
+    n_portfolios_secondary = c(NA_real_, 5),
+    breakpoints_exchanges = c("NYSE", "NYSE"),
+    breakpoints_min_size_threshold = c(NA_real_, NA_real_),
+    weighting_scheme = c("VW", "VW")
+  )
+  testthat::local_mocked_bindings(
+    download_factor_library_grid = function() grid
+  )
+
+  ids <- filter_factor_library_grid(
+    sorting_variable = "me",
+    n_portfolios_secondary = NULL
+  )
+
+  expect_equal(ids, c(1L, 2L))
+})
+
 # ── download_factor_library_grid ─────────────────────
 
 test_that("pulls url from available files and reads parquet", {
