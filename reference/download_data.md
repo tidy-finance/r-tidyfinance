@@ -203,7 +203,22 @@ download_data(
   "2007-07-26",
   "2007-07-27"
 )
-#> Error in httr2::req_perform(httr2::req_user_agent(httr2::request(next_url),     "httr2")): HTTP 504 Gateway Timeout.
+#> # A tibble: 9,360 × 9
+#>    ts                  midquote signed_volume trading_volume depth0_ask
+#>    <dttm>                 <dbl>         <dbl>          <dbl>      <dbl>
+#>  1 2007-07-26 09:30:05     150.             0      11565577.     13841.
+#>  2 2007-07-26 09:30:10     150.             0       3017263.     10795.
+#>  3 2007-07-26 09:30:15     150.             0       6108290.     12371.
+#>  4 2007-07-26 09:30:20     150.         98630      21820258.     14069.
+#>  5 2007-07-26 09:30:25     150.             0        931698      15283.
+#>  6 2007-07-26 09:30:30     150.         -4400        661077       5307.
+#>  7 2007-07-26 09:30:35     150.        -12000       2102820       3192.
+#>  8 2007-07-26 09:30:40     150.         39927      12384621.      6234.
+#>  9 2007-07-26 09:30:45     150.        -14671       3105370.      9255.
+#> 10 2007-07-26 09:30:50     150.          5347       5518370.      5708.
+#> # ℹ 9,350 more rows
+#> # ℹ 4 more variables: depth0_bid <dbl>, depth5_ask <dbl>, depth5_bid <dbl>,
+#> #   spread <dbl>
 download_data(
   "Tidy Finance",
   "factor_library",
