@@ -52,37 +52,3 @@ Other utility functions:
 [`open_tidy_finance_website()`](https://r.tidy-finance.org/reference/open_tidy_finance_website.md),
 [`trim()`](https://r.tidy-finance.org/reference/trim.md),
 [`winsorize()`](https://r.tidy-finance.org/reference/winsorize.md)
-
-## Examples
-
-``` r
-# Explicit range
-validate_dates("2020-01-01", "2020-12-31")
-#> $start_date
-#> [1] "2020-01-01"
-#> 
-#> $end_date
-#> [1] "2020-12-31"
-#> 
-
-# Both NULL with the default range applied (two years ago to one year ago)
-validate_dates(NULL, NULL, use_default_range = TRUE)
-#> No `start_date` or `end_date` provided. Using the range 2024-06-30 to
-#> 2025-06-30 to avoid downloading large amounts of data.
-#> $start_date
-#> [1] "2024-06-30"
-#> 
-#> $end_date
-#> [1] "2025-06-30"
-#> 
-
-# Both NULL returns NULL dates
-validate_dates(NULL, NULL)
-#> No `start_date` or `end_date` provided. Returning the full data set.
-#> $start_date
-#> NULL
-#> 
-#> $end_date
-#> NULL
-#> 
-```

@@ -112,40 +112,6 @@ class <code>Date</code> (or <code>NULL</code> when no dates are provided and
 <code><a href="winsorize.html">winsorize()</a></code></p></div>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Explicit range</span></span></span>
-<span class="r-in"><span><span class="fu">validate_dates</span><span class="op">(</span><span class="st">"2020-01-01"</span>, <span class="st">"2020-12-31"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $start_date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2020-01-01"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $end_date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2020-12-31"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Both NULL with the default range applied (two years ago to one year ago)</span></span></span>
-<span class="r-in"><span><span class="fu">validate_dates</span><span class="op">(</span><span class="cn">NULL</span>, <span class="cn">NULL</span>, use_default_range <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-06-30 to</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-06-30 to avoid downloading large amounts of data.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $start_date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2024-06-30"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $end_date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2025-06-30"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Both NULL returns NULL dates</span></span></span>
-<span class="r-in"><span><span class="fu">validate_dates</span><span class="op">(</span><span class="cn">NULL</span>, <span class="cn">NULL</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Returning the full data set.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $start_date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $end_date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
