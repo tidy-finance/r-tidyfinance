@@ -2,6 +2,13 @@
 
 ## Improvements
 
+- The `sorting_variable` column of the `factor_library_grid` dataset no longer
+  carries a `"sv_"` prefix, so its values now match the `sorting_variable`
+  argument of `download_data("Tidy Finance", "factor_library", ...)` (e.g.
+  `"bm"` rather than `"sv_bm"`). `download_data("Tidy Finance",
+  "factor_library_grid")` returns the bare values accordingly
+  (#284).
+
 - `download_data()` now uses the human-readable domain names returned by
   `list_supported_datasets()` (e.g., `"Fama-French"`, `"Global Q"`,
   `"WRDS"`, `"Tidy Finance"`). The `"pseudo"` and `"tidyfinance"` domains

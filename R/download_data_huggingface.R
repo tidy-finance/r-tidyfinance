@@ -381,10 +381,7 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
     }
   }
 
-  result <- download_factor_library_grid() |>
-    dplyr::mutate(
-      sorting_variable = sub("sv_", "", .data$sorting_variable)
-    )
+  result <- download_factor_library_grid()
 
   filters <- purrr::compact(filters)
 
@@ -488,7 +485,6 @@ download_factor_library_ids <- function(ids) {
   id_grid <- download_factor_library_grid() |>
     dplyr::inner_join(id_values, by = "id") |>
     dplyr::mutate(
-      sorting_variable = sub("sv_", "", .data$sorting_variable),
       n_portfolios_main = as.character(.data$n_portfolios_main)
     ) |>
     dplyr::left_join(

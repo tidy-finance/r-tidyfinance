@@ -2,7 +2,7 @@
 make_grid <- function(id = 1L) {
   tibble::tibble(
     id = id,
-    sorting_variable = "sv_me",
+    sorting_variable = "me",
     sorting_variable_lag = "6m",
     sorting_method = "univariate",
     n_portfolios_main = 10L,
@@ -258,7 +258,7 @@ test_that("fill_all = FALSE: defaults applied, row filtered out", {
   # and should be dropped; all other columns match defaults.
   grid <- tibble::tibble(
     id = c(1L, 2L),
-    sorting_variable = c("sv_me", "sv_me"),
+    sorting_variable = c("me", "me"),
     min_size_quantile = c(0.2, 0.4),
     exclude_financials = c(FALSE, FALSE),
     exclude_utilities = c(FALSE, FALSE),
@@ -284,12 +284,12 @@ test_that("fill_all = FALSE: defaults applied, row filtered out", {
 test_that("fill_all = TRUE: only explicit filters applied", {
   # Both rows share all columns except sorting_variable and
   # weighting_scheme. With fill_all = TRUE, only the explicit
-  # sorting_variable = "me" filter is applied; row 2 ("sv_bm")
-  # is dropped while row 1 ("sv_me") passes regardless of the
+  # sorting_variable = "me" filter is applied; row 2 ("bm")
+  # is dropped while row 1 ("me") passes regardless of the
   # differing weighting_scheme.
   grid <- tibble::tibble(
     id = c(1L, 2L),
-    sorting_variable = c("sv_me", "sv_bm"),
+    sorting_variable = c("me", "bm"),
     min_size_quantile = c(0.2, 0.2),
     exclude_financials = c(FALSE, FALSE),
     exclude_utilities = c(FALSE, FALSE),
