@@ -11,6 +11,9 @@ test_that("download_data dispatches supported domains", {
     download_data_fred = function(...) out,
     download_data_stock_prices = function(...) out,
     download_data_osap = function(...) out,
+    download_data_jkp = function(...) out,
+    download_data_pastor_stambaugh = function(...) out,
+    download_data_stambaugh_yuan = function(...) out,
     download_data_risk_free = function(...) out,
     download_data_huggingface = function(...) out
   )
@@ -24,6 +27,9 @@ test_that("download_data dispatches supported domains", {
     list("FRED", NULL),
     list("Stock Prices", NULL),
     list("Open Source Asset Pricing", NULL),
+    list("Global Factor Data", NULL),
+    list("Pastor-Stambaugh", NULL),
+    list("Stambaugh-Yuan", NULL),
     list("Tidy Finance", "risk_free"),
     list("Tidy Finance", "factor_library")
   )
@@ -34,6 +40,46 @@ test_that("download_data dispatches supported domains", {
       out
     )
   }
+})
+
+test_that("download_data forwards the dataset to Global Factor Data", {
+  captured <- NULL
+
+  local_mocked_bindings(
+    check_supported_domain = function(domain) NULL,
+    download_data_jkp = function(dataset, ...) {
+      captured <<- dataset
+      tibble::tibble(ok = TRUE)
+    }
+  )
+
+  # A NULL dataset defaults to "factors".
+  download_data("Global Factor Data")
+  expect_identical(captured, "factors")
+
+  # An explicit dataset is forwarded unchanged.
+  download_data("Global Factor Data", "industry")
+  expect_identical(captured, "industry")
+})
+
+test_that("download_data forwards the dataset to Stambaugh-Yuan", {
+  captured <- NULL
+
+  local_mocked_bindings(
+    check_supported_domain = function(domain) NULL,
+    download_data_stambaugh_yuan = function(dataset, ...) {
+      captured <<- dataset
+      tibble::tibble(ok = TRUE)
+    }
+  )
+
+  # A NULL dataset defaults to "monthly".
+  download_data("Stambaugh-Yuan")
+  expect_identical(captured, "monthly")
+
+  # An explicit dataset is forwarded unchanged.
+  download_data("Stambaugh-Yuan", "daily")
+  expect_identical(captured, "daily")
 })
 
 test_that("download_data handles argument errors and legacy inputs", {

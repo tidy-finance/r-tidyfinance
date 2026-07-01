@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 [![Lint](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/lint.yaml/badge.svg)](https://github.com/tidy-finance/r-tidyfinance/actions/workflows/lint.yaml/badge.svg)
 [![Codecov test coverage](https://codecov.io/gh/tidy-finance/r-tidyfinance/graph/badge.svg)](https://app.codecov.io/gh/tidy-finance/r-tidyfinance)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-<!-- badges: end -->
+<!-- badges: end --> 
 
 This repository contains an R package that collects helper functions for developers and researchers familiar with [Tidy Finance with R](https://www.tidy-finance.org/r/index.html). The functions provide shortcuts to selected issues that the book discusses in detail. 
 
@@ -94,6 +94,56 @@ download_data(
   domain = "Open Source Asset Pricing",
   start_date = "2020-01-01",
   end_date = "2020-12-31"
+)
+```
+
+To download characteristic-managed portfolio (factor) returns from [Global Factor Data](https://jkpfactors.com/data), select a region, the factor content (a single factor, a theme, `"all_themes"`, or `"all_factors"`), a frequency, and a weighting scheme:
+
+```{r}
+download_data(
+  domain = "Global Factor Data",
+  region = "usa",
+  factors = "all_factors",
+  frequency = "monthly",
+  weighting = "vw_cap",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+```
+
+The `dataset` argument also gives access to the underlying long-short portfolios (`"portfolios"`), industry returns (`"industry"`), and the reference files `"nyse_cutoffs"` and `"return_cutoffs"`:
+
+```{r}
+download_data(
+  domain = "Global Factor Data",
+  dataset = "industry",
+  region = "usa",
+  classification = "gics",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+```
+
+Use `list_supported_jkp_factors()` to see the available regions, or `list_supported_jkp_factors("usa")` to see the factors available for a region.
+
+To download the liquidity factors of Pastor and Stambaugh (2003) from [Lubos Pastor's data library](https://faculty.chicagobooth.edu/lubos-pastor/data):
+
+```{r}
+download_data(
+  domain = "Pastor-Stambaugh",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+```
+
+To download the mispricing factors of Stambaugh and Yuan (2017) from [Robert Stambaugh's data library](https://finance.wharton.upenn.edu/~stambaug/), optionally selecting `"monthly"` (the default) or `"daily"` data. Note that the source files currently end in December 2016:
+
+```{r}
+download_data(
+  domain = "Stambaugh-Yuan",
+  dataset = "monthly",
+  start_date = "2015-01-01",
+  end_date = "2016-12-31"
 )
 ```
 
