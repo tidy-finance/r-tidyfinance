@@ -10,7 +10,7 @@
 #' @importFrom lifecycle deprecated
 #' @importFrom purrr partial map map_dbl
 #' @importFrom stats quantile setNames weighted.mean as.formula na.omit ave
-#' @importFrom utils read.csv
+#' @importFrom utils read.csv read.table
 #' @importFrom tidyr pivot_longer unnest nest fill drop_na
 #' @importFrom rlang := enquo syms quo_is_null
 #' @importFrom jsonlite fromJSON

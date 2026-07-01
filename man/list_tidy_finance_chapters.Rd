@@ -32,6 +32,7 @@ Other utility functions:
 \code{\link{list_supported_datasets_pseudo}()},
 \code{\link{list_supported_datasets_wrds}()},
 \code{\link{list_supported_indexes}()},
+\code{\link{list_supported_jkp_factors}()},
 \code{\link{open_tidy_finance_website}()},
 \code{\link{trim}()},
 \code{\link{validate_dates}()},

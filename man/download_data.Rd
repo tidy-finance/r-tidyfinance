@@ -17,8 +17,10 @@ download_data(
 \item{domain}{The domain of the dataset to download, using the names
 returned by \code{\link[=list_supported_datasets]{list_supported_datasets()}}: \code{"Fama-French"}, \code{"Global Q"},
 \code{"Goyal-Welch"}, \code{"WRDS"}, \code{"Pseudo Data"}, \code{"Index Constituents"},
-\code{"FRED"}, \code{"Stock Prices"}, \code{"Open Source Asset Pricing"}, or
-\code{"Tidy Finance"}. Use \code{"Pseudo Data"} to obtain pseudo data with the
+\code{"FRED"}, \code{"Stock Prices"}, \code{"Open Source Asset Pricing"},
+\code{"Global Factor Data"}, \code{"Pastor-Stambaugh"}, \code{"Stambaugh-Yuan"}, or
+\code{"Tidy Finance"}. Use \code{"Pseudo Data"} to obtain
+pseudo data with the
 same schema as \code{"WRDS"} for testing or rendering without a WRDS
 subscription. The previous machine-readable names (e.g., \code{"famafrench"},
 \code{"wrds"}, \code{"pseudo"}, \code{"tidyfinance"}) are soft-deprecated but still
@@ -43,7 +45,10 @@ dataset type.}
 \item{...}{Additional arguments passed to specific download functions
 depending on the \code{domain}. For instance, if \code{domain} is
 \code{"Index Constituents"}, arguments are passed to
-\code{download_data_constituents()}. If \code{domain} is \code{"Tidy Finance"} and
+\code{download_data_constituents()}. If \code{domain} is \code{"Global Factor Data"},
+the \code{dataset} argument and arguments such as \code{region}, \code{factors},
+\code{classification}, \code{frequency}, and \code{weighting} are passed to
+\code{download_data_jkp()}. If \code{domain} is \code{"Tidy Finance"} and
 \code{dataset} is \code{"factor_library"}, arguments are either filter inputs
 (e.g., \code{sorting_variable}, \code{rebalancing}, \code{fill_all}) or an explicit
 \code{ids} vector that bypasses the grid filter and downloads the
@@ -102,9 +107,12 @@ Other download functions:
 \code{\link{download_data_factors_q}()},
 \code{\link{download_data_fred}()},
 \code{\link{download_data_huggingface}()},
+\code{\link{download_data_jkp}()},
 \code{\link{download_data_macro_predictors}()},
 \code{\link{download_data_osap}()},
+\code{\link{download_data_pastor_stambaugh}()},
 \code{\link{download_data_risk_free}()},
+\code{\link{download_data_stambaugh_yuan}()},
 \code{\link{download_data_stock_prices}()},
 \code{\link{download_factor_library_grid}()},
 \code{\link{download_factor_library_ids}()}
