@@ -34,10 +34,14 @@
   : Download and Process Data from FRED
 - [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md)
   : Download data from a Hugging Face dataset
+- [`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md)
+  : Download and Process Global Factor Data
 - [`download_data_macro_predictors()`](https://r.tidy-finance.org/reference/download_data_macro_predictors.md)
   : Download and Process Macro Predictor Data
 - [`download_data_osap()`](https://r.tidy-finance.org/reference/download_data_osap.md)
   : Download and Process Open Source Asset Pricing Data
+- [`download_data_pastor_stambaugh()`](https://r.tidy-finance.org/reference/download_data_pastor_stambaugh.md)
+  : Download and Process Pastor-Stambaugh Liquidity Factors
 - [`download_data_pseudo_ccm_links()`](https://r.tidy-finance.org/reference/download_data_pseudo_ccm_links.md)
   : Generate Pseudo CCM Links
 - [`download_data_pseudo_compustat()`](https://r.tidy-finance.org/reference/download_data_pseudo_compustat.md)
@@ -46,6 +50,8 @@
   : Generate Pseudo CRSP Data
 - [`download_data_risk_free()`](https://r.tidy-finance.org/reference/download_data_risk_free.md)
   : Download Risk-Free Rate Data
+- [`download_data_stambaugh_yuan()`](https://r.tidy-finance.org/reference/download_data_stambaugh_yuan.md)
+  : Download and Process Stambaugh-Yuan Mispricing Factors
 - [`download_data_stock_prices()`](https://r.tidy-finance.org/reference/download_data_stock_prices.md)
   : Download Stock Data
 - [`download_data_wrds()`](https://r.tidy-finance.org/reference/download_data_wrds.md)
@@ -101,6 +107,8 @@
   : List Supported WRDS Datasets
 - [`list_supported_indexes()`](https://r.tidy-finance.org/reference/list_supported_indexes.md)
   : List Supported Indexes
+- [`list_supported_jkp_factors()`](https://r.tidy-finance.org/reference/list_supported_jkp_factors.md)
+  : List Supported Global Factor Data Regions and Factors
 - [`list_tidy_finance_chapters()`](https://r.tidy-finance.org/reference/list_tidy_finance_chapters.md)
   : List Chapters of Tidy Finance
 - [`open_tidy_finance_website()`](https://r.tidy-finance.org/reference/open_tidy_finance_website.md)

@@ -22,12 +22,15 @@
 <url><loc>https://r.tidy-finance.org/reference/download_data_factors_q.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_fred.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_huggingface.html</loc></url>
+<url><loc>https://r.tidy-finance.org/reference/download_data_jkp.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_macro_predictors.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_osap.html</loc></url>
+<url><loc>https://r.tidy-finance.org/reference/download_data_pastor_stambaugh.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_pseudo_ccm_links.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_pseudo_compustat.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_pseudo_crsp.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_risk_free.html</loc></url>
+<url><loc>https://r.tidy-finance.org/reference/download_data_stambaugh_yuan.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_stock_prices.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_wrds.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_wrds_ccm_links.html</loc></url>
@@ -56,6 +59,7 @@
 <url><loc>https://r.tidy-finance.org/reference/list_supported_datasets_q.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/list_supported_datasets_wrds.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/list_supported_indexes.html</loc></url>
+<url><loc>https://r.tidy-finance.org/reference/list_supported_jkp_factors.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/list_tidy_finance_chapters.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/open_tidy_finance_website.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/portfolio_sort_options.html</loc></url>

@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,8 +87,10 @@ processing the data.</p>
 <dd><p>The domain of the dataset to download, using the names
 returned by <code><a href="list_supported_datasets.html">list_supported_datasets()</a></code>: <code>"Fama-French"</code>, <code>"Global Q"</code>,
 <code>"Goyal-Welch"</code>, <code>"WRDS"</code>, <code>"Pseudo Data"</code>, <code>"Index Constituents"</code>,
-<code>"FRED"</code>, <code>"Stock Prices"</code>, <code>"Open Source Asset Pricing"</code>, or
-<code>"Tidy Finance"</code>. Use <code>"Pseudo Data"</code> to obtain pseudo data with the
+<code>"FRED"</code>, <code>"Stock Prices"</code>, <code>"Open Source Asset Pricing"</code>,
+<code>"Global Factor Data"</code>, <code>"Pastor-Stambaugh"</code>, <code>"Stambaugh-Yuan"</code>, or
+<code>"Tidy Finance"</code>. Use <code>"Pseudo Data"</code> to obtain
+pseudo data with the
 same schema as <code>"WRDS"</code> for testing or rendering without a WRDS
 subscription. The previous machine-readable names (e.g., <code>"famafrench"</code>,
 <code>"wrds"</code>, <code>"pseudo"</code>, <code>"tidyfinance"</code>) are soft-deprecated but still
@@ -123,7 +125,10 @@ dataset type.</p></dd>
 <dd><p>Additional arguments passed to specific download functions
 depending on the <code>domain</code>. For instance, if <code>domain</code> is
 <code>"Index Constituents"</code>, arguments are passed to
-<code><a href="download_data_constituents.html">download_data_constituents()</a></code>. If <code>domain</code> is <code>"Tidy Finance"</code> and
+<code><a href="download_data_constituents.html">download_data_constituents()</a></code>. If <code>domain</code> is <code>"Global Factor Data"</code>,
+the <code>dataset</code> argument and arguments such as <code>region</code>, <code>factors</code>,
+<code>classification</code>, <code>frequency</code>, and <code>weighting</code> are passed to
+<code><a href="download_data_jkp.html">download_data_jkp()</a></code>. If <code>domain</code> is <code>"Tidy Finance"</code> and
 <code>dataset</code> is <code>"factor_library"</code>, arguments are either filter inputs
 (e.g., <code>sorting_variable</code>, <code>rebalancing</code>, <code>fill_all</code>) or an explicit
 <code>ids</code> vector that bypasses the grid filter and downloads the
@@ -144,9 +149,12 @@ financial metrics, filtered by the specified date range.</p>
 <code><a href="download_data_factors_q.html">download_data_factors_q()</a></code>,
 <code><a href="download_data_fred.html">download_data_fred()</a></code>,
 <code><a href="download_data_huggingface.html">download_data_huggingface()</a></code>,
+<code><a href="download_data_jkp.html">download_data_jkp()</a></code>,
 <code><a href="download_data_macro_predictors.html">download_data_macro_predictors()</a></code>,
 <code><a href="download_data_osap.html">download_data_osap()</a></code>,
+<code><a href="download_data_pastor_stambaugh.html">download_data_pastor_stambaugh()</a></code>,
 <code><a href="download_data_risk_free.html">download_data_risk_free()</a></code>,
+<code><a href="download_data_stambaugh_yuan.html">download_data_stambaugh_yuan()</a></code>,
 <code><a href="download_data_stock_prices.html">download_data_stock_prices()</a></code>,
 <code><a href="download_factor_library_grid.html">download_factor_library_grid()</a></code>,
 <code><a href="download_factor_library_ids.html">download_factor_library_ids()</a></code></p></div>
@@ -223,9 +231,9 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 1949-04-01  271. GDP   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,668 more rows</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Stock Prices"</span>, symbols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AAPL"</span>, <span class="st">"MSFT"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-06-30 to</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-06-30 to avoid downloading large amounts of data.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 498 × 8</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-07-01 to</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-07-01 to avoid downloading large amounts of data.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 500 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    symbol date         volume  open   low  high close adjusted_close</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AAPL   2024-07-01 60<span style="text-decoration: underline;">402</span>900  212.  212.  218.  217.           215.</span>
@@ -238,7 +246,7 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AAPL   2024-07-11 64<span style="text-decoration: underline;">710</span>600  231.  226.  232.  228.           226.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AAPL   2024-07-12 53<span style="text-decoration: underline;">046</span>500  229.  229.  233.  231.           229.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AAPL   2024-07-15 62<span style="text-decoration: underline;">631</span>300  236.  233.  237.  234.           232.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 488 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 490 more rows</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"Tidy Finance"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"risk_free"</span>,</span></span>

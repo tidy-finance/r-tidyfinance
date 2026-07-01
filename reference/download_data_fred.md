@@ -63,9 +63,12 @@ Other download functions:
 [`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md),
 [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
 [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md),
+[`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md),
 [`download_data_macro_predictors()`](https://r.tidy-finance.org/reference/download_data_macro_predictors.md),
 [`download_data_osap()`](https://r.tidy-finance.org/reference/download_data_osap.md),
+[`download_data_pastor_stambaugh()`](https://r.tidy-finance.org/reference/download_data_pastor_stambaugh.md),
 [`download_data_risk_free()`](https://r.tidy-finance.org/reference/download_data_risk_free.md),
+[`download_data_stambaugh_yuan()`](https://r.tidy-finance.org/reference/download_data_stambaugh_yuan.md),
 [`download_data_stock_prices()`](https://r.tidy-finance.org/reference/download_data_stock_prices.md),
 [`download_factor_library_grid()`](https://r.tidy-finance.org/reference/download_factor_library_grid.md),
 [`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md)

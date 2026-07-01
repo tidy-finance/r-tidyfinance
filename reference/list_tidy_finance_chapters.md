@@ -29,6 +29,7 @@ Other utility functions:
 [`list_supported_datasets_pseudo()`](https://r.tidy-finance.org/reference/list_supported_datasets_pseudo.md),
 [`list_supported_datasets_wrds()`](https://r.tidy-finance.org/reference/list_supported_datasets_wrds.md),
 [`list_supported_indexes()`](https://r.tidy-finance.org/reference/list_supported_indexes.md),
+[`list_supported_jkp_factors()`](https://r.tidy-finance.org/reference/list_supported_jkp_factors.md),
 [`open_tidy_finance_website()`](https://r.tidy-finance.org/reference/open_tidy_finance_website.md),
 [`trim()`](https://r.tidy-finance.org/reference/trim.md),
 [`validate_dates()`](https://r.tidy-finance.org/reference/validate_dates.md),

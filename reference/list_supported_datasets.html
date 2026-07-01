@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,6 +110,7 @@ dataset belongs, e.g., "Global Q", "Fama-French", "Goyal-Welch").</p>
 <code><a href="list_supported_datasets_pseudo.html">list_supported_datasets_pseudo()</a></code>,
 <code><a href="list_supported_datasets_wrds.html">list_supported_datasets_wrds()</a></code>,
 <code><a href="list_supported_indexes.html">list_supported_indexes()</a></code>,
+<code><a href="list_supported_jkp_factors.html">list_supported_jkp_factors()</a></code>,
 <code><a href="list_tidy_finance_chapters.html">list_tidy_finance_chapters()</a></code>,
 <code><a href="open_tidy_finance_website.html">open_tidy_finance_website()</a></code>,
 <code><a href="trim.html">trim()</a></code>,
@@ -121,7 +122,7 @@ dataset belongs, e.g., "Global Q", "Fama-French", "Goyal-Welch").</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># List all supported datasets as a data frame</span></span></span>
 <span class="r-in"><span><span class="fu">list_supported_datasets</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 326 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 329 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    type                     dataset_name                   domain     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> factors_q5_daily         q5_factors_daily_2024          Global Q   </span>
@@ -134,7 +135,7 @@ dataset belongs, e.g., "Global Q", "Fama-French", "Goyal-Welch").</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> factors_ff_3_weekly      Fama/French 3 Factors [Weekly] Fama-French</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> factors_ff_3_daily       Fama/French 3 Factors [Daily]  Fama-French</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> factors_ff_5_2x3_monthly Fama/French 5 Factors (2x3)    Fama-French</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 316 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 319 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Filter by domain</span></span></span>
 <span class="r-in"><span><span class="fu">list_supported_datasets</span><span class="op">(</span>domain <span class="op">=</span> <span class="st">"WRDS"</span><span class="op">)</span></span></span>
@@ -473,10 +474,13 @@ dataset belongs, e.g., "Global Q", "Fama-French", "Goyal-Welch").</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [320] "constituents"                                                         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [321] "fred"                                                                 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [322] "osap"                                                                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [323] "risk_free"                                                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [324] "high_frequency_sp500"                                                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [325] "factor_library"                                                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [326] "factor_library_grid"                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [323] "jkp"                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [324] "liquidity"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [325] "mispricing"                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [326] "risk_free"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [327] "high_frequency_sp500"                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [328] "factor_library"                                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [329] "factor_library_grid"                                                  </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

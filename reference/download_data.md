@@ -27,7 +27,8 @@ download_data(
   [`list_supported_datasets()`](https://r.tidy-finance.org/reference/list_supported_datasets.md):
   `"Fama-French"`, `"Global Q"`, `"Goyal-Welch"`, `"WRDS"`,
   `"Pseudo Data"`, `"Index Constituents"`, `"FRED"`, `"Stock Prices"`,
-  `"Open Source Asset Pricing"`, or `"Tidy Finance"`. Use
+  `"Open Source Asset Pricing"`, `"Global Factor Data"`,
+  `"Pastor-Stambaugh"`, `"Stambaugh-Yuan"`, or `"Tidy Finance"`. Use
   `"Pseudo Data"` to obtain pseudo data with the same schema as `"WRDS"`
   for testing or rendering without a WRDS subscription. The previous
   machine-readable names (e.g., `"famafrench"`, `"wrds"`, `"pseudo"`,
@@ -59,6 +60,10 @@ download_data(
   on the `domain`. For instance, if `domain` is `"Index Constituents"`,
   arguments are passed to
   [`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md).
+  If `domain` is `"Global Factor Data"`, the `dataset` argument and
+  arguments such as `region`, `factors`, `classification`, `frequency`,
+  and `weighting` are passed to
+  [`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md).
   If `domain` is `"Tidy Finance"` and `dataset` is `"factor_library"`,
   arguments are either filter inputs (e.g., `sorting_variable`,
   `rebalancing`, `fill_all`) or an explicit `ids` vector that bypasses
@@ -81,9 +86,12 @@ Other download functions:
 [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
 [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),
 [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md),
+[`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md),
 [`download_data_macro_predictors()`](https://r.tidy-finance.org/reference/download_data_macro_predictors.md),
 [`download_data_osap()`](https://r.tidy-finance.org/reference/download_data_osap.md),
+[`download_data_pastor_stambaugh()`](https://r.tidy-finance.org/reference/download_data_pastor_stambaugh.md),
 [`download_data_risk_free()`](https://r.tidy-finance.org/reference/download_data_risk_free.md),
+[`download_data_stambaugh_yuan()`](https://r.tidy-finance.org/reference/download_data_stambaugh_yuan.md),
 [`download_data_stock_prices()`](https://r.tidy-finance.org/reference/download_data_stock_prices.md),
 [`download_factor_library_grid()`](https://r.tidy-finance.org/reference/download_factor_library_grid.md),
 [`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md)
@@ -160,9 +168,9 @@ download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> 10 1949-04-01  271. GDP   
 #> # ℹ 1,668 more rows
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-06-30 to
-#> 2025-06-30 to avoid downloading large amounts of data.
-#> # A tibble: 498 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-07-01 to
+#> 2025-07-01 to avoid downloading large amounts of data.
+#> # A tibble: 500 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
 #>  1 AAPL   2024-07-01 60402900  212.  212.  218.  217.           215.
@@ -175,7 +183,7 @@ download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
 #>  8 AAPL   2024-07-11 64710600  231.  226.  232.  228.           226.
 #>  9 AAPL   2024-07-12 53046500  229.  229.  233.  231.           229.
 #> 10 AAPL   2024-07-15 62631300  236.  233.  237.  234.           232.
-#> # ℹ 488 more rows
+#> # ℹ 490 more rows
 download_data(
   "Tidy Finance",
   "risk_free",

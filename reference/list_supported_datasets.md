@@ -47,6 +47,7 @@ Other utility functions:
 [`list_supported_datasets_pseudo()`](https://r.tidy-finance.org/reference/list_supported_datasets_pseudo.md),
 [`list_supported_datasets_wrds()`](https://r.tidy-finance.org/reference/list_supported_datasets_wrds.md),
 [`list_supported_indexes()`](https://r.tidy-finance.org/reference/list_supported_indexes.md),
+[`list_supported_jkp_factors()`](https://r.tidy-finance.org/reference/list_supported_jkp_factors.md),
 [`list_tidy_finance_chapters()`](https://r.tidy-finance.org/reference/list_tidy_finance_chapters.md),
 [`open_tidy_finance_website()`](https://r.tidy-finance.org/reference/open_tidy_finance_website.md),
 [`trim()`](https://r.tidy-finance.org/reference/trim.md),
@@ -58,7 +59,7 @@ Other utility functions:
 ``` r
 # List all supported datasets as a data frame
 list_supported_datasets()
-#> # A tibble: 326 × 3
+#> # A tibble: 329 × 3
 #>    type                     dataset_name                   domain     
 #>    <chr>                    <chr>                          <chr>      
 #>  1 factors_q5_daily         q5_factors_daily_2024          Global Q   
@@ -71,7 +72,7 @@ list_supported_datasets()
 #>  8 factors_ff_3_weekly      Fama/French 3 Factors [Weekly] Fama-French
 #>  9 factors_ff_3_daily       Fama/French 3 Factors [Daily]  Fama-French
 #> 10 factors_ff_5_2x3_monthly Fama/French 5 Factors (2x3)    Fama-French
-#> # ℹ 316 more rows
+#> # ℹ 319 more rows
 
 # Filter by domain
 list_supported_datasets(domain = "WRDS")
@@ -410,8 +411,11 @@ list_supported_datasets(as_vector = TRUE)
 #> [320] "constituents"                                                         
 #> [321] "fred"                                                                 
 #> [322] "osap"                                                                 
-#> [323] "risk_free"                                                            
-#> [324] "high_frequency_sp500"                                                 
-#> [325] "factor_library"                                                       
-#> [326] "factor_library_grid"                                                  
+#> [323] "jkp"                                                                  
+#> [324] "liquidity"                                                            
+#> [325] "mispricing"                                                           
+#> [326] "risk_free"                                                            
+#> [327] "high_frequency_sp500"                                                 
+#> [328] "factor_library"                                                       
+#> [329] "factor_library_grid"                                                  
 ```

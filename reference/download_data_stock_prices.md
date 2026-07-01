@@ -44,9 +44,12 @@ Other download functions:
 [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
 [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),
 [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md),
+[`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md),
 [`download_data_macro_predictors()`](https://r.tidy-finance.org/reference/download_data_macro_predictors.md),
 [`download_data_osap()`](https://r.tidy-finance.org/reference/download_data_osap.md),
+[`download_data_pastor_stambaugh()`](https://r.tidy-finance.org/reference/download_data_pastor_stambaugh.md),
 [`download_data_risk_free()`](https://r.tidy-finance.org/reference/download_data_risk_free.md),
+[`download_data_stambaugh_yuan()`](https://r.tidy-finance.org/reference/download_data_stambaugh_yuan.md),
 [`download_factor_library_grid()`](https://r.tidy-finance.org/reference/download_factor_library_grid.md),
 [`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md)
 
@@ -55,9 +58,9 @@ Other download functions:
 ``` r
 # \donttest{
   download_data_stock_prices(c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-06-30 to
-#> 2025-06-30 to avoid downloading large amounts of data.
-#> # A tibble: 498 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-07-01 to
+#> 2025-07-01 to avoid downloading large amounts of data.
+#> # A tibble: 500 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
 #>  1 AAPL   2024-07-01 60402900  212.  212.  218.  217.           215.
@@ -70,7 +73,7 @@ Other download functions:
 #>  8 AAPL   2024-07-11 64710600  231.  226.  232.  228.           226.
 #>  9 AAPL   2024-07-12 53046500  229.  229.  233.  231.           229.
 #> 10 AAPL   2024-07-15 62631300  236.  233.  237.  234.           232.
-#> # ℹ 488 more rows
+#> # ℹ 490 more rows
   download_data_stock_prices("GOOGL", "2021-01-01", "2022-01-01" )
 #> # A tibble: 252 × 8
 #>    symbol date         volume  open   low  high close adjusted_close

@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tidyfinance-development-version">tidyfinance (development version)<a class="anchor" aria-label="anchor" href="#tidyfinance-development-version"></a></h2>
+<div class="section level3">
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<ul><li><p>Added <code><a href="../reference/download_data_pastor_stambaugh.html">download_data_pastor_stambaugh()</a></code> and the <code>"Pastor-Stambaugh"</code> domain for <code><a href="../reference/download_data.html">download_data()</a></code>, which downloads the liquidity factors of Pastor and Stambaugh (2003) from <a href="https://faculty.chicagobooth.edu/lubos-pastor/data" class="external-link">Lubos Pastor’s data library</a>. The result carries the levels of aggregate liquidity, the non-traded liquidity factor (innovations), and the traded liquidity factor <code>LIQ_V</code>.</p></li>
+<li><p>Added <code><a href="../reference/download_data_stambaugh_yuan.html">download_data_stambaugh_yuan()</a></code> and the <code>"Stambaugh-Yuan"</code> domain for <code><a href="../reference/download_data.html">download_data()</a></code>, which downloads the mispricing factors (<code>mgmt</code> and <code>perf</code>) of Stambaugh and Yuan (2017) from <a href="https://finance.wharton.upenn.edu/~stambaug/" class="external-link">Robert Stambaugh’s data library</a>. The <code>dataset</code> argument selects between <code>"monthly"</code> and <code>"daily"</code> data. The source files currently end in December 2016.</p></li>
+<li><p>Added <code><a href="../reference/download_data_jkp.html">download_data_jkp()</a></code> and the <code>"Global Factor Data"</code> domain for <code><a href="../reference/download_data.html">download_data()</a></code>, which downloads data from <a href="https://jkpfactors.com/data" class="external-link">Global Factor Data</a> (Jensen, Kelly, and Pedersen, 2023). The <code>dataset</code> argument selects between factor returns (<code>"factors"</code>), the underlying long-short portfolios (<code>"portfolios"</code>), industry returns (<code>"industry"</code>), and the reference files <code>"nyse_cutoffs"</code> and <code>"return_cutoffs"</code>. The requested selection is validated against the library’s live availability manifest, and the helper <code><a href="../reference/list_supported_jkp_factors.html">list_supported_jkp_factors()</a></code> lists the available regions and selectors.</p></li>
+</ul></div>
 <div class="section level3">
 <h3 id="improvements-development-version">Improvements<a class="anchor" aria-label="anchor" href="#improvements-development-version"></a></h3>
 <ul><li>
