@@ -16,17 +16,6 @@
 #'   `use_default_range = FALSE`).
 #'
 #' @family utility functions
-#' @export
-#'
-#' @examples
-#' # Explicit range
-#' validate_dates("2020-01-01", "2020-12-31")
-#'
-#' # Both NULL with the default range applied (two years ago to one year ago)
-#' validate_dates(NULL, NULL, use_default_range = TRUE)
-#'
-#' # Both NULL returns NULL dates
-#' validate_dates(NULL, NULL)
 #'
 validate_dates <- function(start_date, end_date, use_default_range = FALSE) {
   if (is.null(start_date) || is.null(end_date)) {

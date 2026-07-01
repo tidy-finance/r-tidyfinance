@@ -25,15 +25,26 @@ from which to download the data. Default is
 }
 \value{
 A tibble containing the processed data. The column names
-are converted to snake_case, and the data is filtered by the
-specified date range if \code{start_date} and \code{end_date} are provided.
+are converted to snake_case, the \code{date} column is aligned to the
+beginning of the month, all predictor columns (long-short returns
+in percent) are divided by 100 to obtain plain numeric (decimal)
+returns, and the data is filtered by the specified date range if
+\code{start_date} and \code{end_date} are provided.
 }
 \description{
 Downloads the data from
 \href{https://www.openassetpricing.com/data/}{Open Source Asset Pricing}
 from Google Sheets using a specified sheet ID, processes the data
-by converting column names to snake_case, and optionally filters
-the data based on a provided date range.
+by converting column names to snake_case, aligning the date to the
+beginning of the month, scaling the percentage long-short returns to
+numeric values, and optionally filters the data based on a provided
+date range.
+}
+\details{
+The dataset contains monthly long-short returns of the predictor
+portfolios. Every column other than \code{date} is a return expressed in
+percent, so all of them are divided by 100 to convert them into plain
+numeric (decimal) returns.
 }
 \examples{
 \donttest{
@@ -50,8 +61,11 @@ Other download functions:
 \code{\link{download_data_factors_q}()},
 \code{\link{download_data_fred}()},
 \code{\link{download_data_huggingface}()},
+\code{\link{download_data_jkp}()},
 \code{\link{download_data_macro_predictors}()},
+\code{\link{download_data_pastor_stambaugh}()},
 \code{\link{download_data_risk_free}()},
+\code{\link{download_data_stambaugh_yuan}()},
 \code{\link{download_data_stock_prices}()},
 \code{\link{download_factor_library_grid}()},
 \code{\link{download_factor_library_ids}()}

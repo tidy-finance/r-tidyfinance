@@ -26,17 +26,6 @@ Checks that \code{start_date} and \code{end_date} are a valid pair, coerces them
 \code{use_default_range = TRUE}, a default range spanning from two years ago to
 one year ago is applied and reported to the user.
 }
-\examples{
-# Explicit range
-validate_dates("2020-01-01", "2020-12-31")
-
-# Both NULL with the default range applied (two years ago to one year ago)
-validate_dates(NULL, NULL, use_default_range = TRUE)
-
-# Both NULL returns NULL dates
-validate_dates(NULL, NULL)
-
-}
 \seealso{
 Other utility functions: 
 \code{\link{create_summary_statistics}()},
@@ -49,6 +38,7 @@ Other utility functions:
 \code{\link{list_supported_datasets_pseudo}()},
 \code{\link{list_supported_datasets_wrds}()},
 \code{\link{list_supported_indexes}()},
+\code{\link{list_supported_jkp_factors}()},
 \code{\link{list_tidy_finance_chapters}()},
 \code{\link{open_tidy_finance_website}()},
 \code{\link{trim}()},
