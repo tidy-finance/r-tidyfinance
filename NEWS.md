@@ -1,14 +1,4 @@
 # tidyfinance 0.8.0
-
-## Improvements
-
-- The `sorting_variable` column of the `factor_library_grid` dataset no longer
-  carries a `"sv_"` prefix, so its values now match the `sorting_variable`
-  argument of `download_data("Tidy Finance", "factor_library", ...)` (e.g.
-  `"bm"` rather than `"sv_bm"`). `download_data("Tidy Finance",
-  "factor_library_grid")` returns the bare values accordingly
-  (#284).
-- The vignette "Constructing a factor from scratch" has been added. 
   
 ## New features
 
@@ -34,11 +24,18 @@
   library's live availability manifest, and the helper
   `list_supported_jkp_factors()` lists the available regions and selectors.
 
+
 ## Improvements
 
+- The `sorting_variable` column of the `factor_library_grid` dataset no longer
+  carries a `"sv_"` prefix, so its values now match the `sorting_variable`
+  argument of `download_data("Tidy Finance", "factor_library", ...)` (e.g.
+  `"bm"` rather than `"sv_bm"`). `download_data("Tidy Finance",
+  "factor_library_grid")` returns the bare values accordingly
+  (#284).
 - Added a `tidyfinance` vignette that walks through the complete
-  factor-construction workflow --- download, signal construction, fiscal-year
-  lagging, portfolio sorting, and a Fama-MacBeth test --- end to end. It builds
+  factor-construction workflow: download, signal construction, fiscal-year
+  lagging, portfolio sorting, and a Fama-MacBeth test. It builds
   entirely on `download_data(domain = "Pseudo Data")`, so it compiles without a
   WRDS subscription or network access. `knitr` and `rmarkdown` are added back to
   `Suggests`, and `VignetteBuilder: knitr` is restored to `DESCRIPTION`.
