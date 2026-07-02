@@ -6,7 +6,7 @@ addressing a variety of topics covered in Scheuch, Voigt, and Weiss
 package is designed to provide shortcuts for issues extensively
 discussed in the book, facilitating easier application of its concepts.
 For more information and resources related to the book, visit
-<https://www.tidy-finance.org/r/index.html>.
+<https://www.tidy-finance.org/index.html>.
 
 ## See also
 

@@ -1,12 +1,11 @@
 # Download and Process Pastor-Stambaugh Liquidity Factors
 
 Downloads and processes the liquidity factor data of Pastor and
-Stambaugh (2003) from [Pastor's data
-library](https://faculty.chicagobooth.edu/lubos-pastor/data). The source
-is a whitespace-delimited text file whose header lines start with a
-percent sign. The function reads the three liquidity series, aligns the
-monthly date to the beginning of the month, and optionally filters the
-data based on a provided date range.
+Stambaugh (2003) from Pastor's data library. The source is a
+whitespace-delimited text file whose header lines start with a percent
+sign. The function reads the three liquidity series, aligns the monthly
+date to the beginning of the month, and optionally filters the data
+based on a provided date range.
 
 ## Usage
 

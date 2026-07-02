@@ -17,7 +17,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/tidy-finance/r-tidyfinance/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/tidy-finance/r-tidyfinance/blob/v0.8.0/inst/CITATION)
 
 Scheuch, Voigt, and Weiss (2023). Tidy Finance with R (1st ed.). Chapman
 and Hall/CRC. https://doi.org/10.1201/b23237.
@@ -28,6 +28,6 @@ and Hall/CRC. https://doi.org/10.1201/b23237.
       year = {2023},
       publisher = {Chapman and Hall/CRC},
       edition = {1st},
-      url = {https://www.tidy-finance.org/r/index.html},
+      url = {https://www.tidy-finance.org/index.html},
       doi = {10.1201/b23237},
     }

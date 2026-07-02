@@ -1,17 +1,6 @@
 # Changelog
 
-## tidyfinance (development version)
-
-### Improvements
-
-- The `sorting_variable` column of the `factor_library_grid` dataset no
-  longer carries a `"sv_"` prefix, so its values now match the
-  `sorting_variable` argument of
-  `download_data("Tidy Finance", "factor_library", ...)` (e.g. `"bm"`
-  rather than `"sv_bm"`).
-  `download_data("Tidy Finance", "factor_library_grid")` returns the
-  bare values accordingly
-  ([\#284](https://github.com/tidy-finance/r-tidyfinance/issues/284)).
+## tidyfinance 0.8.0
 
 ### New features
 
@@ -20,11 +9,9 @@
   and the `"Pastor-Stambaugh"` domain for
   [`download_data()`](https://r.tidy-finance.org/reference/download_data.md),
   which downloads the liquidity factors of Pastor and Stambaugh (2003)
-  from [Lubos Pastor’s data
-  library](https://faculty.chicagobooth.edu/lubos-pastor/data). The
-  result carries the levels of aggregate liquidity, the non-traded
-  liquidity factor (innovations), and the traded liquidity factor
-  `LIQ_V`.
+  from Lubos Pastor’s data library. The result carries the levels of
+  aggregate liquidity, the non-traded liquidity factor (innovations),
+  and the traded liquidity factor `LIQ_V`.
 - Added
   [`download_data_stambaugh_yuan()`](https://r.tidy-finance.org/reference/download_data_stambaugh_yuan.md)
   and the `"Stambaugh-Yuan"` domain for
@@ -51,14 +38,21 @@
 
 ### Improvements
 
+- The `sorting_variable` column of the `factor_library_grid` dataset no
+  longer carries a `"sv_"` prefix, so its values now match the
+  `sorting_variable` argument of
+  `download_data("Tidy Finance", "factor_library", ...)` (e.g. `"bm"`
+  rather than `"sv_bm"`).
+  `download_data("Tidy Finance", "factor_library_grid")` returns the
+  bare values accordingly
+  ([\#284](https://github.com/tidy-finance/r-tidyfinance/issues/284)).
 - Added a `tidyfinance` vignette that walks through the complete
-  factor-construction workflow — download, signal construction,
-  fiscal-year lagging, portfolio sorting, and a Fama-MacBeth test — end
-  to end. It builds entirely on `download_data(domain = "Pseudo Data")`,
-  so it compiles without a WRDS subscription or network access. `knitr`
-  and `rmarkdown` are added back to `Suggests`, and
-  `VignetteBuilder: knitr` is restored to `DESCRIPTION`.
-
+  factor-construction workflow: download, signal construction,
+  fiscal-year lagging, portfolio sorting, and a Fama-MacBeth test. It
+  builds entirely on `download_data(domain = "Pseudo Data")`, so it
+  compiles without a WRDS subscription or network access. `knitr` and
+  `rmarkdown` are added back to `Suggests`, and `VignetteBuilder: knitr`
+  is restored to `DESCRIPTION`.
 - `download_data("Open Source Asset Pricing")` now aligns the `date`
   column to the beginning of the month (the dataset previously returned
   end-of-month dates), matching the convention used by the other
