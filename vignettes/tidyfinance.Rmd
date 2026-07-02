@@ -32,7 +32,7 @@ sorts firms on the year-over-year change in their total assets --- starting from
 firm-level accounting and return panels and finishing with a long-short return
 series and a cross-sectional asset-pricing test. The vignette has six steps: we
 download the data, construct and lag the signal, align it with monthly returns,
-sort stocks into portfolios, customize that sort, and finallsy run a Fama-MacBeth
+sort stocks into portfolios, customize that sort, and finally run a Fama-MacBeth
 regression.
 
 ## Following along without a WRDS subscription
@@ -45,9 +45,9 @@ with no credentials and no network --- every download below uses
 `domain = "Pseudo Data"` instead of `domain = "WRDS"`.
 
 Pseudo data mirror the *schema* of the real WRDS panels exactly: the same column
-names, types, and panel structure, and a
-calibrated mix of exchanges and industries. Every line of cleaning, lagging, and
-sorting code therefore runs unchanged. What pseudo data deliberately do **not**
+names, types, and panel structure, and a calibrated mix of exchanges and
+industries. Every line of cleaning, lagging, and sorting code therefore runs
+unchanged. What pseudo data deliberately do **not**
 carry is economic content. Returns are independent random draws, and the asset
 growth signal is unrelated to subsequent returns by construction. **Every number
 in this vignette is a simulation artifact** --- not just the cross-sectional
@@ -65,15 +65,17 @@ library(tidyr)
 library(lubridate)
 ```
 
-Two arguments control the simulated panels: `seed` fixes the random draws so the
-document is reproducible, and `n_assets` sets the size of the
-cross-section. We keep a
-moderate universe here and a sample window that mirrors the empirical study.
+Two internal arguments govern the simulated panels: `seed` fixes the random
+draws so the document is reproducible, and `n_assets` sets the size of the
+cross-section. We deliberately leave both at their defaults (`seed = 1234` and
+`n_assets = 1000`) instead of passing them explicitly. The WRDS downloads do
+not accept these arguments, so keeping them out of the `download_data()` calls
+is what lets you switch the domain at the end of this vignette without touching
+anything else. The only parameters we set are the sample dates, which mirror
+the empirical study.
 
 ```{r}
 #| label: parameters
-seed <- 1234
-n_assets <- 500
 date_start <- as.Date("1972-01-01")
 date_end <- as.Date("2024-12-31")
 ```
@@ -94,9 +96,7 @@ crsp_monthly <- download_data(
   dataset = "crsp_monthly",
   start_date = date_start,
   end_date = date_end,
-  add_ccm_links = TRUE,
-  n_assets = n_assets,
-  seed = seed
+  add_ccm_links = TRUE
 )
 crsp_monthly
 ```
@@ -123,9 +123,7 @@ compustat_annual <- download_data(
   start_date = date_start,
   end_date = date_end,
   additional_columns = c("at", "ib"),
-  only_usd = TRUE,
-  n_assets = n_assets,
-  seed = seed
+  only_usd = TRUE
 ) |>
   select(gvkey, date, at, ib)
 compustat_annual
@@ -137,7 +135,7 @@ Asset growth for firm $i$ in year $t$ is the year-over-year percentage change in
 total assets,
 
 $$
-AG_{t,i} = \frac{AT_{t,i} - AT_{t-1,i}}{AT_{t-1,i}}.
+AG_{i,t} = \frac{AT_{i,t} - AT_{i,t-1}}{AT_{i,t-1}}.
 $$
 
 Computing it means lining up each firm's total assets with its own value one year
@@ -147,6 +145,18 @@ matching the lagged date directly. The same function also takes a `max_lag` to
 instead search a window for the most recent value, which we use in the next step.
 We then take the percentage change and set non-finite results (from a zero or
 missing prior value) to `NA`.
+
+Ratios of balance-sheet items produce extreme outliers, and a handful of firms
+with explosive growth would otherwise dominate summary statistics and
+regression slopes. We therefore winsorize the signal once, within each
+statement date, and carry the winsorized variable through the rest of the
+vignette: `winsorize()` pulls the most extreme 1% on each tail back to the 1st
+and 99th percentiles. If you would rather drop extreme observations than clamp
+them, the package also provides `trim()`, which removes everything beyond the
+same cutoffs. Winsorizing matters for the Fama-MacBeth regression in Step 6,
+where the magnitude of the signal enters directly, but it does not affect the
+portfolio sorts in Steps 4 and 5: a sort depends only on how firms rank, and
+winsorizing compresses the tails without reordering them.
 
 ```{r}
 #| label: compute-signal
@@ -160,20 +170,19 @@ sorting_variable_data <- compustat_annual |>
     asset_growth = (at - at_lag) / at_lag,
     asset_growth = if_else(is.finite(asset_growth), asset_growth, NA_real_)
   ) |>
+  group_by(date) |>
+  mutate(asset_growth = winsorize(asset_growth, cut = 0.01)) |>
+  ungroup() |>
   select(gvkey, date, asset_growth, ib)
 ```
 
 Before using the signal, it pays to look at it. `create_summary_statistics()`
-returns the standard cross-sectional summary for one or more variables. We
-winsorize first --- `winsorize()` pulls the most extreme 1% on each tail back to
-the 1st and 99th percentiles --- so that a handful of firms with explosive
-balance-sheet changes do not distort the picture.
+returns the standard cross-sectional summary for one or more variables.
 
 ```{r}
 #| label: signal-summary
 sorting_variable_data |>
   drop_na(asset_growth) |>
-  mutate(asset_growth = winsorize(asset_growth, cut = 0.01)) |>
   create_summary_statistics(asset_growth, detail = TRUE) |>
   select(variable, n, mean, sd, q05, q50, q95) |>
   knitr::kable(
@@ -192,17 +201,17 @@ unlike any relationship between the signal and future returns, which does not.
 The signal is annual; returns are monthly. To form portfolios we need each
 stock-month paired with the *most recently observable* value of asset growth ---
 using only what an investor could have known at the formation date. This is where
-look-ahead bias (slipping in information that was not yet public) creeps in if you are
-not careful: the accounting for fiscal year $t$ is not public the instant the
-year ends.
+look-ahead bias (slipping in information that was not yet public) creeps in if
+you are not careful: the accounting for fiscal year $t$ is not public the
+instant the year ends.
 
 `join_lagged_values()` merges the annual signal onto the monthly panel through a
-configurable lag window. Setting `ff_adjustment = TRUE` applies the Fama-French
-(1993) timing convention: accounting data are assumed public roughly six months
-after the fiscal year-end and held for the following twelve months. Because the
-pseudo statements all carry a December fiscal year-end, the 7-to-18-month window
-places each signal in the July-to-June holding period that the convention
-prescribes. The window is anchored on the statement date, so for real firms with
+configurable lag window. Setting `ff_adjustment = TRUE` applies the Fama and
+French (1993) timing convention: accounting data are assumed public roughly six
+months after the fiscal year-end and held for the following twelve months.
+Because the pseudo statements all carry a December fiscal year-end, the
+7-to-18-month window places each signal in the July-to-June holding period that
+the convention prescribes. The window is anchored on the statement date, so for real firms with
 other fiscal year-ends the exact calendar months shift accordingly.
 
 ```{r}
@@ -369,25 +378,21 @@ remain available when you need finer control over one stage.
 
 ## Step 6: Run an asset-pricing test
 
-A long-short return is one verdict on whether a signal predicts the cross-section
-of returns. A Fama-MacBeth regression (Fama and MacBeth, 1973) gives a complementary one: it runs a
-cross-sectional regression of returns on the signal period by period, then
-averages the slopes into a risk premium with Newey-West standard errors (Newey and West, 1987).
-`estimate_fama_macbeth()` does this from a panel and a model formula.
+A long-short return is one verdict on whether a signal predicts the
+cross-section of returns. A Fama-MacBeth regression (Fama and MacBeth 1973)
+gives a complementary one: it runs a cross-sectional regression of returns on
+the signal period by period, then averages the slopes into a risk premium with
+Newey-West standard errors (Newey and West 1987). `estimate_fama_macbeth()`
+does this from a panel and a model formula.
 
-We take the winsoized signal within each month and add log market capitalization as a
-size control.
+The signal is already winsorized from Step 2, so we only add log market
+capitalization as a size control.
 
 ```{r}
 #| label: fama-macbeth
 fm_data <- sorting_data |>
   drop_na(asset_growth, mktcap_lag, ret_excess) |>
-  group_by(date) |>
-  mutate(
-    asset_growth = winsorize(asset_growth, cut = 0.01),
-    log_mktcap = log(mktcap_lag)
-  ) |>
-  ungroup()
+  mutate(log_mktcap = log(mktcap_lag))
 
 fm_results <- estimate_fama_macbeth(
   data = fm_data,
@@ -425,9 +430,26 @@ standard practice and any variation is a small edit.
 To reproduce the *published* asset growth premium, replace `"Pseudo Data"` with
 `"WRDS"` in the two `download_data()` calls and run `set_wrds_credentials()` once
 beforehand; nothing else in the pipeline changes. For the underlying methods and
-the empirical results on real data, see the book 
+the empirical results on real data, see the book by
 [Scheuch, Voigt, and Weiss (2023)](https://www.tidy-finance.org), and consult
 `?download_data`, `?implement_portfolio_sort`, and `?estimate_fama_macbeth` for
-the full set of options at each stage.s
+the full set of options at each stage.
 
 ## References
+
+Cooper, Michael J., Huseyin Gulen, and Michael J. Schill. 2008. "Asset Growth
+and the Cross-Section of Stock Returns." *The Journal of Finance* 63 (4):
+1609--1651.
+
+Fama, Eugene F., and Kenneth R. French. 1993. "Common Risk Factors in the
+Returns on Stocks and Bonds." *Journal of Financial Economics* 33 (1): 3--56.
+
+Fama, Eugene F., and James D. MacBeth. 1973. "Risk, Return, and Equilibrium:
+Empirical Tests." *Journal of Political Economy* 81 (3): 607--636.
+
+Newey, Whitney K., and Kenneth D. West. 1987. "A Simple, Positive
+Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance
+Matrix." *Econometrica* 55 (3): 703--708.
+
+Scheuch, Christoph, Stefan Voigt, and Patrick Weiss. 2023. *Tidy Finance with
+R*. Boca Raton, FL: Chapman & Hall/CRC. <https://www.tidy-finance.org>.
