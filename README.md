@@ -22,7 +22,7 @@ MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.or
 
 This repository contains an R package that collects helper functions for
 developers and researchers familiar with [Tidy Finance with
-R](https://www.tidy-finance.org/r/index.html). The functions provide
+R](https://www.tidy-finance.org/index.html). The functions provide
 shortcuts to selected issues that the book discusses in detail.
 
 ## Installation
@@ -52,7 +52,7 @@ library(tidyfinance)
 
 The main functionality of the `tidyfinance` package centers around data
 download. You can download most of the data that we used in [Tidy
-Finance with R](https://www.tidy-finance.org/r/index.html) using the
+Finance with R](https://www.tidy-finance.org/index.html) using the
 `download_data()` function or its children.
 
 The function always requires a `domain` argument and depending on the
@@ -236,8 +236,7 @@ Use `list_supported_jkp_factors()` to see the available regions, or
 region.
 
 To download the liquidity factors of Pastor and Stambaugh (2003) from
-[Lubos Pastor’s data
-library](https://faculty.chicagobooth.edu/lubos-pastor/data):
+Lubos Pastor’s data library:
 
 ``` r
 download_data(
@@ -377,9 +376,8 @@ download_data(
 
 ## Download WRDS Data
 
-You can also download data directly from
-[WRDS](https://www.tidy-finance.org/r/wrds-crsp-and-compustat.html) if
-you have access to the underlying data and set your credentials via
+You can also download data directly from WRDS if you have access to the
+underlying data and set your credentials via
 `Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")`
 or the `set_wrds_credentials()` helper function.
 
@@ -452,7 +450,7 @@ download_data(
 #>  2  10015 001001 1983-09-20 1986-07-31
 #>  3  10023 001002 1972-12-14 1973-06-05
 #>  4  10031 001003 1983-12-07 1989-08-16
-#>  5  54594 001004 1972-04-24 2026-06-30
+#>  5  54594 001004 1972-04-24 2026-07-02
 #>  6  61903 001005 1973-01-31 1983-01-31
 #>  7  10058 001007 1973-10-01 1979-01-30
 #>  8  10058 001007 1979-01-31 1984-09-28
@@ -548,7 +546,7 @@ estimate_fama_macbeth()
 ### Other Helpers
 
 We include functions to check out content from
-[tidy-finance.org](https://www.tidy-finance.org/r/index.html):
+[tidy-finance.org](https://www.tidy-finance.org/index.html):
 
 ``` r
 list_tidy_finance_chapters()
