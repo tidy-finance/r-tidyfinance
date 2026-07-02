@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/tidyfinance.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -60,8 +61,8 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-development-version">Improvements<a class="anchor" aria-label="anchor" href="#improvements-development-version"></a></h3>
-<ul><li>
-<code>download_data("Open Source Asset Pricing")</code> now aligns the <code>date</code> column to the beginning of the month (the dataset previously returned end-of-month dates), matching the convention used by the other download functions. All predictor columns are monthly long-short returns expressed in percent and are now divided by 100 to return plain numeric (decimal) returns.</li>
+<ul><li><p>Added a <code>tidyfinance</code> vignette that walks through the complete factor-construction workflow — download, signal construction, fiscal-year lagging, portfolio sorting, and a Fama-MacBeth test — end to end. It builds entirely on <code>download_data(domain = "Pseudo Data")</code>, so it compiles without a WRDS subscription or network access. <code>knitr</code> and <code>rmarkdown</code> are added back to <code>Suggests</code>, and <code>VignetteBuilder: knitr</code> is restored to <code>DESCRIPTION</code>.</p></li>
+<li><p><code>download_data("Open Source Asset Pricing")</code> now aligns the <code>date</code> column to the beginning of the month (the dataset previously returned end-of-month dates), matching the convention used by the other download functions. All predictor columns are monthly long-short returns expressed in percent and are now divided by 100 to return plain numeric (decimal) returns.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
