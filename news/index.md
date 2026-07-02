@@ -2,6 +2,17 @@
 
 ## tidyfinance (development version)
 
+### Improvements
+
+- The `sorting_variable` column of the `factor_library_grid` dataset no
+  longer carries a `"sv_"` prefix, so its values now match the
+  `sorting_variable` argument of
+  `download_data("Tidy Finance", "factor_library", ...)` (e.g. `"bm"`
+  rather than `"sv_bm"`).
+  `download_data("Tidy Finance", "factor_library_grid")` returns the
+  bare values accordingly
+  ([\#284](https://github.com/tidy-finance/r-tidyfinance/issues/284)).
+
 ### New features
 
 - Added
@@ -14,7 +25,6 @@
   result carries the levels of aggregate liquidity, the non-traded
   liquidity factor (innovations), and the traded liquidity factor
   `LIQ_V`.
-
 - Added
   [`download_data_stambaugh_yuan()`](https://r.tidy-finance.org/reference/download_data_stambaugh_yuan.md)
   and the `"Stambaugh-Yuan"` domain for
@@ -24,7 +34,6 @@
   library](https://finance.wharton.upenn.edu/~stambaug/). The `dataset`
   argument selects between `"monthly"` and `"daily"` data. The source
   files currently end in December 2016.
-
 - Added
   [`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md)
   and the `"Global Factor Data"` domain for
