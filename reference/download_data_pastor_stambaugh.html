@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Download and Process Pastor-Stambaugh Liquidity Factors</h1>
-      <small class="dont-index">Source: <a href="https://github.com/tidy-finance/r-tidyfinance/blob/v0.8.0/R/download_data_pastor_stambaugh.R" class="external-link"><code>R/download_data_pastor_stambaugh.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/tidy-finance/r-tidyfinance/blob/main/R/download_data_pastor_stambaugh.R" class="external-link"><code>R/download_data_pastor_stambaugh.R</code></a></small>
       <div class="d-none name"><code>download_data_pastor_stambaugh.Rd</code></div>
     </div>
 
@@ -150,6 +150,10 @@ returns. <em>Journal of Political Economy</em>, 111(3), 642-685.
 <span class="r-in"><span>  <span class="va">pastor_stambaugh</span> <span class="op">&lt;-</span> <span class="fu">download_data_pastor_stambaugh</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    start_date <span class="op">=</span> <span class="st">"2020-01-01"</span>, end_date <span class="op">=</span> <span class="st">"2020-12-31"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Failed to download or process the resource. The resource may not be available,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> or the URL may have changed. Error message: cannot open the connection to</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 'https://faculty.chicagobooth.edu/-/media/faculty/lubos-pastor/data/liq_data_1962_2025.txt'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Returning an empty data set due to download failure.</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
