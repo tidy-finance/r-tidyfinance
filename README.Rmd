@@ -126,7 +126,7 @@ download_data(
 
 Use `list_supported_jkp_factors()` to see the available regions, or `list_supported_jkp_factors("usa")` to see the factors available for a region.
 
-To download the liquidity factors of Pastor and Stambaugh (2003) from [Lubos Pastor's data library](https://faculty.chicagobooth.edu/lubos-pastor/data):
+To download the liquidity factors of Pastor and Stambaugh (2003) from Lubos Pastor's data library:
 
 ```{r}
 download_data(
