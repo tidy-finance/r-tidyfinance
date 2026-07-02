@@ -18,7 +18,7 @@ Description: Helper functions for empirical research in financial
     provide shortcuts for issues extensively discussed in the book,
     facilitating easier application of its concepts. For more information
     and resources related to the book, visit
-    <https://www.tidy-finance.org/r/index.html>.
+    <https://www.tidy-finance.org/index.html>.
 License: MIT + file LICENSE
 URL: https://r.tidy-finance.org/, https://www.tidy-finance.org/r/
 BugReports: https://github.com/tidy-finance/r-tidyfinance/issues
