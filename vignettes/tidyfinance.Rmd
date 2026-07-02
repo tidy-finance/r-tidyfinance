@@ -24,7 +24,7 @@ formed today uses only information available today, where to draw the
 breakpoints that separate "high" from "low" firms, whether to weight stocks
 equally or by size, and when to rebalance. These choices rarely appear in a
 paper's tables, yet they move the numbers. The goal of `tidyfinance` is to make
-each one an explicit, documented argument rather than a buried assumption.
+each choice an explicit, documented argument rather than a buried assumption.
 
 This vignette walks through the whole chain once, end to end. We build a single
 factor --- the *asset growth* factor of Cooper, Gulen, and Schill (2008), which
@@ -32,7 +32,7 @@ sorts firms on the year-over-year change in their total assets --- starting from
 firm-level accounting and return panels and finishing with a long-short return
 series and a cross-sectional asset-pricing test. The vignette has six steps: we
 download the data, construct and lag the signal, align it with monthly returns,
-sort stocks into portfolios, customize that sort, and finally run a Fama-MacBeth
+sort stocks into portfolios, customize that sort, and finallsy run a Fama-MacBeth
 regression.
 
 ## Following along without a WRDS subscription
@@ -45,7 +45,7 @@ with no credentials and no network --- every download below uses
 `domain = "Pseudo Data"` instead of `domain = "WRDS"`.
 
 Pseudo data mirror the *schema* of the real WRDS panels exactly: the same column
-names, types, and panel structure, the same realistic missingness, and a
+names, types, and panel structure, and a
 calibrated mix of exchanges and industries. Every line of cleaning, lagging, and
 sorting code therefore runs unchanged. What pseudo data deliberately do **not**
 carry is economic content. Returns are independent random draws, and the asset
@@ -66,8 +66,8 @@ library(lubridate)
 ```
 
 Two arguments control the simulated panels: `seed` fixes the random draws so the
-document is bit-for-bit reproducible, and `n_assets` sets the size of the
-cross-section, trading compile speed against statistical smoothness. We keep a
+document is reproducible, and `n_assets` sets the size of the
+cross-section. We keep a
 moderate universe here and a sample window that mirrors the empirical study.
 
 ```{r}
@@ -77,9 +77,6 @@ n_assets <- 500
 date_start <- as.Date("1972-01-01")
 date_end <- as.Date("2024-12-31")
 ```
-
-Passing the same `seed` and `n_assets` to every pseudo download is what makes the
-CRSP and Compustat panels share one identifier universe, so they join cleanly.
 
 ## Step 1: Download the data
 
@@ -138,6 +135,7 @@ compustat_annual
 
 Asset growth for firm $i$ in year $t$ is the year-over-year percentage change in
 total assets,
+
 $$
 AG_{t,i} = \frac{AT_{t,i} - AT_{t-1,i}}{AT_{t-1,i}}.
 $$
@@ -145,8 +143,8 @@ $$
 Computing it means lining up each firm's total assets with its own value one year
 earlier. `add_lagged_columns()` does exactly that: grouped by firm (`gvkey`), it
 attaches each firm's total assets from exactly one year before (`lag = years(1)`),
-matching the lagged date directly. (The same function also takes a `max_lag` to
-instead search a window for the most recent value, which we use in the next step.)
+matching the lagged date directly. The same function also takes a `max_lag` to
+instead search a window for the most recent value, which we use in the next step.
 We then take the percentage change and set non-finite results (from a zero or
 missing prior value) to `NA`.
 
@@ -194,7 +192,7 @@ unlike any relationship between the signal and future returns, which does not.
 The signal is annual; returns are monthly. To form portfolios we need each
 stock-month paired with the *most recently observable* value of asset growth ---
 using only what an investor could have known at the formation date. This is where
-look-ahead bias (slipping in data that was not yet public) creeps in if you are
+look-ahead bias (slipping in information that was not yet public) creeps in if you are
 not careful: the accounting for fiscal year $t$ is not public the instant the
 year ends.
 
@@ -204,8 +202,8 @@ configurable lag window. Setting `ff_adjustment = TRUE` applies the Fama-French
 after the fiscal year-end and held for the following twelve months. Because the
 pseudo statements all carry a December fiscal year-end, the 7-to-18-month window
 places each signal in the July-to-June holding period that the convention
-prescribes. (The window is anchored on the statement date, so for real firms with
-other fiscal year-ends the exact calendar months shift accordingly.)
+prescribes. The window is anchored on the statement date, so for real firms with
+other fiscal year-ends the exact calendar months shift accordingly.
 
 ```{r}
 #| label: align-signal
@@ -218,7 +216,14 @@ sorting_data <- crsp_monthly |>
     ff_adjustment = TRUE
   ) |>
   select(
-    date, permno, exchange, siccd, ret_excess, mktcap_lag, asset_growth, ib
+    date,
+    permno,
+    exchange,
+    siccd,
+    ret_excess,
+    mktcap_lag,
+    asset_growth,
+    ib
   ) |>
   filter(date >= date_start + months(12) + months(18))
 ```
@@ -226,7 +231,7 @@ sorting_data <- crsp_monthly |>
 The final `filter()` drops the start of the sample, where the one-year growth
 calculation and the lag window leave the signal mechanically missing. What
 remains is a clean stock-month panel carrying excess returns, a value weight, and
-a properly lagged signal --- ready to sort.
+a properly lagged signal.
 
 ## Step 4: Sort stocks into portfolios
 
@@ -314,8 +319,7 @@ the high-asset-growth quintile, and the long-short spread reproduces the negativ
 premium of Cooper, Gulen, and Schill (2008). On the pseudo panel there is no
 systematic decline: the differences across quintiles, any apparent ordering, and
 the long-short spread (whatever its sign on a given run) are all sampling noise, as
-they must be --- the simulation builds in no relationship between the signal and
-returns.
+they must be.
 
 ## Step 5: Customize the sort
 
@@ -323,7 +327,7 @@ The baseline took nearly every default. A realistic specification overrides
 several at once, and `portfolio_sort_options` keeps them all in one place. Here we
 exclude financial and utility firms and firms with non-positive earnings, ignore
 the smallest 20% of NYSE firms when setting breakpoints, and add a second sort on
-size --- a *dependent bivariate* sort that controls for size by first bucketing on
+size: a *dependent bivariate* sort that controls for size by first bucketing on
 it, then sorting on asset growth within each bucket.
 
 ```{r}
@@ -359,20 +363,19 @@ factor_returns_customized <- implement_portfolio_sort(
 
 Moving from a univariate to a size-controlled bivariate sort was a one-word change
 to `sorting_method`; the surrounding pipeline is identical. That is the point of
-exposing construction choices as arguments --- a robustness check is an edit to an
-options object, not a rewrite. The lower-level building blocks
+exposing construction choices as arguments. The lower-level building blocks
 (`compute_breakpoints()`, `assign_portfolio()`, `compute_portfolio_returns()`)
 remain available when you need finer control over one stage.
 
 ## Step 6: Run an asset-pricing test
 
 A long-short return is one verdict on whether a signal predicts the cross-section
-of returns. A Fama-MacBeth (1973) regression gives a complementary one: it runs a
+of returns. A Fama-MacBeth regression (Fama and MacBeth, 1973) gives a complementary one: it runs a
 cross-sectional regression of returns on the signal period by period, then
-averages the slopes into a risk premium with Newey-West standard errors.
+averages the slopes into a risk premium with Newey-West standard errors (Newey and West, 1987).
 `estimate_fama_macbeth()` does this from a panel and a model formula.
 
-We winsorize the signal within each month and add log market capitalization as a
+We take the winsoized signal within each month and add log market capitalization as a
 size control.
 
 ```{r}
@@ -407,11 +410,10 @@ fm_results |>
 
 On real data the slope on `asset_growth` is negative and significant, matching the
 portfolio-sort evidence: high-asset-growth firms earn lower subsequent returns. On
-the pseudo panel the slope is statistical noise. (The intercept row carries a large
+the pseudo panel the slope is statistical noise. The intercept row carries a large
 $t$-statistic here, but that reflects only the generator's built-in positive return
-drift, not a real average return --- ignore it.) Switching the standard-error
-treatment (`vcov = "iid"`) or adding a regressor is a one-argument change --- the
-same function covers the standard cross-sectional test.
+drift, not a real average return. Switching the standard-error
+treatment (`vcov = "iid"`) or adding a regressor is a one-argument change.
 
 ## Where to go next
 
@@ -423,7 +425,9 @@ standard practice and any variation is a small edit.
 To reproduce the *published* asset growth premium, replace `"Pseudo Data"` with
 `"WRDS"` in the two `download_data()` calls and run `set_wrds_credentials()` once
 beforehand; nothing else in the pipeline changes. For the underlying methods and
-the empirical results on real data, see the book
-[*Tidy Finance with R*](https://www.tidy-finance.org/r/), and consult
+the empirical results on real data, see the book 
+[Scheuch, Voigt, and Weiss (2023)](https://www.tidy-finance.org), and consult
 `?download_data`, `?implement_portfolio_sort`, and `?estimate_fama_macbeth` for
-the full set of options at each stage.
+the full set of options at each stage.s
+
+## References
