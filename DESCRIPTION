@@ -1,7 +1,7 @@
 Type: Package
 Package: tidyfinance
 Title: Tidy Finance Helper Functions
-Version: 0.7.0.9005
+Version: 0.7.0.9006
 Authors@R: c(
     person("Christoph", "Scheuch", , "christoph@tidy-intelligence.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0009-0004-0423-6819")),
@@ -43,6 +43,8 @@ Imports:
     RPostgres (>= 1.4.5),
     sandwich (>= 3.1-0)
 Suggests:
+    knitr,
+    rmarkdown,
     testthat (>= 3.2.0),
     withr
 Config/testthat/edition: 3
@@ -50,3 +52,4 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+VignetteBuilder: knitr
