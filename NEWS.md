@@ -1,5 +1,17 @@
 # tidyfinance (development version)
 
+## New features
+
+- Added `download_data_fred_md()` and the `"FRED-MD"` / `"FRED-QD"` datasets
+  for `download_data("FRED", ...)`, which download the McCracken and Ng
+  (2016, 2021) curated monthly / quarterly macro panels as wide tables (one
+  column per series). `transform = TRUE` applies each series' stationarity
+  transform code (tcode). `vintage` selects the current release (default), a
+  specific `"YYYY-MM"` release, or `"all"` - the full real-time panel across
+  every archived vintage (recent vintages are hosted individually; older ones
+  are read from the St. Louis Fed vintage archive ZIPs), enabling leak-free
+  point-in-time analysis.
+
 # tidyfinance 0.8.0
   
 ## New features

@@ -158,6 +158,16 @@ download_data(
 )
 ```
 
+To download the FRED-MD / FRED-QD (McCracken-Ng) macroeconomic databases, a curated, balanced panel of monthly or quarterly macro series with McCracken-Ng stationarity transform codes. Set `transform = TRUE` to apply the transforms, and `vintage` to a `"YYYY-MM"` label or `"all"` to access historical (real-time) releases:
+
+```{r}
+download_data(
+  domain = "FRED",
+  dataset = "FRED-MD",
+  transform = TRUE
+)
+```
+
 To download stock prices from Yahoo Finance:
 
 ```{r}

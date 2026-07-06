@@ -62,6 +62,7 @@ Other download functions:
 \code{\link{download_data_constituents}()},
 \code{\link{download_data_factors_ff}()},
 \code{\link{download_data_fred}()},
+\code{\link{download_data_fred_md}()},
 \code{\link{download_data_huggingface}()},
 \code{\link{download_data_jkp}()},
 \code{\link{download_data_macro_predictors}()},

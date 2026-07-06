@@ -59,6 +59,9 @@
 #' download_data("Goyal-Welch", "monthly", "2000-01-01", "2020-12-31")
 #' download_data("Index Constituents", index = "DAX")
 #' download_data("FRED", series = c("GDP", "CPIAUCNS"))
+#' download_data("FRED", "FRED-MD")
+#' download_data("FRED", "FRED-MD", transform = TRUE)
+#' download_data("FRED", "FRED-QD", vintage = "2020-03")
 #' download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
 #' download_data(
 #'   "Tidy Finance",
@@ -161,11 +164,16 @@ download_data <- function(
   } else if (domain == "Index Constituents") {
     processed_data <- download_data_constituents(...)
   } else if (domain == "FRED") {
-    processed_data <- download_data_fred(
-      start_date = start_date,
-      end_date = end_date,
-      ...
-    )
+    if (!is.null(dataset) && dataset %in% c("FRED-MD", "FRED-QD")) {
+      # Curated McCracken-Ng databases (selected by 'vintage', not date range).
+      processed_data <- download_data_fred_md(database = dataset, ...)
+    } else {
+      processed_data <- download_data_fred(
+        start_date = start_date,
+        end_date = end_date,
+        ...
+      )
+    }
   } else if (domain == "Stock Prices") {
     processed_data <- download_data_stock_prices(
       start_date = start_date,
