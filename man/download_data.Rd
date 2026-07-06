@@ -77,6 +77,9 @@ download_data(
 download_data("Goyal-Welch", "monthly", "2000-01-01", "2020-12-31")
 download_data("Index Constituents", index = "DAX")
 download_data("FRED", series = c("GDP", "CPIAUCNS"))
+download_data("FRED", "FRED-MD")
+download_data("FRED", "FRED-MD", transform = TRUE)
+download_data("FRED", "FRED-QD", vintage = "2020-03")
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
 download_data(
   "Tidy Finance",
@@ -106,6 +109,7 @@ Other download functions:
 \code{\link{download_data_factors_ff}()},
 \code{\link{download_data_factors_q}()},
 \code{\link{download_data_fred}()},
+\code{\link{download_data_fred_md}()},
 \code{\link{download_data_huggingface}()},
 \code{\link{download_data_jkp}()},
 \code{\link{download_data_macro_predictors}()},
