@@ -32,6 +32,7 @@ Other download functions:
 [`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md),
 [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
 [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),
+[`download_data_fred_md()`](https://r.tidy-finance.org/reference/download_data_fred_md.md),
 [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md),
 [`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md),
 [`download_data_macro_predictors()`](https://r.tidy-finance.org/reference/download_data_macro_predictors.md),

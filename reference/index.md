@@ -32,6 +32,8 @@
   : Download and Process Global Q Factor Data
 - [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md)
   : Download and Process Data from FRED
+- [`download_data_fred_md()`](https://r.tidy-finance.org/reference/download_data_fred_md.md)
+  : Download and Process FRED-MD / FRED-QD (McCracken-Ng) Databases
 - [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md)
   : Download data from a Hugging Face dataset
 - [`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md)

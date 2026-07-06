@@ -68,6 +68,7 @@ Other download functions:
 [`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md),
 [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
 [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),
+[`download_data_fred_md()`](https://r.tidy-finance.org/reference/download_data_fred_md.md),
 [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md),
 [`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md),
 [`download_data_macro_predictors()`](https://r.tidy-finance.org/reference/download_data_macro_predictors.md),
@@ -85,9 +86,5 @@ Other download functions:
   pastor_stambaugh <- download_data_pastor_stambaugh(
     start_date = "2020-01-01", end_date = "2020-12-31"
   )
-#> Failed to download or process the resource. The resource may not be available,
-#> or the URL may have changed. Error message: cannot open the connection to
-#> 'https://faculty.chicagobooth.edu/-/media/faculty/lubos-pastor/data/liq_data_1962_2025.txt'
-#> Returning an empty data set due to download failure.
 # }
 ```

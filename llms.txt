@@ -54,7 +54,7 @@ download_data(
   start_date = "2000-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 5,284 × 7
+#> # A tibble: 5,284 x 7
 #>    date       mkt_excess     smb     hml     rmw     cma risk_free
 #>    <date>          <dbl>   <dbl>   <dbl>   <dbl>   <dbl>     <dbl>
 #>  1 2000-01-03    -0.0071 -0.0009 -0.0131 -0.0148 -0.007     0.0002
@@ -67,7 +67,7 @@ download_data(
 #>  8 2000-01-12    -0.0069 -0.0022  0.0074  0.0042  0.0085    0.0002
 #>  9 2000-01-13     0.0159  0.0047 -0.0084 -0.0172 -0.0103    0.0002
 #> 10 2000-01-14     0.0114  0.0022 -0.0048 -0.0034 -0.006     0.0002
-#> # ℹ 5,274 more rows
+#> # i 5,274 more rows
 ```
 
 For [q factors](https://global-q.org/index.html), you provide the
@@ -81,7 +81,7 @@ download_data(
   start_date = "2000-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 252 × 7
+#> # A tibble: 252 x 7
 #>    date       risk_free mkt_excess       me       ia       roe       eg
 #>    <date>         <dbl>      <dbl>    <dbl>    <dbl>     <dbl>    <dbl>
 #>  1 2000-01-01   0.00434    -0.0476  0.0562   0.0294  -0.0500    0.00638
@@ -94,7 +94,7 @@ download_data(
 #>  8 2000-08-01   0.00500     0.0703  0.00449 -0.00800 -0.0208   -0.0101 
 #>  9 2000-09-01   0.00509    -0.0543  0.0158   0.0522   0.0209    0.00734
 #> 10 2000-10-01   0.00522    -0.0274 -0.0222   0.0292   0.0734    0.0656 
-#> # ℹ 242 more rows
+#> # i 242 more rows
 ```
 
 To download the Welch and Goyal (2008) macroeconomic predictors for
@@ -108,7 +108,7 @@ download_data(
   start_date = "2000-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 252 × 15
+#> # A tibble: 252 x 15
 #>    date        rp_div    dp    dy    ep    de    svar    bm    ntis    tbl
 #>    <date>       <dbl> <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl>   <dbl>  <dbl>
 #>  1 2000-01-01 -0.0244 -4.42 -4.48 -3.35 -1.08 0.00521 0.155 0.0254  0.0532
@@ -121,8 +121,8 @@ download_data(
 #>  8 2000-08-01 -0.0595 -4.52 -4.46 -3.35 -1.17 0.00104 0.146 0.00467 0.0609
 #>  9 2000-09-01 -0.0105 -4.48 -4.53 -3.29 -1.19 0.00160 0.154 0.00447 0.06  
 #> 10 2000-10-01 -0.0876 -4.47 -4.48 -3.30 -1.17 0.00557 0.149 0.00374 0.0611
-#> # ℹ 242 more rows
-#> # ℹ 5 more variables: lty <dbl>, ltr <dbl>, tms <dbl>, dfy <dbl>, infl <dbl>
+#> # i 242 more rows
+#> # i 5 more variables: lty <dbl>, ltr <dbl>, tms <dbl>, dfy <dbl>, infl <dbl>
 ```
 
 To download data from [Open Source Asset
@@ -135,7 +135,7 @@ download_data(
   start_date = "2020-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 12 × 213
+#> # A tibble: 12 x 213
 #>    date            am       aop abnormal_accruals accruals accruals_bm activism1
 #>    <date>       <dbl>     <dbl>             <dbl>    <dbl>       <dbl>     <dbl>
 #>  1 2020-01-01 -0.0790 -0.0255             0.0156  -1.40e-2      0.0567        NA
@@ -150,13 +150,13 @@ download_data(
 #> 10 2020-10-01  0.0711  0.0304            -0.00682 -4.40e-3      0.0332        NA
 #> 11 2020-11-01  0.0739  0.0202             0.0261   2.42e-2      0.193         NA
 #> 12 2020-12-01  0.0148  0.000180          -0.00594  2.04e-2     -0.0292        NA
-#> # ℹ 206 more variables: activism2 <dbl>, ad_exp <dbl>, age_ipo <dbl>,
+#> # i 206 more variables: activism2 <dbl>, ad_exp <dbl>, age_ipo <dbl>,
 #> #   analyst_revision <dbl>, analyst_value <dbl>, announcement_return <dbl>,
 #> #   asset_growth <dbl>, bm <dbl>, bmdec <dbl>, bpebm <dbl>, beta <dbl>,
 #> #   beta_fp <dbl>, beta_liquidity_ps <dbl>, beta_tail_risk <dbl>,
 #> #   bid_ask_spread <dbl>, book_leverage <dbl>, brand_invest <dbl>,
 #> #   cboper_prof <dbl>, cf <dbl>, cpvol_spread <dbl>, cash <dbl>,
-#> #   cash_prod <dbl>, ch_asset_turnover <dbl>, ch_eq <dbl>, …
+#> #   cash_prod <dbl>, ch_asset_turnover <dbl>, ch_eq <dbl>, ...
 ```
 
 To download characteristic-managed portfolio (factor) returns from
@@ -175,7 +175,7 @@ download_data(
   start_date = "2020-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 1,836 × 9
+#> # A tibble: 1,836 x 9
 #>    location name  freq    weighting direction n_stocks n_stocks_min date      
 #>    <chr>    <chr> <chr>   <chr>         <int>    <int>        <int> <date>    
 #>  1 usa      age   monthly vw_cap           -1     2858         1082 2020-01-01
@@ -188,8 +188,8 @@ download_data(
 #>  8 usa      age   monthly vw_cap           -1     2820         1109 2020-08-01
 #>  9 usa      age   monthly vw_cap           -1     2851         1107 2020-09-01
 #> 10 usa      age   monthly vw_cap           -1     2806         1106 2020-10-01
-#> # ℹ 1,826 more rows
-#> # ℹ 1 more variable: ret <dbl>
+#> # i 1,826 more rows
+#> # i 1 more variable: ret <dbl>
 ```
 
 The `dataset` argument also gives access to the underlying long-short
@@ -206,7 +206,7 @@ download_data(
   start_date = "2020-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 132 × 7
+#> # A tibble: 132 x 7
 #>     gics date           n location      ret freq    weighting
 #>    <int> <date>     <int> <chr>       <dbl> <chr>   <chr>    
 #>  1    30 2020-01-01   151 usa      -0.0190  monthly vw_cap   
@@ -219,7 +219,7 @@ download_data(
 #>  8    50 2020-01-01   135 usa      -0.0178  monthly vw_cap   
 #>  9    20 2020-01-01   458 usa      -0.00683 monthly vw_cap   
 #> 10    55 2020-01-01    65 usa       0.0443  monthly vw_cap   
-#> # ℹ 122 more rows
+#> # i 122 more rows
 ```
 
 Use
@@ -237,7 +237,7 @@ download_data(
   start_date = "2020-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 12 × 4
+#> # A tibble: 12 x 4
 #>    date        agg_liq innov_liq traded_liq
 #>    <date>        <dbl>     <dbl>      <dbl>
 #>  1 2020-01-01 -0.0408    -0.0138   0.0191  
@@ -268,7 +268,7 @@ download_data(
   start_date = "2015-01-01",
   end_date = "2016-12-31"
 )
-#> # A tibble: 24 × 6
+#> # A tibble: 24 x 6
 #>    date       mkt_excess      smb     mgmt     perf risk_free
 #>    <date>          <dbl>    <dbl>    <dbl>    <dbl>     <dbl>
 #>  1 2015-01-01    -0.0311 -0.0271  -0.0227   0.0506          0
@@ -281,7 +281,7 @@ download_data(
 #>  8 2015-08-01    -0.0604 -0.00684  0.00725  0.0133          0
 #>  9 2015-09-01    -0.0308 -0.0228   0.0373   0.0790          0
 #> 10 2015-10-01     0.0775 -0.0227   0.0240  -0.00612         0
-#> # ℹ 14 more rows
+#> # i 14 more rows
 ```
 
 To download multiple series from the Federal Reserve Economic Data
@@ -295,7 +295,7 @@ download_data(
   start_date = "2020-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 16 × 3
+#> # A tibble: 16 x 3
 #>    date        value series  
 #>    <date>      <dbl> <chr>   
 #>  1 2020-01-01 21751. GDP     
@@ -316,6 +316,41 @@ download_data(
 #> 16 2020-12-01   260. CPIAUCNS
 ```
 
+To download the FRED-MD / FRED-QD (McCracken-Ng) macroeconomic
+databases, a curated, balanced panel of monthly or quarterly macro
+series with McCracken-Ng stationarity transform codes. Set
+`transform = TRUE` to apply the transforms, and `vintage` to a
+`"YYYY-MM"` label or `"all"` to access historical (real-time) releases:
+
+``` r
+
+download_data(
+  domain = "FRED",
+  dataset = "FRED-MD",
+  transform = TRUE
+)
+#> # A tibble: 801 x 127
+#>    date             RPI   W875RX1 DPCERA3M086SBEA  CMRMTSPLx   RETAILx   INDPRO
+#>    <date>         <dbl>     <dbl>           <dbl>      <dbl>     <dbl>    <dbl>
+#>  1 1959-01-01 NA        NA               NA       NA         NA        NA      
+#>  2 1959-02-01  0.00388   0.00362          0.0103   0.00734    0.00731   0.0194 
+#>  3 1959-03-01  0.00646   0.00732          0.00940 -0.00337    0.00832   0.0143 
+#>  4 1959-04-01  0.00651   0.00703         -0.00362  0.0199     0.000616  0.0211 
+#>  5 1959-05-01  0.00580   0.00662          0.0120   0.00684    0.00780   0.0150 
+#>  6 1959-06-01  0.00307   0.00301          0.00364 -0.0000968  0.00906   0.00114
+#>  7 1959-07-01 -0.000580 -0.000762        -0.00339  0.0122    -0.000330 -0.0242 
+#>  8 1959-08-01 -0.00565  -0.00575          0.00600 -0.0525     0.00636  -0.0345 
+#>  9 1959-09-01  0.000763  0                0.0100   0.0147    -0.0132   -0.00121
+#> 10 1959-10-01  0.00127   0.00117         -0.00683  0.00162    0.00729  -0.00729
+#> # i 791 more rows
+#> # i 120 more variables: IPFPNSS <dbl>, IPFINAL <dbl>, IPCONGD <dbl>,
+#> #   IPDCONGD <dbl>, IPNCONGD <dbl>, IPBUSEQ <dbl>, IPMAT <dbl>, IPDMAT <dbl>,
+#> #   IPNMAT <dbl>, IPMANSICS <dbl>, IPB51222S <dbl>, IPFUELS <dbl>,
+#> #   CUMFNS <dbl>, HWI <dbl>, HWIURATIO <dbl>, CLF16OV <dbl>, CE16OV <dbl>,
+#> #   UNRATE <dbl>, UEMPMEAN <dbl>, UEMPLT5 <dbl>, UEMP5TO14 <dbl>,
+#> #   UEMP15OV <dbl>, UEMP15T26 <dbl>, UEMP27OV <dbl>, CLAIMSx <dbl>, ...
+```
+
 To download stock prices from Yahoo Finance:
 
 ``` r
@@ -326,7 +361,7 @@ download_data(
   start_date = "2020-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 504 × 8
+#> # A tibble: 504 x 8
 #>    symbol date          volume  open   low  high close adjusted_close
 #>    <chr>  <date>         <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
 #>  1 AAPL   2020-01-02 135480400  74.1  73.8  75.2  75.1           72.3
@@ -339,7 +374,7 @@ download_data(
 #>  8 AAPL   2020-01-13 121532000  77.9  77.8  79.3  79.2           76.3
 #>  9 AAPL   2020-01-14 161954400  79.2  78.0  79.4  78.2           75.3
 #> 10 AAPL   2020-01-15 121923600  78.0  77.4  78.9  77.8           75.0
-#> # ℹ 494 more rows
+#> # i 494 more rows
 ```
 
 You can also download high-frequency data for the S&P 500 that we host
@@ -353,7 +388,7 @@ download_data(
   start_date = "2007-07-26",
   end_date = "2007-07-27"
 )
-#> # A tibble: 9,360 × 9
+#> # A tibble: 9,360 x 9
 #>    ts                  midquote signed_volume trading_volume depth0_ask
 #>    <dttm>                 <dbl>         <dbl>          <dbl>      <dbl>
 #>  1 2007-07-26 09:30:05     150.             0      11565577.     13841.
@@ -366,8 +401,8 @@ download_data(
 #>  8 2007-07-26 09:30:40     150.         39927      12384621.      6234.
 #>  9 2007-07-26 09:30:45     150.        -14671       3105370.      9255.
 #> 10 2007-07-26 09:30:50     150.          5347       5518370.      5708.
-#> # ℹ 9,350 more rows
-#> # ℹ 4 more variables: depth0_bid <dbl>, depth5_ask <dbl>, depth5_bid <dbl>,
+#> # i 9,350 more rows
+#> # i 4 more variables: depth0_bid <dbl>, depth5_ask <dbl>, depth5_bid <dbl>,
 #> #   spread <dbl>
 ```
 
@@ -390,7 +425,7 @@ download_data(
   start_date = "2020-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 43,329 × 14
+#> # A tibble: 43,329 x 14
 #>    permno date       calculation_date      ret   shrout    prc primaryexch siccd
 #>     <int> <date>     <date>              <dbl>    <dbl>  <dbl> <chr>       <int>
 #>  1  10026 2020-01-01 2020-01-31       -0.100     1.89e7 166.   Q            2052
@@ -403,8 +438,8 @@ download_data(
 #>  8  10138 2020-01-01 2020-01-31        0.0959    2.35e8 134.   Q            6211
 #>  9  10145 2020-01-01 2020-01-31       -0.0214    7.15e8 173.   N            5099
 #> 10  10158 2020-01-01 2020-01-31        0.0966    2.90e7  19.2  N            8711
-#> # ℹ 43,319 more rows
-#> # ℹ 6 more variables: listing_age <int>, mktcap <dbl>, mktcap_lag <dbl>,
+#> # i 43,319 more rows
+#> # i 6 more variables: listing_age <int>, mktcap <dbl>, mktcap_lag <dbl>,
 #> #   exchange <chr>, industry <chr>, ret_excess <dbl>
 ```
 
@@ -418,7 +453,7 @@ download_data(
   start_date = "2020-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 11,990 × 25
+#> # A tibble: 11,990 x 25
 #>    gvkey  date       datadate        seq     ceq      at      lt  txditc    txdb
 #>    <chr>  <date>     <date>        <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
 #>  1 001004 2020-05-01 2020-05-31   903.    9.03e2 2.08e+3 1.18e+3 0       0      
@@ -431,8 +466,8 @@ download_data(
 #>  8 001078 2020-12-01 2020-12-31 32784     3.28e4 7.25e+4 3.95e+4 1.41e+3 1.41e+3
 #>  9 001084 2020-12-01 2020-12-31    -2.67 -2.67e0 6.92e-1 3.36e+0 0       0      
 #> 10 001096 2020-12-01 2020-12-31  3372.    3.37e3 1.11e+4 6.69e+3 6.48e+2 6.48e+2
-#> # ℹ 11,980 more rows
-#> # ℹ 16 more variables: itcb <dbl>, pstkrv <dbl>, pstkl <dbl>, pstk <dbl>,
+#> # i 11,980 more rows
+#> # i 16 more variables: itcb <dbl>, pstkrv <dbl>, pstkl <dbl>, pstk <dbl>,
 #> #   capx <dbl>, oancf <dbl>, sale <dbl>, cogs <dbl>, xint <dbl>, xsga <dbl>,
 #> #   ib <dbl>, curcd <chr>, be <dbl>, op <dbl>, at_lag <dbl>, inv <dbl>
 ```
@@ -445,20 +480,20 @@ download_data(
   domain = "WRDS",
   dataset = "ccm_links"
 )
-#> # A tibble: 33,324 × 4
+#> # A tibble: 33,324 x 4
 #>    permno gvkey  linkdt     linkenddt 
 #>     <dbl> <chr>  <date>     <date>    
 #>  1  25881 001000 1970-11-13 1978-06-30
 #>  2  10015 001001 1983-09-20 1986-07-31
 #>  3  10023 001002 1972-12-14 1973-06-05
 #>  4  10031 001003 1983-12-07 1989-08-16
-#>  5  54594 001004 1972-04-24 2026-07-02
+#>  5  54594 001004 1972-04-24 2026-07-06
 #>  6  61903 001005 1973-01-31 1983-01-31
 #>  7  10058 001007 1973-10-01 1979-01-30
 #>  8  10058 001007 1979-01-31 1984-09-28
 #>  9  10066 001008 1983-08-25 1987-02-26
 #> 10  10074 001009 1982-01-18 1996-03-13
-#> # ℹ 33,314 more rows
+#> # i 33,314 more rows
 ```
 
 To download Enhanced TRACE data for selected bonds:
@@ -472,7 +507,7 @@ download_data(
   start_date = "2019-01-01",
   end_date = "2021-12-31"
 )
-#> # A tibble: 7,694 × 8
+#> # A tibble: 7,694 x 8
 #>    cusip_id  trd_exctn_dt trd_exctn_tm rptd_pr entrd_vol_qt yld_pt rpt_side_cd
 #>    <chr>     <date>       <time>         <dbl>        <dbl>  <dbl> <chr>      
 #>  1 00101JAH9 2019-01-02   09:22:14        92.3         5000   6.12 S          
@@ -485,8 +520,8 @@ download_data(
 #>  8 00101JAH9 2019-01-02   15:50:07        91.8       315000   6.28 S          
 #>  9 00101JAH9 2019-01-03   09:17:16        91.5        50000   6.34 S          
 #> 10 00101JAH9 2019-01-03   09:17:16        91.5        50000   6.34 S          
-#> # ℹ 7,684 more rows
-#> # ℹ 1 more variable: cntra_mp_id <chr>
+#> # i 7,684 more rows
+#> # i 1 more variable: cntra_mp_id <chr>
 ```
 
 ### Factor Library Tools
@@ -503,7 +538,7 @@ download_data(
   sorting_variable = "ag"
 )
 #> No `start_date` or `end_date` provided. Returning the full data set.
-#> # A data frame: 779 × 17
+#> # A data frame: 779 x 17
 #>        id date       ret_type   ret sorting_variable min_size_quantile
 #>     <int> <date>     <chr>    <dbl> <chr>                        <dbl>
 #>  1 297554 1960-02-01 vw           0 ag                             0.2
@@ -516,8 +551,8 @@ download_data(
 #>  8 297554 1960-09-01 vw           0 ag                             0.2
 #>  9 297554 1960-10-01 vw           0 ag                             0.2
 #> 10 297554 1960-11-01 vw           0 ag                             0.2
-#> # ℹ 769 more rows
-#> # ℹ 11 more variables: exclude_financials <lgl>, exclude_utilities <lgl>,
+#> # i 769 more rows
+#> # i 11 more variables: exclude_financials <lgl>, exclude_utilities <lgl>,
 #> #   exclude_negative_earnings <lgl>, sorting_variable_lag <chr>,
 #> #   rebalancing <chr>, n_portfolios_main <chr>, sorting_method <chr>,
 #> #   breakpoints_min_size_threshold <dbl>, n_portfolios_secondary <dbl>,
@@ -602,6 +637,8 @@ create_summary_statistics()
   : Download and Process Global Q Factor Data
 - [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md)
   : Download and Process Data from FRED
+- [`download_data_fred_md()`](https://r.tidy-finance.org/reference/download_data_fred_md.md)
+  : Download and Process FRED-MD / FRED-QD (McCracken-Ng) Databases
 - [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md)
   : Download data from a Hugging Face dataset
 - [`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md)

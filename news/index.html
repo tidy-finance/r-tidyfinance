@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,9 +53,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tidyfinance-development-version">tidyfinance (development version)<a class="anchor" aria-label="anchor" href="#tidyfinance-development-version"></a></h2>
+<div class="section level3">
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<ul><li>Added <code><a href="../reference/download_data_fred_md.html">download_data_fred_md()</a></code> and the <code>"FRED-MD"</code> / <code>"FRED-QD"</code> datasets for <code>download_data("FRED", ...)</code>, which download the McCracken and Ng (2016, 2021) curated monthly / quarterly macro panels as wide tables (one column per series). <code>transform = TRUE</code> applies each series’ stationarity transform code (tcode). <code>vintage</code> selects the current release (default), a specific <code>"YYYY-MM"</code> release, or <code>"all"</code> - the full real-time panel across every archived vintage (recent vintages are hosted individually; older ones are read from the St. Louis Fed vintage archive ZIPs), enabling leak-free point-in-time analysis.</li>
+</ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.8.0" id="tidyfinance-080">tidyfinance 0.8.0<a class="anchor" aria-label="anchor" href="#tidyfinance-080"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.8.0" id="tidyfinance-080">tidyfinance 0.8.0<a class="anchor" aria-label="anchor" href="#tidyfinance-080"></a></h2><p class="text-muted">CRAN release: 2026-07-02</p>
 <div class="section level3">
 <h3 id="new-features-0-8-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-0"></a></h3>
 <ul><li>Added <code><a href="../reference/download_data_pastor_stambaugh.html">download_data_pastor_stambaugh()</a></code> and the <code>"Pastor-Stambaugh"</code> domain for <code><a href="../reference/download_data.html">download_data()</a></code>, which downloads the liquidity factors of Pastor and Stambaugh (2003) from Lubos Pastor’s data library. The result carries the levels of aggregate liquidity, the non-traded liquidity factor (innovations), and the traded liquidity factor <code>LIQ_V</code>.</li>

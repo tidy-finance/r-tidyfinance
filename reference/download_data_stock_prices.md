@@ -43,6 +43,7 @@ Other download functions:
 [`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md),
 [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
 [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),
+[`download_data_fred_md()`](https://r.tidy-finance.org/reference/download_data_fred_md.md),
 [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md),
 [`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md),
 [`download_data_macro_predictors()`](https://r.tidy-finance.org/reference/download_data_macro_predictors.md),
@@ -58,22 +59,22 @@ Other download functions:
 ``` r
 # \donttest{
   download_data_stock_prices(c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-07-02 to
-#> 2025-07-02 to avoid downloading large amounts of data.
-#> # A tibble: 500 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-07-06 to
+#> 2025-07-06 to avoid downloading large amounts of data.
+#> # A tibble: 498 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-07-02 58046200  216.  215.  220.  220.           218.
-#>  2 AAPL   2024-07-03 37369800  220   219.  222.  222.           220.
-#>  3 AAPL   2024-07-05 60412400  222.  222.  226.  226.           224.
-#>  4 AAPL   2024-07-08 59085900  227.  223.  228.  228.           226.
-#>  5 AAPL   2024-07-09 48076100  228.  226.  229.  229.           227.
-#>  6 AAPL   2024-07-10 62627700  229.  229.  233.  233.           231.
-#>  7 AAPL   2024-07-11 64710600  231.  226.  232.  228.           226.
-#>  8 AAPL   2024-07-12 53046500  229.  229.  233.  231.           229.
-#>  9 AAPL   2024-07-15 62631300  236.  233.  237.  234.           232.
-#> 10 AAPL   2024-07-16 43234300  235   232.  236.  235.           233.
-#> # ℹ 490 more rows
+#>  1 AAPL   2024-07-08 59085900  227.  223.  228.  228.           226.
+#>  2 AAPL   2024-07-09 48076100  228.  226.  229.  229.           227.
+#>  3 AAPL   2024-07-10 62627700  229.  229.  233.  233.           231.
+#>  4 AAPL   2024-07-11 64710600  231.  226.  232.  228.           226.
+#>  5 AAPL   2024-07-12 53046500  229.  229.  233.  231.           229.
+#>  6 AAPL   2024-07-15 62631300  236.  233.  237.  234.           232.
+#>  7 AAPL   2024-07-16 43234300  235   232.  236.  235.           233.
+#>  8 AAPL   2024-07-17 57345900  229.  227.  231.  229.           227.
+#>  9 AAPL   2024-07-18 66034600  230.  222.  230.  224.           222.
+#> 10 AAPL   2024-07-19 49151500  225.  223.  227.  224.           222.
+#> # ℹ 488 more rows
   download_data_stock_prices("GOOGL", "2021-01-01", "2022-01-01" )
 #> # A tibble: 252 × 8
 #>    symbol date         volume  open   low  high close adjusted_close

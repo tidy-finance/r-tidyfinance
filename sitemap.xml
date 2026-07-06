@@ -23,6 +23,7 @@
 <url><loc>https://r.tidy-finance.org/reference/download_data_factors_ff.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_factors_q.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_fred.html</loc></url>
+<url><loc>https://r.tidy-finance.org/reference/download_data_fred_md.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_huggingface.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_jkp.html</loc></url>
 <url><loc>https://r.tidy-finance.org/reference/download_data_macro_predictors.html</loc></url>

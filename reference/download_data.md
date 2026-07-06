@@ -85,6 +85,7 @@ Other download functions:
 [`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md),
 [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
 [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),
+[`download_data_fred_md()`](https://r.tidy-finance.org/reference/download_data_fred_md.md),
 [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md),
 [`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md),
 [`download_data_macro_predictors()`](https://r.tidy-finance.org/reference/download_data_macro_predictors.md),
@@ -167,23 +168,86 @@ download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #>  9 1949-01-01  275. GDP   
 #> 10 1949-04-01  271. GDP   
 #> # ℹ 1,668 more rows
+download_data("FRED", "FRED-MD")
+#> # A tibble: 801 × 127
+#>    date         RPI W875RX1 DPCERA3M086SBEA CMRMTSPLx RETAILx INDPRO IPFPNSS
+#>    <date>     <dbl>   <dbl>           <dbl>     <dbl>   <dbl>  <dbl>   <dbl>
+#>  1 1959-01-01 2584.   2426             15.2   276677.  17689.   22.0    23.4
+#>  2 1959-02-01 2594.   2435.            15.3   278714.  17819.   22.4    23.7
+#>  3 1959-03-01 2610.   2453.            15.5   277775.  17968.   22.7    23.8
+#>  4 1959-04-01 2627.   2470             15.4   283363.  17979.   23.2    24.2
+#>  5 1959-05-01 2643.   2486.            15.6   285307.  18120.   23.5    24.4
+#>  6 1959-06-01 2651.   2494.            15.7   285280.  18285.   23.6    24.6
+#>  7 1959-07-01 2649.   2492             15.6   288768.  18279.   23.0    24.6
+#>  8 1959-08-01 2634.   2478.            15.7   273993.  18395.   22.2    24.4
+#>  9 1959-09-01 2636.   2478.            15.9   278039.  18155.   22.2    24.3
+#> 10 1959-10-01 2640.   2481.            15.8   278490.  18288.   22.0    24.2
+#> # ℹ 791 more rows
+#> # ℹ 119 more variables: IPFINAL <dbl>, IPCONGD <dbl>, IPDCONGD <dbl>,
+#> #   IPNCONGD <dbl>, IPBUSEQ <dbl>, IPMAT <dbl>, IPDMAT <dbl>, IPNMAT <dbl>,
+#> #   IPMANSICS <dbl>, IPB51222S <dbl>, IPFUELS <dbl>, CUMFNS <dbl>, HWI <dbl>,
+#> #   HWIURATIO <dbl>, CLF16OV <dbl>, CE16OV <dbl>, UNRATE <dbl>, UEMPMEAN <dbl>,
+#> #   UEMPLT5 <dbl>, UEMP5TO14 <dbl>, UEMP15OV <dbl>, UEMP15T26 <dbl>,
+#> #   UEMP27OV <dbl>, CLAIMSx <dbl>, PAYEMS <dbl>, USGOOD <dbl>, …
+download_data("FRED", "FRED-MD", transform = TRUE)
+#> # A tibble: 801 × 127
+#>    date             RPI   W875RX1 DPCERA3M086SBEA  CMRMTSPLx   RETAILx   INDPRO
+#>    <date>         <dbl>     <dbl>           <dbl>      <dbl>     <dbl>    <dbl>
+#>  1 1959-01-01 NA        NA               NA       NA         NA        NA      
+#>  2 1959-02-01  0.00388   0.00362          0.0103   0.00734    0.00731   0.0194 
+#>  3 1959-03-01  0.00646   0.00732          0.00940 -0.00337    0.00832   0.0143 
+#>  4 1959-04-01  0.00651   0.00703         -0.00362  0.0199     0.000616  0.0211 
+#>  5 1959-05-01  0.00580   0.00662          0.0120   0.00684    0.00780   0.0150 
+#>  6 1959-06-01  0.00307   0.00301          0.00364 -0.0000968  0.00906   0.00114
+#>  7 1959-07-01 -0.000580 -0.000762        -0.00339  0.0122    -0.000330 -0.0242 
+#>  8 1959-08-01 -0.00565  -0.00575          0.00600 -0.0525     0.00636  -0.0345 
+#>  9 1959-09-01  0.000763  0                0.0100   0.0147    -0.0132   -0.00121
+#> 10 1959-10-01  0.00127   0.00117         -0.00683  0.00162    0.00729  -0.00729
+#> # ℹ 791 more rows
+#> # ℹ 120 more variables: IPFPNSS <dbl>, IPFINAL <dbl>, IPCONGD <dbl>,
+#> #   IPDCONGD <dbl>, IPNCONGD <dbl>, IPBUSEQ <dbl>, IPMAT <dbl>, IPDMAT <dbl>,
+#> #   IPNMAT <dbl>, IPMANSICS <dbl>, IPB51222S <dbl>, IPFUELS <dbl>,
+#> #   CUMFNS <dbl>, HWI <dbl>, HWIURATIO <dbl>, CLF16OV <dbl>, CE16OV <dbl>,
+#> #   UNRATE <dbl>, UEMPMEAN <dbl>, UEMPLT5 <dbl>, UEMP5TO14 <dbl>,
+#> #   UEMP15OV <dbl>, UEMP15T26 <dbl>, UEMP27OV <dbl>, CLAIMSx <dbl>, …
+download_data("FRED", "FRED-QD", vintage = "2020-03")
+#> # A tibble: 244 × 249
+#>    date       vintage GDPC1 PCECC96 PCDGx PCESVx PCNDx GPDIC1  FPIx
+#>    <date>     <chr>   <dbl>   <dbl> <dbl>  <dbl> <dbl>  <dbl> <dbl>
+#>  1 1959-03-01 2020-03 3122.   1924.  76.6  1228.  709.   341.  341.
+#>  2 1959-06-01 2020-03 3192.   1953.  79.5  1247.  714.   367.  351.
+#>  3 1959-09-01 2020-03 3195.   1974.  81.0  1264.  717.   343.  355.
+#>  4 1959-12-01 2020-03 3204.   1976.  77.2  1279.  722.   355.  351.
+#>  5 1960-03-01 2020-03 3276.   1995.  79.7  1290.  723.   390.  362.
+#>  6 1960-06-01 2020-03 3258.   2020.  81.5  1305.  731.   354.  356.
+#>  7 1960-09-01 2020-03 3274.   2012.  80.8  1303.  727.   353.  348.
+#>  8 1960-12-01 2020-03 3232.   2015.  78.8  1316.  728.   314.  347.
+#>  9 1961-03-01 2020-03 3254.   2014.  74.5  1329.  732.   322.  344.
+#> 10 1961-06-01 2020-03 3309.   2044.  76.0  1348.  742.   345.  350.
+#> # ℹ 234 more rows
+#> # ℹ 240 more variables: Y033RC1Q027SBEAx <dbl>, PNFIx <dbl>, PRFIx <dbl>,
+#> #   A014RE1Q156NBEA <dbl>, GCEC1 <dbl>, A823RL1Q225SBEA <dbl>, FGRECPTx <dbl>,
+#> #   SLCEx <dbl>, EXPGSC1 <dbl>, IMPGSC1 <dbl>, DPIC96 <dbl>, OUTNFB <dbl>,
+#> #   OUTBS <dbl>, OUTMS <dbl>, INDPRO <dbl>, IPFINAL <dbl>, IPCONGD <dbl>,
+#> #   IPMAT <dbl>, IPDMAT <dbl>, IPNMAT <dbl>, IPDCONGD <dbl>, IPB51110SQ <dbl>,
+#> #   IPNCONGD <dbl>, IPBUSEQ <dbl>, IPB51220SQ <dbl>, TCU <dbl>, CUMFNS <dbl>, …
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-07-02 to
-#> 2025-07-02 to avoid downloading large amounts of data.
-#> # A tibble: 500 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-07-06 to
+#> 2025-07-06 to avoid downloading large amounts of data.
+#> # A tibble: 498 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-07-02 58046200  216.  215.  220.  220.           218.
-#>  2 AAPL   2024-07-03 37369800  220   219.  222.  222.           220.
-#>  3 AAPL   2024-07-05 60412400  222.  222.  226.  226.           224.
-#>  4 AAPL   2024-07-08 59085900  227.  223.  228.  228.           226.
-#>  5 AAPL   2024-07-09 48076100  228.  226.  229.  229.           227.
-#>  6 AAPL   2024-07-10 62627700  229.  229.  233.  233.           231.
-#>  7 AAPL   2024-07-11 64710600  231.  226.  232.  228.           226.
-#>  8 AAPL   2024-07-12 53046500  229.  229.  233.  231.           229.
-#>  9 AAPL   2024-07-15 62631300  236.  233.  237.  234.           232.
-#> 10 AAPL   2024-07-16 43234300  235   232.  236.  235.           233.
-#> # ℹ 490 more rows
+#>  1 AAPL   2024-07-08 59085900  227.  223.  228.  228.           226.
+#>  2 AAPL   2024-07-09 48076100  228.  226.  229.  229.           227.
+#>  3 AAPL   2024-07-10 62627700  229.  229.  233.  233.           231.
+#>  4 AAPL   2024-07-11 64710600  231.  226.  232.  228.           226.
+#>  5 AAPL   2024-07-12 53046500  229.  229.  233.  231.           229.
+#>  6 AAPL   2024-07-15 62631300  236.  233.  237.  234.           232.
+#>  7 AAPL   2024-07-16 43234300  235   232.  236.  235.           233.
+#>  8 AAPL   2024-07-17 57345900  229.  227.  231.  229.           227.
+#>  9 AAPL   2024-07-18 66034600  230.  222.  230.  224.           222.
+#> 10 AAPL   2024-07-19 49151500  225.  223.  227.  224.           222.
+#> # ℹ 488 more rows
 download_data(
   "Tidy Finance",
   "risk_free",
