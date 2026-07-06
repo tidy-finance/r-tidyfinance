@@ -372,9 +372,9 @@ vintage_label <- function(name) {
 #' Parse one FRED-MD/QD vintage CSV into a wide frame `[date, <series...>]`
 #'
 #' Row 1 is the header (`sasdate` + series), row 2 the `Transform:` row of
-#' tcodes, and the body the levels. With `transform = TRUE` each series'
+#' tcodes, and the body the levels. When `transform` is `TRUE`, each series'
 #' McCracken-Ng stationarity transform (tcode) is applied per vintage
-#' (causal, so point-in-time safe); `transform = FALSE` keeps raw levels.
+#' (causal, so point-in-time safe); when it is `FALSE`, raw levels are kept.
 #' @noRd
 fred_md_wide <- function(text, transform) {
   raw <- utils::read.csv(

@@ -1,4 +1,5 @@
-# A tiny FRED-MD-shaped CSV: header, the Transform: tcode row, then M/D/YYYY levels.
+# A tiny FRED-MD-shaped CSV: header, the Transform: tcode row, then M/D/YYYY
+# levels.
 fred_md_csv <- paste(
   "sasdate,LEVELSER,LOGDIFFSER",
   "Transform:,1,5",
@@ -51,7 +52,10 @@ test_that("fetch_fred_md_text returns the response body on success", {
     .package = "httr2"
   )
 
-  expect_equal(fetch_fred_md_text("https://example.org/current.csv"), fred_md_csv)
+  expect_equal(
+    fetch_fred_md_text("https://example.org/current.csv"),
+    fred_md_csv
+  )
 })
 
 test_that("fetch_fred_md_text aborts on a non-200 response", {
@@ -103,7 +107,7 @@ test_that("fetch_fred_md_bytes aborts on a non-200 response", {
   )
 })
 
-test_that("vintage = 'latest' returns a wide [date, series...] frame of raw levels", {
+test_that("vintage = 'latest' returns a wide [date, series...] frame", {
   local_mocked_bindings(
     request = function(url) url,
     req_user_agent = function(req, ...) req,
@@ -169,7 +173,7 @@ test_that("a specific vintage hosted individually gets a vintage column", {
   expect_equal(unique(result$vintage), "2026-01")
 })
 
-test_that("a specific vintage that is neither archived nor hosted raises an error", {
+test_that("a vintage neither archived nor individually hosted errors", {
   local_mocked_bindings(
     fetch_fred_md_text = function(url) not_fred_md_html
   )
@@ -180,13 +184,14 @@ test_that("a specific vintage that is neither archived nor hosted raises an erro
   )
 })
 
-test_that("a specific archived vintage is extracted from the covering archive", {
+test_that("a specific archived vintage is extracted from its archive", {
   local_mocked_bindings(
     fetch_fred_md_bytes = function(url) raw(0)
   )
   local_mocked_bindings(
     unzip = function(zipfile, exdir, ...) {
-      writeLines(strsplit(fred_md_csv, "\n")[[1]], file.path(exdir, "2020-03.csv"))
+      lines <- strsplit(fred_md_csv, "\n")[[1]]
+      writeLines(lines, file.path(exdir, "2020-03.csv"))
       invisible(NULL)
     },
     .package = "utils"
@@ -199,13 +204,14 @@ test_that("a specific archived vintage is extracted from the covering archive", 
   expect_equal(result$LEVELSER, c(100, 101, 102))
 })
 
-test_that("a vintage covered by an archive but missing from it raises an error", {
+test_that("a vintage covered by an archive but missing from it errors", {
   local_mocked_bindings(
     fetch_fred_md_bytes = function(url) raw(0)
   )
   local_mocked_bindings(
     unzip = function(zipfile, exdir, ...) {
-      writeLines(strsplit(fred_md_csv, "\n")[[1]], file.path(exdir, "2020-01.csv"))
+      lines <- strsplit(fred_md_csv, "\n")[[1]]
+      writeLines(lines, file.path(exdir, "2020-01.csv"))
       invisible(NULL)
     },
     .package = "utils"
@@ -225,9 +231,10 @@ test_that("vintage = 'all' stacks archived and individually-hosted vintages", {
   local_mocked_bindings(
     unzip = function(zipfile, exdir, ...) {
       # A .csv file whose name carries no parseable vintage label is skipped.
+      lines <- strsplit(fred_md_csv, "\n")[[1]]
       writeLines("not a vintage file", file.path(exdir, "notes.csv"))
-      writeLines(strsplit(fred_md_csv, "\n")[[1]], file.path(exdir, "2024-11.csv"))
-      writeLines(strsplit(fred_md_csv, "\n")[[1]], file.path(exdir, "2024-12.csv"))
+      writeLines(lines, file.path(exdir, "2024-11.csv"))
+      writeLines(lines, file.path(exdir, "2024-12.csv"))
       invisible(NULL)
     },
     .package = "utils"
@@ -255,7 +262,7 @@ test_that("vintage = 'all' aborts when no vintage can be downloaded", {
   )
 })
 
-test_that("vintage = 'all' fills in individually-hosted vintages beyond the archives", {
+test_that("vintage = 'all' fills in individually-hosted vintages", {
   local_mocked_bindings(
     fetch_fred_md_bytes = function(url) raw(0),
     fetch_fred_md_text = function(url) fred_md_csv
