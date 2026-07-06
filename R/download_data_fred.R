@@ -348,9 +348,6 @@ looks_like_fred_md <- function(text) {
   }
   lines <- strsplit(text, "\r?\n")[[1]]
   first_line <- trimws(lines[nzchar(trimws(lines))][1])
-  if (is.na(first_line) || !nzchar(first_line)) {
-    return(FALSE)
-  }
   first_cell <- trimws(strsplit(first_line, ",")[[1]][1])
   identical(tolower(first_cell), "sasdate")
 }
