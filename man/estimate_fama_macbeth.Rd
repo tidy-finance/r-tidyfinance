@@ -41,8 +41,9 @@ used to specify the date column. Uses \code{\link[=data_options]{data_options()}
 summary statistics. If \code{FALSE} (default), the function returns only the
 coefficient estimates. If \code{TRUE}, it returns a list with two elements:
 \code{coefficients} (the usual estimates table) and \code{summary_statistics} (a
-one-row tibble with the average cross-sectional R-squared and the average
-number of observations per cross-section).}
+one-row tibble with the average cross-sectional R-squared, the average
+cross-sectional adjusted R-squared, and the average number of
+observations per cross-section).}
 }
 \value{
 If \code{detail = FALSE} (default), a tibble with columns
@@ -53,7 +54,8 @@ If \code{detail = TRUE}, a named list with two elements:
 \describe{
 \item{coefficients}{The same tibble described above.}
 \item{summary_statistics}{A one-row tibble with \code{r_squared} (mean
-cross-sectional R-squared) and \code{n_obs} (mean cross-sectional
+cross-sectional R-squared), \code{adj_r_squared} (mean cross-sectional
+adjusted R-squared), and \code{n_obs} (mean cross-sectional
 observation count).}
 }
 }
