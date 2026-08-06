@@ -365,3 +365,65 @@ test_that("estimate_fama_macbeth detail works with different vcov options", {
     )
   )
 })
+
+test_that("estimate_fama_macbeth results do not depend on input row order", {
+  set.seed(1234)
+  data <- tibble(
+    date = rep(
+      seq.Date(
+        from = as.Date("2020-01-01"),
+        to = as.Date("2020-12-01"),
+        by = "month"
+      ),
+      each = 50
+    ),
+    permno = rep(1:50, times = 12),
+    ret_excess = rnorm(600, 0, 0.1),
+    beta = rnorm(600, 1, 0.2),
+    bm = rnorm(600, 0.5, 0.1),
+    log_mktcap = rnorm(600, 10, 1)
+  )
+  model <- "ret_excess ~ beta + bm + log_mktcap"
+
+  sorted <- estimate_fama_macbeth(data, model, detail = TRUE)
+
+  set.seed(42)
+  shuffled <- estimate_fama_macbeth(data[sample(nrow(data)), ], model,
+    detail = TRUE
+  )
+  reversed <- estimate_fama_macbeth(data[rev(seq_len(nrow(data))), ], model,
+    detail = TRUE
+  )
+
+  expect_equal(shuffled, sorted)
+  expect_equal(reversed, sorted)
+})
+
+test_that("estimate_fama_macbeth sorts by a renamed date column", {
+  set.seed(1234)
+  data <- tibble(
+    month = rep(
+      seq.Date(
+        from = as.Date("2020-01-01"),
+        to = as.Date("2020-12-01"),
+        by = "month"
+      ),
+      each = 50
+    ),
+    permno = rep(1:50, times = 12),
+    ret_excess = rnorm(600, 0, 0.1),
+    beta = rnorm(600, 1, 0.2),
+    bm = rnorm(600, 0.5, 0.1)
+  )
+  model <- "ret_excess ~ beta + bm"
+  options <- data_options(date = "month")
+
+  sorted <- estimate_fama_macbeth(data, model, data_options = options)
+
+  set.seed(42)
+  shuffled <- estimate_fama_macbeth(data[sample(nrow(data)), ], model,
+    data_options = options
+  )
+
+  expect_equal(shuffled, sorted)
+})
