@@ -12,6 +12,18 @@
   are read from the St. Louis Fed vintage archive ZIPs), enabling leak-free
   point-in-time analysis.
 
+## Bug fixes
+
+- `estimate_fama_macbeth()` now orders the cross-sections chronologically
+  before aggregating them over time. Newey-West standard errors depend on the
+  order of the time series, so the same data in a different row order
+  previously returned different standard errors and t-statistics while the
+  risk premia were unchanged. Results for chronologically sorted input are
+  unaffected (#302).
+- The documentation of `estimate_fama_macbeth(detail = TRUE)` now lists the
+  `adj_r_squared` column, which the function has always returned in
+  `summary_statistics` alongside `r_squared` and `n_obs`.
+
 # tidyfinance 0.8.0
   
 ## New features
@@ -61,9 +73,6 @@
 
 ## Bug fixes
 
-- The documentation of `estimate_fama_macbeth(detail = TRUE)` now lists the
-  `adj_r_squared` column, which the function has always returned in
-  `summary_statistics` alongside `r_squared` and `n_obs`.
 - `download_data_huggingface("factor_library", ...)` now treats an explicit
   `n_portfolios_secondary = NULL` as "remove the filter and return all values"
   (univariate and bivariate sorts alike), consistent with the documented

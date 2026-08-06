@@ -118,8 +118,11 @@ estimate_fama_macbeth <- function(
     cli::cli_abort("The data must contain a {data_options$date} column.")
   }
 
+  # Newey-West standard errors depend on the order of the time series, so the
+  # cross-sections are sorted chronologically before they are aggregated.
   cross_sections <- data |>
     tidyr::nest(data = -all_of(data_options$date)) |>
+    arrange(.data[[data_options$date]]) |>
     mutate(
       row_check = purrr::map_lgl(
         data,
