@@ -87,19 +87,19 @@ Other utility functions:
 #> 10 usa    at_me      
 #> # ℹ 159 more rows
   list_supported_jkp_factors("usa", dataset = "portfolios")
-#> # A tibble: 153 × 2
+#> # A tibble: 154 × 2
 #>    region factor     
 #>    <chr>  <chr>      
 #>  1 usa    age        
 #>  2 usa    aliq_at    
 #>  3 usa    aliq_mat   
-#>  4 usa    ami_126d   
-#>  5 usa    at_be      
-#>  6 usa    at_gr1     
-#>  7 usa    at_me      
-#>  8 usa    at_turnover
-#>  9 usa    be_gr1a    
-#> 10 usa    be_me      
-#> # ℹ 143 more rows
+#>  4 usa    all_factors
+#>  5 usa    ami_126d   
+#>  6 usa    at_be      
+#>  7 usa    at_gr1     
+#>  8 usa    at_me      
+#>  9 usa    at_turnover
+#> 10 usa    be_gr1a    
+#> # ℹ 144 more rows
 # }
 ```

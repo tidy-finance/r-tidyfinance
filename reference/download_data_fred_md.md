@@ -153,7 +153,7 @@ Other download functions:
 #> #   UNRATE <dbl>, UEMPMEAN <dbl>, UEMPLT5 <dbl>, UEMP5TO14 <dbl>,
 #> #   UEMP15OV <dbl>, UEMP15T26 <dbl>, UEMP27OV <dbl>, CLAIMSx <dbl>, …
   download_data_fred_md("FRED-MD", vintage = "all")
-#> # A tibble: 208,495 × 146
+#> # A tibble: 210,114 × 146
 #>    date       vintage   RPI W875RX1 CMRMTSPLx RETAILx INDPRO IPFPNSS IPFINAL
 #>    <date>     <chr>   <dbl>   <dbl>     <dbl>   <dbl>  <dbl>   <dbl>   <dbl>
 #>  1 1959-01-01 1999-08 1691.   1575.    198740   17583   34.4    33.8    33.2
@@ -166,7 +166,7 @@ Other download functions:
 #>  8 1959-08-01 1999-08 1729.   1612.    204132   18285   34.9    35.3    35.0
 #>  9 1959-09-01 1999-08 1730.   1611     203672   18046   34.8    35.2    34.8
 #> 10 1959-10-01 1999-08 1733.   1614     203835   18178   34.6    35.1    34.7
-#> # ℹ 208,485 more rows
+#> # ℹ 210,104 more rows
 #> # ℹ 137 more variables: IPCONGD <dbl>, IPMAT <dbl>, IPMANSICS <dbl>,
 #> #   CUMFNS <dbl>, CLF16OV <dbl>, CE16OV <dbl>, UNRATE <dbl>, UEMPMEAN <dbl>,
 #> #   UEMPLT5 <dbl>, UEMP5TO14 <dbl>, UEMP15OV <dbl>, UEMP15T26 <dbl>,

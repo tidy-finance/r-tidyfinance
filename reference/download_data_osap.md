@@ -78,5 +78,6 @@ Other download functions:
   osap <- download_data_osap(
     start_date = "2020-01-01", end_date = "2020-06-30"
   )
+#> Returning an empty data set due to download failure.
 # }
 ```

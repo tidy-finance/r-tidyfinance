@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-8-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-0"></a></h3>
-<ul><li>
+<ul><li>The documentation of <code>estimate_fama_macbeth(detail = TRUE)</code> now lists the <code>adj_r_squared</code> column, which the function has always returned in <code>summary_statistics</code> alongside <code>r_squared</code> and <code>n_obs</code>.</li>
+<li>
 <code>download_data_huggingface("factor_library", ...)</code> now treats an explicit <code>n_portfolios_secondary = NULL</code> as “remove the filter and return all values” (univariate and bivariate sorts alike), consistent with the documented behavior for every other column. Previously an explicit <code>NULL</code> was coerced to <code>NA</code>, restricting the result to univariate sorts.</li>
 </ul></div>
 </div>
@@ -323,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Christoph Scheuch, Stefan Voigt, Patrick Weiss. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Christoph Scheuch, Stefan Voigt, Patrick Weiss. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
 <div class="pkgdown-footer-right">

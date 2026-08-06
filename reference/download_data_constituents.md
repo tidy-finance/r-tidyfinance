@@ -84,15 +84,15 @@ Other download functions:
 #>    symbol  name                               location    exchange      currency
 #>    <chr>   <chr>                              <chr>       <chr>         <chr>   
 #>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
-#>  2 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
-#>  3 SAP.DE  SAP                                Deutschland Xetra         EUR     
-#>  4 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
-#>  5 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
-#>  6 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
-#>  7 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
+#>  2 SAP.DE  SAP                                Deutschland Xetra         EUR     
+#>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
+#>  4 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  5 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
+#>  6 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
+#>  7 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
 #>  8 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
 #>  9 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
-#> 10 DHL.DE  DEUTSCHE POST AG                   Deutschland Xetra         EUR     
+#> 10 RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     
 #> # ℹ 30 more rows
 # }
 ```

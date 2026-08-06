@@ -142,19 +142,19 @@ download_data("Index Constituents", index = "DAX")
 #>    symbol  name                               location    exchange      currency
 #>    <chr>   <chr>                              <chr>       <chr>         <chr>   
 #>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
-#>  2 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
-#>  3 SAP.DE  SAP                                Deutschland Xetra         EUR     
-#>  4 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
-#>  5 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
-#>  6 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
-#>  7 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
+#>  2 SAP.DE  SAP                                Deutschland Xetra         EUR     
+#>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
+#>  4 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  5 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
+#>  6 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
+#>  7 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
 #>  8 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
 #>  9 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
-#> 10 DHL.DE  DEUTSCHE POST AG                   Deutschland Xetra         EUR     
+#> 10 RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     
 #> # ℹ 30 more rows
 download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> No `start_date` or `end_date` provided. Returning the full data set.
-#> # A tibble: 1,678 × 3
+#> # A tibble: 1,680 × 3
 #>    date       value series
 #>    <date>     <dbl> <chr> 
 #>  1 1947-01-01  243. GDP   
@@ -167,7 +167,7 @@ download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #>  8 1948-10-01  280. GDP   
 #>  9 1949-01-01  275. GDP   
 #> 10 1949-04-01  271. GDP   
-#> # ℹ 1,668 more rows
+#> # ℹ 1,670 more rows
 download_data("FRED", "FRED-MD")
 #> # A tibble: 801 × 127
 #>    date         RPI W875RX1 DPCERA3M086SBEA CMRMTSPLx RETAILx INDPRO IPFPNSS
@@ -232,22 +232,22 @@ download_data("FRED", "FRED-QD", vintage = "2020-03")
 #> #   IPMAT <dbl>, IPDMAT <dbl>, IPNMAT <dbl>, IPDCONGD <dbl>, IPB51110SQ <dbl>,
 #> #   IPNCONGD <dbl>, IPBUSEQ <dbl>, IPB51220SQ <dbl>, TCU <dbl>, CUMFNS <dbl>, …
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-07-06 to
-#> 2025-07-06 to avoid downloading large amounts of data.
-#> # A tibble: 498 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-08-06 to
+#> 2025-08-06 to avoid downloading large amounts of data.
+#> # A tibble: 500 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-07-08 59085900  227.  223.  228.  228.           226.
-#>  2 AAPL   2024-07-09 48076100  228.  226.  229.  229.           227.
-#>  3 AAPL   2024-07-10 62627700  229.  229.  233.  233.           231.
-#>  4 AAPL   2024-07-11 64710600  231.  226.  232.  228.           226.
-#>  5 AAPL   2024-07-12 53046500  229.  229.  233.  231.           229.
-#>  6 AAPL   2024-07-15 62631300  236.  233.  237.  234.           232.
-#>  7 AAPL   2024-07-16 43234300  235   232.  236.  235.           233.
-#>  8 AAPL   2024-07-17 57345900  229.  227.  231.  229.           227.
-#>  9 AAPL   2024-07-18 66034600  230.  222.  230.  224.           222.
-#> 10 AAPL   2024-07-19 49151500  225.  223.  227.  224.           222.
-#> # ℹ 488 more rows
+#>  1 AAPL   2024-08-06 69660500  205.  201.  210.  207.           205.
+#>  2 AAPL   2024-08-07 63516400  207.  206.  214.  210.           208.
+#>  3 AAPL   2024-08-08 47161100  213.  209.  214.  213.           211.
+#>  4 AAPL   2024-08-09 42201600  212.  212.  217.  216.           214.
+#>  5 AAPL   2024-08-12 38028100  216.  216.  220.  218.           216.
+#>  6 AAPL   2024-08-13 44155300  219.  219.  222.  221.           220.
+#>  7 AAPL   2024-08-14 41960600  221.  220.  223.  222.           220.
+#>  8 AAPL   2024-08-15 46414000  225.  223.  225.  225.           223.
+#>  9 AAPL   2024-08-16 44340200  224.  224.  227.  226.           224.
+#> 10 AAPL   2024-08-19 40687800  226.  223.  226.  226.           224.
+#> # ℹ 490 more rows
 download_data(
   "Tidy Finance",
   "risk_free",

@@ -80,6 +80,9 @@ CRAN release: 2026-07-02
 
 ### Bug fixes
 
+- The documentation of `estimate_fama_macbeth(detail = TRUE)` now lists
+  the `adj_r_squared` column, which the function has always returned in
+  `summary_statistics` alongside `r_squared` and `n_obs`.
 - `download_data_huggingface("factor_library", ...)` now treats an
   explicit `n_portfolios_secondary = NULL` as “remove the filter and
   return all values” (univariate and bivariate sorts alike), consistent

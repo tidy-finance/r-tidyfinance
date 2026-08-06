@@ -61,8 +61,9 @@ estimate_fama_macbeth(
   statistics. If `FALSE` (default), the function returns only the
   coefficient estimates. If `TRUE`, it returns a list with two elements:
   `coefficients` (the usual estimates table) and `summary_statistics` (a
-  one-row tibble with the average cross-sectional R-squared and the
-  average number of observations per cross-section).
+  one-row tibble with the average cross-sectional R-squared, the average
+  cross-sectional adjusted R-squared, and the average number of
+  observations per cross-section).
 
 ## Value
 
@@ -78,8 +79,9 @@ If `detail = TRUE`, a named list with two elements:
 
 - summary_statistics:
 
-  A one-row tibble with `r_squared` (mean cross-sectional R-squared) and
-  `n_obs` (mean cross-sectional observation count).
+  A one-row tibble with `r_squared` (mean cross-sectional R-squared),
+  `adj_r_squared` (mean cross-sectional adjusted R-squared), and `n_obs`
+  (mean cross-sectional observation count).
 
 ## References
 

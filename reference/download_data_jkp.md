@@ -159,16 +159,16 @@ Other download functions:
 #> # A tibble: 756 × 8
 #>    location name     pf     n freq    weighting date            ret
 #>    <chr>    <chr> <int> <int> <chr>   <chr>     <date>        <dbl>
-#>  1 usa      be_me     3  3469 monthly vw_cap    2000-01-01 -0.0453 
+#>  1 usa      be_me     1  1451 monthly vw_cap    2000-01-01 -0.00878
 #>  2 usa      be_me     2  1803 monthly vw_cap    2000-01-01 -0.0522 
-#>  3 usa      be_me     1  1451 monthly vw_cap    2000-01-01 -0.00878
-#>  4 usa      be_me     3  3383 monthly vw_cap    2000-02-01 -0.0614 
+#>  3 usa      be_me     3  3469 monthly vw_cap    2000-01-01 -0.0453 
+#>  4 usa      be_me     1  1495 monthly vw_cap    2000-02-01  0.232  
 #>  5 usa      be_me     2  1879 monthly vw_cap    2000-02-01 -0.00167
-#>  6 usa      be_me     1  1495 monthly vw_cap    2000-02-01  0.232  
-#>  7 usa      be_me     2  1968 monthly vw_cap    2000-03-01  0.0864 
-#>  8 usa      be_me     3  3317 monthly vw_cap    2000-03-01  0.106  
-#>  9 usa      be_me     1  1452 monthly vw_cap    2000-03-01 -0.0996 
-#> 10 usa      be_me     3  3417 monthly vw_cap    2000-04-01  0.00532
+#>  6 usa      be_me     3  3383 monthly vw_cap    2000-02-01 -0.0614 
+#>  7 usa      be_me     1  1452 monthly vw_cap    2000-03-01 -0.0996 
+#>  8 usa      be_me     2  1968 monthly vw_cap    2000-03-01  0.0864 
+#>  9 usa      be_me     3  3317 monthly vw_cap    2000-03-01  0.106  
+#> 10 usa      be_me     1  1436 monthly vw_cap    2000-04-01 -0.166  
 #> # ℹ 746 more rows
   download_data_jkp(
     dataset = "industry", region = "usa", classification = "gics"
