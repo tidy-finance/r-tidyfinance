@@ -110,16 +110,16 @@ download_data(
 #> # A tibble: 5,284 × 7
 #>    date       mkt_excess     smb     hml     rmw     cma risk_free
 #>    <date>          <dbl>   <dbl>   <dbl>   <dbl>   <dbl>     <dbl>
-#>  1 2000-01-03    -0.0071 -0.0009 -0.0131 -0.0148 -0.007     0.0002
+#>  1 2000-01-03    -0.0071 -0.0009 -0.0131 -0.0146 -0.0071    0.0002
 #>  2 2000-01-04    -0.0406  0.0034  0.0207  0.0053  0.0136    0.0002
-#>  3 2000-01-05    -0.0009  0.0036 -0.0005  0.0045  0.0115    0.0002
-#>  4 2000-01-06    -0.0074 -0.0004  0.0124  0.0064  0.0121    0.0002
-#>  5 2000-01-07     0.0321 -0.0089 -0.0157 -0.0083 -0.01      0.0002
+#>  3 2000-01-05    -0.0009  0.0035 -0.0005  0.0044  0.0114    0.0002
+#>  4 2000-01-06    -0.0074 -0.0003  0.0124  0.0064  0.0122    0.0002
+#>  5 2000-01-07     0.0321 -0.0089 -0.0157 -0.0083 -0.0099    0.0002
 #>  6 2000-01-10     0.0175  0.0043 -0.0135 -0.022  -0.0024    0.0002
-#>  7 2000-01-11    -0.0171  0.0033  0.0091  0.009   0.012     0.0002
-#>  8 2000-01-12    -0.0069 -0.0022  0.0074  0.0042  0.0085    0.0002
-#>  9 2000-01-13     0.0159  0.0047 -0.0084 -0.0172 -0.0103    0.0002
-#> 10 2000-01-14     0.0114  0.0022 -0.0048 -0.0034 -0.006     0.0002
+#>  7 2000-01-11    -0.0171  0.0034  0.0092  0.009   0.012     0.0002
+#>  8 2000-01-12    -0.0069 -0.0022  0.0074  0.0041  0.0085    0.0002
+#>  9 2000-01-13     0.0159  0.0048 -0.0084 -0.0172 -0.0102    0.0002
+#> 10 2000-01-14     0.0114  0.0022 -0.0048 -0.0035 -0.0059    0.0002
 #> # ℹ 5,274 more rows
 download_data("Goyal-Welch", "monthly", "2000-01-01", "2020-12-31")
 #> # A tibble: 252 × 15
@@ -144,17 +144,17 @@ download_data("Index Constituents", index = "DAX")
 #>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
 #>  2 SAP.DE  SAP                                Deutschland Xetra         EUR     
 #>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
-#>  4 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
-#>  5 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
+#>  4 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
+#>  5 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
 #>  6 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
 #>  7 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
-#>  8 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
-#>  9 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
-#> 10 RHM.DE  RHEINMETALL AG                     Deutschland Xetra         EUR     
+#>  8 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
+#>  9 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
+#> 10 DHL.DE  DHL N AG                           Deutschland Xetra         EUR     
 #> # ℹ 30 more rows
 download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> No `start_date` or `end_date` provided. Returning the full data set.
-#> # A tibble: 1,680 × 3
+#> # A tibble: 1,681 × 3
 #>    date       value series
 #>    <date>     <dbl> <chr> 
 #>  1 1947-01-01  243. GDP   
@@ -167,7 +167,7 @@ download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #>  8 1948-10-01  280. GDP   
 #>  9 1949-01-01  275. GDP   
 #> 10 1949-04-01  271. GDP   
-#> # ℹ 1,670 more rows
+#> # ℹ 1,671 more rows
 download_data("FRED", "FRED-MD")
 #> # A tibble: 801 × 127
 #>    date         RPI W875RX1 DPCERA3M086SBEA CMRMTSPLx RETAILx INDPRO IPFPNSS
@@ -232,22 +232,22 @@ download_data("FRED", "FRED-QD", vintage = "2020-03")
 #> #   IPMAT <dbl>, IPDMAT <dbl>, IPNMAT <dbl>, IPDCONGD <dbl>, IPB51110SQ <dbl>,
 #> #   IPNCONGD <dbl>, IPBUSEQ <dbl>, IPB51220SQ <dbl>, TCU <dbl>, CUMFNS <dbl>, …
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-08-06 to
-#> 2025-08-06 to avoid downloading large amounts of data.
-#> # A tibble: 500 × 8
-#>    symbol date         volume  open   low  high close adjusted_close
-#>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-08-06 69660500  205.  201.  210.  207.           205.
-#>  2 AAPL   2024-08-07 63516400  207.  206.  214.  210.           208.
-#>  3 AAPL   2024-08-08 47161100  213.  209.  214.  213.           211.
-#>  4 AAPL   2024-08-09 42201600  212.  212.  217.  216.           214.
-#>  5 AAPL   2024-08-12 38028100  216.  216.  220.  218.           216.
-#>  6 AAPL   2024-08-13 44155300  219.  219.  222.  221.           220.
-#>  7 AAPL   2024-08-14 41960600  221.  220.  223.  222.           220.
-#>  8 AAPL   2024-08-15 46414000  225.  223.  225.  225.           223.
-#>  9 AAPL   2024-08-16 44340200  224.  224.  227.  226.           224.
-#> 10 AAPL   2024-08-19 40687800  226.  223.  226.  226.           224.
-#> # ℹ 490 more rows
+#> No `start_date` or `end_date` provided. Using the range 2024-09-09 to
+#> 2025-09-09 to avoid downloading large amounts of data.
+#> # A tibble: 502 × 8
+#>    symbol date          volume  open   low  high close adjusted_close
+#>    <chr>  <date>         <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
+#>  1 AAPL   2024-09-09  67180000  221.  217.  221.  221.           219.
+#>  2 AAPL   2024-09-10  51591000  219.  217.  221.  220.           218.
+#>  3 AAPL   2024-09-11  44587100  221.  218.  223.  223.           221.
+#>  4 AAPL   2024-09-12  37455600  222.  220.  224.  223.           221.
+#>  5 AAPL   2024-09-13  36766600  224.  222.  224.  222.           221.
+#>  6 AAPL   2024-09-16  59357400  217.  214.  217.  216.           215.
+#>  7 AAPL   2024-09-17  45519300  216.  214.  217.  217.           215.
+#>  8 AAPL   2024-09-18  59894900  218.  218.  223.  221.           219.
+#>  9 AAPL   2024-09-19  66781300  225.  225.  230.  229.           227.
+#> 10 AAPL   2024-09-20 318679900  230.  228.  233.  228.           226.
+#> # ℹ 492 more rows
 download_data(
   "Tidy Finance",
   "risk_free",

@@ -35,6 +35,12 @@ download_data_stock_prices(symbols, start_date = NULL, end_date = NULL)
 A tibble containing the downloaded stock data with columns: symbol,
 date, volume, open, low, high, close, and adjusted_close.
 
+## Details
+
+Dates are the trading days in the exchange's local time zone, as
+reported by Yahoo Finance, and the range is inclusive of both
+`start_date` and `end_date`.
+
 ## See also
 
 Other download functions:
@@ -59,35 +65,35 @@ Other download functions:
 ``` r
 # \donttest{
   download_data_stock_prices(c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-08-06 to
-#> 2025-08-06 to avoid downloading large amounts of data.
-#> # A tibble: 500 × 8
-#>    symbol date         volume  open   low  high close adjusted_close
-#>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-08-06 69660500  205.  201.  210.  207.           205.
-#>  2 AAPL   2024-08-07 63516400  207.  206.  214.  210.           208.
-#>  3 AAPL   2024-08-08 47161100  213.  209.  214.  213.           211.
-#>  4 AAPL   2024-08-09 42201600  212.  212.  217.  216.           214.
-#>  5 AAPL   2024-08-12 38028100  216.  216.  220.  218.           216.
-#>  6 AAPL   2024-08-13 44155300  219.  219.  222.  221.           220.
-#>  7 AAPL   2024-08-14 41960600  221.  220.  223.  222.           220.
-#>  8 AAPL   2024-08-15 46414000  225.  223.  225.  225.           223.
-#>  9 AAPL   2024-08-16 44340200  224.  224.  227.  226.           224.
-#> 10 AAPL   2024-08-19 40687800  226.  223.  226.  226.           224.
-#> # ℹ 490 more rows
+#> No `start_date` or `end_date` provided. Using the range 2024-09-09 to
+#> 2025-09-09 to avoid downloading large amounts of data.
+#> # A tibble: 502 × 8
+#>    symbol date          volume  open   low  high close adjusted_close
+#>    <chr>  <date>         <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
+#>  1 AAPL   2024-09-09  67180000  221.  217.  221.  221.           219.
+#>  2 AAPL   2024-09-10  51591000  219.  217.  221.  220.           218.
+#>  3 AAPL   2024-09-11  44587100  221.  218.  223.  223.           221.
+#>  4 AAPL   2024-09-12  37455600  222.  220.  224.  223.           221.
+#>  5 AAPL   2024-09-13  36766600  224.  222.  224.  222.           221.
+#>  6 AAPL   2024-09-16  59357400  217.  214.  217.  216.           215.
+#>  7 AAPL   2024-09-17  45519300  216.  214.  217.  217.           215.
+#>  8 AAPL   2024-09-18  59894900  218.  218.  223.  221.           219.
+#>  9 AAPL   2024-09-19  66781300  225.  225.  230.  229.           227.
+#> 10 AAPL   2024-09-20 318679900  230.  228.  233.  228.           226.
+#> # ℹ 492 more rows
   download_data_stock_prices("GOOGL", "2021-01-01", "2022-01-01" )
 #> # A tibble: 252 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
 #>  1 GOOGL  2021-01-04 37324000  88    85.4  88.1  86.3           85.5
 #>  2 GOOGL  2021-01-05 20360000  86.3  85.8  87.3  87.0           86.2
-#>  3 GOOGL  2021-01-06 46588000  85.0  84.8  87.2  86.1           85.4
+#>  3 GOOGL  2021-01-06 46588000  85.0  84.8  87.2  86.1           85.3
 #>  4 GOOGL  2021-01-07 41936000  86.3  86.3  88.9  88.7           87.9
-#>  5 GOOGL  2021-01-08 35484000  88.9  88.1  90.0  89.9           89.1
+#>  5 GOOGL  2021-01-08 35484000  88.9  88.1  90.0  89.9           89.0
 #>  6 GOOGL  2021-01-11 34796000  88.9  87.6  89.2  87.8           87.0
 #>  7 GOOGL  2021-01-12 29528000  87.3  85.8  88.4  86.9           86.1
-#>  8 GOOGL  2021-01-13 23432000  86.4  86.4  87.8  87.4           86.6
-#>  9 GOOGL  2021-01-14 29212000  87.4  86.3  88.4  86.5           85.8
+#>  8 GOOGL  2021-01-13 23432000  86.4  86.4  87.8  87.4           86.5
+#>  9 GOOGL  2021-01-14 29212000  87.4  86.3  88.4  86.5           85.7
 #> 10 GOOGL  2021-01-15 31444000  86.5  85.6  87.4  86.4           85.6
 #> # ℹ 242 more rows
 # }
