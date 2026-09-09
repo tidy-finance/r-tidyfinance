@@ -23,6 +23,11 @@
 - The documentation of `estimate_fama_macbeth(detail = TRUE)` now lists the
   `adj_r_squared` column, which the function has always returned in
   `summary_statistics` alongside `r_squared` and `n_obs`.
+- `download_data_stock_prices()` now derives dates from the exchange time zone
+  reported by Yahoo Finance instead of converting the timestamps in UTC.
+  Timestamps refer to the market open in local time, so for exchanges ahead of
+  UTC (e.g. `"^AXJO"`, `"^NZ50"`) every observation was previously dated one
+  calendar day too early and could fall on a weekend.
 
 # tidyfinance 0.8.0
   

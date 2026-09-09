@@ -86,12 +86,25 @@ download_data_stock_prices <- function(
       indicators <- raw_data[[1]]$indicators$adjclose
       indicators <- replace_null_with_na(indicators)
 
+      # Daily timestamps refer to the market open in the exchange's local time
+      # zone, so the dates must be derived in that zone. Converting in UTC
+      # shifts markets ahead of UTC (e.g. Australia, New Zealand) to the
+      # previous calendar day.
+      exchange_timezone <- raw_data[[1]]$meta$exchangeTimezoneName
+      if (is.null(exchange_timezone) || !nzchar(exchange_timezone)) {
+        exchange_timezone <- "UTC"
+      }
+
       processed_data_symbol <- tibble(
         "symbol" = symbols[j],
-        "date" = as.Date(as.POSIXct(
-          as.numeric(raw_data[[1]]$timestamp),
-          origin = "1970-01-01"
-        )),
+        "date" = as.Date(
+          as.POSIXct(
+            as.numeric(raw_data[[1]]$timestamp),
+            origin = "1970-01-01",
+            tz = "UTC"
+          ),
+          tz = exchange_timezone
+        ),
         "volume" = as.numeric(unlist(ohlcv$volume)),
         "open" = as.numeric(unlist(ohlcv$open)),
         "low" = as.numeric(unlist(ohlcv$low)),
