@@ -16,6 +16,7 @@ test_that("downloads data, replaces NULL, and warns on failures", {
     chart = list(
       result = list(
         list(
+          meta = list(exchangeTimezoneName = "UTC"),
           timestamp = c(1577836800, 1577923200),
           indicators = list(
             quote = list(
@@ -105,4 +106,158 @@ test_that("downloads data, replaces NULL, and warns on failures", {
   expect_equal(out$high, c(12, 13))
   expect_equal(out$close, c(11, 12))
   expect_equal(out$adjusted_close, c(11, NA))
+})
+
+test_that("dates use the exchange time zone reported by Yahoo Finance", {
+  # 1584313200 is 2020-03-16 10:00 in Australia/Sydney, i.e. the ASX open on
+  # the day of the COVID crash, but 2020-03-15 (a Sunday) in UTC.
+  make_body <- function(timezone) {
+    list(
+      chart = list(
+        result = list(
+          list(
+            meta = list(exchangeTimezoneName = timezone),
+            timestamp = 1584313200,
+            indicators = list(
+              quote = list(
+                list(
+                  volume = list(100),
+                  open = list(10),
+                  low = list(9),
+                  high = list(12),
+                  close = list(11)
+                )
+              ),
+              adjclose = list(
+                list(adjclose = list(11))
+              )
+            )
+          )
+        )
+      )
+    )
+  }
+
+  download_with_timezone <- function(timezone) {
+    testthat::local_mocked_bindings(
+      validate_dates = function(start_date, end_date, use_default_range) {
+        list(
+          start_date = as.Date("2020-03-01"),
+          end_date = as.Date("2020-03-31")
+        )
+      }
+    )
+    testthat::local_mocked_bindings(
+      request = function(url) list(url = url),
+      req_error = function(req, is_error) req,
+      req_perform = function(req) list(status_code = 200),
+      resp_body_json = function(response) make_body(timezone),
+      .package = "httr2"
+    )
+    testthat::local_mocked_bindings(
+      cli_progress_bar = function(...) invisible(NULL),
+      cli_progress_update = function(...) invisible(NULL),
+      .package = "cli"
+    )
+    download_data_stock_prices("^AXJO", "2020-03-01", "2020-03-31")
+  }
+
+  expect_equal(
+    download_with_timezone("Australia/Sydney")$date,
+    as.Date("2020-03-16")
+  )
+  expect_equal(
+    download_with_timezone("Pacific/Auckland")$date,
+    as.Date("2020-03-16")
+  )
+  # Markets at or behind UTC are unaffected by the fix.
+  expect_equal(
+    download_with_timezone("America/New_York")$date,
+    as.Date("2020-03-15")
+  )
+  # Missing time zone metadata falls back to UTC, i.e. the previous behavior.
+  expect_equal(
+    download_with_timezone(NULL)$date,
+    as.Date("2020-03-15")
+  )
+})
+
+test_that("both range bounds are inclusive and the request is buffered", {
+  start_date <- as.Date("2020-03-02")
+  end_date <- as.Date("2020-03-06")
+
+  # Yahoo is asked for a buffered window, so it may return bars outside the
+  # requested range; those must be dropped.
+  returned_dates <- seq(
+    as.Date("2020-03-01"),
+    as.Date("2020-03-07"),
+    by = "day"
+  )
+  timestamps <- as.integer(as.POSIXct(returned_dates, tz = "UTC"))
+  n <- length(returned_dates)
+
+  captured <- new.env()
+
+  body <- list(
+    chart = list(
+      result = list(
+        list(
+          meta = list(exchangeTimezoneName = "UTC"),
+          timestamp = timestamps,
+          indicators = list(
+            quote = list(
+              list(
+                volume = as.list(seq_len(n)),
+                open = as.list(seq_len(n)),
+                low = as.list(seq_len(n)),
+                high = as.list(seq_len(n)),
+                close = as.list(seq_len(n))
+              )
+            ),
+            adjclose = list(
+              list(adjclose = as.list(seq_len(n)))
+            )
+          )
+        )
+      )
+    )
+  )
+
+  testthat::local_mocked_bindings(
+    validate_dates = function(start_date, end_date, use_default_range) {
+      list(start_date = as.Date("2020-03-02"), end_date = as.Date("2020-03-06"))
+    }
+  )
+  testthat::local_mocked_bindings(
+    request = function(url) list(url = url),
+    req_error = function(req, is_error) req,
+    req_perform = function(req) {
+      captured$url <- req$url
+      list(status_code = 200)
+    },
+    resp_body_json = function(response) body,
+    .package = "httr2"
+  )
+  testthat::local_mocked_bindings(
+    cli_progress_bar = function(...) invisible(NULL),
+    cli_progress_update = function(...) invisible(NULL),
+    .package = "cli"
+  )
+
+  out <- download_data_stock_prices("AAPL", start_date, end_date)
+
+  # Both bounds are inclusive and nothing outside the range survives.
+  expect_equal(out$date, seq(start_date, end_date, by = "day"))
+
+  # The request itself reaches two days beyond each bound.
+  expect_match(
+    captured$url,
+    paste0("period1=", as.integer(as.POSIXct(start_date - 2, tz = "UTC"))),
+    fixed = TRUE
+  )
+  expect_match(
+    captured$url,
+    paste0("period2=", as.integer(as.POSIXct(end_date + 2, tz = "UTC"))),
+    fixed = TRUE
+  )
 })

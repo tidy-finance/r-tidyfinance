@@ -26,6 +26,11 @@ date, volume, open, low, high, close, and adjusted_close.
 Downloads historical stock data from Yahoo Finance for given symbols and date
 range.
 }
+\details{
+Dates are the trading days in the exchange's local time zone, as
+reported by Yahoo Finance, and the range is inclusive of both
+\code{start_date} and \code{end_date}.
+}
 \examples{
 \donttest{
   download_data_stock_prices(c("AAPL", "MSFT"))
