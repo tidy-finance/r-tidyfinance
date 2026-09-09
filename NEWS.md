@@ -28,6 +28,12 @@
   Timestamps refer to the market open in local time, so for exchanges ahead of
   UTC (e.g. `"^AXJO"`, `"^NZ50"`) every observation was previously dated one
   calendar day too early and could fall on a weekend.
+- `download_data_stock_prices()` now returns a range that is inclusive of both
+  `start_date` and `end_date` for every exchange, matching the other
+  `download_data_*()` functions. The range was previously delegated to Yahoo
+  Finance's `period1` / `period2`, which are resolved in the exchange's local
+  time zone, so `end_date` was excluded for markets at or behind UTC but
+  included for markets ahead of it.
 
 # tidyfinance 0.8.0
   

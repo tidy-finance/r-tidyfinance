@@ -12,6 +12,10 @@
 #'   format specifying the end date for the data. If not provided, a one-year
 #'   subset of the dataset is returned (see [validate_dates()]).
 #'
+#' @details Dates are the trading days in the exchange's local time zone, as
+#'   reported by Yahoo Finance, and the range is inclusive of both
+#'   `start_date` and `end_date`.
+#'
 #' @returns A tibble containing the downloaded stock data with columns: symbol,
 #'   date, volume, open, low, high, close, and adjusted_close.
 #'
@@ -41,8 +45,15 @@ download_data_stock_prices <- function(
   start_date <- dates$start_date
   end_date <- dates$end_date
 
-  start_timestamp <- as.integer(as.POSIXct(start_date, tz = "UTC"))
-  end_timestamp <- as.integer(as.POSIXct(end_date, tz = "UTC"))
+  # Yahoo Finance resolves `period1` and `period2` against the exchange's local
+  # time zone, so a window expressed in UTC covers a different set of trading
+  # days for each market. Request a buffer around the range and filter on the
+  # converted dates below, which makes both bounds inclusive everywhere.
+  request_buffer <- 2
+  start_timestamp <- as.integer(
+    as.POSIXct(start_date - request_buffer, tz = "UTC")
+  )
+  end_timestamp <- as.integer(as.POSIXct(end_date + request_buffer, tz = "UTC"))
 
   processed_data <- list()
 
@@ -113,7 +124,8 @@ download_data_stock_prices <- function(
         "adjusted_close" = as.numeric(unlist(indicators))
       )
 
-      processed_data[[j]] <- processed_data_symbol
+      processed_data[[j]] <- processed_data_symbol |>
+        filter(between(.data$date, start_date, end_date))
     } else {
       error_message <- # nolint: object_usage_linter.
         httr2::resp_body_json(response)$chart$error
