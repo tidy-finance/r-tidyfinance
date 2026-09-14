@@ -78,7 +78,7 @@
 #' download_data(
 #'   "Tidy Finance",
 #'   "factor_library",
-#'   sorting_variable = "52w",
+#'   sorting_variable = "high52",
 #'   rebalancing = "annual"
 #' )
 #' download_data("Tidy Finance", "factor_library", ids = c(1L, 2L, 3L))

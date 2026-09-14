@@ -1,5 +1,21 @@
 # tidyfinance (development version)
 
+## Breaking changes
+
+- `download_factor_library_ids()` and
+  `download_data("Tidy Finance", "factor_library")` read the new layout of the
+  factor library on Hugging Face, where the returns hold only `id`, `date`, and
+  `ret` in files of 1,000 consecutive IDs named after their range. Only the
+  files that hold the requested IDs are downloaded, and the file listing of the
+  dataset is no longer queried. The result no longer has a `ret_type` column;
+  the weighting scheme is in the `weighting_scheme` column of the grid. Earlier
+  versions of the package cannot read the new layout.
+- The factor library now builds on the signals of Open Source Asset Pricing,
+  so sorting variables carry their names, e.g. `"size"` instead of `"me"` and
+  `"high52"` instead of `"52w"`. The examples and the documented grid values
+  follow the new release, which adds the `"1m"` lag and `"capped VW"`
+  weighting.
+
 ## New features
 
 - Added `download_data_fred_md()` and the `"FRED-MD"` / `"FRED-QD"` datasets
