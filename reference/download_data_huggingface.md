@@ -66,8 +66,9 @@ download_data_huggingface(
 
 A tibble with the downloaded data. For `"high_frequency_sp500"`,
 contains 5-second aggregated orderbook snapshots filtered to the
-requested date range. For `"factor_library"`, contains portfolio return
-data joined with the full grid metadata for the matched portfolio IDs.
+requested date range. For `"factor_library"`, contains the columns `id`,
+`date`, and `ret` joined with the full grid metadata for the matched
+portfolio IDs.
 
 ## Details
 
@@ -79,15 +80,18 @@ your intended design.
 Supported columns and their defaults for `...`:
 
 - `sorting_variable`: **Required.** The firm characteristic used to sort
-  stocks into portfolios (e.g., `"me"` for market equity, `"bm"` for
-  book-to-market). No default is applied.
+  stocks into portfolios, named like the Open Source Asset Pricing
+  signals (e.g., `"size"` for market equity, `"bm"` for book-to-market).
+  See
+  [`download_factor_library_grid()`](https://r.tidy-finance.org/reference/download_factor_library_grid.md)
+  for all values. No default is applied.
 
 - `min_size_quantile` (defaults to `0.2`): Fraction of the smallest
   stocks (by market cap) excluded from the portfolio universe. `0.2`
   drops the bottom 20%.
 
 - `exclude_financials` (defaults to `FALSE`): Whether to drop
-  financial-sector stocks (SIC 6000-6999) from the universe.
+  financial-sector stocks (SIC 6000-6799) from the universe.
 
 - `exclude_utilities` (default: `FALSE`): Whether to drop utility-sector
   stocks (SIC 4900-4999) from the universe.
@@ -96,8 +100,8 @@ Supported columns and their defaults for `...`:
   firms with negative earnings before sorting.
 
 - `sorting_variable_lag` (defaults to `"6m"`): Lag applied to the
-  sorting variable before portfolio assignment (e.g., `"6m"` = 6-month
-  lag).
+  sorting variable before portfolio assignment: `"1m"` (the timing of
+  Open Source Asset Pricing), `"3m"`, `"6m"`, or `"ff"` (Fama-French).
 
 - `rebalancing` (defaults to `"monthly"`): How frequently portfolios are
   reformed: `"monthly"` or `"annual"`.
@@ -106,23 +110,25 @@ Supported columns and their defaults for `...`:
   (e.g., `10` for decile portfolios).
 
 - `sorting_method` (defaults to `"univariate"`): Whether portfolios are
-  formed on a single sort (`"univariate"`) or a sequential double sort
-  (`"sequential"`).
+  formed on a single sort (`"univariate"`) or on a double sort with size
+  as the second variable (`"bivariate-dependent"` or
+  `"bivariate-independent"`).
 
-- `n_portfolios_secondary` (defaults to `NULL`): Number of groups for
-  the secondary sort variable. Required when `sorting_method` is not
+- `n_portfolios_secondary` (defaults to `NULL`): Number of size groups
+  for the secondary sort. Required when `sorting_method` is not
   `"univariate"`.
 
 - `breakpoints_exchanges` (defaults to: `"NYSE"`): Exchange(s) used to
   compute breakpoints. `"NYSE"` uses only NYSE-listed stocks to define
   quantile cutoffs (the conventional Fama-French approach).
 
-- `breakpoints_min_size_threshold` (defaults to `NULL`): Minimum
-  market-cap threshold (in USD) applied when computing breakpoints.
-  `NULL` means no minimum-size screen is applied.
+- `breakpoints_min_size_threshold` (defaults to `NA`): Minimum size
+  quantile of the stocks that set the main breakpoints (e.g., `0.2`).
+  `NA` means no minimum-size screen is applied.
 
 - `weighting_scheme` (defaults to `"VW"`): Return weighting within
-  portfolios: `"VW"` for value-weighted or `"EW"` for equal-weighted.
+  portfolios: `"VW"` for value-weighted, `"EW"` for equal-weighted, or
+  `"capped VW"` for value-weighted with capped weights.
 
 ## See also
 
@@ -152,15 +158,15 @@ if (FALSE) { # \dontrun{
   )
   download_data_huggingface(
     "factor_library",
-    sorting_variable = "52w",
+    sorting_variable = "high52",
     rebalancing = "annual"
   )
   download_data_huggingface(
-    "factor_library", sorting_variable = "ag", fill_all = TRUE
+    "factor_library", sorting_variable = "assetgrowth", fill_all = TRUE
   )
   download_data_huggingface(
     "factor_library",
-    sorting_variable = "me",
+    sorting_variable = "size",
     start_date = "2000-01-01",
     end_date = "2020-12-31"
   )

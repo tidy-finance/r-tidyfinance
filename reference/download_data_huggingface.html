@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,8 +132,8 @@ columns and their defaults.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A tibble with the downloaded data. For <code>"high_frequency_sp500"</code>,
 contains 5-second aggregated orderbook snapshots filtered to the requested
-date range. For <code>"factor_library"</code>, contains portfolio return data joined
-with the full grid metadata for the matched portfolio IDs.</p>
+date range. For <code>"factor_library"</code>, contains the columns <code>id</code>, <code>date</code>, and
+<code>ret</code> joined with the full grid metadata for the matched portfolio IDs.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -142,38 +142,43 @@ one common portfolio construction choice, but may not suit every research
 question. Always verify that the selected combination matches your intended
 design.</p>
 <p>Supported columns and their defaults for <code>...</code>:</p><ul><li><p><code>sorting_variable</code>: <strong>Required.</strong> The firm characteristic used
-to sort stocks into portfolios (e.g., <code>"me"</code> for market equity,
-<code>"bm"</code> for book-to-market). No default is applied.</p></li>
+to sort stocks into portfolios, named like the Open Source Asset
+Pricing signals (e.g., <code>"size"</code> for market equity, <code>"bm"</code> for
+book-to-market). See <code><a href="download_factor_library_grid.html">download_factor_library_grid()</a></code> for all
+values. No default is applied.</p></li>
 <li><p><code>min_size_quantile</code> (defaults to <code>0.2</code>): Fraction of the smallest
 stocks (by market cap) excluded from the portfolio universe. <code>0.2</code>
 drops the bottom 20%.</p></li>
 <li><p><code>exclude_financials</code> (defaults to <code>FALSE</code>): Whether to drop
-financial-sector stocks (SIC 6000-6999) from the universe.</p></li>
+financial-sector stocks (SIC 6000-6799) from the universe.</p></li>
 <li><p><code>exclude_utilities</code> (default: <code>FALSE</code>): Whether to drop
 utility-sector stocks (SIC 4900-4999) from the universe.</p></li>
 <li><p><code>exclude_negative_earnings</code> (defaults to <code>FALSE</code>): Whether to
 drop firms with negative earnings before sorting.</p></li>
 <li><p><code>sorting_variable_lag</code> (defaults to <code>"6m"</code>): Lag applied to the
-sorting variable before portfolio assignment (e.g., <code>"6m"</code> = 6-month
-lag).</p></li>
+sorting variable before portfolio assignment: <code>"1m"</code> (the timing of
+Open Source Asset Pricing), <code>"3m"</code>, <code>"6m"</code>, or <code>"ff"</code>
+(Fama-French).</p></li>
 <li><p><code>rebalancing</code> (defaults to <code>"monthly"</code>): How frequently portfolios
 are reformed: <code>"monthly"</code> or <code>"annual"</code>.</p></li>
 <li><p><code>n_portfolios_main</code> (defaults to <code>10</code>): Number of quantile groups
 (e.g., <code>10</code> for decile portfolios).</p></li>
 <li><p><code>sorting_method</code> (defaults to <code>"univariate"</code>): Whether portfolios
-are formed on a single sort (<code>"univariate"</code>) or a sequential double
-sort (<code>"sequential"</code>).</p></li>
-<li><p><code>n_portfolios_secondary</code> (defaults to <code>NULL</code>): Number of groups
-for the secondary sort variable.
+are formed on a single sort (<code>"univariate"</code>) or on a double sort with
+size as the second variable (<code>"bivariate-dependent"</code> or
+<code>"bivariate-independent"</code>).</p></li>
+<li><p><code>n_portfolios_secondary</code> (defaults to <code>NULL</code>): Number of size
+groups for the secondary sort.
 Required when <code>sorting_method</code> is not <code>"univariate"</code>.</p></li>
 <li><p><code>breakpoints_exchanges</code> (defaults to: <code>"NYSE"</code>): Exchange(s) used
 to compute breakpoints. <code>"NYSE"</code> uses only NYSE-listed stocks to
 define quantile cutoffs (the conventional Fama-French approach).</p></li>
-<li><p><code>breakpoints_min_size_threshold</code> (defaults to <code>NULL</code>): Minimum
-market-cap threshold (in USD) applied when computing breakpoints.
-<code>NULL</code> means no minimum-size screen is applied.</p></li>
+<li><p><code>breakpoints_min_size_threshold</code> (defaults to <code>NA</code>): Minimum
+size quantile of the stocks that set the main breakpoints (e.g.,
+<code>0.2</code>). <code>NA</code> means no minimum-size screen is applied.</p></li>
 <li><p><code>weighting_scheme</code> (defaults to <code>"VW"</code>): Return weighting within
-portfolios: <code>"VW"</code> for value-weighted or <code>"EW"</code> for equal-weighted.</p></li>
+portfolios: <code>"VW"</code> for value-weighted, <code>"EW"</code> for equal-weighted, or
+<code>"capped VW"</code> for value-weighted with capped weights.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -203,15 +208,15 @@ portfolios: <code>"VW"</code> for value-weighted or <code>"EW"</code> for equal-
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">download_data_huggingface</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="st">"factor_library"</span>,</span></span>
-<span class="r-in"><span>    sorting_variable <span class="op">=</span> <span class="st">"52w"</span>,</span></span>
+<span class="r-in"><span>    sorting_variable <span class="op">=</span> <span class="st">"high52"</span>,</span></span>
 <span class="r-in"><span>    rebalancing <span class="op">=</span> <span class="st">"annual"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">download_data_huggingface</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="st">"factor_library"</span>, sorting_variable <span class="op">=</span> <span class="st">"ag"</span>, fill_all <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span>    <span class="st">"factor_library"</span>, sorting_variable <span class="op">=</span> <span class="st">"assetgrowth"</span>, fill_all <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">download_data_huggingface</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="st">"factor_library"</span>,</span></span>
-<span class="r-in"><span>    sorting_variable <span class="op">=</span> <span class="st">"me"</span>,</span></span>
+<span class="r-in"><span>    sorting_variable <span class="op">=</span> <span class="st">"size"</span>,</span></span>
 <span class="r-in"><span>    start_date <span class="op">=</span> <span class="st">"2000-01-01"</span>,</span></span>
 <span class="r-in"><span>    end_date <span class="op">=</span> <span class="st">"2020-12-31"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>

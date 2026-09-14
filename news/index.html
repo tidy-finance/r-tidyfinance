@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,6 +53,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tidyfinance-development-version">tidyfinance (development version)<a class="anchor" aria-label="anchor" href="#tidyfinance-development-version"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/download_factor_library_ids.html">download_factor_library_ids()</a></code> and <code>download_data("Tidy Finance", "factor_library")</code> read the new layout of the factor library on Hugging Face, where the returns hold only <code>id</code>, <code>date</code>, and <code>ret</code> in files of 1,000 consecutive IDs named after their range. Only the files that hold the requested IDs are downloaded, and the file listing of the dataset is no longer queried. The result no longer has a <code>ret_type</code> column; the weighting scheme is in the <code>weighting_scheme</code> column of the grid. Earlier versions of the package cannot read the new layout.</li>
+<li>The factor library now builds on the signals of Open Source Asset Pricing, so sorting variables carry their names, e.g. <code>"size"</code> instead of <code>"me"</code> and <code>"high52"</code> instead of <code>"52w"</code>. The examples and the documented grid values follow the new release, which adds the <code>"1m"</code> lag and <code>"capped VW"</code> weighting.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <ul><li>Added <code><a href="../reference/download_data_fred_md.html">download_data_fred_md()</a></code> and the <code>"FRED-MD"</code> / <code>"FRED-QD"</code> datasets for <code>download_data("FRED", ...)</code>, which download the McCracken and Ng (2016, 2021) curated monthly / quarterly macro panels as wide tables (one column per series). <code>transform = TRUE</code> applies each series’ stationarity transform code (tcode). <code>vintage</code> selects the current release (default), a specific <code>"YYYY-MM"</code> release, or <code>"all"</code> - the full real-time panel across every archived vintage (recent vintages are hosted individually; older ones are read from the St. Louis Fed vintage archive ZIPs), enabling leak-free point-in-time analysis.</li>

@@ -144,17 +144,17 @@ download_data("Index Constituents", index = "DAX")
 #>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
 #>  2 SAP.DE  SAP                                Deutschland Xetra         EUR     
 #>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
-#>  4 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
-#>  5 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  4 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  5 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
 #>  6 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
 #>  7 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
 #>  8 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
 #>  9 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
-#> 10 DHL.DE  DHL N AG                           Deutschland Xetra         EUR     
+#> 10 DHL.DE  DHL AG                             Deutschland Xetra         EUR     
 #> # ℹ 30 more rows
 download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> No `start_date` or `end_date` provided. Returning the full data set.
-#> # A tibble: 1,681 × 3
+#> # A tibble: 1,682 × 3
 #>    date       value series
 #>    <date>     <dbl> <chr> 
 #>  1 1947-01-01  243. GDP   
@@ -167,7 +167,7 @@ download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #>  8 1948-10-01  280. GDP   
 #>  9 1949-01-01  275. GDP   
 #> 10 1949-04-01  271. GDP   
-#> # ℹ 1,671 more rows
+#> # ℹ 1,672 more rows
 download_data("FRED", "FRED-MD")
 #> # A tibble: 801 × 127
 #>    date         RPI W875RX1 DPCERA3M086SBEA CMRMTSPLx RETAILx INDPRO IPFPNSS
@@ -232,22 +232,22 @@ download_data("FRED", "FRED-QD", vintage = "2020-03")
 #> #   IPMAT <dbl>, IPDMAT <dbl>, IPNMAT <dbl>, IPDCONGD <dbl>, IPB51110SQ <dbl>,
 #> #   IPNCONGD <dbl>, IPBUSEQ <dbl>, IPB51220SQ <dbl>, TCU <dbl>, CUMFNS <dbl>, …
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-09-09 to
-#> 2025-09-09 to avoid downloading large amounts of data.
-#> # A tibble: 502 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-09-14 to
+#> 2025-09-14 to avoid downloading large amounts of data.
+#> # A tibble: 498 × 8
 #>    symbol date          volume  open   low  high close adjusted_close
 #>    <chr>  <date>         <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-09-09  67180000  221.  217.  221.  221.           219.
-#>  2 AAPL   2024-09-10  51591000  219.  217.  221.  220.           218.
-#>  3 AAPL   2024-09-11  44587100  221.  218.  223.  223.           221.
-#>  4 AAPL   2024-09-12  37455600  222.  220.  224.  223.           221.
-#>  5 AAPL   2024-09-13  36766600  224.  222.  224.  222.           221.
-#>  6 AAPL   2024-09-16  59357400  217.  214.  217.  216.           215.
-#>  7 AAPL   2024-09-17  45519300  216.  214.  217.  217.           215.
-#>  8 AAPL   2024-09-18  59894900  218.  218.  223.  221.           219.
-#>  9 AAPL   2024-09-19  66781300  225.  225.  230.  229.           227.
-#> 10 AAPL   2024-09-20 318679900  230.  228.  233.  228.           226.
-#> # ℹ 492 more rows
+#>  1 AAPL   2024-09-16  59357400  217.  214.  217.  216.           215.
+#>  2 AAPL   2024-09-17  45519300  216.  214.  217.  217.           215.
+#>  3 AAPL   2024-09-18  59894900  218.  218.  223.  221.           219.
+#>  4 AAPL   2024-09-19  66781300  225.  225.  230.  229.           227.
+#>  5 AAPL   2024-09-20 318679900  230.  228.  233.  228.           226.
+#>  6 AAPL   2024-09-23  54146000  227.  226.  229.  226.           225.
+#>  7 AAPL   2024-09-24  43556100  229.  226.  229.  227.           225.
+#>  8 AAPL   2024-09-25  42308700  225.  224.  227.  226.           224.
+#>  9 AAPL   2024-09-26  36636700  227.  225.  228.  228.           226.
+#> 10 AAPL   2024-09-27  34026000  228.  227.  230.  228.           226.
+#> # ℹ 488 more rows
 download_data(
   "Tidy Finance",
   "risk_free",
@@ -294,66 +294,69 @@ download_data(
 download_data(
   "Tidy Finance",
   "factor_library",
-  sorting_variable = "52w",
+  sorting_variable = "high52",
   rebalancing = "annual"
 )
 #> No `start_date` or `end_date` provided. Returning the full data set.
-#> # A data frame: 774 × 17
-#>        id date       ret_type      ret sorting_variable min_size_quantile
-#>     <int> <date>     <chr>       <dbl> <chr>                        <dbl>
-#>  1 286214 1960-07-01 vw        0.0257  52w                            0.2
-#>  2 286214 1960-08-01 vw        0.0190  52w                            0.2
-#>  3 286214 1960-09-01 vw        0.00840 52w                            0.2
-#>  4 286214 1960-10-01 vw        0.0101  52w                            0.2
-#>  5 286214 1960-11-01 vw        0.0300  52w                            0.2
-#>  6 286214 1960-12-01 vw        0.0202  52w                            0.2
-#>  7 286214 1961-01-01 vw        0.00680 52w                            0.2
-#>  8 286214 1961-02-01 vw       -0.0127  52w                            0.2
-#>  9 286214 1961-03-01 vw        0.00850 52w                            0.2
-#> 10 286214 1961-04-01 vw        0.0487  52w                            0.2
+#> # A data frame: 774 × 19
+#>        id date            ret sorting_variable min_size_quantile min_stock_price
+#>     <int> <date>        <dbl> <chr>                        <dbl>           <dbl>
+#>  1 2.53e6 1960-07-01 -0.0186  high52                         0.2              NA
+#>  2 2.53e6 1960-08-01  0.00310 high52                         0.2              NA
+#>  3 2.53e6 1960-09-01  0.00178 high52                         0.2              NA
+#>  4 2.53e6 1960-10-01  0.0264  high52                         0.2              NA
+#>  5 2.53e6 1960-11-01 -0.00333 high52                         0.2              NA
+#>  6 2.53e6 1960-12-01  0.0197  high52                         0.2              NA
+#>  7 2.53e6 1961-01-01 -0.0526  high52                         0.2              NA
+#>  8 2.53e6 1961-02-01  0.0352  high52                         0.2              NA
+#>  9 2.53e6 1961-03-01  0.00377 high52                         0.2              NA
+#> 10 2.53e6 1961-04-01 -0.0138  high52                         0.2              NA
 #> # ℹ 764 more rows
-#> # ℹ 11 more variables: exclude_financials <lgl>, exclude_utilities <lgl>,
+#> # ℹ 13 more variables: min_listing_age <int>, exclude_financials <lgl>,
+#> #   exclude_utilities <lgl>, exclude_negative_book_equity <lgl>,
 #> #   exclude_negative_earnings <lgl>, sorting_variable_lag <chr>,
-#> #   rebalancing <chr>, n_portfolios_main <chr>, sorting_method <chr>,
+#> #   rebalancing <chr>, n_portfolios_main <dbl>, sorting_method <chr>,
 #> #   breakpoints_min_size_threshold <dbl>, n_portfolios_secondary <dbl>,
 #> #   breakpoints_exchanges <chr>, weighting_scheme <chr>
 download_data("Tidy Finance", "factor_library", ids = c(1L, 2L, 3L))
 #> No `start_date` or `end_date` provided. Returning the full data set.
-#> # A data frame: 2,331 × 17
-#>       id date       ret_type        ret sorting_variable min_size_quantile
-#>    <int> <date>     <chr>         <dbl> <chr>                        <dbl>
-#>  1     2 1960-04-01 vw         0.0158   52w                             NA
-#>  2     1 1960-04-01 ew        -0.00398  52w                             NA
-#>  3     3 1960-04-01 vw_capped -0.000927 52w                             NA
-#>  4     2 1960-05-01 vw        -0.0347   52w                             NA
-#>  5     1 1960-05-01 ew        -0.152    52w                             NA
-#>  6     3 1960-05-01 vw_capped -0.0987   52w                             NA
-#>  7     2 1960-06-01 vw         0.0328   52w                             NA
-#>  8     1 1960-06-01 ew        -0.00606  52w                             NA
-#>  9     3 1960-06-01 vw_capped  0.0325   52w                             NA
-#> 10     2 1960-07-01 vw        -0.00215  52w                             NA
-#> # ℹ 2,321 more rows
-#> # ℹ 11 more variables: exclude_financials <lgl>, exclude_utilities <lgl>,
+#> # A data frame: 2,337 × 19
+#>       id date         ret sorting_variable min_size_quantile min_stock_price
+#>    <int> <date>     <dbl> <chr>                        <dbl>           <dbl>
+#>  1     1 1960-02-01     0 abnormalaccruals                NA              NA
+#>  2     1 1960-03-01     0 abnormalaccruals                NA              NA
+#>  3     1 1960-04-01     0 abnormalaccruals                NA              NA
+#>  4     1 1960-05-01     0 abnormalaccruals                NA              NA
+#>  5     1 1960-06-01     0 abnormalaccruals                NA              NA
+#>  6     1 1960-07-01     0 abnormalaccruals                NA              NA
+#>  7     1 1960-08-01     0 abnormalaccruals                NA              NA
+#>  8     1 1960-09-01     0 abnormalaccruals                NA              NA
+#>  9     1 1960-10-01     0 abnormalaccruals                NA              NA
+#> 10     1 1960-11-01     0 abnormalaccruals                NA              NA
+#> # ℹ 2,327 more rows
+#> # ℹ 13 more variables: min_listing_age <int>, exclude_financials <lgl>,
+#> #   exclude_utilities <lgl>, exclude_negative_book_equity <lgl>,
 #> #   exclude_negative_earnings <lgl>, sorting_variable_lag <chr>,
-#> #   rebalancing <chr>, n_portfolios_main <chr>, sorting_method <chr>,
+#> #   rebalancing <chr>, n_portfolios_main <dbl>, sorting_method <chr>,
 #> #   breakpoints_min_size_threshold <dbl>, n_portfolios_secondary <dbl>,
 #> #   breakpoints_exchanges <chr>, weighting_scheme <chr>
 download_data("Tidy Finance", "factor_library_grid")
-#> # A data frame: 841,536 × 14
-#>       id sorting_variable min_size_quantile exclude_financials exclude_utilities
-#>    <int> <chr>                        <dbl> <lgl>              <lgl>            
-#>  1     1 52w                             NA TRUE               TRUE             
-#>  2     2 52w                             NA TRUE               TRUE             
-#>  3     3 52w                             NA TRUE               TRUE             
-#>  4     4 52w                             NA TRUE               TRUE             
-#>  5     5 52w                             NA TRUE               TRUE             
-#>  6     6 52w                             NA TRUE               TRUE             
-#>  7     7 52w                             NA TRUE               TRUE             
-#>  8     8 52w                             NA TRUE               TRUE             
-#>  9     9 52w                             NA TRUE               TRUE             
-#> 10    10 52w                             NA TRUE               TRUE             
-#> # ℹ 841,526 more rows
-#> # ℹ 9 more variables: exclude_negative_earnings <lgl>,
+#> # A data frame: 4,105,728 × 17
+#>       id sorting_variable min_size_quantile min_stock_price min_listing_age
+#>    <int> <chr>                        <dbl>           <dbl>           <int>
+#>  1     1 abnormalaccruals                NA              NA              24
+#>  2     2 abnormalaccruals                NA              NA              24
+#>  3     3 abnormalaccruals                NA              NA              24
+#>  4     4 abnormalaccruals                NA              NA              24
+#>  5     5 abnormalaccruals                NA              NA              24
+#>  6     6 abnormalaccruals                NA              NA              24
+#>  7     7 abnormalaccruals                NA              NA              24
+#>  8     8 abnormalaccruals                NA              NA              24
+#>  9     9 abnormalaccruals                NA              NA              24
+#> 10    10 abnormalaccruals                NA              NA              24
+#> # ℹ 4,105,718 more rows
+#> # ℹ 12 more variables: exclude_financials <lgl>, exclude_utilities <lgl>,
+#> #   exclude_negative_book_equity <lgl>, exclude_negative_earnings <lgl>,
 #> #   sorting_variable_lag <chr>, rebalancing <chr>, n_portfolios_main <dbl>,
 #> #   sorting_method <chr>, breakpoints_min_size_threshold <dbl>,
 #> #   n_portfolios_secondary <dbl>, breakpoints_exchanges <chr>,
