@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,6 +72,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <code><a href="../reference/download_data_stock_prices.html">download_data_stock_prices()</a></code> now derives dates from the exchange time zone reported by Yahoo Finance instead of converting the timestamps in UTC. Timestamps refer to the market open in local time, so for exchanges ahead of UTC (e.g. <code>"^AXJO"</code>, <code>"^NZ50"</code>) every observation was previously dated one calendar day too early and could fall on a weekend.</li>
 <li>
 <code><a href="../reference/download_data_stock_prices.html">download_data_stock_prices()</a></code> now returns a range that is inclusive of both <code>start_date</code> and <code>end_date</code> for every exchange, matching the other <code>download_data_*()</code> functions. The range was previously delegated to Yahoo Finance’s <code>period1</code> / <code>period2</code>, which are resolved in the exchange’s local time zone, so <code>end_date</code> was excluded for markets at or behind UTC but included for markets ahead of it.</li>
+<li>
+<code><a href="../reference/download_factor_library_grid.html">download_factor_library_grid()</a></code>, and with it <code>download_data("Tidy Finance", "factor_library")</code>, now reads <code>portfolio_sort_grid.parquet</code> by name instead of every Parquet file listed in the grid repo, which also holds one slice of the grid per sorting variable and the list of sorting variables. Reading the listing failed as soon as the repo held more than one Parquet file.</li>
 </ul></div>
 </div>
     <div class="section level2">
