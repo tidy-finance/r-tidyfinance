@@ -429,12 +429,13 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
 #'   download_factor_library_grid()
 #' }
 download_factor_library_grid <- function() {
-  get_available_huggingface_files(
-    "tidy-finance",
-    "factor-library-grid"
-  ) |>
-    dplyr::pull(.data$url) |>
-    read_parquet_url()
+  # The repo also holds one slice of the grid per sorting variable and the
+  # list of sorting variables, so the grid is read by its file name instead of
+  # from the file listing of the repo.
+  read_parquet_url(paste0(
+    "https://huggingface.co/datasets/tidy-finance/factor-library-grid/",
+    "resolve/main/portfolio_sort_grid.parquet"
+  ))
 }
 
 #' Download factor library returns for a vector of portfolio IDs
