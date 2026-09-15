@@ -4,7 +4,11 @@
 \alias{download_factor_library_grid}
 \title{Download the Factor Library Grid from Hugging Face}
 \usage{
-download_factor_library_grid()
+download_factor_library_grid(refresh = FALSE)
+}
+\arguments{
+\item{refresh}{Logical(1). If \code{TRUE}, the grid is downloaded again and
+replaces the copy cached in the current session. Defaults to \code{FALSE}.}
 }
 \value{
 A tibble with one row per portfolio construction in the factor
@@ -22,6 +26,11 @@ exist before requesting their returns with
 \details{
 Equivalent to calling
 \code{download_data("Tidy Finance", "factor_library_grid")}.
+
+The grid is downloaded once per R session and cached in memory, so repeated
+calls (including those made by \code{\link[=download_factor_library_ids]{download_factor_library_ids()}} and
+\code{download_data("Tidy Finance", "factor_library", ...)}) reuse it. Set
+\code{refresh = TRUE} to download it again.
 }
 \examples{
 \dontrun{

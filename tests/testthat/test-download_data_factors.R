@@ -193,6 +193,33 @@ test_that("download_data_factors_ff: legacy dataset arg warns", {
   )
 })
 
+test_that("download_data_factors_ff: legacy dataset warning names dataset", {
+  withr::local_options(lifecycle_verbosity = "warning")
+  local_mocked_bindings(
+    handle_download_error = function(fn, ...) {
+      tibble::tibble(date = as.Date(character()))
+    }
+  )
+  warnings <- character(0)
+  withCallingHandlers(
+    suppressMessages(
+      download_data(
+        domain = "Fama-French",
+        dataset = "factors_ff_3_monthly"
+      )
+    ),
+    warning = function(w) {
+      warnings <<- c(warnings, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
+
+  expect_length(warnings, 1)
+  expect_match(warnings, '`dataset = "factors_ff_3_monthly"`', fixed = TRUE)
+  expect_match(warnings, '`dataset = "Fama/French 3 Factors"`', fixed = TRUE)
+  expect_no_match(warnings, "`type`", fixed = TRUE)
+})
+
 test_that("download_data_factors_ff: empty tibble on download fail", {
   local_mocked_bindings(
     is_legacy_type_ff = function(x) FALSE,

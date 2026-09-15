@@ -59,14 +59,9 @@ download_data_wrds <- function(
 
   # Handle legacy type passed as dataset argument
   if (!is.null(dataset) && is_legacy_type_wrds(dataset)) {
-    lifecycle::deprecate_warn(
-      when = "0.5.0",
-      what = "download_data_wrds(type)",
-      details = paste0(
-        "The `type` argument is deprecated. ",
-        "Use `dataset` instead",
-        "(e.g., 'crsp_monthly' instead of 'wrds_crsp_monthly')."
-      )
+    deprecate_legacy_dataset(
+      dataset,
+      sub("^wrds_", "", dataset)
     )
     dataset <- sub("^wrds_", "", dataset)
   }

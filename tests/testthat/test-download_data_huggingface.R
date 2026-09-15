@@ -18,6 +18,14 @@ make_grid <- function(id = 1L) {
   )
 }
 
+# Empties the session cache of the factor library grid for one test and
+# restores its previous content afterwards.
+local_empty_factor_library_cache <- function(env = parent.frame()) {
+  old <- factor_library_cache$grid
+  factor_library_cache$grid <- NULL
+  withr::defer(factor_library_cache$grid <- old, envir = env)
+}
+
 # Mocks the full httr2 chain + jsonlite::fromJSON for one page.
 # page_df is passed straight through fromJSON so the rest of
 # the pipeline (tibble(), filter(), select()) runs for real.
@@ -130,7 +138,7 @@ test_that("legacy hf_ dataset value warns and strips prefix", {
     download_data_huggingface(
       dataset = "hf_factor_library_grid"
     ),
-    regexp = "deprecated"
+    regexp = '`dataset = "hf_factor_library_grid"`.*`dataset = "factor_library_grid"`'
   )
 })
 
@@ -356,6 +364,7 @@ test_that("pulls url from available files and reads parquet", {
     url = "https://example.com/grid.parquet"
   )
   mock_grid <- tibble::tibble(id = 1L)
+  local_empty_factor_library_cache()
 
   testthat::local_mocked_bindings(
     get_available_huggingface_files = function(...) available
@@ -365,6 +374,88 @@ test_that("pulls url from available files and reads parquet", {
   )
 
   expect_equal(download_factor_library_grid(), mock_grid)
+})
+
+test_that("caches the grid within the session", {
+  local_empty_factor_library_cache()
+  n_downloads <- 0L
+  testthat::local_mocked_bindings(
+    get_available_huggingface_files = function(...) {
+      tibble::tibble(url = "https://example.com/grid.parquet")
+    },
+    read_parquet_url = function(...) {
+      n_downloads <<- n_downloads + 1L
+      make_grid(n_downloads)
+    }
+  )
+
+  first <- download_factor_library_grid()
+  second <- download_factor_library_grid()
+
+  expect_equal(n_downloads, 1L)
+  expect_identical(second, first)
+})
+
+test_that("refresh = TRUE downloads the grid again", {
+  local_empty_factor_library_cache()
+  n_downloads <- 0L
+  testthat::local_mocked_bindings(
+    get_available_huggingface_files = function(...) {
+      tibble::tibble(url = "https://example.com/grid.parquet")
+    },
+    read_parquet_url = function(...) {
+      n_downloads <<- n_downloads + 1L
+      make_grid(n_downloads)
+    }
+  )
+
+  download_factor_library_grid()
+  refreshed <- download_factor_library_grid(refresh = TRUE)
+
+  expect_equal(n_downloads, 2L)
+  expect_equal(refreshed$id, 2L)
+  expect_identical(download_factor_library_grid(), refreshed)
+})
+
+test_that("does not cache a failed download", {
+  local_empty_factor_library_cache()
+  testthat::local_mocked_bindings(
+    get_available_huggingface_files = function(...) {
+      tibble::tibble(url = "https://example.com/grid.parquet")
+    },
+    read_parquet_url = function(...) cli::cli_abort("network down")
+  )
+
+  expect_error(download_factor_library_grid(), "network down")
+  expect_null(factor_library_cache$grid)
+})
+
+test_that("aborts on an invalid refresh argument", {
+  expect_error(download_factor_library_grid(refresh = NA), "refresh")
+  expect_error(download_factor_library_grid(refresh = "yes"), "refresh")
+})
+
+test_that("download_factor_library_ids reuses the cached grid across calls", {
+  local_empty_factor_library_cache()
+  n_grid_downloads <- 0L
+  testthat::local_mocked_bindings(
+    get_available_huggingface_files = function(...) {
+      tibble::tibble(url = "https://example.com/grid.parquet")
+    },
+    read_parquet_url = function(url) {
+      if (url == "https://example.com/grid.parquet") {
+        n_grid_downloads <<- n_grid_downloads + 1L
+        make_grid(c(1L, 2L))
+      } else {
+        tibble::tibble(id = c(1L, 2L), date = as.Date("2020-01-01"), ret = 0)
+      }
+    }
+  )
+
+  download_factor_library_ids(1L)
+  download_factor_library_ids(2L)
+
+  expect_equal(n_grid_downloads, 1L)
 })
 
 # ── download_factor_library_ids ──────────────────────

@@ -84,14 +84,9 @@ download_data_wrds_compustat <- function(
 
   # Handle legacy type passed as dataset argument
   if (!is.null(dataset) && is_legacy_type_wrds(dataset)) {
-    lifecycle::deprecate_warn(
-      when = "0.5.0",
-      what = "download_data_wrds_compustat(type)",
-      details = paste0(
-        "The `type` argument is deprecated. ",
-        "Use `dataset` instead (e.g., 'compustat_annual' instead of",
-        "'wrds_compustat_annual')."
-      )
+    deprecate_legacy_dataset(
+      dataset,
+      sub("^wrds_", "", dataset)
     )
     dataset <- sub("^wrds_", "", dataset)
   }

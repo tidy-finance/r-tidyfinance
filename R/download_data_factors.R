@@ -69,17 +69,8 @@ download_data_factors_ff <- function(
 
   # Handle legacy type passed as dataset argument
   if (!is.null(dataset) && is_legacy_type_ff(dataset)) {
-    lifecycle::deprecate_warn(
-      when = "0.5.0",
-      what = "download_data_factors_ff(type)",
-      with = "download_data_factors_ff(dataset)",
-      details = paste0(
-        "Column type should be replaced with dataset name. ",
-        "Use `list_supported_datasets(domain = 'Fama-French')` to ",
-        "see the mapping."
-      )
-    )
     parsed <- parse_type_to_domain_dataset(dataset)
+    deprecate_legacy_dataset(dataset, parsed$dataset)
     dataset <- parsed$dataset
   }
 
@@ -351,16 +342,8 @@ download_data_factors_q <- function(
 
   # Handle legacy type passed as dataset argument
   if (!is.null(dataset) && is_legacy_type_q(dataset)) {
-    lifecycle::deprecate_warn(
-      when = "0.5.0",
-      what = "download_data_factors_q(type)",
-      with = "download_data_factors_q(dataset)",
-      details = paste0(
-        "Column type should be replaced with dataset name. ",
-        "Use `list_supported_datasets(domain = 'Global Q')` to see the mapping."
-      )
-    )
     parsed <- parse_type_to_domain_dataset(dataset)
+    deprecate_legacy_dataset(dataset, parsed$dataset)
     dataset <- parsed$dataset
   }
 
