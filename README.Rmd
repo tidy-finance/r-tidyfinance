@@ -245,7 +245,7 @@ You can download pre-computed portfolio returns from the [Tidy Finance Factor Li
 download_data(
   domain = "Tidy Finance",
   dataset = "factor_library",
-  sorting_variable = "ag"
+  sorting_variable = "assetgrowth"
 )
 ```
 
