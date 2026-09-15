@@ -18,6 +18,24 @@ make_grid <- function(id = 1L) {
   )
 }
 
+# Returns file with the columns of the factor library files on the Hub.
+make_returns <- function(id, ret = 0.01) {
+  tibble::tibble(id = id, date = as.Date("2020-01-01"), ret = ret)
+}
+
+# Stands in for read_parquet_url(), serving `files` by file name. A file not in
+# `files` raises the error httr2 raises when the Hub has no such file (HTTP
+# 404), as for a range of ids in which no portfolio sort produced portfolios.
+serve_files <- function(files) {
+  function(url) {
+    file <- files[[basename(url)]]
+    if (is.null(file)) {
+      httr2::resp_check_status(httr2::response(status_code = 404L))
+    }
+    file
+  }
+}
+
 # Mocks the full httr2 chain + jsonlite::fromJSON for one page.
 # page_df is passed straight through fromJSON so the rest of
 # the pipeline (tibble(), filter(), select()) runs for real.
@@ -414,7 +432,7 @@ test_that("downloads the files that hold the ids and joins grid metadata", {
     }
   )
 
-  result <- download_factor_library_ids(c(1L, 1001L))
+  expect_no_warning(result <- download_factor_library_ids(c(1L, 1001L)))
 
   expect_equal(
     requested,
@@ -427,6 +445,78 @@ test_that("downloads the files that hold the ids and joins grid metadata", {
   expect_equal(result$id, c(1L, 1001L))
   expect_equal(result$ret, c(0.01, 0.03))
   expect_true("weighting_scheme" %in% names(result))
+})
+
+test_that("skips a file missing on the Hub and warns about its ids", {
+  # The Hub has no file for the range of id 1001, as when none of the
+  # portfolio sorts in the range produced portfolios
+  files <- list("id_0000001-0001000.parquet" = make_returns(1L))
+  requested <- character(0)
+  testthat::local_mocked_bindings(
+    download_factor_library_grid = function() make_grid(c(1L, 1001L)),
+    read_parquet_url = function(url) {
+      requested <<- c(requested, basename(url))
+      serve_files(files)(url)
+    }
+  )
+
+  expect_warning(
+    result <- download_factor_library_ids(c(1L, 1001L)),
+    "absent from the result: 1001\\.$"
+  )
+  expect_equal(
+    requested,
+    c("id_0000001-0001000.parquet", "id_0001001-0002000.parquet")
+  )
+  expect_equal(result$id, 1L)
+})
+
+test_that("raises HTTP errors other than a missing file", {
+  testthat::local_mocked_bindings(
+    download_factor_library_grid = function() make_grid(1L),
+    read_parquet_url = function(url) {
+      httr2::resp_check_status(httr2::response(status_code = 503L))
+    }
+  )
+
+  expect_error(download_factor_library_ids(1L), class = "httr2_http_503")
+})
+
+test_that("warns about ids without rows in the file that holds them", {
+  # Of ids 1 to 8, only id 1 has rows; the file also holds id 9, which was
+  # not requested
+  files <- list(
+    "id_0000001-0001000.parquet" = make_returns(c(1L, 9L), c(0.01, 0.09))
+  )
+  testthat::local_mocked_bindings(
+    download_factor_library_grid = function() make_grid(1:9),
+    read_parquet_url = serve_files(files)
+  )
+
+  # The warning lists the first five ids and counts them all
+  expect_warning(
+    result <- download_factor_library_ids(1:8),
+    "absent from the result: 2, 3, 4, 5, 6, \\.\\.\\. \\(7 IDs\\)\\.$"
+  )
+  expect_equal(result$id, 1L)
+  expect_equal(result$ret, 0.01)
+})
+
+test_that("returns no rows but all columns when no id has returns", {
+  testthat::local_mocked_bindings(
+    download_factor_library_grid = function() make_grid(c(1L, 1001L)),
+    read_parquet_url = serve_files(list())
+  )
+
+  expect_warning(
+    result <- download_factor_library_ids(c(1L, 1001L)),
+    "absent from the result: 1, 1001\\.$"
+  )
+  expect_equal(nrow(result), 0L)
+  expect_named(result, c("id", "date", "ret", names(make_grid())[-1]))
+  expect_type(result$id, "integer")
+  expect_s3_class(result$date, "Date")
+  expect_type(result$ret, "double")
 })
 
 # ── download_data_hugging_face_factor_library ────────

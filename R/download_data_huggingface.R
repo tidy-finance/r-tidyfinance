@@ -454,9 +454,10 @@ download_factor_library_grid <- function() {
 #' a single call, use [download_data_huggingface()] instead.
 #'
 #' Raises an error if none of the requested IDs exist in the grid. IDs whose
-#' portfolio sort failed during the construction of the library have no
-#' returns and are absent from the result. Returns are stored in single
-#' precision, and months without a valid long-short return are stored as `0`.
+#' portfolio sort produced no portfolios have no returns; they are absent from
+#' the result, with a warning, and the result has no rows if none of the
+#' requested IDs has returns. Returns are stored in single precision, and
+#' months without a valid long-short return are stored as `0`.
 #'
 #' @param ids Integer or numeric vector of portfolio IDs to download. IDs
 #'   correspond to rows of the `tidy-finance/factor-library-grid` dataset.
@@ -492,9 +493,41 @@ download_factor_library_ids <- function(ids) {
     unique(factor_library_file(id_grid$id))
   )
 
-  purrr::map(urls, read_parquet_url) |>
-    dplyr::bind_rows() |>
-    dplyr::inner_join(id_grid, by = "id")
+  # The library has no file for a range of IDs in which no portfolio sort
+  # produced portfolios, so the request for such a file fails with HTTP 404
+  returns <- purrr::map(
+    urls,
+    \(url) tryCatch(read_parquet_url(url), httr2_http_404 = \(cnd) NULL)
+  ) |>
+    dplyr::bind_rows()
+  # Without any file, there are no columns to join the grid onto
+  if (ncol(returns) == 0) {
+    returns <- tibble::tibble(
+      id = id_grid$id[0],
+      date = as.Date(character()),
+      ret = double()
+    )
+  }
+
+  no_returns <- sort(setdiff(id_grid$id, returns$id))
+  if (length(no_returns) > 0) {
+    shown <- paste(
+      no_returns[seq_len(min(5, length(no_returns)))],
+      collapse = ", "
+    )
+    if (length(no_returns) > 5) {
+      shown <- paste0(
+        shown, ", ... (", format(length(no_returns), big.mark = ","), " IDs)"
+      )
+    }
+    cli::cli_warn(paste(
+      "Portfolio IDs without returns in the factor library, because their",
+      "portfolio sort produced no portfolios, are absent from the result:",
+      "{shown}."
+    ))
+  }
+
+  dplyr::inner_join(returns, id_grid, by = "id")
 }
 
 #' Name of the factor library file that holds a portfolio ID
