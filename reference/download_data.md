@@ -232,9 +232,9 @@ download_data("FRED", "FRED-QD", vintage = "2020-03")
 #> #   IPMAT <dbl>, IPDMAT <dbl>, IPNMAT <dbl>, IPDCONGD <dbl>, IPB51110SQ <dbl>,
 #> #   IPNCONGD <dbl>, IPBUSEQ <dbl>, IPB51220SQ <dbl>, TCU <dbl>, CUMFNS <dbl>, …
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-09-14 to
-#> 2025-09-14 to avoid downloading large amounts of data.
-#> # A tibble: 498 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-09-15 to
+#> 2025-09-15 to avoid downloading large amounts of data.
+#> # A tibble: 500 × 8
 #>    symbol date          volume  open   low  high close adjusted_close
 #>    <chr>  <date>         <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
 #>  1 AAPL   2024-09-16  59357400  217.  214.  217.  216.           215.
@@ -247,7 +247,7 @@ download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
 #>  8 AAPL   2024-09-25  42308700  225.  224.  227.  226.           224.
 #>  9 AAPL   2024-09-26  36636700  227.  225.  228.  228.           226.
 #> 10 AAPL   2024-09-27  34026000  228.  227.  230.  228.           226.
-#> # ℹ 488 more rows
+#> # ℹ 490 more rows
 download_data(
   "Tidy Finance",
   "risk_free",
