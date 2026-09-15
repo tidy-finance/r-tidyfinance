@@ -50,6 +50,12 @@
   Finance's `period1` / `period2`, which are resolved in the exchange's local
   time zone, so `end_date` was excluded for markets at or behind UTC but
   included for markets ahead of it.
+- `download_factor_library_grid()`, and with it
+  `download_data("Tidy Finance", "factor_library")`, now reads
+  `portfolio_sort_grid.parquet` by name instead of every Parquet file listed in
+  the grid repo, which also holds one slice of the grid per sorting variable
+  and the list of sorting variables. Reading the listing failed as soon as the
+  repo held more than one Parquet file.
 
 # tidyfinance 0.8.0
   
