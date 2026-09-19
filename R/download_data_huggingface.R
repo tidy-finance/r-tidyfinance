@@ -431,21 +431,14 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
 #' \dontrun{
 #'   download_factor_library_grid()
 #' }
-download_factor_library_grid <- function(refresh = FALSE) {
-  if (!isFALSE(refresh) && !isTRUE(refresh)) {
-    cli::cli_abort("{.arg refresh} must be {.code TRUE} or {.code FALSE}.")
-  }
-
-  if (refresh || is.null(factor_library_cache$grid)) {
-    factor_library_cache$grid <- get_available_huggingface_files(
-      "tidy-finance",
-      "factor-library-grid"
-    ) |>
-      dplyr::pull(.data$url) |>
-      read_parquet_url()
-  }
-
-  factor_library_cache$grid
+download_factor_library_grid <- function() {
+  # The repo also holds one slice of the grid per sorting variable and the
+  # list of sorting variables, so the grid is read by its file name instead of
+  # from the file listing of the repo.
+  read_parquet_url(paste0(
+    "https://huggingface.co/datasets/tidy-finance/factor-library-grid/",
+    "resolve/main/portfolio_sort_grid.parquet"
+  ))
 }
 
 #' Session cache for the factor library grid

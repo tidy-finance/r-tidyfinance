@@ -357,23 +357,30 @@ test_that("explicit n_portfolios_secondary = NULL returns all values", {
 
 # ── download_factor_library_grid ─────────────────────
 
-test_that("pulls url from available files and reads parquet", {
-  available <- tibble::tibble(
-    path = "grid.parquet",
-    size = 500L,
-    url = "https://example.com/grid.parquet"
-  )
+test_that("reads the grid file by name", {
   mock_grid <- tibble::tibble(id = 1L)
-  local_empty_factor_library_cache()
+  requested <- character(0)
 
   testthat::local_mocked_bindings(
-    get_available_huggingface_files = function(...) available
-  )
-  testthat::local_mocked_bindings(
-    read_parquet_url = function(...) mock_grid
+    # The repo also holds slices of the grid, so its file listing must not
+    # decide which file is read
+    get_available_huggingface_files = function(...) {
+      stop("The file listing of the grid repo must not be queried.")
+    },
+    read_parquet_url = function(url) {
+      requested <<- c(requested, url)
+      mock_grid
+    }
   )
 
   expect_equal(download_factor_library_grid(), mock_grid)
+  expect_equal(
+    requested,
+    paste0(
+      "https://huggingface.co/datasets/tidy-finance/factor-library-grid/",
+      "resolve/main/portfolio_sort_grid.parquet"
+    )
+  )
 })
 
 test_that("caches the grid within the session", {
