@@ -360,6 +360,7 @@ test_that("explicit n_portfolios_secondary = NULL returns all values", {
 test_that("reads the grid file by name", {
   mock_grid <- tibble::tibble(id = 1L)
   requested <- character(0)
+  local_empty_factor_library_cache()
 
   testthat::local_mocked_bindings(
     # The repo also holds slices of the grid, so its file listing must not
@@ -387,9 +388,6 @@ test_that("caches the grid within the session", {
   local_empty_factor_library_cache()
   n_downloads <- 0L
   testthat::local_mocked_bindings(
-    get_available_huggingface_files = function(...) {
-      tibble::tibble(url = "https://example.com/grid.parquet")
-    },
     read_parquet_url = function(...) {
       n_downloads <<- n_downloads + 1L
       make_grid(n_downloads)
@@ -407,9 +405,6 @@ test_that("refresh = TRUE downloads the grid again", {
   local_empty_factor_library_cache()
   n_downloads <- 0L
   testthat::local_mocked_bindings(
-    get_available_huggingface_files = function(...) {
-      tibble::tibble(url = "https://example.com/grid.parquet")
-    },
     read_parquet_url = function(...) {
       n_downloads <<- n_downloads + 1L
       make_grid(n_downloads)
@@ -427,9 +422,6 @@ test_that("refresh = TRUE downloads the grid again", {
 test_that("does not cache a failed download", {
   local_empty_factor_library_cache()
   testthat::local_mocked_bindings(
-    get_available_huggingface_files = function(...) {
-      tibble::tibble(url = "https://example.com/grid.parquet")
-    },
     read_parquet_url = function(...) cli::cli_abort("network down")
   )
 
@@ -446,11 +438,8 @@ test_that("download_factor_library_ids reuses the cached grid across calls", {
   local_empty_factor_library_cache()
   n_grid_downloads <- 0L
   testthat::local_mocked_bindings(
-    get_available_huggingface_files = function(...) {
-      tibble::tibble(url = "https://example.com/grid.parquet")
-    },
     read_parquet_url = function(url) {
-      if (url == "https://example.com/grid.parquet") {
+      if (basename(url) == "portfolio_sort_grid.parquet") {
         n_grid_downloads <<- n_grid_downloads + 1L
         make_grid(c(1L, 2L))
       } else {
