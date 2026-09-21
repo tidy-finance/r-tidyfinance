@@ -138,7 +138,10 @@ test_that("legacy hf_ dataset value warns and strips prefix", {
     download_data_huggingface(
       dataset = "hf_factor_library_grid"
     ),
-    regexp = '`dataset = "hf_factor_library_grid"`.*`dataset = "factor_library_grid"`'
+    regexp = paste0(
+      '`dataset = "hf_factor_library_grid"`.*',
+      '`dataset = "factor_library_grid"`'
+    )
   )
 })
 
