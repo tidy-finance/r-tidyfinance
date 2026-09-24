@@ -225,6 +225,38 @@ download_data <- function(
 
   processed_data
 }
+
+#' Warn that a legacy type identifier was passed as `dataset`
+#'
+#' Legacy identifiers such as `"factors_ff_3_monthly"` are still accepted as
+#' values of `dataset`. The warning names the value and its replacement rather
+#' than the deprecated `type` argument, which the caller did not use.
+#'
+#' The value reaches the download function through `download_data()` or
+#' directly, so the user environment is the innermost calling frame outside
+#' the package. Otherwise lifecycle would blame the package for the value.
+#'
+#' @param legacy The legacy identifier passed as `dataset`.
+#' @param dataset The dataset name that replaces it.
+#' @noRd
+deprecate_legacy_dataset <- function(legacy, dataset) {
+  ns <- topenv(environment(deprecate_legacy_dataset))
+  user_env <- globalenv()
+  for (frame in rev(sys.frames())) {
+    if (!identical(topenv(frame), ns)) {
+      user_env <- frame
+      break
+    }
+  }
+
+  lifecycle::deprecate_warn(
+    when = "0.5.0",
+    what = I(paste0('`dataset = "', legacy, '"`')),
+    with = I(paste0('`dataset = "', dataset, '"`')),
+    user_env = user_env
+  )
+}
+
 #' Check if a string is a legacy type
 #' @noRd
 is_legacy_type <- function(x) {

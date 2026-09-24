@@ -199,14 +199,9 @@ download_data_huggingface <- function(
 
   # Handle legacy type passed as dataset argument
   if (!is.null(dataset) && is_legacy_type_hf(dataset)) {
-    lifecycle::deprecate_warn(
-      when = "0.5.0",
-      what = "download_data_huggingface(type)",
-      details = paste0(
-        "The `type` argument is deprecated. ",
-        "Use `dataset` instead (e.g., 'high_frequency_sp500' instead of",
-        "'hf_high_frequency_sp500')."
-      )
+    deprecate_legacy_dataset(
+      dataset,
+      sub("^hf_", "", dataset)
     )
     dataset <- sub("^hf_", "", dataset)
   }
@@ -417,6 +412,14 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
 #' Equivalent to calling
 #' `download_data("Tidy Finance", "factor_library_grid")`.
 #'
+#' The grid is downloaded once per R session and cached in memory, so repeated
+#' calls (including those made by [download_factor_library_ids()] and
+#' `download_data("Tidy Finance", "factor_library", ...)`) reuse it. Set
+#' `refresh = TRUE` to download it again.
+#'
+#' @param refresh Logical(1). If `TRUE`, the grid is downloaded again and
+#'   replaces the copy cached in the current session. Defaults to `FALSE`.
+#'
 #' @returns A tibble with one row per portfolio construction in the factor
 #'   library, including the integer `id` column used by
 #'   [download_factor_library_ids()].
@@ -428,15 +431,30 @@ filter_factor_library_grid <- function(..., fill_all = FALSE) {
 #' \dontrun{
 #'   download_factor_library_grid()
 #' }
-download_factor_library_grid <- function() {
-  # The repo also holds one slice of the grid per sorting variable and the
-  # list of sorting variables, so the grid is read by its file name instead of
-  # from the file listing of the repo.
-  read_parquet_url(paste0(
-    "https://huggingface.co/datasets/tidy-finance/factor-library-grid/",
-    "resolve/main/portfolio_sort_grid.parquet"
-  ))
+download_factor_library_grid <- function(refresh = FALSE) {
+  if (!isFALSE(refresh) && !isTRUE(refresh)) {
+    cli::cli_abort("{.arg refresh} must be {.code TRUE} or {.code FALSE}.")
+  }
+
+  if (refresh || is.null(factor_library_cache$grid)) {
+    # The repo also holds one slice of the grid per sorting variable and the
+    # list of sorting variables, so the grid is read by its file name instead
+    # of from the file listing of the repo.
+    factor_library_cache$grid <- read_parquet_url(paste0(
+      "https://huggingface.co/datasets/tidy-finance/factor-library-grid/",
+      "resolve/main/portfolio_sort_grid.parquet"
+    ))
+  }
+
+  factor_library_cache$grid
 }
+
+#' Session cache for the factor library grid
+#'
+#' The grid has more than four million rows, so it is downloaded at most once
+#' per session by `download_factor_library_grid()`.
+#' @noRd
+factor_library_cache <- new.env(parent = emptyenv())
 
 #' Download factor library returns for a vector of portfolio IDs
 #'
