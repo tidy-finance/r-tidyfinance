@@ -66,6 +66,14 @@
   the grid repo, which also holds one slice of the grid per sorting variable
   and the list of sorting variables. Reading the listing failed as soon as the
   repo held more than one Parquet file.
+- `download_factor_library_ids()`, and with it
+  `download_data("Tidy Finance", "factor_library")`, no longer fails with
+  "HTTP 404 Not Found" for IDs in a range of 1,000 IDs for which the factor
+  library has no file because none of its portfolio sorts produced portfolios
+  (e.g., IDs 833001 to 835000, which hold `"rdcap"` sorts with
+  `min_size_quantile = 0.2`). Requested IDs without returns are absent from
+  the result, as documented, and a warning now lists them; if none of the
+  requested IDs has returns, the result is an empty tibble with all columns.
 
 # tidyfinance 0.8.0
   
