@@ -80,19 +80,7 @@ Other download functions:
 ``` r
 # \donttest{
   download_data_constituents("DAX")
-#> # A tibble: 40 × 5
-#>    symbol  name                               location    exchange      currency
-#>    <chr>   <chr>                              <chr>       <chr>         <chr>   
-#>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
-#>  2 SAP.DE  SAP                                Deutschland Xetra         EUR     
-#>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
-#>  4 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
-#>  5 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
-#>  6 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
-#>  7 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
-#>  8 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
-#>  9 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
-#> 10 DHL.DE  DHL AG                             Deutschland Xetra         EUR     
-#> # ℹ 30 more rows
+#> Error in download_data_constituents("DAX"): Failed to download data for index `index`. Please check the index name
+#> or try again later.
 # }
 ```

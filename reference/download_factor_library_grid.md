@@ -10,8 +10,15 @@ combinations exist before requesting their returns with
 ## Usage
 
 ``` r
-download_factor_library_grid()
+download_factor_library_grid(refresh = FALSE)
 ```
+
+## Arguments
+
+- refresh:
+
+  Logical(1). If `TRUE`, the grid is downloaded again and replaces the
+  copy cached in the current session. Defaults to `FALSE`.
 
 ## Value
 
@@ -23,6 +30,12 @@ including the integer `id` column used by
 
 Equivalent to calling
 `download_data("Tidy Finance", "factor_library_grid")`.
+
+The grid is downloaded once per R session and cached in memory, so
+repeated calls (including those made by
+[`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md)
+and `download_data("Tidy Finance", "factor_library", ...)`) reuse it.
+Set `refresh = TRUE` to download it again.
 
 ## See also
 

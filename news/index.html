@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9007</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,6 +66,9 @@ document.addEventListener('DOMContentLoaded', function () {
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>
+<code><a href="../reference/download_factor_library_grid.html">download_factor_library_grid()</a></code> caches the grid of the factor library for the rest of the session, so <code><a href="../reference/download_factor_library_ids.html">download_factor_library_ids()</a></code> and <code>download_data("Tidy Finance", "factor_library", ...)</code> no longer download the grid of more than four million rows on every call (previously twice per <code><a href="../reference/download_data.html">download_data()</a></code> call when filtering). Use <code>refresh = TRUE</code> to download it again.</li>
+<li>Passing a legacy identifier such as <code>"factors_ff_3_monthly"</code> as <code>dataset</code> now warns that this value is deprecated and names the dataset that replaces it, e.g. <code>"Fama/French 3 Factors"</code>. The warning previously claimed that the <code>type</code> argument was used, although the caller never passed it.</li>
+<li>
 <code><a href="../reference/estimate_fama_macbeth.html">estimate_fama_macbeth()</a></code> now orders the cross-sections chronologically before aggregating them over time. Newey-West standard errors depend on the order of the time series, so the same data in a different row order previously returned different standard errors and t-statistics while the risk premia were unchanged. Results for chronologically sorted input are unaffected (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/302" class="external-link">#302</a>).</li>
 <li>The documentation of <code>estimate_fama_macbeth(detail = TRUE)</code> now lists the <code>adj_r_squared</code> column, which the function has always returned in <code>summary_statistics</code> alongside <code>r_squared</code> and <code>n_obs</code>.</li>
 <li>

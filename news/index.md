@@ -35,6 +35,19 @@
 
 ### Bug fixes
 
+- [`download_factor_library_grid()`](https://r.tidy-finance.org/reference/download_factor_library_grid.md)
+  caches the grid of the factor library for the rest of the session, so
+  [`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md)
+  and `download_data("Tidy Finance", "factor_library", ...)` no longer
+  download the grid of more than four million rows on every call
+  (previously twice per
+  [`download_data()`](https://r.tidy-finance.org/reference/download_data.md)
+  call when filtering). Use `refresh = TRUE` to download it again.
+- Passing a legacy identifier such as `"factors_ff_3_monthly"` as
+  `dataset` now warns that this value is deprecated and names the
+  dataset that replaces it, e.g. `"Fama/French 3 Factors"`. The warning
+  previously claimed that the `type` argument was used, although the
+  caller never passed it.
 - [`estimate_fama_macbeth()`](https://r.tidy-finance.org/reference/estimate_fama_macbeth.md)
   now orders the cross-sections chronologically before aggregating them
   over time. Newey-West standard errors depend on the order of the time

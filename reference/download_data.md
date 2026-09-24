@@ -138,20 +138,8 @@ download_data("Goyal-Welch", "monthly", "2000-01-01", "2020-12-31")
 #> # ℹ 242 more rows
 #> # ℹ 5 more variables: lty <dbl>, ltr <dbl>, tms <dbl>, dfy <dbl>, infl <dbl>
 download_data("Index Constituents", index = "DAX")
-#> # A tibble: 40 × 5
-#>    symbol  name                               location    exchange      currency
-#>    <chr>   <chr>                              <chr>       <chr>         <chr>   
-#>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
-#>  2 SAP.DE  SAP                                Deutschland Xetra         EUR     
-#>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
-#>  4 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
-#>  5 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
-#>  6 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
-#>  7 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
-#>  8 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
-#>  9 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
-#> 10 DHL.DE  DHL AG                             Deutschland Xetra         EUR     
-#> # ℹ 30 more rows
+#> Error in download_data_constituents(...): Failed to download data for index `index`. Please check the index name
+#> or try again later.
 download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> No `start_date` or `end_date` provided. Returning the full data set.
 #> # A tibble: 1,682 × 3
@@ -232,22 +220,22 @@ download_data("FRED", "FRED-QD", vintage = "2020-03")
 #> #   IPMAT <dbl>, IPDMAT <dbl>, IPNMAT <dbl>, IPDCONGD <dbl>, IPB51110SQ <dbl>,
 #> #   IPNCONGD <dbl>, IPBUSEQ <dbl>, IPB51220SQ <dbl>, TCU <dbl>, CUMFNS <dbl>, …
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-09-15 to
-#> 2025-09-15 to avoid downloading large amounts of data.
-#> # A tibble: 500 × 8
-#>    symbol date          volume  open   low  high close adjusted_close
-#>    <chr>  <date>         <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-09-16  59357400  217.  214.  217.  216.           215.
-#>  2 AAPL   2024-09-17  45519300  216.  214.  217.  217.           215.
-#>  3 AAPL   2024-09-18  59894900  218.  218.  223.  221.           219.
-#>  4 AAPL   2024-09-19  66781300  225.  225.  230.  229.           227.
-#>  5 AAPL   2024-09-20 318679900  230.  228.  233.  228.           226.
-#>  6 AAPL   2024-09-23  54146000  227.  226.  229.  226.           225.
-#>  7 AAPL   2024-09-24  43556100  229.  226.  229.  227.           225.
-#>  8 AAPL   2024-09-25  42308700  225.  224.  227.  226.           224.
-#>  9 AAPL   2024-09-26  36636700  227.  225.  228.  228.           226.
-#> 10 AAPL   2024-09-27  34026000  228.  227.  230.  228.           226.
-#> # ℹ 490 more rows
+#> No `start_date` or `end_date` provided. Using the range 2024-09-24 to
+#> 2025-09-24 to avoid downloading large amounts of data.
+#> # A tibble: 502 × 8
+#>    symbol date         volume  open   low  high close adjusted_close
+#>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
+#>  1 AAPL   2024-09-24 43556100  229.  226.  229.  227.           225.
+#>  2 AAPL   2024-09-25 42308700  225.  224.  227.  226.           224.
+#>  3 AAPL   2024-09-26 36636700  227.  225.  228.  228.           226.
+#>  4 AAPL   2024-09-27 34026000  228.  227.  230.  228.           226.
+#>  5 AAPL   2024-09-30 54541900  230.  230.  233   233            231.
+#>  6 AAPL   2024-10-01 63285000  230.  224.  230.  226.           224.
+#>  7 AAPL   2024-10-02 32880600  226.  223.  227.  227.           225.
+#>  8 AAPL   2024-10-03 34044200  225.  223.  227.  226.           224.
+#>  9 AAPL   2024-10-04 37245100  228.  224.  228   227.           225.
+#> 10 AAPL   2024-10-07 39505400  224.  221.  226.  222.           220.
+#> # ℹ 492 more rows
 download_data(
   "Tidy Finance",
   "risk_free",
