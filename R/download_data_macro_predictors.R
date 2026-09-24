@@ -56,14 +56,9 @@ download_data_macro_predictors <- function(
 
   # Handle legacy type passed as dataset argument
   if (!is.null(dataset) && is_legacy_type_macro_predictors(dataset)) {
-    lifecycle::deprecate_warn(
-      when = "0.5.0",
-      what = "download_data_macro_predictors(type)",
-      details = paste0(
-        "The `type` argument is deprecated. ",
-        "Use `dataset` instead (e.g., 'monthly'",
-        "instead of 'macro_predictors_monthly')."
-      )
+    deprecate_legacy_dataset(
+      dataset,
+      sub("^macro_predictors_", "", dataset)
     )
     dataset <- sub("^macro_predictors_", "", dataset)
   }
