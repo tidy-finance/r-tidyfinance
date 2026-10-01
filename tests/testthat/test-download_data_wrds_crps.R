@@ -153,6 +153,7 @@ mock_crsp_tbl <- function(con, from) {
       permno = c(1L, 2L, 3L),
       secinfostartdt = as.Date(rep("2000-01-01", 3)),
       secinfoenddt = as.Date(rep("2020-12-31", 3)),
+      securityenddt = as.Date(rep("2020-12-31", 3)),
       sharetype = "NS",
       securitytype = "EQTY",
       securitysubtype = "COM",
@@ -201,7 +202,46 @@ mock_crsp_tbl <- function(con, from) {
   )
 }
 
-with_crsp_mocks <- function(code) {
+# A stock that last trades on 2020-01-02. Afterwards, its security history
+# switches to a delisted record. CIZ includes the delisting return in the
+# January 2020 monthly return and on the next trading day, 2020-01-03.
+mock_crsp_tbl_delisting <- function(con, from) {
+  table_name <- as.character(from)
+
+  switch(
+    table_name,
+    "crsp.msf_v2" = tibble::tibble(
+      permno = 4L,
+      mthcaldt = as.Date("2020-01-31"),
+      mthret = -0.50,
+      shrout = 10,
+      mthprc = 1
+    ),
+    "crsp.dsf_v2" = tibble::tibble(
+      permno = 4L,
+      dlycaldt = as.Date(c("2020-01-02", "2020-01-03")),
+      dlyret = c(0.10, -0.50)
+    ),
+    "crsp.stksecurityinfohist" = tibble::tibble(
+      permno = 4L,
+      secinfostartdt = as.Date(c("2000-01-01", "2020-01-03")),
+      secinfoenddt = as.Date(c("2020-01-02", "2020-01-03")),
+      securityenddt = as.Date("2020-01-02"),
+      sharetype = c("NS", "N/A"),
+      securitytype = c("EQTY", "N/A"),
+      securitysubtype = c("COM", "UNK"),
+      usincflg = "Y",
+      issuertype = "CORP",
+      primaryexch = c("Q", "X"),
+      conditionaltype = c("RW", "NT"),
+      tradingstatusflg = c("A", "D"),
+      siccd = 2000L
+    ),
+    cli::cli_abort("Unexpected table: {table_name}")
+  )
+}
+
+with_crsp_mocks <- function(code, tbl_mock = mock_crsp_tbl) {
   fake_con <- structure(list(), class = "DBIConnection")
   withr::local_envvar(WRDS_USER = "user", WRDS_PASSWORD = "pass")
 
@@ -224,7 +264,7 @@ with_crsp_mocks <- function(code) {
         risk_free_monthly(start_date, end_date)
       }
     },
-    tbl = mock_crsp_tbl,
+    tbl = tbl_mock,
     .env = environment(download_data_wrds_crsp)
   )
 
@@ -281,6 +321,30 @@ test_that("monthly CRSP v2 is processed", {
   expect_true("mthvol" %in% names(out))
   expect_false(any(is.na(out$ret_excess)))
   expect_false(any(is.na(out$mktcap)))
+})
+
+test_that("CRSP v2 keeps the delisting month and day", {
+  with_crsp_mocks(
+    {
+      monthly <- download_data_wrds_crsp(
+        dataset = "crsp_monthly",
+        start_date = "2020-01-01",
+        end_date = "2020-01-31",
+        version = "v2"
+      )
+      daily <- download_data_wrds_crsp(
+        dataset = "crsp_daily",
+        start_date = "2020-01-01",
+        end_date = "2020-01-31",
+        version = "v2"
+      )
+    },
+    tbl_mock = mock_crsp_tbl_delisting
+  )
+
+  expect_equal(monthly$ret, -0.50)
+  expect_equal(daily$date, as.Date(c("2020-01-02", "2020-01-03")))
+  expect_equal(daily$ret, c(0.10, -0.50))
 })
 
 test_that("daily CRSP v1 validates and adjusts volume", {
