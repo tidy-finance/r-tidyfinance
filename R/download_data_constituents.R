@@ -53,7 +53,8 @@ download_data_constituents <- function(index = NULL, path = NULL) {
       paste(
         "Pass {.arg index} to download constituents or {.arg path} to read a",
         "holdings file, e.g.",
-        "{.code download_data(\"Index Constituents\", path = \"holdings.csv\")}."
+        "{.code download_data(\"Index Constituents\",",
+        "path = \"holdings.csv\")}."
       )
     )
   }
@@ -106,7 +107,8 @@ download_data_constituents <- function(index = NULL, path = NULL) {
             "The provider may have moved the file. As a fallback, download the",
             "holdings CSV from the fund's web page in your browser and pass it",
             "via {.arg path}, e.g.",
-            "{.code download_data(\"Index Constituents\", path = \"holdings.csv\")}."
+            "{.code download_data(\"Index Constituents\",",
+            "path = \"holdings.csv\")}."
           )
         )
       )
