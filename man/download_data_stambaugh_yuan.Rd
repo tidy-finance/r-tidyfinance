@@ -37,7 +37,8 @@ plain numeric (decimal) values, filtered by the specified date range if
 \description{
 Downloads and processes the mispricing factor data of Stambaugh and Yuan
 (2017) from
-\href{https://fnce.wharton.upenn.edu/profile/stambaug/#misc}{Stambaugh's data library}.
+\href{https://fnce.wharton.upenn.edu/profile/stambaug/#misc}{Stambaugh's
+data library}.
 The four-factor model (M4) combines the market and size factors with two
 mispricing factors, \code{mgmt} (management) and \code{perf} (performance). The
 function downloads the requested frequency, aligns the date, renames the
