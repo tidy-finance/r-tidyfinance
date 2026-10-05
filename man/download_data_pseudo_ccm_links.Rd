@@ -37,8 +37,8 @@ linked to its corresponding \code{gvkey} for the full sample horizon.
 download_data_pseudo_ccm_links(n_assets = 10)
 }
 \seealso{
-Other pseudo functions: 
-\code{\link{download_data_pseudo_compustat}()},
-\code{\link{download_data_pseudo_crsp}()}
+Other pseudo functions:
+\code{\link[=download_data_pseudo_compustat]{download_data_pseudo_compustat()}},
+\code{\link[=download_data_pseudo_crsp]{download_data_pseudo_crsp()}}
 }
 \concept{pseudo functions}
