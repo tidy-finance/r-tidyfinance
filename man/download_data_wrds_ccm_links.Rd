@@ -32,14 +32,14 @@ primacy of the link (\code{linkprim}).
 
 }
 \seealso{
-Other WRDS functions:
-\code{\link[=disconnect_connection]{disconnect_connection()}},
-\code{\link[=download_data_wrds]{download_data_wrds()}},
-\code{\link[=download_data_wrds_compustat]{download_data_wrds_compustat()}},
-\code{\link[=download_data_wrds_crsp]{download_data_wrds_crsp()}},
-\code{\link[=download_data_wrds_fisd]{download_data_wrds_fisd()}},
-\code{\link[=download_data_wrds_trace_enhanced]{download_data_wrds_trace_enhanced()}},
-\code{\link[=get_wrds_connection]{get_wrds_connection()}},
-\code{\link[=set_wrds_credentials]{set_wrds_credentials()}}
+Other WRDS functions: 
+\code{\link{disconnect_connection}()},
+\code{\link{download_data_wrds}()},
+\code{\link{download_data_wrds_compustat}()},
+\code{\link{download_data_wrds_crsp}()},
+\code{\link{download_data_wrds_fisd}()},
+\code{\link{download_data_wrds_trace_enhanced}()},
+\code{\link{get_wrds_connection}()},
+\code{\link{set_wrds_credentials}()}
 }
 \concept{WRDS functions}

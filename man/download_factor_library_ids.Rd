@@ -42,21 +42,21 @@ precision, and months without a valid long-short return are stored as \code{0}.
 }
 }
 \seealso{
-Other download functions:
-\code{\link[=download_data]{download_data()}},
-\code{\link[=download_data_constituents]{download_data_constituents()}},
-\code{\link[=download_data_factors_ff]{download_data_factors_ff()}},
-\code{\link[=download_data_factors_q]{download_data_factors_q()}},
-\code{\link[=download_data_fred]{download_data_fred()}},
-\code{\link[=download_data_fred_md]{download_data_fred_md()}},
-\code{\link[=download_data_huggingface]{download_data_huggingface()}},
-\code{\link[=download_data_jkp]{download_data_jkp()}},
-\code{\link[=download_data_macro_predictors]{download_data_macro_predictors()}},
-\code{\link[=download_data_osap]{download_data_osap()}},
-\code{\link[=download_data_pastor_stambaugh]{download_data_pastor_stambaugh()}},
-\code{\link[=download_data_risk_free]{download_data_risk_free()}},
-\code{\link[=download_data_stambaugh_yuan]{download_data_stambaugh_yuan()}},
-\code{\link[=download_data_stock_prices]{download_data_stock_prices()}},
-\code{\link[=download_factor_library_grid]{download_factor_library_grid()}}
+Other download functions: 
+\code{\link{download_data}()},
+\code{\link{download_data_constituents}()},
+\code{\link{download_data_factors_ff}()},
+\code{\link{download_data_factors_q}()},
+\code{\link{download_data_fred}()},
+\code{\link{download_data_fred_md}()},
+\code{\link{download_data_huggingface}()},
+\code{\link{download_data_jkp}()},
+\code{\link{download_data_macro_predictors}()},
+\code{\link{download_data_osap}()},
+\code{\link{download_data_pastor_stambaugh}()},
+\code{\link{download_data_risk_free}()},
+\code{\link{download_data_stambaugh_yuan}()},
+\code{\link{download_data_stock_prices}()},
+\code{\link{download_factor_library_grid}()}
 }
 \concept{download functions}

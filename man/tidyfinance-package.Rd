@@ -22,7 +22,6 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Christoph Scheuch \email{christoph@tidy-intelligence.com} (\href{https://orcid.org/0009-0004-0423-6819}{ORCID}) [copyright holder]
   \item Stefan Voigt \email{stefan.voigt@econ.ku.dk} (\href{https://orcid.org/0000-0001-5619-3161}{ORCID}) [copyright holder]
   \item Patrick Weiss \email{patrickw@ru.is} (\href{https://orcid.org/0000-0002-9282-5872}{ORCID}) [copyright holder]
 }

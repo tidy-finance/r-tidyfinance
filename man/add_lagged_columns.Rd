@@ -94,8 +94,8 @@ add_lagged_columns(
 
 }
 \seealso{
-Other rolling and lagging functions:
-\code{\link[=compute_rolling_value]{compute_rolling_value()}},
-\code{\link[=join_lagged_values]{join_lagged_values()}}
+Other rolling and lagging functions: 
+\code{\link{compute_rolling_value}()},
+\code{\link{join_lagged_values}()}
 }
 \concept{rolling and lagging functions}

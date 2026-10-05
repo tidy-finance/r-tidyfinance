@@ -87,8 +87,8 @@ download_data_pseudo_crsp(
 )
 }
 \seealso{
-Other pseudo functions:
-\code{\link[=download_data_pseudo_ccm_links]{download_data_pseudo_ccm_links()}},
-\code{\link[=download_data_pseudo_compustat]{download_data_pseudo_compustat()}}
+Other pseudo functions: 
+\code{\link{download_data_pseudo_ccm_links}()},
+\code{\link{download_data_pseudo_compustat}()}
 }
 \concept{pseudo functions}

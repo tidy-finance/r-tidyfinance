@@ -27,21 +27,21 @@ Checks that \code{start_date} and \code{end_date} are a valid pair, coerces them
 one year ago is applied and reported to the user.
 }
 \seealso{
-Other utility functions:
-\code{\link[=create_summary_statistics]{create_summary_statistics()}},
-\code{\link[=get_available_huggingface_files]{get_available_huggingface_files()}},
-\code{\link[=list_supported_datasets]{list_supported_datasets()}},
-\code{\link[=list_supported_datasets_ff]{list_supported_datasets_ff()}},
-\code{\link[=list_supported_datasets_ff_legacy]{list_supported_datasets_ff_legacy()}},
-\code{\link[=list_supported_datasets_macro_predictors]{list_supported_datasets_macro_predictors()}},
-\code{\link[=list_supported_datasets_other]{list_supported_datasets_other()}},
-\code{\link[=list_supported_datasets_pseudo]{list_supported_datasets_pseudo()}},
-\code{\link[=list_supported_datasets_wrds]{list_supported_datasets_wrds()}},
-\code{\link[=list_supported_indexes]{list_supported_indexes()}},
-\code{\link[=list_supported_jkp_factors]{list_supported_jkp_factors()}},
-\code{\link[=list_tidy_finance_chapters]{list_tidy_finance_chapters()}},
-\code{\link[=open_tidy_finance_website]{open_tidy_finance_website()}},
-\code{\link[=trim]{trim()}},
-\code{\link[=winsorize]{winsorize()}}
+Other utility functions: 
+\code{\link{create_summary_statistics}()},
+\code{\link{get_available_huggingface_files}()},
+\code{\link{list_supported_datasets}()},
+\code{\link{list_supported_datasets_ff}()},
+\code{\link{list_supported_datasets_ff_legacy}()},
+\code{\link{list_supported_datasets_macro_predictors}()},
+\code{\link{list_supported_datasets_other}()},
+\code{\link{list_supported_datasets_pseudo}()},
+\code{\link{list_supported_datasets_wrds}()},
+\code{\link{list_supported_indexes}()},
+\code{\link{list_supported_jkp_factors}()},
+\code{\link{list_tidy_finance_chapters}()},
+\code{\link{open_tidy_finance_website}()},
+\code{\link{trim}()},
+\code{\link{winsorize}()}
 }
 \concept{utility functions}

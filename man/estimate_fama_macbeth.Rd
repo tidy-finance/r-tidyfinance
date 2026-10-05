@@ -118,8 +118,8 @@ heteroskedasticity and autocorrelation consistent covariance matrix.
 \doi{10.2307/1913610}
 }
 \seealso{
-Other estimation functions:
-\code{\link[=estimate_betas]{estimate_betas()}},
-\code{\link[=estimate_model]{estimate_model()}}
+Other estimation functions: 
+\code{\link{estimate_betas}()},
+\code{\link{estimate_model}()}
 }
 \concept{estimation functions}
