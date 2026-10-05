@@ -38,7 +38,7 @@ approach. Instead of fitting one regression per stock and estimation window,
 the function collapses the data to additive cumulants (the entries of the
 moment matrices \eqn{X'X} and \eqn{X'y}) per stock and period, aggregates
 these cumulants over rolling calendar windows in a single pass with
-\code{\link[slider:summary-index]{slider::slide_index_sum()}}, and recovers the coefficients via the
+\code{\link[slider:slide_index_sum]{slider::slide_index_sum()}}, and recovers the coefficients via the
 closed-form OLS solution \eqn{\hat\beta = (X'X)^{-1} X'y}. This produces
 estimates that are numerically identical to a per-window regression, but
 fast enough that no per-stock nesting or parallelization is required.
@@ -90,8 +90,8 @@ estimate_betas(
 
 }
 \seealso{
-Other estimation functions: 
-\code{\link{estimate_fama_macbeth}()},
-\code{\link{estimate_model}()}
+Other estimation functions:
+\code{\link[=estimate_fama_macbeth]{estimate_fama_macbeth()}},
+\code{\link[=estimate_model]{estimate_model()}}
 }
 \concept{estimation functions}
