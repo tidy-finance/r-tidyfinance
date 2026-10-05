@@ -228,7 +228,8 @@ to see the available regions, or `list_supported_jkp_factors("usa")` to
 see the factors available for a region.
 
 To download the liquidity factors of Pastor and Stambaugh (2003) from
-Lubos Pastor’s data library:
+[Robert Stambaugh’s data
+library](https://fnce.wharton.upenn.edu/profile/stambaug/#misc):
 
 ``` r
 
@@ -256,9 +257,9 @@ download_data(
 
 To download the mispricing factors of Stambaugh and Yuan (2017) from
 [Robert Stambaugh’s data
-library](https://finance.wharton.upenn.edu/~stambaug/), optionally
-selecting `"monthly"` (the default) or `"daily"` data. Note that the
-source files currently end in December 2016:
+library](https://fnce.wharton.upenn.edu/profile/stambaug/#misc),
+optionally selecting `"monthly"` (the default) or `"daily"` data. Note
+that the source files currently end in December 2016:
 
 ``` r
 
@@ -487,7 +488,7 @@ download_data(
 #>  2  10015 001001 1983-09-20 1986-07-31
 #>  3  10023 001002 1972-12-14 1973-06-05
 #>  4  10031 001003 1983-12-07 1989-08-16
-#>  5  54594 001004 1972-04-24 2026-09-15
+#>  5  54594 001004 1972-04-24 2026-10-05
 #>  6  61903 001005 1973-01-31 1983-01-31
 #>  7  10058 001007 1973-10-01 1979-01-30
 #>  8  10058 001007 1979-01-31 1984-09-28

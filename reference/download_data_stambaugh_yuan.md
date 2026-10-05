@@ -2,12 +2,12 @@
 
 Downloads and processes the mispricing factor data of Stambaugh and Yuan
 (2017) from [Stambaugh's data
-library](https://finance.wharton.upenn.edu/~stambaug/). The four-factor
-model (M4) combines the market and size factors with two mispricing
-factors, `mgmt` (management) and `perf` (performance). The function
-downloads the requested frequency, aligns the date, renames the columns
-to the package conventions, and optionally filters the data based on a
-provided date range.
+library](https://fnce.wharton.upenn.edu/profile/stambaug/#misc). The
+four-factor model (M4) combines the market and size factors with two
+mispricing factors, `mgmt` (management) and `perf` (performance). The
+function downloads the requested frequency, aligns the date, renames the
+columns to the package conventions, and optionally filters the data
+based on a provided date range.
 
 ## Usage
 
@@ -16,7 +16,7 @@ download_data_stambaugh_yuan(
   dataset = "monthly",
   start_date = NULL,
   end_date = NULL,
-  url = "https://finance.wharton.upenn.edu/~stambaug/"
+  url = "https://faculty.wharton.upenn.edu/wp-content/uploads/2016/11/"
 )
 ```
 
@@ -92,18 +92,36 @@ Other download functions:
   download_data_stambaugh_yuan(
     start_date = "2015-01-01", end_date = "2016-12-31"
   )
-#> Failed to download or process the resource. The resource may not be available,
-#> or the URL may have changed. Error message: cannot open the connection to
-#> 'https://finance.wharton.upenn.edu/~stambaug/M4.csv'
-#> Returning an empty data set due to download failure.
-#> # A tibble: 0 × 0
+#> # A tibble: 24 × 6
+#>    date       mkt_excess      smb     mgmt     perf risk_free
+#>    <date>          <dbl>    <dbl>    <dbl>    <dbl>     <dbl>
+#>  1 2015-01-01    -0.0311 -0.0271  -0.0227   0.0506          0
+#>  2 2015-02-01     0.0613  0.0245  -0.0124  -0.0300          0
+#>  3 2015-03-01    -0.0112  0.0214  -0.0192   0.00596         0
+#>  4 2015-04-01     0.0059 -0.0260   0.00818 -0.0418          0
+#>  5 2015-05-01     0.0136  0.0141  -0.00498  0.0108          0
+#>  6 2015-06-01    -0.0153  0.0301  -0.00718  0.00387         0
+#>  7 2015-07-01     0.0154 -0.0340   0.00419  0.0706          0
+#>  8 2015-08-01    -0.0604 -0.00684  0.00725  0.0133          0
+#>  9 2015-09-01    -0.0308 -0.0228   0.0373   0.0790          0
+#> 10 2015-10-01     0.0775 -0.0227   0.0240  -0.00612         0
+#> # ℹ 14 more rows
   download_data_stambaugh_yuan(
     dataset = "daily", start_date = "2016-01-01", end_date = "2016-12-31"
   )
-#> Failed to download or process the resource. The resource may not be available,
-#> or the URL may have changed. Error message: cannot open the connection to
-#> 'https://finance.wharton.upenn.edu/~stambaug/M4d.csv'
-#> Returning an empty data set due to download failure.
-#> # A tibble: 0 × 0
+#> # A tibble: 252 × 6
+#>    date       mkt_excess       smb      mgmt     perf risk_free
+#>    <date>          <dbl>     <dbl>     <dbl>    <dbl>     <dbl>
+#>  1 2016-01-04    -0.0159 -0.00858   0.00220  -0.00626         0
+#>  2 2016-01-05     0.0012 -0.00460   0.00420   0.00660         0
+#>  3 2016-01-06    -0.0135  0.000649  0.00506   0.0297          0
+#>  4 2016-01-07    -0.0244 -0.00533   0.00565   0.0202          0
+#>  5 2016-01-08    -0.0111 -0.00570  -0.000206 -0.00132         0
+#>  6 2016-01-11    -0.0006  0.00272   0.0148    0.0292          0
+#>  7 2016-01-12     0.0071 -0.00439   0.00200   0.0162          0
+#>  8 2016-01-13    -0.0267 -0.00480   0.0121    0.0174          0
+#>  9 2016-01-14     0.0165 -0.00605  -0.0127   -0.0119          0
+#> 10 2016-01-15    -0.0214  0.00251   0.00305   0.0139          0
+#> # ℹ 242 more rows
 # }
 ```

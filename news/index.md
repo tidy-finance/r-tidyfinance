@@ -1,6 +1,6 @@
 # Changelog
 
-## tidyfinance (development version)
+## tidyfinance 0.9.0
 
 ### Breaking changes
 
@@ -115,18 +115,20 @@ CRAN release: 2026-07-02
   and the `"Pastor-Stambaugh"` domain for
   [`download_data()`](https://r.tidy-finance.org/reference/download_data.md),
   which downloads the liquidity factors of Pastor and Stambaugh (2003)
-  from Lubos Pastor’s data library. The result carries the levels of
-  aggregate liquidity, the non-traded liquidity factor (innovations),
-  and the traded liquidity factor `LIQ_V`.
+  from [Robert Stambaugh’s data
+  library](https://fnce.wharton.upenn.edu/profile/stambaug/#misc). The
+  result carries the levels of aggregate liquidity, the non-traded
+  liquidity factor (innovations), and the traded liquidity factor
+  `LIQ_V`.
 - Added
   [`download_data_stambaugh_yuan()`](https://r.tidy-finance.org/reference/download_data_stambaugh_yuan.md)
   and the `"Stambaugh-Yuan"` domain for
   [`download_data()`](https://r.tidy-finance.org/reference/download_data.md),
   which downloads the mispricing factors (`mgmt` and `perf`) of
   Stambaugh and Yuan (2017) from [Robert Stambaugh’s data
-  library](https://finance.wharton.upenn.edu/~stambaug/). The `dataset`
-  argument selects between `"monthly"` and `"daily"` data. The source
-  files currently end in December 2016.
+  library](https://fnce.wharton.upenn.edu/profile/stambaug/#misc). The
+  `dataset` argument selects between `"monthly"` and `"daily"` data. The
+  source files currently end in December 2016.
 - Added
   [`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md)
   and the `"Global Factor Data"` domain for
