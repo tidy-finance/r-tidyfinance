@@ -1,4 +1,4 @@
-# tidyfinance (development version)
+# tidyfinance 0.9.0
 
 ## Breaking changes
 
