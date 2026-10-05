@@ -40,8 +40,9 @@ a single call, use
 instead.
 
 Raises an error if none of the requested IDs exist in the grid. IDs
-whose portfolio sort failed during the construction of the library have
-no returns and are absent from the result. Returns are stored in single
+whose portfolio sort produced no portfolios have no returns; they are
+absent from the result, with a warning, and the result has no rows if
+none of the requested IDs has returns. Returns are stored in single
 precision, and months without a valid long-short return are stored as
 `0`.
 

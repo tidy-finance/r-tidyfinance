@@ -220,22 +220,22 @@ download_data("FRED", "FRED-QD", vintage = "2020-03")
 #> #   IPMAT <dbl>, IPDMAT <dbl>, IPNMAT <dbl>, IPDCONGD <dbl>, IPB51110SQ <dbl>,
 #> #   IPNCONGD <dbl>, IPBUSEQ <dbl>, IPB51220SQ <dbl>, TCU <dbl>, CUMFNS <dbl>, …
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-09-24 to
-#> 2025-09-24 to avoid downloading large amounts of data.
-#> # A tibble: 502 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-10-05 to
+#> 2025-10-05 to avoid downloading large amounts of data.
+#> # A tibble: 498 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-09-24 43556100  229.  226.  229.  227.           225.
-#>  2 AAPL   2024-09-25 42308700  225.  224.  227.  226.           224.
-#>  3 AAPL   2024-09-26 36636700  227.  225.  228.  228.           226.
-#>  4 AAPL   2024-09-27 34026000  228.  227.  230.  228.           226.
-#>  5 AAPL   2024-09-30 54541900  230.  230.  233   233            231.
-#>  6 AAPL   2024-10-01 63285000  230.  224.  230.  226.           224.
-#>  7 AAPL   2024-10-02 32880600  226.  223.  227.  227.           225.
-#>  8 AAPL   2024-10-03 34044200  225.  223.  227.  226.           224.
-#>  9 AAPL   2024-10-04 37245100  228.  224.  228   227.           225.
-#> 10 AAPL   2024-10-07 39505400  224.  221.  226.  222.           220.
-#> # ℹ 492 more rows
+#>  1 AAPL   2024-10-07 39505400  224.  221.  226.  222.           220.
+#>  2 AAPL   2024-10-08 31855700  224.  223.  226.  226.           224.
+#>  3 AAPL   2024-10-09 33591100  225.  225.  230.  230.           228.
+#>  4 AAPL   2024-10-10 28183500  228.  227.  230.  229.           227.
+#>  5 AAPL   2024-10-11 31759200  229.  227.  229.  228.           226.
+#>  6 AAPL   2024-10-14 39882100  229.  229.  232.  231.           229.
+#>  7 AAPL   2024-10-15 64751400  234.  232.  237.  234.           232.
+#>  8 AAPL   2024-10-16 34082200  232.  230.  232.  232.           230.
+#>  9 AAPL   2024-10-17 32993800  233.  231.  234.  232.           230.
+#> 10 AAPL   2024-10-18 46431500  236.  234.  236.  235            233.
+#> # ℹ 488 more rows
 download_data(
   "Tidy Finance",
   "risk_free",
