@@ -18,6 +18,11 @@
 
 ## New features
 
+- `download_data_constituents()` gains a `path` argument that reads an iShares
+  or BlackRock holdings CSV saved from the fund's web page instead of
+  downloading it, e.g. `download_data("Index Constituents", path =
+  "holdings.csv")`. `index` is optional with `path`. Use it as a fallback when
+  the provider moves its files (#311).
 - Added `download_data_fred_md()` and the `"FRED-MD"` / `"FRED-QD"` datasets
   for `download_data("FRED", ...)`, which download the McCracken and Ng
   (2016, 2021) curated monthly / quarterly macro panels as wide tables (one
@@ -30,6 +35,14 @@
 
 ## Bug fixes
 
+- `download_data_constituents()` works again for DAX, EURO STOXX 50, Dow Jones
+  Industrial Average, S&P 500, Nasdaq 100, FTSE 100, MSCI World, STOXX Europe
+  600, MDAX, TecDAX, MSCI Emerging Markets, and MSCI Europe. iShares removed
+  the German retail pages the holdings files were downloaded from; they are now
+  read from the Swiss professional pages. The header row of a holdings file is
+  detected automatically instead of skipping a fixed number of rows, and a
+  failed download now names the index and the URL and points to `path`
+  (#311).
 - `download_factor_library_grid()` caches the grid of the factor library for
   the rest of the session, so `download_factor_library_ids()` and
   `download_data("Tidy Finance", "factor_library", ...)` no longer download the

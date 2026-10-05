@@ -4,12 +4,18 @@
 \alias{download_data_constituents}
 \title{Download Constituent Data}
 \usage{
-download_data_constituents(index)
+download_data_constituents(index = NULL, path = NULL)
 }
 \arguments{
 \item{index}{A character string specifying the name of the financial index
 for which to download constituent data. The index must be one of the
-supported indexes listed by \code{\link[=list_supported_indexes]{list_supported_indexes()}}.}
+supported indexes listed by \code{\link[=list_supported_indexes]{list_supported_indexes()}}. Optional when
+\code{path} is given.}
+
+\item{path}{Optional. Path to a local iShares or BlackRock holdings CSV, as
+saved from the fund's web page, to read instead of downloading. Use it as
+a fallback when the download fails. \code{index} is optional in this case; when
+given, entries whose name contains the index name are dropped.}
 }
 \value{
 A tibble with five columns:
@@ -22,7 +28,8 @@ A tibble with five columns:
 from the exchange.}
 }
 The tibble is filtered to exclude non-equity entries, blacklisted symbols,
-empty names, and any entries containing the index name or "CASH".
+empty names, entries containing "CASH", and, when \code{index} is given, entries
+containing the index name.
 }
 \description{
 Downloads and processes the constituent data for a specified financial
@@ -41,24 +48,27 @@ wrapper around other ETFs.
 \donttest{
   download_data_constituents("DAX")
 }
+\dontrun{
+  download_data_constituents(path = "DAXEX_holdings.csv")
+}
 
 }
 \seealso{
-Other download functions: 
-\code{\link{download_data}()},
-\code{\link{download_data_factors_ff}()},
-\code{\link{download_data_factors_q}()},
-\code{\link{download_data_fred}()},
-\code{\link{download_data_fred_md}()},
-\code{\link{download_data_huggingface}()},
-\code{\link{download_data_jkp}()},
-\code{\link{download_data_macro_predictors}()},
-\code{\link{download_data_osap}()},
-\code{\link{download_data_pastor_stambaugh}()},
-\code{\link{download_data_risk_free}()},
-\code{\link{download_data_stambaugh_yuan}()},
-\code{\link{download_data_stock_prices}()},
-\code{\link{download_factor_library_grid}()},
-\code{\link{download_factor_library_ids}()}
+Other download functions:
+\code{\link[=download_data]{download_data()}},
+\code{\link[=download_data_factors_ff]{download_data_factors_ff()}},
+\code{\link[=download_data_factors_q]{download_data_factors_q()}},
+\code{\link[=download_data_fred]{download_data_fred()}},
+\code{\link[=download_data_fred_md]{download_data_fred_md()}},
+\code{\link[=download_data_huggingface]{download_data_huggingface()}},
+\code{\link[=download_data_jkp]{download_data_jkp()}},
+\code{\link[=download_data_macro_predictors]{download_data_macro_predictors()}},
+\code{\link[=download_data_osap]{download_data_osap()}},
+\code{\link[=download_data_pastor_stambaugh]{download_data_pastor_stambaugh()}},
+\code{\link[=download_data_risk_free]{download_data_risk_free()}},
+\code{\link[=download_data_stambaugh_yuan]{download_data_stambaugh_yuan()}},
+\code{\link[=download_data_stock_prices]{download_data_stock_prices()}},
+\code{\link[=download_factor_library_grid]{download_factor_library_grid()}},
+\code{\link[=download_factor_library_ids]{download_factor_library_ids()}}
 }
 \concept{download functions}

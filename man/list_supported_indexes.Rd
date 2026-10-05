@@ -12,14 +12,17 @@ A tibble with three columns:
 \item{index}{The name of the financial index (e.g., "DAX", "S&P 500").}
 \item{url}{The URL to the CSV file containing the holdings data for the
 index.}
-\item{skip}{The number of lines to skip when reading the CSV file.}
+\item{skip}{The number of preamble lines in the CSV file. Kept for
+compatibility; the header row is detected automatically.}
 }
 }
 \description{
 Returns a tibble containing information about supported financial indexes.
 Each index is associated with a URL that points to a CSV file containing the
 holdings of the index. Additionally, each index has a corresponding \code{skip}
-value, which indicates the number of lines to skip when reading the CSV file.
+value, which indicates the number of preamble lines in the CSV file. It is
+kept for compatibility; \code{\link[=download_data_constituents]{download_data_constituents()}} detects the header
+row automatically.
 }
 \examples{
 supported_indexes <- list_supported_indexes()
@@ -27,21 +30,21 @@ print(supported_indexes)
 
 }
 \seealso{
-Other utility functions: 
-\code{\link{create_summary_statistics}()},
-\code{\link{get_available_huggingface_files}()},
-\code{\link{list_supported_datasets}()},
-\code{\link{list_supported_datasets_ff}()},
-\code{\link{list_supported_datasets_ff_legacy}()},
-\code{\link{list_supported_datasets_macro_predictors}()},
-\code{\link{list_supported_datasets_other}()},
-\code{\link{list_supported_datasets_pseudo}()},
-\code{\link{list_supported_datasets_wrds}()},
-\code{\link{list_supported_jkp_factors}()},
-\code{\link{list_tidy_finance_chapters}()},
-\code{\link{open_tidy_finance_website}()},
-\code{\link{trim}()},
-\code{\link{validate_dates}()},
-\code{\link{winsorize}()}
+Other utility functions:
+\code{\link[=create_summary_statistics]{create_summary_statistics()}},
+\code{\link[=get_available_huggingface_files]{get_available_huggingface_files()}},
+\code{\link[=list_supported_datasets]{list_supported_datasets()}},
+\code{\link[=list_supported_datasets_ff]{list_supported_datasets_ff()}},
+\code{\link[=list_supported_datasets_ff_legacy]{list_supported_datasets_ff_legacy()}},
+\code{\link[=list_supported_datasets_macro_predictors]{list_supported_datasets_macro_predictors()}},
+\code{\link[=list_supported_datasets_other]{list_supported_datasets_other()}},
+\code{\link[=list_supported_datasets_pseudo]{list_supported_datasets_pseudo()}},
+\code{\link[=list_supported_datasets_wrds]{list_supported_datasets_wrds()}},
+\code{\link[=list_supported_jkp_factors]{list_supported_jkp_factors()}},
+\code{\link[=list_tidy_finance_chapters]{list_tidy_finance_chapters()}},
+\code{\link[=open_tidy_finance_website]{open_tidy_finance_website()}},
+\code{\link[=trim]{trim()}},
+\code{\link[=validate_dates]{validate_dates()}},
+\code{\link[=winsorize]{winsorize()}}
 }
 \concept{utility functions}
