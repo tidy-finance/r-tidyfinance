@@ -7,7 +7,7 @@
 download_data_pastor_stambaugh(
   start_date = NULL,
   end_date = NULL,
-  url = paste0("https://faculty.chicagobooth.edu/-/media/faculty/lubos-pastor/data/",
+  url = paste0("https://faculty.wharton.upenn.edu/wp-content/uploads/2016/11/",
     "liq_data_1962_2025.txt")
 )
 }
@@ -34,7 +34,9 @@ specified date range if \code{start_date} and \code{end_date} are provided.
 }
 \description{
 Downloads and processes the liquidity factor data of Pastor and Stambaugh
-(2003) from Pastor's data library.
+(2003) from
+\href{https://fnce.wharton.upenn.edu/profile/stambaug/#misc}{Stambaugh's
+data library}.
 The source is a whitespace-delimited text file whose header lines start with
 a percent sign. The function reads the three liquidity series, aligns the
 monthly date to the beginning of the month, and optionally filters the data

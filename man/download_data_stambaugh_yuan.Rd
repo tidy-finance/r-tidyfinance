@@ -8,7 +8,7 @@ download_data_stambaugh_yuan(
   dataset = "monthly",
   start_date = NULL,
   end_date = NULL,
-  url = "https://finance.wharton.upenn.edu/~stambaug/"
+  url = "https://faculty.wharton.upenn.edu/wp-content/uploads/2016/11/"
 )
 }
 \arguments{
@@ -37,7 +37,8 @@ plain numeric (decimal) values, filtered by the specified date range if
 \description{
 Downloads and processes the mispricing factor data of Stambaugh and Yuan
 (2017) from
-\href{https://finance.wharton.upenn.edu/~stambaug/}{Stambaugh's data library}.
+\href{https://fnce.wharton.upenn.edu/profile/stambaug/#misc}{Stambaugh's
+data library}.
 The four-factor model (M4) combines the market and size factors with two
 mispricing factors, \code{mgmt} (management) and \code{perf} (performance). The
 function downloads the requested frequency, aligns the date, renames the
