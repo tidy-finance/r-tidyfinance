@@ -202,8 +202,20 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 242 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 5 more variables: lty &lt;dbl&gt;, ltr &lt;dbl&gt;, tms &lt;dbl&gt;, dfy &lt;dbl&gt;, infl &lt;dbl&gt;</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Index Constituents"</span>, index <span class="op">=</span> <span class="st">"DAX"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in download_data_constituents(...):</span> Failed to download data for index `index`. Please check the index name</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> or try again later.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 40 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    symbol  name                               location    exchange      currency</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> SAP.DE  SAP                                Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DHL.DE  DHL AG                             Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 30 more rows</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"FRED"</span>, series <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GDP"</span>, <span class="st">"CPIAUCNS"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Returning the full data set.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,682 × 3</span></span>

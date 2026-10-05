@@ -25,6 +25,9 @@ Useful links:
 
 Authors:
 
+- Christoph Scheuch <christoph@tidy-intelligence.com>
+  ([ORCID](https://orcid.org/0009-0004-0423-6819)) \[copyright holder\]
+
 - Stefan Voigt <stefan.voigt@econ.ku.dk>
   ([ORCID](https://orcid.org/0000-0001-5619-3161)) \[copyright holder\]
 

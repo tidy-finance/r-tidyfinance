@@ -138,8 +138,20 @@ download_data("Goyal-Welch", "monthly", "2000-01-01", "2020-12-31")
 #> # ℹ 242 more rows
 #> # ℹ 5 more variables: lty <dbl>, ltr <dbl>, tms <dbl>, dfy <dbl>, infl <dbl>
 download_data("Index Constituents", index = "DAX")
-#> Error in download_data_constituents(...): Failed to download data for index `index`. Please check the index name
-#> or try again later.
+#> # A tibble: 40 × 5
+#>    symbol  name                               location    exchange      currency
+#>    <chr>   <chr>                              <chr>       <chr>         <chr>   
+#>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
+#>  2 SAP.DE  SAP                                Deutschland Xetra         EUR     
+#>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
+#>  4 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
+#>  5 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  6 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
+#>  7 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
+#>  8 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
+#>  9 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
+#> 10 DHL.DE  DHL AG                             Deutschland Xetra         EUR     
+#> # ℹ 30 more rows
 download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> No `start_date` or `end_date` provided. Returning the full data set.
 #> # A tibble: 1,682 × 3

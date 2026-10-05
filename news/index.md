@@ -21,6 +21,13 @@
 
 ### New features
 
+- [`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md)
+  gains a `path` argument that reads an iShares or BlackRock holdings
+  CSV saved from the fund’s web page instead of downloading it,
+  e.g. `download_data("Index Constituents", path = "holdings.csv")`.
+  `index` is optional with `path`. Use it as a fallback when the
+  provider moves its files
+  ([\#311](https://github.com/tidy-finance/r-tidyfinance/issues/311)).
 - Added
   [`download_data_fred_md()`](https://r.tidy-finance.org/reference/download_data_fred_md.md)
   and the `"FRED-MD"` / `"FRED-QD"` datasets for
@@ -35,6 +42,16 @@
 
 ### Bug fixes
 
+- [`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md)
+  works again for DAX, EURO STOXX 50, Dow Jones Industrial Average, S&P
+  500, Nasdaq 100, FTSE 100, MSCI World, STOXX Europe 600, MDAX, TecDAX,
+  MSCI Emerging Markets, and MSCI Europe. iShares removed the German
+  retail pages the holdings files were downloaded from; they are now
+  read from the Swiss professional pages. The header row of a holdings
+  file is detected automatically instead of skipping a fixed number of
+  rows, and a failed download now names the index and the URL and points
+  to `path`
+  ([\#311](https://github.com/tidy-finance/r-tidyfinance/issues/311)).
 - [`download_factor_library_grid()`](https://r.tidy-finance.org/reference/download_factor_library_grid.md)
   caches the grid of the factor library for the rest of the session, so
   [`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md)

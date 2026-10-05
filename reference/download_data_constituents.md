@@ -7,7 +7,7 @@ to provide relevant information about constituents.
 ## Usage
 
 ``` r
-download_data_constituents(index)
+download_data_constituents(index = NULL, path = NULL)
 ```
 
 ## Arguments
@@ -18,6 +18,14 @@ download_data_constituents(index)
   which to download constituent data. The index must be one of the
   supported indexes listed by
   [`list_supported_indexes()`](https://r.tidy-finance.org/reference/list_supported_indexes.md).
+  Optional when `path` is given.
+
+- path:
+
+  Optional. Path to a local iShares or BlackRock holdings CSV, as saved
+  from the fund's web page, to read instead of downloading. Use it as a
+  fallback when the download fails. `index` is optional in this case;
+  when given, entries whose name contains the index name are dropped.
 
 ## Value
 
@@ -44,8 +52,8 @@ A tibble with five columns:
   The currency in which the equity is traded, derived from the exchange.
 
 The tibble is filtered to exclude non-equity entries, blacklisted
-symbols, empty names, and any entries containing the index name or
-"CASH".
+symbols, empty names, entries containing "CASH", and, when `index` is
+given, entries containing the index name.
 
 ## Details
 
@@ -80,7 +88,22 @@ Other download functions:
 ``` r
 # \donttest{
   download_data_constituents("DAX")
-#> Error in download_data_constituents("DAX"): Failed to download data for index `index`. Please check the index name
-#> or try again later.
+#> # A tibble: 40 × 5
+#>    symbol  name                               location    exchange      currency
+#>    <chr>   <chr>                              <chr>       <chr>         <chr>   
+#>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
+#>  2 SAP.DE  SAP                                Deutschland Xetra         EUR     
+#>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
+#>  4 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
+#>  5 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  6 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
+#>  7 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
+#>  8 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
+#>  9 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
+#> 10 DHL.DE  DHL AG                             Deutschland Xetra         EUR     
+#> # ℹ 30 more rows
 # }
+if (FALSE) { # \dontrun{
+  download_data_constituents(path = "DAXEX_holdings.csv")
+} # }
 ```

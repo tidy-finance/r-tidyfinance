@@ -3,8 +3,10 @@
 Returns a tibble containing information about supported financial
 indexes. Each index is associated with a URL that points to a CSV file
 containing the holdings of the index. Additionally, each index has a
-corresponding `skip` value, which indicates the number of lines to skip
-when reading the CSV file.
+corresponding `skip` value, which indicates the number of preamble lines
+in the CSV file. It is kept for compatibility;
+[`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md)
+detects the header row automatically.
 
 ## Usage
 
@@ -26,7 +28,8 @@ A tibble with three columns:
 
 - skip:
 
-  The number of lines to skip when reading the CSV file.
+  The number of preamble lines in the CSV file. Kept for compatibility;
+  the header row is detected automatically.
 
 ## See also
 
@@ -55,24 +58,24 @@ print(supported_indexes)
 #> # A tibble: 20 × 3
 #>    index                        url                                         skip
 #>    <chr>                        <chr>                                      <dbl>
-#>  1 DAX                          https://www.ishares.com/de/privatanleger/…     2
-#>  2 EURO STOXX 50                https://www.ishares.com/de/privatanleger/…     2
-#>  3 Dow Jones Industrial Average https://www.ishares.com/de/privatanleger/…     2
+#>  1 DAX                          https://www.ishares.com/ch/professionelle…     2
+#>  2 EURO STOXX 50                https://www.ishares.com/ch/professionelle…     2
+#>  3 Dow Jones Industrial Average https://www.ishares.com/ch/professionelle…     2
 #>  4 Russell 1000                 https://www.ishares.com/ch/professionelle…     9
 #>  5 Russell 2000                 https://www.ishares.com/ch/professionelle…     9
 #>  6 Russell 3000                 https://www.ishares.com/ch/professionelle…     9
 #>  7 S&P 100                      https://www.ishares.com/ch/professionelle…     9
-#>  8 S&P 500                      https://www.ishares.com/de/privatanleger/…     2
-#>  9 Nasdaq 100                   https://www.ishares.com/de/privatanleger/…     2
-#> 10 FTSE 100                     https://www.ishares.com/de/privatanleger/…     2
-#> 11 MSCI World                   https://www.ishares.com/de/privatanleger/…     2
+#>  8 S&P 500                      https://www.ishares.com/ch/professionelle…     2
+#>  9 Nasdaq 100                   https://www.ishares.com/ch/professionelle…     2
+#> 10 FTSE 100                     https://www.ishares.com/ch/professionelle…     2
+#> 11 MSCI World                   https://www.ishares.com/ch/professionelle…     2
 #> 12 Nikkei 225                   https://www.ishares.com/ch/professionelle…     2
 #> 13 TOPIX                        https://www.blackrock.com/jp/individual-e…     2
-#> 14 STOXX Europe 600             https://www.ishares.com/de/privatanleger/…     2
-#> 15 MDAX                         https://www.ishares.com/de/privatanleger/…     2
-#> 16 TecDAX                       https://www.ishares.com/de/privatanleger/…     2
-#> 17 MSCI Emerging Markets        https://www.ishares.com/de/privatanleger/…     2
-#> 18 MSCI Europe                  https://www.ishares.com/de/privatanleger/…     2
+#> 14 STOXX Europe 600             https://www.ishares.com/ch/professionelle…     2
+#> 15 MDAX                         https://www.ishares.com/ch/professionelle…     2
+#> 16 TecDAX                       https://www.ishares.com/ch/professionelle…     2
+#> 17 MSCI Emerging Markets        https://www.ishares.com/ch/professionelle…     2
+#> 18 MSCI Europe                  https://www.ishares.com/ch/professionelle…     2
 #> 19 MSCI ACWI                    https://www.ishares.com/ch/professionelle…     9
 #> 20 S&P SmallCap 600             https://www.ishares.com/ch/professionelle…     9
 ```
