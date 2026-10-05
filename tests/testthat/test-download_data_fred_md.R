@@ -156,6 +156,21 @@ test_that("transform = TRUE applies each series' tcode", {
   expect_equal(result$LOGDIFFSER[2], log(110 / 100), tolerance = 1e-4)
 })
 
+test_that("fred_md_wide drops the unnamed column of a trailing comma", {
+  csv_trailing_comma <- paste(
+    "sasdate,LEVELSER,LOGDIFFSER,",
+    "Transform:,1,5,",
+    "1/1/2020,100,100,",
+    "2/1/2020,101,110,",
+    sep = "\n"
+  )
+
+  result <- fred_md_wide(csv_trailing_comma, transform = TRUE)
+
+  expect_equal(names(result), c("date", "LEVELSER", "LOGDIFFSER"))
+  expect_equal(result$LEVELSER, c(100, 101))
+})
+
 test_that("a specific vintage hosted individually gets a vintage column", {
   local_mocked_bindings(
     request = function(url) url,
