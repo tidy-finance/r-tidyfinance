@@ -64,7 +64,7 @@ download_data_constituents <- function(index = NULL, path = NULL) {
     text <- rawToChar(raw)
     if (validUTF8(text)) {
       Encoding(text) <- "UTF-8"
-      text <- sub("^﻿", "", text)
+      text <- sub("^\ufeff", "", text)
     } else {
       text <- iconv(text, from = "latin1", to = "UTF-8")
     }
@@ -136,7 +136,7 @@ download_data_constituents <- function(index = NULL, path = NULL) {
         symbol = "Emittententicker",
         name = "Name",
         location = "Standort",
-        exchange = "Börse"
+        exchange = "B\u00f6rse"
       )
   } else {
     constituents_processed <- constituents_raw |>
