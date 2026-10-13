@@ -16,3 +16,4 @@
 ^docs$
 ^pkgdown$
 .claude
+^benchmarks$
