@@ -63,7 +63,8 @@ for (size in run_sizes) {
       current = \() do.call(tf$compute_portfolio_returns, args_sort),
       dplyr = \() do.call(compute_portfolio_returns_fast, c(args_sort, engine = "dplyr")),
       data.table = \() do.call(compute_portfolio_returns_fast, c(args_sort, engine = "data.table")),
-      rcpp = \() do.call(compute_portfolio_returns_fast, c(args_sort, engine = "rcpp"))
+      rcpp = \() do.call(compute_portfolio_returns_fast, c(args_sort, engine = "rcpp")),
+      cpp11 = \() do.call(compute_portfolio_returns_fast, c(args_sort, engine = "cpp11"))
     )
 
     reference <- calls$current()
@@ -115,6 +116,7 @@ cat(
   "\nR:", R.version.string,
   "| dplyr", as.character(packageVersion("dplyr")),
   "| data.table", as.character(packageVersion("data.table")),
+  "| cpp11", as.character(packageVersion("cpp11")),
   "| Rcpp", as.character(packageVersion("Rcpp")),
   "| CPU:", tryCatch(
     trimws(sub(".*: ", "", grep("model name", readLines("/proc/cpuinfo"), value = TRUE)[1L])),

@@ -6,7 +6,7 @@
 source(file.path("benchmarks", "portfolio-sorts", "setup.R"))
 source(file.path(bench_dir, "fast_sorts.R"))
 
-engines <- c("rcpp", "data.table", "dplyr")
+engines <- c("cpp11", "rcpp", "data.table", "dplyr")
 
 # Run a call and record its value, messages, warnings, and error.
 capture <- function(f) {

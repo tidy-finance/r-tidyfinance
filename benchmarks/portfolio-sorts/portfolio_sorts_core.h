@@ -1,19 +1,30 @@
-// Rcpp kernels for the portfolio-sort benchmark.
+// Core of the portfolio-sort kernels, shared by the cpp11 and Rcpp bindings
+// (portfolio_sorts_cpp11.cpp and portfolio_sorts_rcpp.cpp).
 //
 // The kernels reproduce the arithmetic of the R code they replace bit for bit:
 // type-7 quantiles as in stats::quantile(), findInterval(all.inside = TRUE),
 // sum() and mean() with long double accumulation as in R's summary.c, and
 // weighted.mean() as sum((x * w)[w != 0]) / sum(w). Rows are processed in
 // their original order within each group, which is the order dplyr uses.
+//
+// The functions work on plain pointers so that they do not depend on either
+// binding. Outputs are written to caller-allocated arrays.
 
-#include <Rcpp.h>
+#ifndef PORTFOLIO_SORTS_CORE_H
+#define PORTFOLIO_SORTS_CORE_H
+
+#ifndef R_NO_REMAP
+#define R_NO_REMAP
+#endif
+#include <Rinternals.h>
 
 #include <algorithm>
 #include <cfloat>
 #include <cmath>
+#include <stdexcept>
 #include <vector>
 
-using namespace Rcpp;
+namespace portfolio_sorts {
 
 typedef long double LDOUBLE;
 
@@ -27,10 +38,9 @@ struct Buckets {
   std::vector<R_xlen_t> rows;
 };
 
-static Buckets bucket_rows(const IntegerVector& group, int n_groups) {
+inline Buckets bucket_rows(const int* group, R_xlen_t n, int n_groups) {
   Buckets b;
   b.start.assign(n_groups + 1, 0);
-  const R_xlen_t n = group.size();
   for (R_xlen_t i = 0; i < n; ++i) {
     if (group[i] != NA_INTEGER) b.start[group[i]]++;
   }
@@ -46,7 +56,7 @@ static Buckets bucket_rows(const IntegerVector& group, int n_groups) {
 // R arithmetic -------------------------------------------------------------
 
 // stats::quantile(x, p, type = 7) for an already sorted vector without NAs.
-static double quantile7(const std::vector<double>& sorted, double p) {
+inline double quantile7(const std::vector<double>& sorted, double p) {
   const R_xlen_t n = sorted.size();
   if (n == 0) return NA_REAL;
   const double index = 1 + (double)(n - 1) * p;
@@ -61,23 +71,24 @@ static double quantile7(const std::vector<double>& sorted, double p) {
   return qs;
 }
 
-static void quantiles7(const std::vector<double>& sorted,
-                       const NumericVector& probs, std::vector<double>& out) {
+inline void quantiles7(const std::vector<double>& sorted,
+                       const std::vector<double>& probs,
+                       std::vector<double>& out) {
   out.resize(probs.size());
-  for (R_xlen_t k = 0; k < probs.size(); ++k) {
+  for (size_t k = 0; k < probs.size(); ++k) {
     out[k] = quantile7(sorted, probs[k]);
   }
 }
 
 // Conversion of a long double sum to double as in R's rsum().
-static double ld_to_double(LDOUBLE s) {
+inline double ld_to_double(LDOUBLE s) {
   if (s > DBL_MAX) return R_PosInf;
   if (s < -DBL_MAX) return R_NegInf;
   return (double)s;
 }
 
 // mean() of a double vector, following real_mean() in R's summary.c.
-static double r_mean(const std::vector<double>& x) {
+inline double r_mean(const std::vector<double>& x) {
   const R_xlen_t n = x.size();
   LDOUBLE s = 0.0;
   for (R_xlen_t k = 0; k < n; ++k) s += x[k];
@@ -107,7 +118,7 @@ struct CellReturns {
   double vw, ew, vw_capped;
 };
 
-static double weighted_mean(const NumericVector& x, const NumericVector& w,
+inline double weighted_mean(const double* x, const double* w,
                             const R_xlen_t* rows, R_xlen_t n) {
   LDOUBLE num = 0.0, den = 0.0;
   for (R_xlen_t k = 0; k < n; ++k) {
@@ -123,11 +134,10 @@ static double weighted_mean(const NumericVector& x, const NumericVector& w,
   return ld_to_double(num) / sum_w;
 }
 
-static CellReturns cell_returns(const NumericVector& ret,
-                                const NumericVector& w,
-                                const NumericVector& w_capped,
-                                const R_xlen_t* rows, R_xlen_t n,
-                                double min_size, std::vector<double>& buf) {
+inline CellReturns cell_returns(const double* ret, const double* w,
+                                const double* w_capped, const R_xlen_t* rows,
+                                R_xlen_t n, double min_size,
+                                std::vector<double>& buf) {
   CellReturns out;
   out.n = (int)n;
   if (n < min_size) {
@@ -146,11 +156,10 @@ static CellReturns cell_returns(const NumericVector& ret,
 
 // pmin(w, quantile(w, cap_weight, na.rm = TRUE)) per date, with missing
 // market caps set to zero afterwards.
-// [[Rcpp::export]]
-NumericVector cap_weights_cpp(NumericVector w, IntegerVector group,
-                              int n_groups, double cap_weight) {
-  const Buckets b = bucket_rows(group, n_groups);
-  NumericVector out(w.size(), NA_REAL);
+inline void cap_weights(const double* w, const int* group, R_xlen_t n,
+                        int n_groups, double cap_weight, double* out) {
+  const Buckets b = bucket_rows(group, n, n_groups);
+  std::fill(out, out + n, NA_REAL);
   std::vector<double> values;
   for (int g = 0; g < n_groups; ++g) {
     values.clear();
@@ -171,31 +180,44 @@ NumericVector cap_weights_cpp(NumericVector w, IntegerVector group,
       }
     }
   }
-  return out;
 }
 
 // Portfolio assignment -------------------------------------------------------
 
+// Breakpoint options of compute_breakpoints(). `exchange_keep` (rows eligible
+// for breakpoints by exchange, as an R logical) and `mktcap` (size threshold)
+// are null when the respective option is not used.
+struct BreakpointSpec {
+  const int* exchange_keep;
+  const double* mktcap;
+  double size_threshold;
+  std::vector<double> probs;
+  bool smooth_bunching;
+  bool use_percentiles;
+  std::vector<double> probs_both_edges;
+  std::vector<double> probs_one_edge;
+};
+
+// Number of groups that triggered each warning of assign_portfolio() and
+// compute_breakpoints().
+struct AssignWarnings {
+  int constant, empty, missing, clusters, smooth_percentiles;
+};
+
 // Equivalent of assign_portfolio() with compute_breakpoints() for every group.
-// `exchange_keep` (rows eligible for breakpoints by exchange) and `mktcap`
-// (size threshold) are empty when the respective option is not used.
-// [[Rcpp::export]]
-List assign_portfolios_cpp(NumericVector x, IntegerVector group, int n_groups,
-                           LogicalVector exchange_keep, NumericVector mktcap,
-                           double size_threshold, NumericVector probs,
-                           bool smooth_bunching, bool use_percentiles,
-                           NumericVector probs_both_edges,
-                           NumericVector probs_one_edge) {
-  const Buckets b = bucket_rows(group, n_groups);
-  const bool by_exchange = exchange_keep.size() > 0;
-  const bool by_size = mktcap.size() > 0;
-  const int n_portfolios = probs.size() - 1;
+inline AssignWarnings assign_portfolios(const double* x, const int* group,
+                                        R_xlen_t n, int n_groups,
+                                        const BreakpointSpec& spec,
+                                        int* portfolio) {
+  const Buckets b = bucket_rows(group, n, n_groups);
+  const bool by_exchange = spec.exchange_keep != nullptr;
+  const bool by_size = spec.mktcap != nullptr;
+  const int n_portfolios = spec.probs.size() - 1;
 
-  IntegerVector portfolio(x.size(), NA_INTEGER);
-  int n_constant = 0, n_empty = 0, n_missing = 0, n_clusters = 0,
-      n_smooth_percentiles = 0;
+  std::fill(portfolio, portfolio + n, NA_INTEGER);
+  AssignWarnings warnings = {0, 0, 0, 0, 0};
 
-  std::vector<double> values, sorted, bp, bp_new, mc;
+  std::vector<double> values, sorted, bp, bp_new, mc, inner;
   std::vector<char> used;
 
   for (int g = 0; g < n_groups; ++g) {
@@ -217,7 +239,7 @@ List assign_portfolios_cpp(NumericVector x, IntegerVector group, int n_groups,
       }
     }
     if (constant) {
-      n_constant++;
+      warnings.constant++;
       for (R_xlen_t k = from; k < to; ++k) portfolio[b.rows[k]] = 1;
       continue;
     }
@@ -228,12 +250,13 @@ List assign_portfolios_cpp(NumericVector x, IntegerVector group, int n_groups,
       mc.clear();
       for (R_xlen_t k = from; k < to; ++k) {
         const R_xlen_t i = b.rows[k];
-        if ((!by_exchange || exchange_keep[i] == TRUE) && !ISNAN(mktcap[i])) {
-          mc.push_back(mktcap[i]);
+        if ((!by_exchange || spec.exchange_keep[i] == TRUE) &&
+            !ISNAN(spec.mktcap[i])) {
+          mc.push_back(spec.mktcap[i]);
         }
       }
       std::sort(mc.begin(), mc.end());
-      size_cutoff = quantile7(mc, size_threshold);
+      size_cutoff = quantile7(mc, spec.size_threshold);
     }
 
     // Values used for the breakpoints (NAs are kept for the length check).
@@ -242,20 +265,20 @@ List assign_portfolios_cpp(NumericVector x, IntegerVector group, int n_groups,
     values.clear();
     for (R_xlen_t k = from; k < to; ++k) {
       const R_xlen_t i = b.rows[k];
-      if (by_exchange && exchange_keep[i] != TRUE) continue;
+      if (by_exchange && spec.exchange_keep[i] != TRUE) continue;
       if (by_size) {
-        if (ISNAN(mktcap[i])) continue;
+        if (ISNAN(spec.mktcap[i])) continue;
         if (ISNAN(size_cutoff)) {
           values.push_back(NA_REAL);
           continue;
         }
-        if (!(mktcap[i] > size_cutoff)) continue;
+        if (!(spec.mktcap[i] > size_cutoff)) continue;
       }
       values.push_back(x[i]);
     }
     if (values.empty()) {
-      n_empty++;
-      n_missing++;
+      warnings.empty++;
+      warnings.missing++;
       continue;
     }
 
@@ -264,17 +287,17 @@ List assign_portfolios_cpp(NumericVector x, IntegerVector group, int n_groups,
       if (!ISNAN(v)) sorted.push_back(v);
     }
     std::sort(sorted.begin(), sorted.end());
-    quantiles7(sorted, probs, bp);
+    quantiles7(sorted, spec.probs, bp);
 
-    if (smooth_bunching) {
-      const int n = n_portfolios;
+    if (spec.smooth_bunching) {
+      const int np = n_portfolios;
       const bool lower_edge = bp[0] == bp[1];
-      const bool upper_edge = bp[n - 1] == bp[n];
+      const bool upper_edge = bp[np - 1] == bp[np];
       if (lower_edge || upper_edge) {
-        if (use_percentiles) n_smooth_percentiles++;
-        const double lower = bp[0], upper = bp[n];
-        const double upper_inner = bp[n - 1];
-        std::vector<double> inner;
+        if (spec.use_percentiles) warnings.smooth_percentiles++;
+        const double lower = bp[0], upper = bp[np];
+        const double upper_inner = bp[np - 1];
+        inner.clear();
         for (double v : sorted) {
           if (lower_edge && upper_edge) {
             if (v > lower && v < upper) inner.push_back(v);
@@ -285,18 +308,18 @@ List assign_portfolios_cpp(NumericVector x, IntegerVector group, int n_groups,
           }
         }
         if (lower_edge && upper_edge) {
-          quantiles7(inner, probs_both_edges, bp_new);
-          bp_new[n - 2] = bp_new[n - 2] + 1e-15;
+          quantiles7(inner, spec.probs_both_edges, bp_new);
+          bp_new[np - 2] = bp_new[np - 2] + 1e-15;
           bp.assign(1, lower);
           bp.insert(bp.end(), bp_new.begin(), bp_new.end());
           bp.push_back(upper);
         } else if (lower_edge) {
-          quantiles7(inner, probs_one_edge, bp_new);
+          quantiles7(inner, spec.probs_one_edge, bp_new);
           bp.assign(1, lower);
           bp.insert(bp.end(), bp_new.begin(), bp_new.end());
         } else {
-          quantiles7(inner, probs_one_edge, bp_new);
-          bp_new[n - 1] = bp_new[n - 1] + 1e-15;
+          quantiles7(inner, spec.probs_one_edge, bp_new);
+          bp_new[np - 1] = bp_new[np - 1] + 1e-15;
           bp = bp_new;
           bp.push_back(upper);
         }
@@ -308,12 +331,13 @@ List assign_portfolios_cpp(NumericVector x, IntegerVector group, int n_groups,
     bool any_na = false;
     for (double v : bp) any_na = any_na || ISNAN(v);
     if (any_na) {
-      n_missing++;
+      warnings.missing++;
       continue;
     }
     for (size_t k = 1; k < bp.size(); ++k) {
       if (bp[k] < bp[k - 1]) {
-        stop("'vec' must be sorted non-decreasingly and not contain NAs");
+        throw std::runtime_error(
+            "'vec' must be sorted non-decreasingly and not contain NAs");
       }
     }
 
@@ -332,29 +356,22 @@ List assign_portfolios_cpp(NumericVector x, IntegerVector group, int n_groups,
         n_used++;
       }
     }
-    if (n_used != n_intervals) n_clusters++;
+    if (n_used != n_intervals) warnings.clusters++;
   }
-
-  return List::create(
-      _["portfolio"] = portfolio,
-      _["warnings"] = IntegerVector::create(
-          _["constant"] = n_constant, _["empty"] = n_empty,
-          _["missing"] = n_missing, _["clusters"] = n_clusters,
-          _["smooth_percentiles"] = n_smooth_percentiles));
+  return warnings;
 }
 
 // Annual rebalancing -----------------------------------------------------------
 
-// For each row, the index of the rebalancing row of the same firm with the
-// latest date on or before the row's date, provided the row's date does not
-// exceed that rebalancing row's upper bound. Equivalent to the inequality join
-// in join_rebalanced_portfolios(). Ids are integer codes in 1..n_ids.
-// [[Rcpp::export]]
-IntegerVector carry_forward_cpp(IntegerVector id, NumericVector date,
-                                IntegerVector rebal_id,
-                                NumericVector rebal_date,
-                                NumericVector rebal_upper, int n_ids) {
-  const Buckets b = bucket_rows(rebal_id, n_ids);
+// For each row, the 1-based index of the rebalancing row of the same firm with
+// the latest date on or before the row's date, provided the row's date does
+// not exceed that rebalancing row's upper bound. Equivalent to the inequality
+// join in join_rebalanced_portfolios(). Ids are integer codes in 1..n_ids.
+inline void carry_forward(const int* id, const double* date, R_xlen_t n,
+                          const int* rebal_id, const double* rebal_date,
+                          const double* rebal_upper, R_xlen_t n_rebal,
+                          int n_ids, int* out) {
+  const Buckets b = bucket_rows(rebal_id, n_rebal, n_ids);
   // Sort each firm's rebalancing rows by date.
   std::vector<R_xlen_t> rows = b.rows;
   for (int g = 0; g < n_ids; ++g) {
@@ -363,8 +380,8 @@ IntegerVector carry_forward_cpp(IntegerVector id, NumericVector date,
                 return rebal_date[a] < rebal_date[c];
               });
   }
-  IntegerVector out(id.size(), NA_INTEGER);
-  for (R_xlen_t i = 0; i < id.size(); ++i) {
+  std::fill(out, out + n, NA_INTEGER);
+  for (R_xlen_t i = 0; i < n; ++i) {
     if (id[i] == NA_INTEGER || ISNAN(date[i])) continue;
     const R_xlen_t from = b.start[id[i] - 1], to = b.start[id[i]];
     // Latest rebalancing date <= date[i].
@@ -384,49 +401,58 @@ IntegerVector carry_forward_cpp(IntegerVector id, NumericVector date,
       break;
     }
   }
-  return out;
 }
 
 // Aggregation -------------------------------------------------------------------
 
-// Univariate sorts: returns per (portfolio, date) cell. Cells are laid out
-// portfolio-major, i.e. cell (p, d) is at (p - 1) * n_dates + (d - 1).
-// [[Rcpp::export]]
-List aggregate_univariate_cpp(IntegerVector portfolio, IntegerVector date,
-                              int n_portfolios, int n_dates,
-                              NumericVector ret, NumericVector w,
-                              NumericVector w_capped, double min_size) {
-  const R_xlen_t n = portfolio.size();
+// Output arrays of the aggregation kernels, one entry per (portfolio, date)
+// cell. Cells are laid out portfolio-major: cell (p, d) is at
+// (p - 1) * n_dates + (d - 1). `n` is the number of rows in the cell.
+struct CellOutput {
+  int* n;
+  double* vw;
+  double* ew;
+  double* vw_capped;
+};
+
+inline void init_cells(const CellOutput& out, int n_cells) {
+  std::fill(out.n, out.n + n_cells, 0);
+  std::fill(out.vw, out.vw + n_cells, NA_REAL);
+  std::fill(out.ew, out.ew + n_cells, NA_REAL);
+  std::fill(out.vw_capped, out.vw_capped + n_cells, NA_REAL);
+}
+
+// Univariate sorts: returns per (portfolio, date) cell.
+inline void aggregate_univariate(const int* portfolio, const int* date,
+                                 R_xlen_t n, int n_portfolios, int n_dates,
+                                 const double* ret, const double* w,
+                                 const double* w_capped, double min_size,
+                                 const CellOutput& out) {
   const int n_cells = n_portfolios * n_dates;
-  IntegerVector cell(n, NA_INTEGER);
+  std::vector<int> cell(n, NA_INTEGER);
   for (R_xlen_t i = 0; i < n; ++i) {
     if (portfolio[i] == NA_INTEGER || date[i] == NA_INTEGER) continue;
     cell[i] = (portfolio[i] - 1) * n_dates + date[i];
   }
-  const Buckets b = bucket_rows(cell, n_cells);
+  const Buckets b = bucket_rows(cell.data(), n, n_cells);
 
-  IntegerVector n_obs(n_cells);
-  NumericVector vw(n_cells, NA_REAL), ew(n_cells, NA_REAL),
-      vw_capped(n_cells, NA_REAL);
+  init_cells(out, n_cells);
   std::vector<double> buf;
   for (int c = 0; c < n_cells; ++c) {
     const R_xlen_t size = b.start[c + 1] - b.start[c];
     if (size == 0) continue;
     const CellReturns r = cell_returns(ret, w, w_capped, &b.rows[b.start[c]],
                                        size, min_size, buf);
-    n_obs[c] = r.n;
-    vw[c] = r.vw;
-    ew[c] = r.ew;
-    vw_capped[c] = r.vw_capped;
+    out.n[c] = r.n;
+    out.vw[c] = r.vw;
+    out.ew[c] = r.ew;
+    out.vw_capped[c] = r.vw_capped;
   }
-  return List::create(_["n"] = n_obs, _["ret_excess_vw"] = vw,
-                      _["ret_excess_ew"] = ew,
-                      _["ret_excess_vw_capped"] = vw_capped);
 }
 
 // mean(x, na.rm = TRUE), with NaN (no values) mapped to NA as in
 // aggregate_bivariate_returns().
-static double mean_na_rm(const std::vector<double>& x,
+inline double mean_na_rm(const std::vector<double>& x,
                          std::vector<double>& buf) {
   buf.clear();
   for (double v : x) {
@@ -439,27 +465,25 @@ static double mean_na_rm(const std::vector<double>& x,
 // Bivariate sorts: cell returns over (main, secondary, date) without a size
 // threshold, averaged over the secondary portfolios (NA secondary last), with
 // min_size applied to the firm count per (main, date).
-// [[Rcpp::export]]
-List aggregate_bivariate_cpp(IntegerVector main, IntegerVector secondary,
-                             IntegerVector date, int n_main, int n_secondary,
-                             int n_dates, NumericVector ret, NumericVector w,
-                             NumericVector w_capped, double min_size) {
-  const R_xlen_t n = main.size();
+inline void aggregate_bivariate(const int* main, const int* secondary,
+                                const int* date, R_xlen_t n, int n_main,
+                                int n_secondary, int n_dates,
+                                const double* ret, const double* w,
+                                const double* w_capped, double min_size,
+                                const CellOutput& out) {
   const int n_slots = n_secondary + 1;  // last slot: NA secondary portfolio
   const int n_cells = n_main * n_dates * n_slots;
-  IntegerVector cell(n, NA_INTEGER);
+  std::vector<int> cell(n, NA_INTEGER);
   for (R_xlen_t i = 0; i < n; ++i) {
     if (main[i] == NA_INTEGER || date[i] == NA_INTEGER) continue;
     const int slot =
         secondary[i] == NA_INTEGER ? n_secondary : secondary[i] - 1;
     cell[i] = ((main[i] - 1) * n_dates + (date[i] - 1)) * n_slots + slot + 1;
   }
-  const Buckets b = bucket_rows(cell, n_cells);
+  const Buckets b = bucket_rows(cell.data(), n, n_cells);
 
   const int n_out = n_main * n_dates;
-  IntegerVector n_obs(n_out);
-  NumericVector vw(n_out, NA_REAL), ew(n_out, NA_REAL),
-      vw_capped(n_out, NA_REAL);
+  init_cells(out, n_out);
   std::vector<double> buf, cell_vw, cell_ew, cell_vw_capped, tmp;
   for (int o = 0; o < n_out; ++o) {
     cell_vw.clear();
@@ -478,13 +502,14 @@ List aggregate_bivariate_cpp(IntegerVector main, IntegerVector secondary,
       n_rows += r.n;
       if (s < n_secondary) n_firms += r.n;
     }
-    n_obs[o] = n_rows;
+    out.n[o] = n_rows;
     if (n_rows == 0 || n_firms == 0 || n_firms < min_size) continue;
-    vw[o] = mean_na_rm(cell_vw, tmp);
-    ew[o] = mean_na_rm(cell_ew, tmp);
-    vw_capped[o] = mean_na_rm(cell_vw_capped, tmp);
+    out.vw[o] = mean_na_rm(cell_vw, tmp);
+    out.ew[o] = mean_na_rm(cell_ew, tmp);
+    out.vw_capped[o] = mean_na_rm(cell_vw_capped, tmp);
   }
-  return List::create(_["n"] = n_obs, _["ret_excess_vw"] = vw,
-                      _["ret_excess_ew"] = ew,
-                      _["ret_excess_vw_capped"] = vw_capped);
 }
+
+}  // namespace portfolio_sorts
+
+#endif  // PORTFOLIO_SORTS_CORE_H

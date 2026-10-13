@@ -6,10 +6,11 @@
 # original; only the core (dropping missing sorting variables, capping weights,
 # assigning portfolios, aggregating returns) is delegated to an `engine`:
 #
-# - "dplyr":      dplyr, but without the per-group overhead of the original.
+# - "cpp11":      C++ kernels (portfolio_sorts_core.h) via cpp11 bindings.
+# - "rcpp":       the same C++ kernels via Rcpp bindings.
 # - "data.table": data.table grouping, calling the unchanged assign_portfolio()
 #                 and compute_breakpoints() of the package for every date.
-# - "rcpp":       C++ kernels in portfolio_sorts.cpp.
+# - "dplyr":      dplyr, but without the per-group overhead of the original.
 #
 # Calls the fast path cannot reproduce exactly (custom breakpoint functions,
 # invalid options or arguments, duplicated firm-months at rebalancing dates)
@@ -17,7 +18,36 @@
 #
 # Requires setup.R to be sourced first (it provides `tf`).
 
-Rcpp::sourceCpp(file.path(bench_dir, "portfolio_sorts.cpp"))
+# cpp_source() compiles a copy of the file inside a temporary package, so the
+# shared header has to be placed next to that copy.
+compile_cpp11 <- function(file, header, env = parent.frame()) {
+  dir <- tempfile("cpp11-")
+  dir.create(file.path(dir, "src"), recursive = TRUE)
+  file.copy(header, file.path(dir, "src"))
+  cpp11::cpp_source(file, env = env, cxx_std = "CXX17", dir = dir)
+}
+
+compile_cpp11(
+  file.path(bench_dir, "portfolio_sorts_cpp11.cpp"),
+  file.path(bench_dir, "portfolio_sorts_core.h")
+)
+Rcpp::sourceCpp(file.path(bench_dir, "portfolio_sorts_rcpp.cpp"))
+
+kernels_cpp11 <- list(
+  cap_weights = cap_weights_cpp11,
+  assign_portfolios = assign_portfolios_cpp11,
+  carry_forward = carry_forward_cpp11,
+  aggregate_univariate = aggregate_univariate_cpp11,
+  aggregate_bivariate = aggregate_bivariate_cpp11
+)
+
+kernels_rcpp <- list(
+  cap_weights = cap_weights_rcpp,
+  assign_portfolios = assign_portfolios_rcpp,
+  carry_forward = carry_forward_rcpp,
+  aggregate_univariate = aggregate_univariate_rcpp,
+  aggregate_bivariate = aggregate_bivariate_rcpp
+)
 
 compute_portfolio_returns_fast <- function(
   data,
@@ -32,7 +62,7 @@ compute_portfolio_returns_fast <- function(
   cap_weight = 0.8,
   data_options = NULL,
   quiet = FALSE,
-  engine = c("rcpp", "data.table", "dplyr")
+  engine = c("cpp11", "rcpp", "data.table", "dplyr")
 ) {
   engine <- match.arg(engine)
 
@@ -149,7 +179,8 @@ compute_portfolio_returns_fast <- function(
 
   engine_fun <- switch(
     engine,
-    "rcpp" = engine_rcpp,
+    "cpp11" = \(...) engine_compiled(..., kernels = kernels_cpp11),
+    "rcpp" = \(...) engine_compiled(..., kernels = kernels_rcpp),
     "data.table" = engine_data_table,
     "dplyr" = engine_dplyr
   )
@@ -393,9 +424,11 @@ breakpoint_columns <- function(sorting_variable, options, data_options) {
   )
 }
 
-# Engine: Rcpp ---------------------------------------------------------------
+# Engine: compiled kernels -----------------------------------------------------
 
-engine_rcpp <- function(
+# `kernels` is kernels_cpp11 or kernels_rcpp: the same C++ code behind either
+# binding.
+engine_compiled <- function(
   data,
   keep,
   sorting_variables,
@@ -406,7 +439,8 @@ engine_rcpp <- function(
   min_portfolio_size,
   cap_weight,
   data_options,
-  all_dates
+  all_dates,
+  kernels
 ) {
   date_col <- data_options$date
   id_col <- data_options$id
@@ -416,7 +450,7 @@ engine_rcpp <- function(
   n_dates <- length(all_dates)
 
   w <- as.double(data[[data_options$mktcap_lag]][keep])
-  w_capped <- cap_weights_cpp(w, date_idx, n_dates, cap_weight)
+  w_capped <- kernels$cap_weights(w, date_idx, n_dates, cap_weight)
   w[is.na(w)] <- 0
   ret <- as.double(data[[data_options$ret_excess]][keep])
 
@@ -430,7 +464,7 @@ engine_rcpp <- function(
     use_size <- !is.null(options$breakpoints_min_size_threshold)
     probs <- breakpoint_probs(options)
     n_portfolios <- length(probs) - 1L
-    result <- assign_portfolios_cpp(
+    result <- kernels$assign_portfolios(
       x = as.double(data[[variable]][keep][rows]),
       group = group,
       n_groups = n_groups,
@@ -499,7 +533,7 @@ engine_rcpp <- function(
     ids <- data[[id_col]][keep]
     rebalancing_ids <- unique(ids[rows])
     rebalancing_dates <- dates[rows]
-    match_idx <- carry_forward_cpp(
+    match_idx <- kernels$carry_forward(
       id = match(ids, rebalancing_ids),
       date = as.double(dates),
       rebal_id = match(ids[rows], rebalancing_ids),
@@ -513,7 +547,7 @@ engine_rcpp <- function(
 
   n_main <- max(length(breakpoint_probs(breakpoint_options_main)) - 1L, main, na.rm = TRUE)
   if (sorting_method == "univariate") {
-    result <- aggregate_univariate_cpp(
+    result <- kernels$aggregate_univariate(
       main,
       date_idx,
       n_main,
@@ -521,7 +555,7 @@ engine_rcpp <- function(
       ret,
       w,
       w_capped,
-      min_portfolio_size
+      as.double(min_portfolio_size)
     )
   } else {
     n_secondary <- max(
@@ -529,7 +563,7 @@ engine_rcpp <- function(
       secondary,
       na.rm = TRUE
     )
-    result <- aggregate_bivariate_cpp(
+    result <- kernels$aggregate_bivariate(
       main,
       secondary,
       date_idx,
@@ -539,7 +573,7 @@ engine_rcpp <- function(
       ret,
       w,
       w_capped,
-      min_portfolio_size
+      as.double(min_portfolio_size)
     )
   }
 
