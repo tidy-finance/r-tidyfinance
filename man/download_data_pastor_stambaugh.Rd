@@ -64,6 +64,7 @@ returns. \emph{Journal of Political Economy}, 111(3), 642-685.
 Other download functions:
 \code{\link[=download_data]{download_data()}},
 \code{\link[=download_data_constituents]{download_data_constituents()}},
+\code{\link[=download_data_damodaran]{download_data_damodaran()}},
 \code{\link[=download_data_factors_ff]{download_data_factors_ff()}},
 \code{\link[=download_data_factors_q]{download_data_factors_q()}},
 \code{\link[=download_data_fred]{download_data_fred()}},

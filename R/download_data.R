@@ -10,8 +10,8 @@
 #'   returned by [list_supported_datasets()]: `"Fama-French"`, `"Global Q"`,
 #'   `"Goyal-Welch"`, `"WRDS"`, `"Pseudo Data"`, `"Index Constituents"`,
 #'   `"FRED"`, `"Stock Prices"`, `"Open Source Asset Pricing"`,
-#'   `"Global Factor Data"`, `"Pastor-Stambaugh"`, `"Stambaugh-Yuan"`, or
-#'   `"Tidy Finance"`. Use `"Pseudo Data"` to obtain
+#'   `"Global Factor Data"`, `"Pastor-Stambaugh"`, `"Stambaugh-Yuan"`,
+#'   `"Damodaran"`, or `"Tidy Finance"`. Use `"Pseudo Data"` to obtain
 #'   pseudo data with the
 #'   same schema as `"WRDS"` for testing or rendering without a WRDS
 #'   subscription. The previous machine-readable names (e.g., `"famafrench"`,
@@ -40,7 +40,10 @@
 #'   (e.g., `sorting_variable`, `rebalancing`, `fill_all`) or an explicit
 #'   `ids` vector that bypasses the grid filter and downloads the
 #'   specified portfolios directly via `download_factor_library_ids()`;
-#'   see `download_data_huggingface()` for details.
+#'   see `download_data_huggingface()` for details. If `domain` is
+#'   `"Damodaran"`, arguments such as `region` and `year` are passed to
+#'   `download_data_damodaran()`, which selects years via `year` instead of
+#'   `start_date` and `end_date`.
 #'
 #' @returns A tibble with processed data, including dates and the relevant
 #'   financial metrics, filtered by the specified date range.
@@ -63,6 +66,7 @@
 #' download_data("FRED", "FRED-MD", transform = TRUE)
 #' download_data("FRED", "FRED-QD", vintage = "2020-03")
 #' download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
+#' download_data("Damodaran", "wacc", region = "europe", year = 2020:2024)
 #' download_data(
 #'   "Tidy Finance",
 #'   "risk_free",
@@ -206,6 +210,11 @@ download_data <- function(
       end_date = end_date,
       ...
     )
+  } else if (domain == "Damodaran") {
+    processed_data <- download_data_damodaran(
+      dataset = if (is.null(dataset)) "wacc" else dataset,
+      ...
+    )
   } else if (domain == "Tidy Finance") {
     if (!is.null(dataset) && dataset == "risk_free") {
       processed_data <- download_data_risk_free(
@@ -277,7 +286,7 @@ is_legacy_type <- function(x) {
   other_datasets <- list_supported_datasets_other() |>
     dplyr::filter(
       .data$domain != "Tidy Finance",
-      !.data$type %in% c("osap", "jkp", "liquidity", "mispricing")
+      !.data$type %in% c("osap", "jkp", "liquidity", "mispricing", "wacc")
     )
 
   all_datasets <- dplyr::bind_rows(
@@ -409,6 +418,7 @@ check_supported_domain <- function(domain) {
     "Global Factor Data",
     "Pastor-Stambaugh",
     "Stambaugh-Yuan",
+    "Damodaran",
     "Tidy Finance"
   )
 
