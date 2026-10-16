@@ -44,6 +44,7 @@ Imports:
     sandwich (>= 3.1-0)
 Suggests:
     knitr,
+    readxl,
     rmarkdown,
     testthat (>= 3.2.0),
     withr

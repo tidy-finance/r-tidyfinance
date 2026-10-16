@@ -18,8 +18,8 @@ download_data(
 returned by \code{\link[=list_supported_datasets]{list_supported_datasets()}}: \code{"Fama-French"}, \code{"Global Q"},
 \code{"Goyal-Welch"}, \code{"WRDS"}, \code{"Pseudo Data"}, \code{"Index Constituents"},
 \code{"FRED"}, \code{"Stock Prices"}, \code{"Open Source Asset Pricing"},
-\code{"Global Factor Data"}, \code{"Pastor-Stambaugh"}, \code{"Stambaugh-Yuan"}, or
-\code{"Tidy Finance"}. Use \code{"Pseudo Data"} to obtain
+\code{"Global Factor Data"}, \code{"Pastor-Stambaugh"}, \code{"Stambaugh-Yuan"},
+\code{"Damodaran"}, or \code{"Tidy Finance"}. Use \code{"Pseudo Data"} to obtain
 pseudo data with the
 same schema as \code{"WRDS"} for testing or rendering without a WRDS
 subscription. The previous machine-readable names (e.g., \code{"famafrench"},
@@ -53,7 +53,10 @@ the \code{dataset} argument and arguments such as \code{region}, \code{factors},
 (e.g., \code{sorting_variable}, \code{rebalancing}, \code{fill_all}) or an explicit
 \code{ids} vector that bypasses the grid filter and downloads the
 specified portfolios directly via \code{download_factor_library_ids()};
-see \code{download_data_huggingface()} for details.}
+see \code{download_data_huggingface()} for details. If \code{domain} is
+\code{"Damodaran"}, arguments such as \code{region} and \code{year} are passed to
+\code{download_data_damodaran()}, which selects years via \code{year} instead of
+\code{start_date} and \code{end_date}.}
 }
 \value{
 A tibble with processed data, including dates and the relevant
@@ -81,6 +84,7 @@ download_data("FRED", "FRED-MD")
 download_data("FRED", "FRED-MD", transform = TRUE)
 download_data("FRED", "FRED-QD", vintage = "2020-03")
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
+download_data("Damodaran", "wacc", region = "europe", year = 2020:2024)
 download_data(
   "Tidy Finance",
   "risk_free",
@@ -106,6 +110,7 @@ download_data("Tidy Finance", "factor_library_grid")
 \seealso{
 Other download functions:
 \code{\link[=download_data_constituents]{download_data_constituents()}},
+\code{\link[=download_data_damodaran]{download_data_damodaran()}},
 \code{\link[=download_data_factors_ff]{download_data_factors_ff()}},
 \code{\link[=download_data_factors_q]{download_data_factors_q()}},
 \code{\link[=download_data_fred]{download_data_fred()}},

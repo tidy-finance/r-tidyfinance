@@ -10,6 +10,17 @@
 - `download_data_osap()` downloads the October 2025 release (v2.0.0) of the
   long-short returns by default instead of the August 2024 release (v1.4.0).
 
+## New features
+
+- Added `download_data_damodaran()` and the `"Damodaran"` domain for
+  `download_data()`, which download the cost of capital (WACC) by industry
+  from Aswath Damodaran's data library, e.g.
+  `download_data("Damodaran", "wacc")`. `region` selects the US (default),
+  Europe, Japan, emerging markets, global, China, India, or Australia, New
+  Zealand, and Canada, and `year` reads archived years (from 1998 for the US)
+  into a panel. Reading the Excel files requires the suggested readxl package
+  (#298).
+
 # tidyfinance 0.9.0
 
 ## Breaking changes

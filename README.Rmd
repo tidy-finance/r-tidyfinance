@@ -147,6 +147,17 @@ download_data(
 )
 ```
 
+To download the cost of capital (WACC) by industry from [Aswath Damodaran's data library](https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html), optionally selecting a `region` (e.g., `"us"`, the default, or `"europe"`) and archived years via `year`. Reading the Excel files requires the `readxl` package:
+
+```{r}
+download_data(
+  domain = "Damodaran",
+  dataset = "wacc",
+  region = "us",
+  year = 2023:2024
+)
+```
+
 To download multiple series from the Federal Reserve Economic Data (FRED):
 
 ```{r}
