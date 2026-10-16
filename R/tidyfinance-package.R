@@ -4,6 +4,7 @@
 #' @import tibble
 #' @import DBI
 #' @import httr2
+#' @useDynLib tidyfinance, .registration = TRUE
 "_PACKAGE"
 
 ## usethis namespace: start

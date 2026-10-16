@@ -95,3 +95,4 @@ importFrom(utils,
   read.csv,
   read.table
 )
+useDynLib(tidyfinance, .registration = TRUE)
