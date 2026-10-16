@@ -1,0 +1,7 @@
+# Compiled sources must keep LF endings: R CMD check tests "line endings in
+# C/C++/Fortran sources/headers", and core.autocrlf would otherwise hand a
+# Windows checkout CRLF files that fail that check.
+*.c    text eol=lf
+*.h    text eol=lf
+*.cpp  text eol=lf
+*.hpp  text eol=lf
