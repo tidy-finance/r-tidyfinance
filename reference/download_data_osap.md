@@ -1,11 +1,11 @@
 # Download and Process Open Source Asset Pricing Data
 
 Downloads the data from [Open Source Asset
-Pricing](https://www.openassetpricing.com/data/) from Google Sheets
-using a specified sheet ID, processes the data by converting column
-names to snake_case, aligning the date to the beginning of the month,
-scaling the percentage long-short returns to numeric values, and
-optionally filters the data based on a provided date range.
+Pricing](https://www.openassetpricing.com/data/) from Google Drive using
+a specified file ID, processes the data by converting column names to
+snake_case, aligning the date to the beginning of the month, scaling the
+percentage long-short returns to numeric values, and optionally filters
+the data based on a provided date range.
 
 ## Usage
 
@@ -13,7 +13,7 @@ optionally filters the data based on a provided date range.
 download_data_osap(
   start_date = NULL,
   end_date = NULL,
-  sheet_id = "1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"
+  sheet_id = "10sOryk_ddjkXagaajTKUk1nwJs2ZLRiI"
 )
 ```
 
@@ -29,12 +29,17 @@ download_data_osap(
 
   Optional. A character string or Date object in "YYYY-MM-DD" format
   specifying the end date for the data. If not provided, the full
-  dataset is returned.
+  dataset is returned. Google Drive limits how often a shared file can
+  be downloaded. When the limit is reached, Google Drive returns an
+  error page instead of the data and the function returns an empty
+  tibble. The limit is usually lifted within 24 hours.
 
 - sheet_id:
 
-  A character string representing the Google Sheet ID from which to
-  download the data. Default is `"1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"`.
+  A character string with the Google Drive file ID of the wide CSV of
+  monthly long-short returns. The default,
+  `"10sOryk_ddjkXagaajTKUk1nwJs2ZLRiI"`, is the October 2025 release
+  (v2.0.0). Pass the ID of another release to download it instead.
 
 ## Value
 
@@ -79,6 +84,9 @@ Other download functions:
   osap <- download_data_osap(
     start_date = "2020-01-01", end_date = "2020-06-30"
   )
+#> Failed to download or process the resource. The resource may not be available,
+#> or the URL may have changed. Error message: The Google Drive download quota of
+#> the file is exceeded. Try again later, usually within 24 hours.
 #> Returning an empty data set due to download failure.
 # }
 ```

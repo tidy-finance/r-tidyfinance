@@ -54,6 +54,13 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tidyfinance-development-version">tidyfinance (development version)<a class="anchor" aria-label="anchor" href="#tidyfinance-development-version"></a></h2>
 <div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/download_data_osap.html">download_data_osap()</a></code> and <code>download_data("Open Source Asset Pricing")</code> no longer parse the HTML page that Google Drive returns instead of the data, e.g., when the download quota of the file is exceeded. They now return an empty tibble and say why, instead of a tibble whose column names are fragments of the page.</li>
+<li>
+<code><a href="../reference/download_data_osap.html">download_data_osap()</a></code> downloads the October 2025 release (v2.0.0) of the long-short returns by default instead of the August 2024 release (v1.4.0).</li>
+</ul></div>
+<div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <ul><li>Added <code><a href="../reference/download_data_damodaran.html">download_data_damodaran()</a></code> and the <code>"Damodaran"</code> domain for <code><a href="../reference/download_data.html">download_data()</a></code>, which download the cost of capital (WACC) by industry from Aswath Damodaran’s data library, e.g. <code>download_data("Damodaran", "wacc")</code>. <code>region</code> selects the US (default), Europe, Japan, emerging markets, global, China, India, or Australia, New Zealand, and Canada, and <code>year</code> reads archived years (from 1998 for the US) into a panel. Reading the Excel files requires the suggested readxl package (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/298" class="external-link">#298</a>).</li>
 </ul></div>

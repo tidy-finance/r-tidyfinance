@@ -2,6 +2,18 @@
 
 ## tidyfinance (development version)
 
+### Bug fixes
+
+- [`download_data_osap()`](https://r.tidy-finance.org/reference/download_data_osap.md)
+  and `download_data("Open Source Asset Pricing")` no longer parse the
+  HTML page that Google Drive returns instead of the data, e.g., when
+  the download quota of the file is exceeded. They now return an empty
+  tibble and say why, instead of a tibble whose column names are
+  fragments of the page.
+- [`download_data_osap()`](https://r.tidy-finance.org/reference/download_data_osap.md)
+  downloads the October 2025 release (v2.0.0) of the long-short returns
+  by default instead of the August 2024 release (v1.4.0).
+
 ### New features
 
 - Added
