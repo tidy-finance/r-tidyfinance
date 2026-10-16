@@ -76,6 +76,23 @@
 #'   `"mktcap_lag" = "mktcap_lag"`.
 #' @param quiet A logical value indicating whether to suppress informational
 #'   messages about missing values in the output panel (default is `FALSE`).
+#' @param engine A string selecting the implementation that computes the
+#'   portfolio returns. `"r"` (the default) is the R implementation described
+#'   above and is the reference for everything this function returns.
+#'   `"cpp11"` selects an alternative engine that delegates the per-date work
+#'   (capped weights, portfolio assignment, carrying annual assignments
+#'   forward, and the return aggregation) to compiled kernels, which is faster
+#'   on large panels. The compiled engine was contributed by Claude
+#'   (Anthropic). It passes the test suite of the default engine and is
+#'   expected to return identical results in all known cases, but the
+#'   equivalence is verified over the scenarios that are tested rather than
+#'   proven in general. The compiled engine also signals the warnings of
+#'   [assign_portfolio()] and [compute_breakpoints()] once per call instead of
+#'   once per date. It is used only for calls it is known to reproduce; any
+#'   other call runs the default engine instead, with a message naming the
+#'   reason unless `quiet` is `TRUE`. In particular it is refused on an R that
+#'   was built without long double, because the kernels rely on long double
+#'   accumulation to match R's `sum()`, `mean()`, and `weighted.mean()`.
 #'
 #' @note Ensure that `data` contains all required columns: the specified
 #'   sorting variables and excess returns (see options and defaults set in
@@ -147,8 +164,11 @@ compute_portfolio_returns <- function(
   min_portfolio_size = 1L,
   cap_weight = 0.8,
   data_options = NULL,
-  quiet = FALSE
+  quiet = FALSE,
+  engine = c("r", "cpp11")
 ) {
+  engine <- rlang::arg_match(engine)
+
   if (!is.logical(quiet) || length(quiet) != 1 || is.na(quiet)) {
     cli::cli_abort("{.arg quiet} must be a single logical.")
   }
@@ -210,32 +230,73 @@ compute_portfolio_returns <- function(
   # Store the dates before filtering out missing values
   all_dates <- unique(data[[date_col]])
 
-  # Filter out rows with missing values in any sorting variable, as these cannot
-  # be assigned to portfolios
-  data <- data |>
-    tidyr::drop_na(dplyr::all_of(sorting_variables))
-
-  # Compute capped market capitalization per date before replacing NAs,
-  # so that the quantile is not distorted by zero-filled missing values
-  data <- data |>
-    check_new_col(w_capped_col) |>
-    dplyr::group_by(.data[[date_col]]) |>
-    dplyr::mutate(
-      !!w_capped_col := pmin(
-        .data[[w_col]],
-        stats::quantile(.data[[w_col]], cap_weight, na.rm = TRUE)
+  # The alternative engine is used only for calls the compiled kernels are
+  # known to reproduce; everything else keeps running the R body below
+  engine_cpp11 <- FALSE
+  if (engine == "cpp11") {
+    engine_reject_reason <- cpp11_engine_reject_reason(
+      data = data,
+      sorting_variables = sorting_variables,
+      sorting_method = sorting_method,
+      rebalancing_month = rebalancing_month,
+      breakpoint_options_main = breakpoint_options_main,
+      breakpoint_options_secondary = breakpoint_options_secondary,
+      breakpoint_function_main = breakpoint_function_main,
+      breakpoint_function_secondary = breakpoint_function_secondary,
+      min_portfolio_size = min_portfolio_size,
+      cap_weight = cap_weight,
+      data_options = data_options,
+      quiet = quiet,
+      all_dates = all_dates
+    )
+    engine_cpp11 <- is.null(engine_reject_reason)
+    if (!engine_cpp11 && !quiet) {
+      cli::cli_inform(
+        paste0(
+          "Using the {.val r} engine instead of {.val cpp11}: ",
+          engine_reject_reason,
+          "."
+        )
       )
-    ) |>
-    dplyr::ungroup()
+    }
+  }
 
-  # Replace NA market caps with 0, as these observations should not contribute
-  # to the value-weighted return
-  missing_mcap_data <- is.na(data[[w_col]])
-  data[[w_col]][missing_mcap_data] <- 0
-  data[[w_capped_col]][missing_mcap_data] <- 0
+  if (engine_cpp11) {
+    # The compiled engine keeps `data` intact and works on a mask of the rows
+    # drop_na() keeps, and computes the capped weights in a kernel
+    keep <- stats::complete.cases(data[sorting_variables])
+    check_new_col(data, w_capped_col)
+    n_sorting_rows <- sum(keep)
+  } else {
+    # Filter out rows with missing values in any sorting variable, as these
+    # cannot be assigned to portfolios
+    data <- data |>
+      tidyr::drop_na(dplyr::all_of(sorting_variables))
+
+    # Compute capped market capitalization per date before replacing NAs,
+    # so that the quantile is not distorted by zero-filled missing values
+    data <- data |>
+      check_new_col(w_capped_col) |>
+      dplyr::group_by(.data[[date_col]]) |>
+      dplyr::mutate(
+        !!w_capped_col := pmin(
+          .data[[w_col]],
+          stats::quantile(.data[[w_col]], cap_weight, na.rm = TRUE)
+        )
+      ) |>
+      dplyr::ungroup()
+
+    # Replace NA market caps with 0, as these observations should not
+    # contribute to the value-weighted return
+    missing_mcap_data <- is.na(data[[w_col]])
+    data[[w_col]][missing_mcap_data] <- 0
+    data[[w_capped_col]][missing_mcap_data] <- 0
+
+    n_sorting_rows <- nrow(data)
+  }
 
   # Handle edge case where all observations are filtered out
-  if (nrow(data) == 0L) {
+  if (n_sorting_rows == 0L) {
     if (!quiet) {
       cli::cli_inform(
         paste0(
@@ -271,7 +332,42 @@ compute_portfolio_returns <- function(
     cli::cli_abort("Invalid rebalancing_month.")
   }
 
-  if (sorting_method == "univariate") {
+  if (engine_cpp11) {
+    if (sorting_method == "univariate") {
+      if (
+        !is.null(rebalancing_month) &&
+          !any(month(data[[date_col]][keep]) == rebalancing_month)
+      ) {
+        cli::cli_abort(
+          paste0(
+            "No observations match {.arg rebalancing_month} = ",
+            "{rebalancing_month}. Check that the data contains dates in ",
+            "the specified rebalancing month."
+          )
+        )
+      }
+
+      check_new_col(data, "portfolio")
+    } else {
+      check_new_col(data, c("portfolio_secondary", "portfolio_main"))
+    }
+
+    portfolio_returns <- portfolio_sorts_cpp11(
+      data = data,
+      keep = keep,
+      sorting_variables = sorting_variables,
+      sorting_method = sorting_method,
+      rebalancing_month = rebalancing_month,
+      breakpoint_options_main = breakpoint_options_main,
+      breakpoint_options_secondary = breakpoint_options_secondary,
+      min_portfolio_size = min_portfolio_size,
+      cap_weight = cap_weight,
+      data_options = data_options,
+      all_dates = all_dates
+    )
+  }
+
+  if (!engine_cpp11 && sorting_method == "univariate") {
     if (length(sorting_variables) > 1L) {
       cli::cli_abort("Only provide one sorting variable for univariate sorts.")
     }
@@ -336,7 +432,7 @@ compute_portfolio_returns <- function(
       )
   }
 
-  if (sorting_method == "bivariate-dependent") {
+  if (!engine_cpp11 && sorting_method == "bivariate-dependent") {
     if (length(sorting_variables) != 2L) {
       cli::cli_abort("Provide two sorting variables for bivariate sorts.")
     }
@@ -417,7 +513,7 @@ compute_portfolio_returns <- function(
     )
   }
 
-  if (sorting_method == "bivariate-independent") {
+  if (!engine_cpp11 && sorting_method == "bivariate-independent") {
     if (length(sorting_variables) != 2L) {
       cli::cli_abort("Provide two sorting variables for bivariate sorts.")
     }

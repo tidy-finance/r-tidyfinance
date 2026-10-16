@@ -60,6 +60,21 @@
 #'   `"earnings" = "ib"`.
 #' @param quiet A logical indicating whether informational messages should be
 #'   suppressed. Defaults to `FALSE`.
+#' @param engine A string selecting the implementation that computes the
+#'   portfolio returns, passed on to [compute_portfolio_returns()]. `"r"` (the
+#'   default) is the R implementation and the reference for everything this
+#'   function returns. `"cpp11"` selects an alternative engine that delegates
+#'   the per-date work to compiled kernels, which is faster on large panels.
+#'   The compiled engine was contributed by Claude (Anthropic). It passes the
+#'   test suite of the default engine and is expected to return identical
+#'   results in all known cases, but the equivalence is verified over the
+#'   scenarios that are tested rather than proven in general. It also signals
+#'   the warnings of [assign_portfolio()] and [compute_breakpoints()] once per
+#'   call instead of once per date, is used only for calls it is known to
+#'   reproduce (any other call runs the default engine, with a message naming
+#'   the reason unless `quiet` is `TRUE`), and is refused on an R that was
+#'   built without long double, because the kernels rely on long double
+#'   accumulation to match R's `sum()`, `mean()`, and `weighted.mean()`.
 #'
 #' @returns A data frame of portfolio returns as returned by
 #'   [compute_portfolio_returns()].
@@ -109,8 +124,11 @@ implement_portfolio_sort <- function(
   min_portfolio_size = 1L,
   cap_weight = 0.8,
   data_options = NULL,
-  quiet = FALSE
+  quiet = FALSE,
+  engine = c("r", "cpp11")
 ) {
+  engine <- rlang::arg_match(engine)
+
   if (!is.logical(quiet) || length(quiet) != 1 || is.na(quiet)) {
     cli::cli_abort("{.arg quiet} must be a single logical.")
   }
@@ -164,6 +182,7 @@ implement_portfolio_sort <- function(
     min_portfolio_size = min_portfolio_size,
     cap_weight = cap_weight,
     data_options = data_options,
-    quiet = quiet
+    quiet = quiet,
+    engine = engine
   )
 }
