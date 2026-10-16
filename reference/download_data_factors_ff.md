@@ -72,6 +72,7 @@ Carhart, M. M. (1997). On persistence in mutual fund performance.
 Other download functions:
 [`download_data()`](https://r.tidy-finance.org/reference/download_data.md),
 [`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md),
+[`download_data_damodaran()`](https://r.tidy-finance.org/reference/download_data_damodaran.md),
 [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
 [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),
 [`download_data_fred_md()`](https://r.tidy-finance.org/reference/download_data_fred_md.md),

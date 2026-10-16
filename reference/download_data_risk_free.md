@@ -83,6 +83,7 @@ Monthly data starts in 1934-01-01 (TB3MS). Daily data starts in
 Other download functions:
 [`download_data()`](https://r.tidy-finance.org/reference/download_data.md),
 [`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md),
+[`download_data_damodaran()`](https://r.tidy-finance.org/reference/download_data_damodaran.md),
 [`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md),
 [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
 [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),

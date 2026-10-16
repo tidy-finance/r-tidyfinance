@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -289,8 +289,33 @@ document.addEventListener('DOMContentLoaded', function () {
 <span><span class="co">#&gt;  9 2015-09-01    -0.0308 -0.0228   0.0373   0.0790          0</span></span>
 <span><span class="co">#&gt; 10 2015-10-01     0.0775 -0.0227   0.0240  -0.00612         0</span></span>
 <span><span class="co">#&gt; # ℹ 14 more rows</span></span></code></pre></div>
-<p>To download multiple series from the Federal Reserve Economic Data (FRED):</p>
+<p>To download the cost of capital (WACC) by industry from <a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html" class="external-link">Aswath Damodaran’s data library</a>, optionally selecting a <code>region</code> (e.g., <code>"us"</code>, the default, or <code>"europe"</code>) and archived years via <code>year</code>. Reading the Excel files requires the <code>readxl</code> package:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/download_data.html">download_data</a></span><span class="op">(</span></span>
+<span>  domain <span class="op">=</span> <span class="st">"Damodaran"</span>,</span>
+<span>  dataset <span class="op">=</span> <span class="st">"wacc"</span>,</span>
+<span>  region <span class="op">=</span> <span class="st">"us"</span>,</span>
+<span>  year <span class="op">=</span> <span class="fl">2023</span><span class="op">:</span><span class="fl">2024</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 192 × 14</span></span>
+<span><span class="co">#&gt;    region  year industry  number_of_firms  beta cost_of_equity equity_to_capital</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;  &lt;int&gt; &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt;          &lt;dbl&gt;             &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 us      2023 Advertis…              57 1.37          0.102              0.748</span></span>
+<span><span class="co">#&gt;  2 us      2023 Aerospac…              70 1.08          0.0883             0.797</span></span>
+<span><span class="co">#&gt;  3 us      2023 Air Tran…              25 1.27          0.0971             0.381</span></span>
+<span><span class="co">#&gt;  4 us      2023 Apparel                38 1.19          0.0938             0.672</span></span>
+<span><span class="co">#&gt;  5 us      2023 Auto &amp; T…              34 1.52          0.109              0.763</span></span>
+<span><span class="co">#&gt;  6 us      2023 Auto Par…              39 1.34          0.101              0.722</span></span>
+<span><span class="co">#&gt;  7 us      2023 Bank (Mo…              15 1.06          0.0876             0.316</span></span>
+<span><span class="co">#&gt;  8 us      2023 Banks (R…             625 0.461         0.0600             0.495</span></span>
+<span><span class="co">#&gt;  9 us      2023 Beverage…              19 1.13          0.0909             0.803</span></span>
+<span><span class="co">#&gt; 10 us      2023 Beverage…              29 0.764         0.0740             0.854</span></span>
+<span><span class="co">#&gt; # ℹ 182 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 7 more variables: sd_stock &lt;dbl&gt;, cost_of_debt &lt;dbl&gt;, tax_rate &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   after_tax_cost_of_debt &lt;dbl&gt;, debt_to_capital &lt;dbl&gt;, wacc &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   wacc_local &lt;dbl&gt;</span></span></code></pre></div>
+<p>To download multiple series from the Federal Reserve Economic Data (FRED):</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/download_data.html">download_data</a></span><span class="op">(</span></span>
 <span>  domain <span class="op">=</span> <span class="st">"FRED"</span>,</span>
 <span>  series <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GDP"</span>, <span class="st">"CPIAUCNS"</span><span class="op">)</span>,</span>
@@ -317,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <span><span class="co">#&gt; 15 2020-11-01   260. CPIAUCNS</span></span>
 <span><span class="co">#&gt; 16 2020-12-01   260. CPIAUCNS</span></span></code></pre></div>
 <p>To download the FRED-MD / FRED-QD (McCracken-Ng) macroeconomic databases, a curated, balanced panel of monthly or quarterly macro series with McCracken-Ng stationarity transform codes. Set <code>transform = TRUE</code> to apply the transforms, and <code>vintage</code> to a <code>"YYYY-MM"</code> label or <code>"all"</code> to access historical (real-time) releases:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/download_data.html">download_data</a></span><span class="op">(</span></span>
 <span>  domain <span class="op">=</span> <span class="st">"FRED"</span>,</span>
 <span>  dataset <span class="op">=</span> <span class="st">"FRED-MD"</span>,</span>
@@ -344,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <span><span class="co">#&gt; #   UNRATE &lt;dbl&gt;, UEMPMEAN &lt;dbl&gt;, UEMPLT5 &lt;dbl&gt;, UEMP5TO14 &lt;dbl&gt;,</span></span>
 <span><span class="co">#&gt; #   UEMP15OV &lt;dbl&gt;, UEMP15T26 &lt;dbl&gt;, UEMP27OV &lt;dbl&gt;, CLAIMSx &lt;dbl&gt;, …</span></span></code></pre></div>
 <p>To download stock prices from Yahoo Finance:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/download_data.html">download_data</a></span><span class="op">(</span></span>
 <span>  domain <span class="op">=</span> <span class="st">"Stock Prices"</span>,</span>
 <span>  symbols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AAPL"</span>, <span class="st">"MSFT"</span><span class="op">)</span>,</span>
@@ -366,7 +391,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <span><span class="co">#&gt; 10 AAPL   2020-01-15 121923600  78.0  77.4  78.9  77.8           74.9</span></span>
 <span><span class="co">#&gt; # ℹ 496 more rows</span></span></code></pre></div>
 <p>You can also download high-frequency data for the S&amp;P 500 that we host on Hugging Face:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/download_data.html">download_data</a></span><span class="op">(</span></span>
 <span>  domain <span class="op">=</span> <span class="st">"Tidy Finance"</span>,</span>
 <span>  dataset <span class="op">=</span> <span class="st">"high_frequency_sp500"</span>,</span>
@@ -395,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </h2>
 <p>You can also download data directly from WRDS if you have access to the underlying data and set your credentials via <code>Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")</code> or the <code><a href="reference/set_wrds_credentials.html">set_wrds_credentials()</a></code> helper function.</p>
 <p>To download monthly CRSP data:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/download_data.html">download_data</a></span><span class="op">(</span></span>
 <span>  domain <span class="op">=</span> <span class="st">"WRDS"</span>,</span>
 <span>  dataset <span class="op">=</span> <span class="st">"crsp_monthly"</span>,</span>
@@ -419,7 +444,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <span><span class="co">#&gt; # ℹ 6 more variables: listing_age &lt;int&gt;, mktcap &lt;dbl&gt;, mktcap_lag &lt;dbl&gt;,</span></span>
 <span><span class="co">#&gt; #   exchange &lt;chr&gt;, industry &lt;chr&gt;, ret_excess &lt;dbl&gt;</span></span></code></pre></div>
 <p>To download annual (or quaterly) Compustat data:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/download_data.html">download_data</a></span><span class="op">(</span></span>
 <span>  domain <span class="op">=</span> <span class="st">"WRDS"</span>,</span>
 <span>  dataset <span class="op">=</span> <span class="st">"compustat_annual"</span>,</span>
@@ -444,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <span><span class="co">#&gt; #   capx &lt;dbl&gt;, oancf &lt;dbl&gt;, sale &lt;dbl&gt;, cogs &lt;dbl&gt;, xint &lt;dbl&gt;, xsga &lt;dbl&gt;,</span></span>
 <span><span class="co">#&gt; #   ib &lt;dbl&gt;, curcd &lt;chr&gt;, be &lt;dbl&gt;, op &lt;dbl&gt;, at_lag &lt;dbl&gt;, inv &lt;dbl&gt;</span></span></code></pre></div>
 <p>To download the CRSP-Compustat linking table:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/download_data.html">download_data</a></span><span class="op">(</span></span>
 <span>  domain <span class="op">=</span> <span class="st">"WRDS"</span>,</span>
 <span>  dataset <span class="op">=</span> <span class="st">"ccm_links"</span></span>
@@ -464,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <span><span class="co">#&gt; 10  10074 001009 1982-01-18 1996-03-13</span></span>
 <span><span class="co">#&gt; # ℹ 33,314 more rows</span></span></code></pre></div>
 <p>To download Enhanced TRACE data for selected bonds:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/download_data.html">download_data</a></span><span class="op">(</span></span>
 <span>  domain <span class="op">=</span> <span class="st">"WRDS"</span>,</span>
 <span>  dataset <span class="op">=</span> <span class="st">"trace_enhanced"</span>,</span>
@@ -491,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <h3 id="factor-library-tools">Factor Library Tools<a class="anchor" aria-label="anchor" href="#factor-library-tools"></a>
 </h3>
 <p>You can download pre-computed portfolio returns from the <a href="https://factors.tidy-finance.org" class="external-link">Tidy Finance Factor Library</a> hosted on Hugging Face:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/download_data.html">download_data</a></span><span class="op">(</span></span>
 <span>  domain <span class="op">=</span> <span class="st">"Tidy Finance"</span>,</span>
 <span>  dataset <span class="op">=</span> <span class="st">"factor_library"</span>,</span>
@@ -519,7 +544,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <span><span class="co">#&gt; #   breakpoints_min_size_threshold &lt;dbl&gt;, n_portfolios_secondary &lt;dbl&gt;,</span></span>
 <span><span class="co">#&gt; #   breakpoints_exchanges &lt;chr&gt;, weighting_scheme &lt;chr&gt;</span></span></code></pre></div>
 <p>The package also provides functions to construct your own factor portfolios:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Portfolio sorts and long-short returns</span></span>
 <span><span class="fu"><a href="reference/compute_portfolio_returns.html">compute_portfolio_returns</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/compute_long_short_returns.html">compute_long_short_returns</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -542,11 +567,11 @@ document.addEventListener('DOMContentLoaded', function () {
 <h3 id="other-helpers">Other Helpers<a class="anchor" aria-label="anchor" href="#other-helpers"></a>
 </h3>
 <p>We include functions to check out content from <a href="https://www.tidy-finance.org/index.html" class="external-link">tidy-finance.org</a>:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/list_tidy_finance_chapters.html">list_tidy_finance_chapters</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/open_tidy_finance_website.html">open_tidy_finance_website</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>There are also some simple helpers for regression analyses:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/winsorize.html">winsorize</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/trim.html">trim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/create_summary_statistics.html">create_summary_statistics</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>

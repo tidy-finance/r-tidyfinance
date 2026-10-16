@@ -28,11 +28,12 @@ download_data(
   `"Fama-French"`, `"Global Q"`, `"Goyal-Welch"`, `"WRDS"`,
   `"Pseudo Data"`, `"Index Constituents"`, `"FRED"`, `"Stock Prices"`,
   `"Open Source Asset Pricing"`, `"Global Factor Data"`,
-  `"Pastor-Stambaugh"`, `"Stambaugh-Yuan"`, or `"Tidy Finance"`. Use
-  `"Pseudo Data"` to obtain pseudo data with the same schema as `"WRDS"`
-  for testing or rendering without a WRDS subscription. The previous
-  machine-readable names (e.g., `"famafrench"`, `"wrds"`, `"pseudo"`,
-  `"tidyfinance"`) are soft-deprecated but still accepted.
+  `"Pastor-Stambaugh"`, `"Stambaugh-Yuan"`, `"Damodaran"`, or
+  `"Tidy Finance"`. Use `"Pseudo Data"` to obtain pseudo data with the
+  same schema as `"WRDS"` for testing or rendering without a WRDS
+  subscription. The previous machine-readable names (e.g.,
+  `"famafrench"`, `"wrds"`, `"pseudo"`, `"tidyfinance"`) are
+  soft-deprecated but still accepted.
 
 - dataset:
 
@@ -71,7 +72,10 @@ download_data(
   [`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md);
   see
   [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md)
-  for details.
+  for details. If `domain` is `"Damodaran"`, arguments such as `region`
+  and `year` are passed to
+  [`download_data_damodaran()`](https://r.tidy-finance.org/reference/download_data_damodaran.md),
+  which selects years via `year` instead of `start_date` and `end_date`.
 
 ## Value
 
@@ -82,6 +86,7 @@ metrics, filtered by the specified date range.
 
 Other download functions:
 [`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md),
+[`download_data_damodaran()`](https://r.tidy-finance.org/reference/download_data_damodaran.md),
 [`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md),
 [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
 [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),
@@ -141,20 +146,20 @@ download_data("Index Constituents", index = "DAX")
 #> # A tibble: 40 × 5
 #>    symbol  name                               location    exchange      currency
 #>    <chr>   <chr>                              <chr>       <chr>         <chr>   
-#>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
-#>  2 SAP.DE  SAP                                Deutschland Xetra         EUR     
+#>  1 SAP.DE  SAP                                Deutschland Xetra         EUR     
+#>  2 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
 #>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
-#>  4 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
-#>  5 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  4 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  5 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
 #>  6 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
-#>  7 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
-#>  8 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
-#>  9 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
-#> 10 DHL.DE  DHL AG                             Deutschland Xetra         EUR     
+#>  7 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
+#>  8 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
+#>  9 DB1.DE  DEUTSCHE BOERSE AG                 Deutschland Xetra         EUR     
+#> 10 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
 #> # ℹ 30 more rows
 download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> No `start_date` or `end_date` provided. Returning the full data set.
-#> # A tibble: 1,682 × 3
+#> # A tibble: 1,683 × 3
 #>    date       value series
 #>    <date>     <dbl> <chr> 
 #>  1 1947-01-01  243. GDP   
@@ -167,7 +172,7 @@ download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #>  8 1948-10-01  280. GDP   
 #>  9 1949-01-01  275. GDP   
 #> 10 1949-04-01  271. GDP   
-#> # ℹ 1,672 more rows
+#> # ℹ 1,673 more rows
 download_data("FRED", "FRED-MD")
 #> # A tibble: 801 × 127
 #>    date         RPI W875RX1 DPCERA3M086SBEA CMRMTSPLx RETAILx INDPRO IPFPNSS
@@ -232,22 +237,40 @@ download_data("FRED", "FRED-QD", vintage = "2020-03")
 #> #   IPMAT <dbl>, IPDMAT <dbl>, IPNMAT <dbl>, IPDCONGD <dbl>, IPB51110SQ <dbl>,
 #> #   IPNCONGD <dbl>, IPBUSEQ <dbl>, IPB51220SQ <dbl>, TCU <dbl>, CUMFNS <dbl>, …
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-10-05 to
-#> 2025-10-05 to avoid downloading large amounts of data.
-#> # A tibble: 498 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-10-16 to
+#> 2025-10-16 to avoid downloading large amounts of data.
+#> # A tibble: 502 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-10-07 39505400  224.  221.  226.  222.           220.
-#>  2 AAPL   2024-10-08 31855700  224.  223.  226.  226.           224.
-#>  3 AAPL   2024-10-09 33591100  225.  225.  230.  230.           228.
-#>  4 AAPL   2024-10-10 28183500  228.  227.  230.  229.           227.
-#>  5 AAPL   2024-10-11 31759200  229.  227.  229.  228.           226.
-#>  6 AAPL   2024-10-14 39882100  229.  229.  232.  231.           229.
-#>  7 AAPL   2024-10-15 64751400  234.  232.  237.  234.           232.
-#>  8 AAPL   2024-10-16 34082200  232.  230.  232.  232.           230.
-#>  9 AAPL   2024-10-17 32993800  233.  231.  234.  232.           230.
-#> 10 AAPL   2024-10-18 46431500  236.  234.  236.  235            233.
-#> # ℹ 488 more rows
+#>  1 AAPL   2024-10-16 34082200  232.  230.  232.  232.           230.
+#>  2 AAPL   2024-10-17 32993800  233.  231.  234.  232.           230.
+#>  3 AAPL   2024-10-18 46431500  236.  234.  236.  235            233.
+#>  4 AAPL   2024-10-21 36254500  234.  234.  237.  236.           235.
+#>  5 AAPL   2024-10-22 38846600  234.  233.  236.  236.           234.
+#>  6 AAPL   2024-10-23 52287000  234.  228.  235.  231.           229.
+#>  7 AAPL   2024-10-24 31109500  230.  228.  231.  231.           229.
+#>  8 AAPL   2024-10-25 38802300  230.  230.  233.  231.           229.
+#>  9 AAPL   2024-10-28 36087100  233.  233.  235.  233.           231.
+#> 10 AAPL   2024-10-29 35417200  233.  232.  234.  234.           232.
+#> # ℹ 492 more rows
+download_data("Damodaran", "wacc", region = "europe", year = 2020:2024)
+#> # A tibble: 480 × 14
+#>    region  year industry  number_of_firms  beta cost_of_equity equity_to_capital
+#>    <chr>  <int> <chr>               <int> <dbl>          <dbl>             <dbl>
+#>  1 europe  2020 Advertis…              82 0.935         0.0613             0.623
+#>  2 europe  2020 Aerospac…              51 1.15          0.0734             0.780
+#>  3 europe  2020 Air Tran…              39 1.54          0.0947             0.494
+#>  4 europe  2020 Apparel               124 1.11          0.0710             0.846
+#>  5 europe  2020 Auto & T…              27 1.43          0.0887             0.357
+#>  6 europe  2020 Auto Par…              57 1.44          0.0893             0.670
+#>  7 europe  2020 Bank (Mo…             124 1.24          0.0780             0.124
+#>  8 europe  2020 Banks (R…              68 0.560         0.0404             0.240
+#>  9 europe  2020 Beverage…              50 0.622         0.0439             0.678
+#> 10 europe  2020 Beverage…              16 0.761         0.0516             0.773
+#> # ℹ 470 more rows
+#> # ℹ 7 more variables: sd_stock <dbl>, cost_of_debt <dbl>, tax_rate <dbl>,
+#> #   after_tax_cost_of_debt <dbl>, debt_to_capital <dbl>, wacc <dbl>,
+#> #   wacc_local <dbl>
 download_data(
   "Tidy Finance",
   "risk_free",

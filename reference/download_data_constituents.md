@@ -68,6 +68,7 @@ different wrapper around other ETFs.
 
 Other download functions:
 [`download_data()`](https://r.tidy-finance.org/reference/download_data.md),
+[`download_data_damodaran()`](https://r.tidy-finance.org/reference/download_data_damodaran.md),
 [`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md),
 [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
 [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md),
@@ -91,16 +92,16 @@ Other download functions:
 #> # A tibble: 40 × 5
 #>    symbol  name                               location    exchange      currency
 #>    <chr>   <chr>                              <chr>       <chr>         <chr>   
-#>  1 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
-#>  2 SAP.DE  SAP                                Deutschland Xetra         EUR     
+#>  1 SAP.DE  SAP                                Deutschland Xetra         EUR     
+#>  2 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
 #>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
-#>  4 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
-#>  5 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  4 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
+#>  5 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
 #>  6 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
-#>  7 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
-#>  8 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
-#>  9 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
-#> 10 DHL.DE  DHL AG                             Deutschland Xetra         EUR     
+#>  7 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
+#>  8 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
+#>  9 DB1.DE  DEUTSCHE BOERSE AG                 Deutschland Xetra         EUR     
+#> 10 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
 #> # ℹ 30 more rows
 # }
 if (FALSE) { # \dontrun{

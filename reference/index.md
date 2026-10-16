@@ -26,6 +26,8 @@
   : Download and Process Data Based on Domain and Dataset
 - [`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md)
   : Download Constituent Data
+- [`download_data_damodaran()`](https://r.tidy-finance.org/reference/download_data_damodaran.md)
+  : Download and Process Damodaran Industry Data
 - [`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md)
   : Download and Process Fama-French Factor Data
 - [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md)

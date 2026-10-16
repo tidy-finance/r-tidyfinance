@@ -285,6 +285,40 @@ download_data(
 #> # ℹ 14 more rows
 ```
 
+To download the cost of capital (WACC) by industry from [Aswath
+Damodaran’s data
+library](https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html),
+optionally selecting a `region` (e.g., `"us"`, the default, or
+`"europe"`) and archived years via `year`. Reading the Excel files
+requires the `readxl` package:
+
+``` r
+
+download_data(
+  domain = "Damodaran",
+  dataset = "wacc",
+  region = "us",
+  year = 2023:2024
+)
+#> # A tibble: 192 × 14
+#>    region  year industry  number_of_firms  beta cost_of_equity equity_to_capital
+#>    <chr>  <int> <chr>               <int> <dbl>          <dbl>             <dbl>
+#>  1 us      2023 Advertis…              57 1.37          0.102              0.748
+#>  2 us      2023 Aerospac…              70 1.08          0.0883             0.797
+#>  3 us      2023 Air Tran…              25 1.27          0.0971             0.381
+#>  4 us      2023 Apparel                38 1.19          0.0938             0.672
+#>  5 us      2023 Auto & T…              34 1.52          0.109              0.763
+#>  6 us      2023 Auto Par…              39 1.34          0.101              0.722
+#>  7 us      2023 Bank (Mo…              15 1.06          0.0876             0.316
+#>  8 us      2023 Banks (R…             625 0.461         0.0600             0.495
+#>  9 us      2023 Beverage…              19 1.13          0.0909             0.803
+#> 10 us      2023 Beverage…              29 0.764         0.0740             0.854
+#> # ℹ 182 more rows
+#> # ℹ 7 more variables: sd_stock <dbl>, cost_of_debt <dbl>, tax_rate <dbl>,
+#> #   after_tax_cost_of_debt <dbl>, debt_to_capital <dbl>, wacc <dbl>,
+#> #   wacc_local <dbl>
+```
+
 To download multiple series from the Federal Reserve Economic Data
 (FRED):
 

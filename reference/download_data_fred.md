@@ -60,6 +60,7 @@ to systematically download FRED data via API, please consider using the
 Other download functions:
 [`download_data()`](https://r.tidy-finance.org/reference/download_data.md),
 [`download_data_constituents()`](https://r.tidy-finance.org/reference/download_data_constituents.md),
+[`download_data_damodaran()`](https://r.tidy-finance.org/reference/download_data_damodaran.md),
 [`download_data_factors_ff()`](https://r.tidy-finance.org/reference/download_data_factors_ff.md),
 [`download_data_factors_q()`](https://r.tidy-finance.org/reference/download_data_factors_q.md),
 [`download_data_fred_md()`](https://r.tidy-finance.org/reference/download_data_fred_md.md),
@@ -80,7 +81,7 @@ Other download functions:
 # \donttest{
   download_data_fred("CPIAUCNS")
 #> No `start_date` or `end_date` provided. Returning the full data set.
-#> # A tibble: 1,364 × 3
+#> # A tibble: 1,365 × 3
 #>    date       value series  
 #>    <date>     <dbl> <chr>   
 #>  1 1913-01-01   9.8 CPIAUCNS
@@ -93,7 +94,7 @@ Other download functions:
 #>  8 1913-08-01   9.9 CPIAUCNS
 #>  9 1913-09-01  10   CPIAUCNS
 #> 10 1913-10-01  10   CPIAUCNS
-#> # ℹ 1,354 more rows
+#> # ℹ 1,355 more rows
   download_data_fred(c("GDP", "CPIAUCNS"), "2010-01-01", "2010-12-31")
 #> # A tibble: 16 × 3
 #>    date        value series  

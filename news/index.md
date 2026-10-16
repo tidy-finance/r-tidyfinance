@@ -2,7 +2,23 @@
 
 ## tidyfinance (development version)
 
+### New features
+
+- Added
+  [`download_data_damodaran()`](https://r.tidy-finance.org/reference/download_data_damodaran.md)
+  and the `"Damodaran"` domain for
+  [`download_data()`](https://r.tidy-finance.org/reference/download_data.md),
+  which download the cost of capital (WACC) by industry from Aswath
+  Damodaran’s data library, e.g. `download_data("Damodaran", "wacc")`.
+  `region` selects the US (default), Europe, Japan, emerging markets,
+  global, China, India, or Australia, New Zealand, and Canada, and
+  `year` reads archived years (from 1998 for the US) into a panel.
+  Reading the Excel files requires the suggested readxl package
+  ([\#298](https://github.com/tidy-finance/r-tidyfinance/issues/298)).
+
 ## tidyfinance 0.9.0
+
+CRAN release: 2026-10-05
 
 ### Breaking changes
 

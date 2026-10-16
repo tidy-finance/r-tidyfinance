@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,13 +57,18 @@ document.addEventListener('DOMContentLoaded', function () {
 <h2 id="readme">README<a class="anchor" aria-label="anchor" href="#readme"></a></h2>
 <ul><li>
 <strong>Never edit <code>README.md</code> directly.</strong> It is generated from <code>README.Rmd</code> (the file header says so: <em>“README.md is generated from README.Rmd”</em>).</li>
-<li>If a change should appear in the README, edit <code>README.Rmd</code> and regenerate <code>README.md</code> (e.g. <code><a href="https://devtools.r-lib.org/reference/build_readme.html" class="external-link">devtools::build_readme()</a></code>), then commit <strong>both</strong> files together. A <code>README.md</code> change must never be committed without the corresponding <code>README.Rmd</code> change.</li>
+<li>If a change should appear in the README, edit <code>README.Rmd</code> and regenerate <code>README.md</code> (e.g. <code>devtools::build_readme()</code>), then commit <strong>both</strong> files together. A <code>README.md</code> change must never be committed without the corresponding <code>README.Rmd</code> change.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="versioning">Versioning<a class="anchor" aria-label="anchor" href="#versioning"></a></h2>
 <ul><li>Bump the development version <strong>once per pull request, not per commit.</strong>
 </li>
 <li>The development version lives in the <code>Version:</code> field of <code>DESCRIPTION</code>; it is the fourth, <code>.9000</code>-style component (e.g. <code>0.5.0.9005</code> -&gt; <code>0.5.0.9006</code>). Increment that component by one for the PR.</li>
+</ul></div>
+<div class="section level2">
+<h2 id="checks-before-merging">Checks before merging<a class="anchor" aria-label="anchor" href="#checks-before-merging"></a></h2>
+<ul><li>
+<code>lintr::lint_package()</code> and <code>covr::package_coverage()</code> must pass before a pull request can be merged. Run both locally and fix any lints or failures before asking for a merge.</li>
 </ul></div>
 </div>
 
