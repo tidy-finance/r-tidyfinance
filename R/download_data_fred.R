@@ -384,6 +384,9 @@ fred_md_wide <- function(text, transform) {
   )
   date_col <- names(raw)[1]
   series_cols <- names(raw)[-1]
+  # Some archived vintages end the header with a trailing comma, which yields
+  # an unnamed empty column that is not a series.
+  series_cols <- series_cols[!is.na(series_cols) & nzchar(series_cols)]
   tcodes <- vapply(
     series_cols,
     function(col) as.integer(round(as.numeric(raw[[col]][1]))),

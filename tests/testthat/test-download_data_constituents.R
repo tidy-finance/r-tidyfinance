@@ -239,3 +239,155 @@ test_that("download request pipeline is executed", {
   expect_equal(out$symbol, "AAPL")
   expect_equal(out$currency, "USD")
 })
+
+test_that("header row is detected after a preamble", {
+  csv <- paste(
+    "Fondspositionen per,30.09.2026",
+    "",
+    "Anlageklasse,Emittententicker,Name,Standort,Börse",
+    "Aktien,ABC,Alpha AG,Germany,Xetra",
+    sep = "\n"
+  )
+
+  testthat::local_mocked_bindings(
+    list_supported_indexes = function() {
+      tibble::tibble(index = "DAX", url = "url", skip = 0)
+    },
+    get_random_user_agent = function() "ua",
+    handle_download_error = function(expr, fallback) {
+      list(status_code = 200, body = csv)
+    }
+  )
+  testthat::local_mocked_bindings(
+    .package = "httr2",
+    resp_body_string = function(resp) resp$body
+  )
+
+  out <- download_data_constituents("DAX")
+
+  expect_equal(out$symbol, "ABC.DE")
+})
+
+test_that("path reads a local holdings file without a request", {
+  file <- withr::local_tempfile(fileext = ".csv")
+  writeLines(
+    c(
+      "Preamble",
+      "Anlageklasse,Emittententicker,Name,Standort,Börse",
+      "Aktien,ABC,Alpha AG,Germany,Xetra",
+      "Aktien,DAX,DAX INDEX,Germany,Xetra"
+    ),
+    file,
+    useBytes = TRUE
+  )
+
+  testthat::local_mocked_bindings(
+    handle_download_error = function(expr, fallback) {
+      stop("no request expected")
+    }
+  )
+
+  out <- download_data_constituents(index = "DAX", path = file)
+
+  expect_equal(out$symbol, "ABC.DE")
+  expect_named(out, c("symbol", "name", "location", "exchange", "currency"))
+})
+
+test_that("path without index keeps entries named after the index", {
+  file <- withr::local_tempfile(fileext = ".csv")
+  writeLines(
+    c(
+      "Anlageklasse,Emittententicker,Name,Standort,Börse",
+      "Aktien,ABC,Alpha AG,Germany,Xetra",
+      "Aktien,DAX,DAX INDEX,Germany,Xetra"
+    ),
+    file,
+    useBytes = TRUE
+  )
+
+  out <- download_data_constituents(path = file)
+
+  expect_equal(out$symbol, c("ABC.DE", "DAX.DE"))
+})
+
+test_that("path reads UTF-8 files with a byte order mark", {
+  file <- withr::local_tempfile(fileext = ".csv")
+  writeBin(
+    c(
+      as.raw(c(0xef, 0xbb, 0xbf)),
+      charToRaw(enc2utf8(paste0(
+        "Anlageklasse,Emittententicker,Name,Standort,Börse\n",
+        "Aktien,ABC,Alpha AG,Germany,Xetra\n"
+      )))
+    ),
+    file
+  )
+
+  out <- download_data_constituents(path = file)
+
+  expect_equal(out$symbol, "ABC.DE")
+})
+
+test_that("path reads Latin-1 encoded files", {
+  file <- withr::local_tempfile(fileext = ".csv")
+  writeBin(
+    charToRaw(iconv(
+      paste0(
+        "Anlageklasse,Emittententicker,Name,Standort,Börse\n",
+        "Aktien,ABC,Alpha AG,Germany,Xetra\n"
+      ),
+      from = "UTF-8",
+      to = "latin1"
+    )),
+    file
+  )
+
+  out <- download_data_constituents(path = file)
+
+  expect_equal(out$symbol, "ABC.DE")
+})
+
+test_that("files without a known header row fail", {
+  file <- withr::local_tempfile(fileext = ".csv")
+  writeLines(c("a,b,c", "1,2,3"), file)
+
+  expect_error(
+    download_data_constituents(path = file),
+    "Unknown column format"
+  )
+})
+
+test_that("index or path is required", {
+  expect_error(download_data_constituents(), "index.*path")
+})
+
+test_that("failed downloads name the index and point to path", {
+  testthat::local_mocked_bindings(
+    list_supported_indexes = function() {
+      tibble::tibble(index = "DAX", url = "https://example.com", skip = 0)
+    },
+    get_random_user_agent = function() "ua",
+    handle_download_error = function(expr, fallback) {
+      list(status_code = 404)
+    }
+  )
+
+  expect_error(download_data_constituents("DAX"), "DAX")
+  expect_error(download_data_constituents("DAX"), "example.com")
+  expect_error(download_data_constituents("DAX"), "path")
+})
+
+test_that("download_data passes path to the constituents reader", {
+  file <- withr::local_tempfile(fileext = ".csv")
+  writeLines(
+    c(
+      "Asset Class,Ticker,Name,Location,Exchange",
+      "Equity,AAPL,Apple Inc,United States,Nasdaq"
+    ),
+    file
+  )
+
+  out <- download_data("Index Constituents", path = file)
+
+  expect_equal(out$symbol, "AAPL")
+})

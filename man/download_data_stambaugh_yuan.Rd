@@ -8,7 +8,7 @@ download_data_stambaugh_yuan(
   dataset = "monthly",
   start_date = NULL,
   end_date = NULL,
-  url = "https://finance.wharton.upenn.edu/~stambaug/"
+  url = "https://faculty.wharton.upenn.edu/wp-content/uploads/2016/11/"
 )
 }
 \arguments{
@@ -37,7 +37,8 @@ plain numeric (decimal) values, filtered by the specified date range if
 \description{
 Downloads and processes the mispricing factor data of Stambaugh and Yuan
 (2017) from
-\href{https://finance.wharton.upenn.edu/~stambaug/}{Stambaugh's data library}.
+\href{https://fnce.wharton.upenn.edu/profile/stambaug/#misc}{Stambaugh's
+data library}.
 The four-factor model (M4) combines the market and size factors with two
 mispricing factors, \code{mgmt} (management) and \code{perf} (performance). The
 function downloads the requested frequency, aligns the date, renames the
@@ -65,21 +66,21 @@ Stambaugh, R. F., & Yuan, Y. (2017). Mispricing factors. \emph{Review of
 Financial Studies}, 30(4), 1270-1315. \doi{10.1093/rfs/hhw107}
 }
 \seealso{
-Other download functions: 
-\code{\link{download_data}()},
-\code{\link{download_data_constituents}()},
-\code{\link{download_data_factors_ff}()},
-\code{\link{download_data_factors_q}()},
-\code{\link{download_data_fred}()},
-\code{\link{download_data_fred_md}()},
-\code{\link{download_data_huggingface}()},
-\code{\link{download_data_jkp}()},
-\code{\link{download_data_macro_predictors}()},
-\code{\link{download_data_osap}()},
-\code{\link{download_data_pastor_stambaugh}()},
-\code{\link{download_data_risk_free}()},
-\code{\link{download_data_stock_prices}()},
-\code{\link{download_factor_library_grid}()},
-\code{\link{download_factor_library_ids}()}
+Other download functions:
+\code{\link[=download_data]{download_data()}},
+\code{\link[=download_data_constituents]{download_data_constituents()}},
+\code{\link[=download_data_factors_ff]{download_data_factors_ff()}},
+\code{\link[=download_data_factors_q]{download_data_factors_q()}},
+\code{\link[=download_data_fred]{download_data_fred()}},
+\code{\link[=download_data_fred_md]{download_data_fred_md()}},
+\code{\link[=download_data_huggingface]{download_data_huggingface()}},
+\code{\link[=download_data_jkp]{download_data_jkp()}},
+\code{\link[=download_data_macro_predictors]{download_data_macro_predictors()}},
+\code{\link[=download_data_osap]{download_data_osap()}},
+\code{\link[=download_data_pastor_stambaugh]{download_data_pastor_stambaugh()}},
+\code{\link[=download_data_risk_free]{download_data_risk_free()}},
+\code{\link[=download_data_stock_prices]{download_data_stock_prices()}},
+\code{\link[=download_factor_library_grid]{download_factor_library_grid()}},
+\code{\link[=download_factor_library_ids]{download_factor_library_ids()}}
 }
 \concept{download functions}
