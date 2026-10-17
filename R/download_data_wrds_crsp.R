@@ -209,6 +209,10 @@ download_data_wrds_crsp <- function(
           mktcap = na_if(.data$mktcap, 0)
         )
 
+      # In the legacy SIZ format, a negative price is the average of the bid
+      # and ask when there was no closing trade; the sign is only a flag, so
+      # the price is its absolute value. CIZ (v2) prices are always positive
+      # and carry this information in a separate flag column (mthprcflg).
       mktcap_lag <- crsp_monthly |>
         mutate(
           date = .data$date %m+% months(1),
@@ -377,7 +381,7 @@ download_data_wrds_crsp <- function(
       mktcap_lag <- crsp_monthly |>
         mutate(
           date = .data$date %m+% months(1),
-          prc_lag = abs(na_if(.data$prc, 0))
+          prc_lag = .data$prc
         ) |>
         select("permno", "date", mktcap_lag = "mktcap", "prc_lag")
 
