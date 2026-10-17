@@ -591,3 +591,171 @@ test_that("an oversized portfolio-date grid keeps the R path", {
     "the portfolio-date grid is too large for the compiled engine"
   )
 })
+
+# The kernels' own guards --------------------------------------------------
+
+# These call the registered entry points directly, which is how a user can
+# reach them (cpp11::cpp_register() exports them as tidyfinance:::*_cpp11).
+# Each guard below replaced a memory-safety defect: before them, a stray index
+# was an out-of-bounds read or write rather than an R error, so these are the
+# regression tests for that hardening as much as they are coverage.
+test_that("cap_weights_cpp11() validates its arguments", {
+  w <- c(1, 2, 3, 4, 5, 6)
+  g <- c(1L, 1L, 2L, 2L, 3L, 3L)
+  expect_type(tidyfinance:::cap_weights_cpp11(w, g, 3L, 0.8), "double")
+
+  expect_error(tidyfinance:::cap_weights_cpp11(w, g[1:2], 3L, 0.8), "shorter")
+  expect_error(
+    tidyfinance:::cap_weights_cpp11(w, replace(g, 1L, 9L), 3L, 0.8),
+    "out of range"
+  )
+  expect_error(
+    tidyfinance:::cap_weights_cpp11(w, replace(g, 1L, 0L), 3L, 0.8),
+    "out of range"
+  )
+  expect_error(
+    tidyfinance:::cap_weights_cpp11(w, g, 0L, 0.8), "positive count"
+  )
+  expect_error(
+    tidyfinance:::cap_weights_cpp11(w, g, -2L, 0.8), "positive count"
+  )
+})
+
+test_that("cap_weights_cpp11() clamps a cap outside [0, 1]", {
+  # quantile7() used to index past either end of the sorted vector for a prob
+  # outside [0, 1], silently returning a different answer rather than erroring.
+  w <- c(1, 2, 3, 4, 5, 6)
+  g <- c(1L, 1L, 1L, 2L, 2L, 2L)
+  at_one <- tidyfinance:::cap_weights_cpp11(w, g, 2L, 1)
+  at_zero <- tidyfinance:::cap_weights_cpp11(w, g, 2L, 0)
+  expect_identical(tidyfinance:::cap_weights_cpp11(w, g, 2L, 1.5), at_one)
+  expect_identical(tidyfinance:::cap_weights_cpp11(w, g, 2L, -0.5), at_zero)
+})
+
+test_that("carry_forward_cpp11() validates the ids it indexes with", {
+  id <- c(1L, 2L, 3L)
+  date <- as.double(as.Date(rep("2020-02-01", 3L)))
+  rebal_id <- c(1L, 2L, 3L)
+  rebal_date <- as.double(as.Date(rep("2020-01-01", 3L)))
+  rebal_upper <- rebal_date + 365
+
+  expect_identical(
+    tidyfinance:::carry_forward_cpp11(
+      id, date, rebal_id, rebal_date, rebal_upper, 3L
+    ),
+    c(1L, 2L, 3L)
+  )
+  # `id` was the one argument the hardening pass missed: it indexes the same
+  # buckets as `rebal_id` but was unchecked, so a stray value segfaulted R.
+  for (bad in list(c(1L, 2L, 4L), c(1L, 2L, 0L), c(1L, 2L, -7L))) {
+    expect_error(
+      tidyfinance:::carry_forward_cpp11(
+        bad, date, rebal_id, rebal_date, rebal_upper, 3L
+      ),
+      "out of range"
+    )
+  }
+  expect_error(
+    tidyfinance:::carry_forward_cpp11(
+      id, date[1:2], rebal_id, rebal_date, rebal_upper, 3L
+    ),
+    "shorter"
+  )
+  expect_error(
+    tidyfinance:::carry_forward_cpp11(
+      id, date, rebal_id, rebal_date, rebal_upper, 0L
+    ),
+    "positive count"
+  )
+})
+
+test_that("the aggregation kernels validate their arguments", {
+  portfolio <- c(1L, 1L, 2L, 2L)
+  dates <- c(1L, 2L, 1L, 2L)
+  ret <- c(0.1, 0.2, 0.3, 0.4)
+  w <- c(1, 1, 1, 1)
+
+  out <- tidyfinance:::aggregate_univariate_cpp11(
+    portfolio, dates, 2L, 2L, ret, w, w, 0
+  )
+  expect_named(
+    out, c("n", "ret_excess_vw", "ret_excess_ew", "ret_excess_vw_capped")
+  )
+
+  expect_error(
+    tidyfinance:::aggregate_univariate_cpp11(
+      portfolio, dates[1:2], 2L, 2L, ret, w, w, 0
+    ),
+    "shorter"
+  )
+  expect_error(
+    tidyfinance:::aggregate_univariate_cpp11(
+      portfolio, dates, 0L, 2L, ret, w, w, 0
+    ),
+    "positive count"
+  )
+  # a portfolio id outside 1..n_portfolios used to be a heap write
+  expect_error(
+    tidyfinance:::aggregate_univariate_cpp11(
+      replace(portfolio, 1L, 9L), dates, 2L, 2L, ret, w, w, 0
+    ),
+    "out of range"
+  )
+
+  secondary <- c(1L, 1L, 2L, 2L)
+  biv <- tidyfinance:::aggregate_bivariate_cpp11(
+    portfolio, secondary, dates, 2L, 2L, 2L, ret, w, w, 0
+  )
+  expect_named(
+    biv, c("n", "ret_excess_vw", "ret_excess_ew", "ret_excess_vw_capped")
+  )
+  expect_error(
+    tidyfinance:::aggregate_bivariate_cpp11(
+      portfolio, secondary[1:2], dates, 2L, 2L, 2L, ret, w, w, 0
+    ),
+    "shorter"
+  )
+  expect_error(
+    tidyfinance:::aggregate_bivariate_cpp11(
+      portfolio, secondary, dates, 2L, 0L, 2L, ret, w, w, 0
+    ),
+    "positive count"
+  )
+})
+
+test_that("assign_portfolios_cpp11() rejects probabilities outside [0, 1]", {
+  x <- c(1, 2, 3, 4, 5, 6)
+  g <- c(1L, 1L, 1L, 2L, 2L, 2L)
+  empty <- numeric(0L)
+  ok <- tidyfinance:::assign_portfolios_cpp11(
+    x, g, 2L, logical(0L), numeric(0L), 0, c(0, 0.5, 1),
+    FALSE, FALSE, empty, empty
+  )
+  expect_named(ok, c("portfolio", "warnings"))
+
+  expect_error(
+    tidyfinance:::assign_portfolios_cpp11(
+      x, g, 2L, logical(0L), numeric(0L), 0, c(0, 1.5),
+      FALSE, FALSE, empty, empty
+    ),
+    "outside"
+  )
+  expect_error(
+    tidyfinance:::assign_portfolios_cpp11(
+      x, g[1:2], 2L, logical(0L), numeric(0L), 0, c(0, 0.5, 1),
+      FALSE, FALSE, empty, empty
+    ),
+    "shorter"
+  )
+})
+
+test_that("long_double_is_wider_cpp11() reports the build", {
+  wider <- tidyfinance:::long_double_is_wider_cpp11()
+  expect_type(wider, "logical")
+  expect_length(wider, 1L)
+  expect_false(is.na(wider))
+  # R cannot accumulate more precisely than the compiler can
+  if (isTRUE(capabilities("long.double"))) {
+    expect_true(wider)
+  }
+})

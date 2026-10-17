@@ -1,0 +1,12 @@
+# The kernels reproduce R's arithmetic, and R rounds the product `x * w` to
+# double before accumulating it, because `sum(x * w)` evaluates the product
+# into a double vector first. Compilers default to -ffp-contract=fast, which
+# may contract a multiply followed by an add into a fused multiply-add even
+# across the intervening assignment, skipping that rounding. On x86-64 under
+# -O2 there is no FMA instruction to contract into, so nothing changed; on
+# arm64, where FMA is baseline, the weighted means drifted in the last bits and
+# the engine stopped matching the R implementation it exists to reproduce.
+#
+# Turning contraction off costs nothing measurable here and is what keeps the
+# bit-for-bit claim true on every platform.
+PKG_CXXFLAGS = -ffp-contract=off
