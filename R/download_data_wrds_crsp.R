@@ -322,9 +322,13 @@ download_data_wrds_crsp <- function(
             ),
           by = "permno"
         ) |>
+        # Look up the security information of the delisting month on the
+        # last trading day (securityenddt). After that day, stksecurityinfohist
+        # holds no active record, so a month-end lookup would drop the month
+        # whose return includes the delisting return.
         filter(
           between(
-            .data$mthcaldt,
+            pmin(.data$mthcaldt, .data$securityenddt, na.rm = TRUE),
             .data$secinfostartdt,
             .data$secinfoenddt
           )
@@ -647,9 +651,12 @@ download_data_wrds_crsp <- function(
               ),
             by = "permno"
           ) |>
+          # The delisting return is on the day after the last trading day
+          # (securityenddt), when stksecurityinfohist holds no active record
+          # anymore. Look that day up on the last trading day instead.
           filter(
             between(
-              .data$dlycaldt,
+              pmin(.data$dlycaldt, .data$securityenddt, na.rm = TRUE),
               .data$secinfostartdt,
               .data$secinfoenddt
             )

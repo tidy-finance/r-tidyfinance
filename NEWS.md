@@ -9,6 +9,15 @@
   fragments of the page.
 - `download_data_osap()` downloads the October 2025 release (v2.0.0) of the
   long-short returns by default instead of the August 2024 release (v1.4.0).
+- `download_data_wrds_crsp()` with `version = "v2"` (the default) now keeps the
+  month and the day that carry a stock's delisting return. CIZ includes the
+  delisting return in `mthret` and `dlyret`, but `stksecurityinfohist` holds no
+  active record after a stock's last trading day, so the common-stock filters
+  were evaluated at month end (or on the delisting day) and dropped these
+  observations. Their security information is now looked up on the last
+  trading day (`securityenddt`). On CRSP data for 1960-2025, the fix restores
+  19,833 stock-months, about 88% of all delisting months, with an average
+  return of -6.9%.
 
 ## New features
 
