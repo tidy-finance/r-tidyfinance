@@ -759,3 +759,102 @@ test_that("long_double_is_wider_cpp11() reports the build", {
     expect_true(wider)
   }
 })
+
+# Overflow and non-finite arithmetic ---------------------------------------
+
+# The kernels accumulate in long double and only then narrow to double, the
+# way R's summary.c does, so they have branches for a sum that overflows
+# double and for a mean that is not finite. Those are reachable from R and
+# must agree with mean() and weighted.mean(), which is what these check.
+test_that("the aggregation kernel matches mean() when the sum overflows", {
+  # Two values whose long double sum is finite but whose double sum is not:
+  # r_mean() takes its second pass, dividing before accumulating.
+  ret <- c(1e308, 1e308)
+  portfolio <- c(1L, 1L)
+  dates <- c(1L, 1L)
+  w <- c(1, 1)
+  out <- tidyfinance:::aggregate_univariate_cpp11(
+    portfolio, dates, 1L, 1L, ret, w, w, 0
+  )
+  expect_identical(out$ret_excess_ew, mean(ret))
+  expect_identical(out$ret_excess_vw, stats::weighted.mean(ret, w))
+})
+
+test_that("the aggregation kernel matches mean() for infinite returns", {
+  w <- c(1, 1)
+  for (ret in list(c(Inf, 1), c(-Inf, 1), c(Inf, -Inf), c(Inf, Inf))) {
+    out <- tidyfinance:::aggregate_univariate_cpp11(
+      c(1L, 1L), c(1L, 1L), 1L, 1L, ret, w, w, 0
+    )
+    expect_identical(out$ret_excess_ew, mean(ret))
+    expect_identical(out$ret_excess_vw, stats::weighted.mean(ret, w))
+  }
+})
+
+test_that("the weighted mean matches R when the weights overflow double", {
+  # sum(w) is finite in long double but infinite in double, so the narrowing
+  # branch of ld_to_double() decides the result.
+  ret <- c(1, 2, 3)
+  w <- c(1e308, 1e308, 1e308)
+  out <- tidyfinance:::aggregate_univariate_cpp11(
+    c(1L, 1L, 1L), c(1L, 1L, 1L), 1L, 1L, ret, w, w, 0
+  )
+  expect_identical(out$ret_excess_vw, stats::weighted.mean(ret, w))
+})
+
+test_that("a zero weight sum gives NA, as weighted.mean does not", {
+  # weighted.mean() returns NaN for sum(w) == 0; the kernels return NA, which
+  # is what summarise_portfolio_returns() does with the NaN afterwards.
+  out <- tidyfinance:::aggregate_univariate_cpp11(
+    c(1L, 1L), c(1L, 1L), 1L, 1L, c(1, 2), c(0, 0), c(0, 0), 0
+  )
+  expect_true(is.na(out$ret_excess_vw))
+})
+
+test_that("the bivariate kernel maps an empty cell mean to NA", {
+  # mean_na_rm() over a cell whose values are all missing is NaN, which the
+  # kernel maps to NA_real_ rather than leaving as NaN.
+  out <- tidyfinance:::aggregate_bivariate_cpp11(
+    c(1L, 1L), c(1L, 1L), c(1L, 1L), 1L, 1L, 1L,
+    c(NA_real_, NA_real_), c(1, 1), c(1, 1), 0
+  )
+  expect_true(is.na(out$ret_excess_ew))
+  expect_false(is.nan(out$ret_excess_ew))
+})
+
+test_that("carry_forward_cpp11() ignores a rebalancing row with no bound", {
+  # An NA upper bound means the row cannot carry forward, so the result is NA
+  # rather than the row's index.
+  date <- as.double(as.Date("2020-06-01"))
+  rebal_date <- as.double(as.Date("2020-01-01"))
+  expect_identical(
+    tidyfinance:::carry_forward_cpp11(
+      1L, date, 1L, rebal_date, NA_real_, 1L
+    ),
+    NA_integer_
+  )
+  expect_identical(
+    tidyfinance:::carry_forward_cpp11(
+      1L, date, 1L, rebal_date, rebal_date + 365, 1L
+    ),
+    1L
+  )
+  # a date before any rebalancing date carries nothing forward
+  expect_identical(
+    tidyfinance:::carry_forward_cpp11(
+      1L, as.double(as.Date("2019-01-01")), 1L, rebal_date,
+      rebal_date + 365, 1L
+    ),
+    NA_integer_
+  )
+})
+
+test_that("an NA date or weight is skipped as the baseline skips it", {
+  out <- tidyfinance:::aggregate_univariate_cpp11(
+    c(1L, 1L, 1L), c(1L, NA_integer_, 1L), 1L, 1L,
+    c(1, 99, 3), c(1, 1, 1), c(1, 1, 1), 0
+  )
+  # the NA-date row contributes nothing, so this is mean(c(1, 3))
+  expect_identical(out$ret_excess_ew, mean(c(1, 3)))
+  expect_identical(out$n, 2L)
+})
