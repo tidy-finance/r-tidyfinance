@@ -7,6 +7,13 @@
 # arm64, where FMA is baseline, the weighted means drifted in the last bits and
 # the engine stopped matching the R implementation it exists to reproduce.
 #
+# Confirmed by reproducing the arm64 condition on x86-64: with LDOUBLE forced
+# to double, -ffp-contract=fast and -ffp-contract=off disagree on 293 of 400
+# random weighted means, by up to 1.1e-16. With the real 80-bit long double
+# they agree exactly even under -mfma, because a double multiply followed by a
+# long double add is not a fusable pattern - which is why x86-64 never showed
+# this and arm64, where long double IS double, did.
+#
 # Turning contraction off costs nothing measurable here and is what keeps the
 # bit-for-bit claim true on every platform.
 PKG_CXXFLAGS = -ffp-contract=off
