@@ -15,7 +15,8 @@ implement_portfolio_sort(
   min_portfolio_size = 1L,
   cap_weight = 0.8,
   data_options = NULL,
-  quiet = FALSE
+  quiet = FALSE,
+  engine = c("r", "cpp11")
 )
 }
 \arguments{
@@ -85,6 +86,35 @@ Uses \code{\link[=data_options]{data_options()}} default if \code{NULL}: \code{"
 
 \item{quiet}{A logical indicating whether informational messages should be
 suppressed. Defaults to \code{FALSE}.}
+
+\item{engine}{A string selecting the implementation that computes the
+portfolio returns, passed on to \code{\link[=compute_portfolio_returns]{compute_portfolio_returns()}}. \code{"r"} (the
+default) is the R implementation and the reference for everything this
+function returns. \code{"cpp11"} selects an alternative engine that delegates
+the per-date work to compiled kernels. Measured on a CRSP-sized panel of
+3.2 million rows over 720 months, it is about 2.5 to 2.9 times faster on
+bivariate sorts and 1.1 to 1.5 times faster on monthly univariate sorts,
+but \emph{slower} than the default on univariate sorts with annual
+rebalancing, so it is worth measuring for the sort at hand.
+
+The compiled engine was contributed by Claude (Anthropic). It returns
+results identical to the default engine in every scenario the package
+tests, but that equivalence is verified over those scenarios rather than
+proven in general. Two differences are known and deliberate. Its warnings
+are signalled once per warning type per call, whereas the default engine
+raises them inside \code{\link[dplyr:mutate]{dplyr::mutate()}}, which collapses them into a single
+condition naming only the first warning and its group; the texts and the
+number of conditions therefore differ in both directions, so code that
+matches on warning text or counts conditions will see a difference. And an
+error raised inside the kernels carries a plain error class rather than
+the default engine's \code{dplyr} wrapper.
+
+The engine is used only for calls it is known to reproduce; any other call
+runs the default engine instead, with a message naming the reason unless
+\code{quiet} is \code{TRUE}. It is refused on an R built without long double,
+because the kernels rely on long double accumulation to match R's
+\code{sum()}, \code{mean()}, and \code{weighted.mean()}; that refusal is reachable but
+untested here, since no such build was available.}
 }
 \value{
 A data frame of portfolio returns as returned by

@@ -378,7 +378,9 @@ breakpoint_options_reject_reason <- function(
 #'
 #' Replaces the per-group R work of [compute_portfolio_returns()] between the
 #' validation of the arguments and the completion of the output panel. Only
-#' called once [cpp11_engine_reject_reason()] has returned `NULL`.
+#' called once `cpp11_engine_reject_reason()` has returned `NULL`. (Written
+#' without a link, because that function is internal and has no topic to
+#' resolve to.)
 #'
 #' @param keep A logical vector flagging the rows of `data` without a missing
 #'   sorting variable, i.e. the rows [tidyr::drop_na()] keeps in the baseline.
