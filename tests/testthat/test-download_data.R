@@ -14,6 +14,7 @@ test_that("download_data dispatches supported domains", {
     download_data_jkp = function(...) out,
     download_data_pastor_stambaugh = function(...) out,
     download_data_stambaugh_yuan = function(...) out,
+    download_data_damodaran = function(...) out,
     download_data_risk_free = function(...) out,
     download_data_huggingface = function(...) out
   )
@@ -30,6 +31,7 @@ test_that("download_data dispatches supported domains", {
     list("Global Factor Data", NULL),
     list("Pastor-Stambaugh", NULL),
     list("Stambaugh-Yuan", NULL),
+    list("Damodaran", NULL),
     list("Tidy Finance", "risk_free"),
     list("Tidy Finance", "factor_library")
   )

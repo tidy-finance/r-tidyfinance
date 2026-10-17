@@ -80,6 +80,7 @@ Monthly data starts in 1934-01-01 (TB3MS). Daily data starts in
 Other download functions:
 \code{\link[=download_data]{download_data()}},
 \code{\link[=download_data_constituents]{download_data_constituents()}},
+\code{\link[=download_data_damodaran]{download_data_damodaran()}},
 \code{\link[=download_data_factors_ff]{download_data_factors_ff()}},
 \code{\link[=download_data_factors_q]{download_data_factors_q()}},
 \code{\link[=download_data_fred]{download_data_fred()}},

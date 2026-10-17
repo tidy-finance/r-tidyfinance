@@ -2,6 +2,13 @@
 
 ## Bug fixes
 
+- `download_data_osap()` and `download_data("Open Source Asset Pricing")`
+  no longer parse the HTML page that Google Drive returns instead of the data,
+  e.g., when the download quota of the file is exceeded. They now return an
+  empty tibble and say why, instead of a tibble whose column names are
+  fragments of the page.
+- `download_data_osap()` downloads the October 2025 release (v2.0.0) of the
+  long-short returns by default instead of the August 2024 release (v1.4.0).
 - `download_data_wrds_crsp()` with `version = "v2"` (the default) now keeps the
   month and the day that carry a stock's delisting return. CIZ includes the
   delisting return in `mthret` and `dlyret`, but `stksecurityinfohist` holds no
@@ -11,6 +18,17 @@
   trading day (`securityenddt`). On CRSP data for 1960-2025, the fix restores
   19,833 stock-months, about 88% of all delisting months, with an average
   return of -6.9%.
+
+## New features
+
+- Added `download_data_damodaran()` and the `"Damodaran"` domain for
+  `download_data()`, which download the cost of capital (WACC) by industry
+  from Aswath Damodaran's data library, e.g.
+  `download_data("Damodaran", "wacc")`. `region` selects the US (default),
+  Europe, Japan, emerging markets, global, China, India, or Australia, New
+  Zealand, and Canada, and `year` reads archived years (from 1998 for the US)
+  into a panel. Reading the Excel files requires the suggested readxl package
+  (#298).
 
 # tidyfinance 0.9.0
 
