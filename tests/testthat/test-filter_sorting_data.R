@@ -343,6 +343,21 @@ test_that("screens apply at formation only by default", {
   )
 })
 
+test_that("filter options without timing default to formation screens", {
+  # E.g., options created with an earlier version of the package
+  opts <- filter_options(min_stock_price = 5)
+  opts$timing <- NULL
+  expect_no_warning(
+    out <- filter_sorting_data(
+      timing_panel(),
+      filter_options = opts,
+      rebalancing_month = 7,
+      quiet = TRUE
+    )
+  )
+  expect_equal(out$permno, c(1L, 1L, 1L, 2L))
+})
+
 test_that("formation screens report removed holding-month rows", {
   expect_message(
     filter_sorting_data(
