@@ -165,7 +165,10 @@ add_lagged_columns <- function(
         check_new_col(lag_col_name) |>
         dplyr::left_join(
           lagged,
-          by = dplyr::join_by(!!!rlang::syms(by), between(.date, .lower, .upper))
+          by = dplyr::join_by(
+            !!!rlang::syms(by),
+            between(.date, .lower, .upper)
+          )
         ) |>
         dplyr::select(-".lower", -".upper")
     }
