@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,7 +104,9 @@ errors or <code>"newey-west"</code> for Newey-West standard errors. Default is
 <code>NeweyWest()</code> function when <code>vcov = "newey-west"</code>. These can include
 options such as <code>lag</code>, which specifies the number of lags to use in the
 Newey-West covariance matrix estimation, and <code>prewhite</code>, which indicates
-whether to apply a prewhitening transformation. Default is an empty list.</p></dd>
+whether to apply a prewhitening transformation. Default is an empty list,
+which uses the defaults of <code><a href="https://zeileis.codeberg.page/sandwich/reference/NeweyWest.html" class="external-link">sandwich::NeweyWest()</a></code>: prewhitening with a
+VAR(1) and the automatic bandwidth of Newey and West (1994).</p></dd>
 
 
 <dt id="arg-data-options">data_options<a class="anchor" aria-label="anchor" href="#arg-data-options"></a></dt>
@@ -187,10 +189,10 @@ heteroskedasticity and autocorrelation consistent covariance matrix.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   factor     risk_premium     n standard_error t_statistic</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> intercept       0.011<span style="text-decoration: underline;">4</span>     12        0.064<span style="text-decoration: underline;">7</span>        0.610</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> beta            0.001<span style="text-decoration: underline;">75</span>    12        0.022<span style="text-decoration: underline;">2</span>        0.274</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> bm              0.071<span style="text-decoration: underline;">2</span>     12        0.038<span style="text-decoration: underline;">6</span>        6.40 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> log_mktcap     -<span style="color: #BB0000;">0.005</span><span style="color: #BB0000; text-decoration: underline;">05</span>    12        0.005<span style="text-decoration: underline;">28</span>      -<span style="color: #BB0000;">3.31</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> intercept       0.011<span style="text-decoration: underline;">4</span>     12        0.064<span style="text-decoration: underline;">7</span>       0.176 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> beta            0.001<span style="text-decoration: underline;">75</span>    12        0.022<span style="text-decoration: underline;">2</span>       0.079<span style="text-decoration: underline;">0</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> bm              0.071<span style="text-decoration: underline;">2</span>     12        0.038<span style="text-decoration: underline;">6</span>       1.85  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> log_mktcap     -<span style="color: #BB0000;">0.005</span><span style="color: #BB0000; text-decoration: underline;">05</span>    12        0.005<span style="text-decoration: underline;">28</span>     -<span style="color: #BB0000;">0.957</span> </span>
 <span class="r-in"><span><span class="fu">estimate_fama_macbeth</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">data</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"ret_excess ~ beta + bm + log_mktcap"</span>,</span></span>

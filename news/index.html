@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +56,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>
+<code><a href="../reference/estimate_fama_macbeth.html">estimate_fama_macbeth()</a></code> with <code>vcov = "iid"</code> no longer multiplies the t-statistic by the square root of the number of periods a second time. The standard error of the mean already accounts for it, so the t-statistics were inflated by a factor of sqrt(T) (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/322" class="external-link">#322</a>).</li>
+<li>
 <code><a href="../reference/download_data_osap.html">download_data_osap()</a></code> and <code>download_data("Open Source Asset Pricing")</code> no longer parse the HTML page that Google Drive returns instead of the data, e.g., when the download quota of the file is exceeded. They now return an empty tibble and say why, instead of a tibble whose column names are fragments of the page.</li>
 <li>
 <code><a href="../reference/download_data_osap.html">download_data_osap()</a></code> downloads the October 2025 release (v2.0.0) of the long-short returns by default instead of the August 2024 release (v1.4.0).</li>

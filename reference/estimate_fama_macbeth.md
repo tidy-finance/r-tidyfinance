@@ -44,7 +44,11 @@ estimate_fama_macbeth(
   function when `vcov = "newey-west"`. These can include options such as
   `lag`, which specifies the number of lags to use in the Newey-West
   covariance matrix estimation, and `prewhite`, which indicates whether
-  to apply a prewhitening transformation. Default is an empty list.
+  to apply a prewhitening transformation. Default is an empty list,
+  which uses the defaults of
+  [`sandwich::NeweyWest()`](https://zeileis.codeberg.page/sandwich/reference/NeweyWest.html):
+  prewhitening with a VAR(1) and the automatic bandwidth of Newey and
+  West (1994).
 
 - data_options:
 
@@ -131,10 +135,10 @@ estimate_fama_macbeth(
 #> # A tibble: 4 × 5
 #>   factor     risk_premium     n standard_error t_statistic
 #>   <chr>             <dbl> <dbl>          <dbl>       <dbl>
-#> 1 intercept       0.0114     12        0.0647        0.610
-#> 2 beta            0.00175    12        0.0222        0.274
-#> 3 bm              0.0712     12        0.0386        6.40 
-#> 4 log_mktcap     -0.00505    12        0.00528      -3.31 
+#> 1 intercept       0.0114     12        0.0647       0.176 
+#> 2 beta            0.00175    12        0.0222       0.0790
+#> 3 bm              0.0712     12        0.0386       1.85  
+#> 4 log_mktcap     -0.00505    12        0.00528     -0.957 
 estimate_fama_macbeth(
   data,
   "ret_excess ~ beta + bm + log_mktcap",
