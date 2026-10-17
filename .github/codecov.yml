@@ -1,0 +1,22 @@
+# The patch status reports its number but does not fail the build.
+#
+# Its default target is 100% of the changed lines, which compiled code cannot
+# reach. The kernels in src/ carry defensive guards that the cpp11 binding's
+# own argument validation shadows: the binding rejects a non-positive count
+# before the kernel's matching `throw` can run, and reaching the
+# grid-too-large guard would require an output allocation of tens of
+# gigabytes, so R's allocator fails first. Those guards exist precisely
+# because the entry points are reachable as `pkg:::*_cpp11()`, and deleting
+# them to satisfy a coverage target would trade memory safety for a number.
+#
+# gcov also attributes lines of an inline function to every translation unit
+# that includes it, so a header's unreachable branches are counted more than
+# once.
+#
+# The project status is left alone: a change that lowers overall coverage
+# should still be noticed.
+coverage:
+  status:
+    patch:
+      default:
+        informational: true
