@@ -205,14 +205,13 @@ look-ahead bias (slipping in information that was not yet public) creeps in if
 you are not careful: the accounting for fiscal year $t$ is not public the
 instant the year ends.
 
-`join_lagged_values()` merges the annual signal onto the monthly panel through a
-configurable lag window. Setting `ff_adjustment = TRUE` applies the Fama and
-French (1993) timing convention: accounting data are assumed public roughly six
-months after the fiscal year-end and held for the following twelve months.
-Because the pseudo statements all carry a December fiscal year-end, the
-7-to-18-month window places each signal in the July-to-June holding period that
-the convention prescribes. The window is anchored on the statement date, so for real firms with
-other fiscal year-ends the exact calendar months shift accordingly.
+`join_lagged_values()` merges the annual signal onto the monthly panel. Without
+further options it uses a lag window set by `min_lag` and `max_lag`. Setting
+`ff_adjustment = TRUE` applies the Fama and French (1993) timing convention
+instead: the accounting data of a fiscal year ending in calendar year $t$ are
+assumed public by the end of June of $t+1$ and are used from July of $t+1$
+through June of $t+2$. Every firm updates in July, whatever its fiscal
+year-end, so no lag window is needed.
 
 ```{r}
 #| label: align-signal
@@ -220,8 +219,6 @@ sorting_data <- crsp_monthly |>
   join_lagged_values(
     new_data = sorting_variable_data,
     id_keys = "gvkey",
-    min_lag = months(7),
-    max_lag = months(18),
     ff_adjustment = TRUE
   ) |>
   select(

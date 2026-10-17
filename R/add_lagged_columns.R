@@ -15,7 +15,8 @@
 #' @param cols A character vector specifying the names of the columns to be
 #'   lagged. Each column produces a new column suffixed with `_lag`.
 #' @param lag An integer or a `lubridate::periods()` object, e.g.,
-#'   `months(1)`, specifying the minimum lag (inclusive) to apply.
+#'   `months(1)`, specifying the minimum lag (inclusive) to apply. Required
+#'   unless `ff_adjustment = TRUE`.
 #' @param max_lag An integer or a `lubridate::periods()` object specifying
 #'   the maximum lag (inclusive) to apply. Defaults to `lag` (exact lag).
 #' @param by An optional character vector specifying grouping columns
@@ -24,10 +25,14 @@
 #' @param drop_na A logical value. If `TRUE`, `NA` values in the source
 #'   columns are excluded before matching, so the lookup skips over missing
 #'   observations. Applied independently per column. Defaults to `FALSE`.
-#' @param ff_adjustment A logical value. If `TRUE`, only the last observation
-#'   per year (within each group defined by `by`) is retained as a source for
-#'   lagged values, following Fama-French conventions for annual accounting
-#'   data. Defaults to `FALSE`.
+#' @param ff_adjustment A logical value. If `TRUE`, applies the Fama and
+#'   French (1993) timing convention for annual accounting data: the last
+#'   observation per calendar year (within each group defined by `by`) is used
+#'   from July of the following year through June of the year after that,
+#'   whatever the month of the fiscal year-end. `lag` and `max_lag` are
+#'   ignored. Combine with `drop_na = TRUE` when `data` is a monthly panel in
+#'   which the accounting columns are only filled at fiscal year-ends.
+#'   Defaults to `FALSE`.
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'   [data_options()]) specifying column name mappings. The `date` element is
 #'   used to specify the date column. Uses [data_options()] default if `NULL`:
@@ -72,7 +77,7 @@
 add_lagged_columns <- function(
   data,
   cols,
-  lag,
+  lag = NULL,
   max_lag = lag,
   by = NULL,
   drop_na = FALSE,
@@ -81,7 +86,7 @@ add_lagged_columns <- function(
 ) {
   # To avoid undefined global variable notes in checks, the columns and the
   # closest() helper used in the join_by() below are defined explicitly here.
-  .src_date <- .upper <- closest <- NULL
+  .src_date <- .date <- .lower <- .upper <- closest <- NULL
 
   if (is.null(data_options)) {
     data_options <- data_options()
@@ -95,7 +100,16 @@ add_lagged_columns <- function(
     )
   }
 
-  if (lag < 0 || max_lag < lag) {
+  if (ff_adjustment) {
+    inform_ff_lags_ignored(c(
+      if (!is.null(lag)) "lag",
+      if (!is.null(max_lag) && !identical(max_lag, lag)) "max_lag"
+    ))
+  } else if (is.null(lag)) {
+    cli::cli_abort(
+      "{.arg lag} is required unless {.code ff_adjustment = TRUE}."
+    )
+  } else if (is.null(max_lag) || lag < 0 || max_lag < lag) {
     cli::cli_abort(
       paste(
         "{.arg lag} and {.arg max_lag} must be non-negative",
@@ -131,6 +145,34 @@ add_lagged_columns <- function(
     )
   }
 
+  if (ff_adjustment) {
+    data <- data |>
+      check_new_col(c(".date", ".lower", ".upper")) |>
+      dplyr::rename(.date = dplyr::all_of(date_col))
+
+    for (col in cols) {
+      lagged <- data[c(by, ".date", col)]
+
+      if (drop_na) {
+        lagged <- lagged[!is.na(lagged[[col]]), ]
+      }
+
+      lag_col_name <- paste0(col, "_lag")
+      lagged <- ff_windows(lagged, by, ".date", col)
+      names(lagged)[names(lagged) == col] <- lag_col_name
+
+      data <- data |>
+        check_new_col(lag_col_name) |>
+        dplyr::left_join(
+          lagged,
+          by = dplyr::join_by(!!!rlang::syms(by), between(.date, .lower, .upper))
+        ) |>
+        dplyr::select(-".lower", -".upper")
+    }
+
+    return(dplyr::rename(data, !!date_col := ".date"))
+  }
+
   exact_lag <- (lag == max_lag)
 
   if (!exact_lag) {
@@ -147,13 +189,6 @@ add_lagged_columns <- function(
 
     if (drop_na) {
       lagged <- lagged[!is.na(lagged[[col]]), ]
-    }
-
-    if (ff_adjustment) {
-      yr <- lubridate::year(lagged[[date_col]])
-      grp <- if (!is.null(by)) interaction(lagged[by], yr) else yr
-      max_dates <- stats::ave(as.numeric(lagged[[date_col]]), grp, FUN = max)
-      lagged <- lagged[as.numeric(lagged[[date_col]]) == max_dates, ]
     }
 
     lag_col_name <- paste0(col, "_lag")

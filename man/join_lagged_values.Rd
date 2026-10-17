@@ -8,8 +8,8 @@ join_lagged_values(
   original_data,
   new_data,
   id_keys,
-  min_lag,
-  max_lag,
+  min_lag = NULL,
+  max_lag = NULL,
   ff_adjustment = FALSE,
   data_options = NULL
 )
@@ -24,14 +24,18 @@ and joined.}
 \item{id_keys}{A character vector specifying the identifier column(s).}
 
 \item{min_lag}{A \code{lubridate::Period} specifying the lower lag bound
-(inclusive).}
+(inclusive). Required unless \code{ff_adjustment = TRUE}.}
 
 \item{max_lag}{A \code{lubridate::Period} specifying the upper lag bound
-(inclusive).}
+(inclusive). Required unless \code{ff_adjustment = TRUE}.}
 
-\item{ff_adjustment}{Logical; if \code{TRUE}, keeps only the last observation
-per identifier and year before lagging (Fama-French convention). Defaults
-to \code{FALSE}.}
+\item{ff_adjustment}{Logical; if \code{TRUE}, applies the Fama and French
+(1993) timing convention: the last observation per identifier and
+calendar year (the fiscal year-end) is used from July of the following
+year through June of the year after that, whatever the month of the
+fiscal year-end. A value for a fiscal year ending in December 2020 or in
+June 2020 is thus used from July 2021 to June 2022. \code{min_lag} and
+\code{max_lag} are ignored. Defaults to \code{FALSE}.}
 
 \item{data_options}{A list of class \code{tidyfinance_data_options} (created via
 \code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{date} element is
@@ -69,6 +73,18 @@ join_lagged_values(
   min_lag = months(1),
   max_lag = months(3)
 )
+
+# Fama-French timing: annual values are used from July to June
+annual <- tibble(
+  id = 1:2,
+  date = as.Date(c("2019-12-01", "2019-06-01")),
+  x = c(10, 20)
+)
+monthly <- tibble(
+  id = rep(1:2, each = 3),
+  date = rep(as.Date(c("2020-06-01", "2020-07-01", "2021-06-01")), 2)
+)
+join_lagged_values(monthly, annual, id_keys = "id", ff_adjustment = TRUE)
 }
 \seealso{
 Other rolling and lagging functions:
