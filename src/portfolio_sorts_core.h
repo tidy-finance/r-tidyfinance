@@ -413,6 +413,14 @@ inline void carry_forward(const int* id, const double* date, R_xlen_t n,
   std::fill(out, out + n, NA_INTEGER);
   for (R_xlen_t i = 0; i < n; ++i) {
     if (id[i] == NA_INTEGER || ISNAN(date[i])) continue;
+    // bucket_rows() above validates `rebal_id`, but `id` indexes the same
+    // buckets and was not checked. Guard it next to the indexing so a future
+    // second caller cannot bypass it: b.start holds n_ids + 1 entries, so an
+    // id of n_ids + 1 reads past the end and the search below then runs far
+    // outside b.rows.
+    if (id[i] < 1 || (R_xlen_t)id[i] > n_ids) {
+      throw std::runtime_error("internal error: id out of range");
+    }
     const R_xlen_t from = b.start[id[i] - 1], to = b.start[id[i]];
     // Latest rebalancing date <= date[i].
     R_xlen_t lo = from, hi = to;

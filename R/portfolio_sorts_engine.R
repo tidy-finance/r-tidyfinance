@@ -18,7 +18,14 @@
 #' @returns A single integer.
 #' @noRd
 breakpoint_n_portfolios <- function(options) {
-  length(breakpoint_probs(options)) - 1L
+  # Counted without building the vector: the gate calls this before the
+  # zero-row early return, so materialising seq(0, 1, length.out = n + 1) here
+  # made an empty panel allocate 8 * n_portfolios bytes just for a length.
+  if (!is.null(options$n_portfolios)) {
+    as.integer(options$n_portfolios)
+  } else {
+    length(options$percentiles) + 1L
+  }
 }
 
 #' Probabilities `compute_breakpoints()` passes to `quantile()`
@@ -152,22 +159,47 @@ cpp11_engine_reject_reason <- function(
   ret_col <- data_options$ret_excess
   w_col <- data_options$mktcap_lag
 
+  # The baseline selects columns with tidyselect, which errors on a duplicated
+  # name, while the engine's stats::complete.cases(data[sorting_variables])
+  # silently takes the first match and would sort on a different column.
+  if (anyDuplicated(colnames(data)) > 0L) {
+    return("`data` has duplicated column names")
+  }
   required_columns <- c(sorting_variables, id_col, date_col, ret_col)
   if (!all(required_columns %in% colnames(data))) {
     return("`data` is missing a required column")
   }
   # The kernels read doubles; a non-numeric column would be coerced here and
-  # silently sorted on something else than the baseline sorts on.
+  # silently sorted on something else than the baseline sorts on. `is.double`
+  # rather than `is.numeric`, because an INTEGER return sends the baseline down
+  # R's single-pass isum() path for mean() while the kernel casts to double and
+  # reproduces real_mean()'s two-pass refinement. Those differ in the last ULP,
+  # which is exactly the class of divergence this engine must not introduce.
   numeric_columns <- c(
     sorting_variables,
     ret_col,
     intersect(w_col, colnames(data))
   )
-  if (!all(vapply(data[numeric_columns], is.numeric, logical(1L)))) {
-    return("a sorting variable, the return, or the weight is not numeric")
+  if (!all(vapply(data[numeric_columns], is.double, logical(1L)))) {
+    return("a sorting variable, the return, or the weight is not a double")
+  }
+  # is.double() is TRUE for a numeric matrix, which the baseline rejects.
+  if (
+    any(vapply(
+      data[numeric_columns],
+      function(x) !is.null(dim(x)),
+      logical(1L)
+    ))
+  ) {
+    return("a column the kernels read is a matrix or an array")
   }
   if (!inherits(data[[date_col]], "Date")) {
     return("the date column is not a `Date`")
+  }
+  # An NA date makes the month comparison below, and the baseline's own any()
+  # calls, return NA. The baseline still returns a result, so fall back.
+  if (anyNA(data[[date_col]])) {
+    return("the date column has missing values")
   }
 
   if (!identical(breakpoint_function_main, compute_breakpoints)) {
@@ -209,13 +241,29 @@ cpp11_engine_reject_reason <- function(
     n_cells <- n_cells *
       (breakpoint_n_portfolios(breakpoint_options_secondary) + 1)
   }
-  if (n_cells > .Machine$integer.max) {
+  # Two limits. The kernels address cells with int ids, and separately they
+  # materialise one dense bucket per cell, so a grid that fits in int can still
+  # exhaust memory on a sort the baseline completes. 5e7 cells is roughly
+  # 0.8 GB of bucket offsets, far above any real sort - the factor library's
+  # largest is 10 * 6 * 720 = 43,200 cells.
+  if (n_cells > .Machine$integer.max || n_cells > 5e7) {
     return("the portfolio-date grid is too large for the compiled engine")
   }
 
   if (!is.null(rebalancing_month)) {
+    # join_rebalanced_portfolios() renames the id and date columns to
+    # `..id`/`..date` and relies on the portfolio columns surviving the join
+    # unsuffixed, so a panel already carrying one of these names makes the two
+    # engines disagree about whether the call is even legal.
+    reserved <- c(
+      "..id", "..date", "portfolio", "portfolio_main", "portfolio_secondary"
+    )
+    if (any(reserved %in% colnames(data))) {
+      return("`data` carries a column name the annual join reserves")
+    }
     keep <- stats::complete.cases(data[sorting_variables])
     rebalancing <- keep & month(data[[date_col]]) == rebalancing_month
+    rebalancing[is.na(rebalancing)] <- FALSE
     # The baseline joins the annual assignments with
     # `relationship = "many-to-one"` and errors on duplicated firm-months.
     if (anyDuplicated(data[rebalancing, c(id_col, date_col)]) > 0L) {
@@ -255,7 +303,11 @@ breakpoint_options_reject_reason <- function(
 ) {
   label <- paste0("`breakpoint_options_", which, "`")
 
-  if (!inherits(options, "tidyfinance_breakpoint_options")) {
+  # Both checks: an object can carry the class without being a list, and the
+  # `$` subsetting below would then throw instead of falling back.
+  if (
+    !inherits(options, "tidyfinance_breakpoint_options") || !is.list(options)
+  ) {
     return(paste(label, "is not a `tidyfinance_breakpoint_options` object"))
   }
 
@@ -525,9 +577,17 @@ portfolio_sorts_cpp11 <- function(
 #' The kernels count, per warning, how many groups triggered it, instead of
 #' warning inside the loop. Each warning that occurred in at least one group
 #' is signalled once here, with the text [assign_portfolio()] and
-#' [compute_breakpoints()] use. The baseline signals them once per group, so
-#' the compiled engine raises fewer warnings than the R engine whenever more
-#' than one date is affected.
+#' [compute_breakpoints()] use.
+#'
+#' The two streams are NOT equivalent, and the difference is not only one of
+#' frequency. The baseline raises its per-group warnings inside
+#' [dplyr::mutate()], which collapses them into ONE condition per expression
+#' whose text names only the first underlying warning and its group; this
+#' engine raises one bare condition per warning type. So the text differs
+#' whenever any warning fires, even when a single group warns, and the count
+#' differs in BOTH directions: more conditions when several types fire, fewer
+#' when one type fires for many groups. Anything matching on warning text or
+#' counting conditions will see the difference.
 #'
 #' @param counts The named integer vector of counts returned by the kernel.
 #'

@@ -5,3 +5,7 @@
 *.h    text eol=lf
 *.cpp  text eol=lf
 *.hpp  text eol=lf
+
+# cpp11::cpp_register() writes LF. Pin the generated R file too, or a rerun
+# shows the whole file as modified under core.autocrlf=true.
+R/cpp11.R  text eol=lf
