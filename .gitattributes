@@ -9,3 +9,6 @@
 # cpp11::cpp_register() writes LF. Pin the generated R file too, or a rerun
 # shows the whole file as modified under core.autocrlf=true.
 R/cpp11.R  text eol=lf
+
+# make reads these literally, so a CR would end up inside a flag value.
+src/Makevars*  text eol=lf
