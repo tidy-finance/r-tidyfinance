@@ -20,6 +20,11 @@ existing credentials. Additionally, the user has the option to add the
 \code{.Renviron} file to the .gitignore file to prevent it from being tracked by
 version control.
 }
+\details{
+Storing credentials is not enough to connect to WRDS: you also need to
+enroll in two-factor authentication (Duo) and accept the WRDS terms of use.
+See the "WRDS account setup" section of \code{\link[=get_wrds_connection]{get_wrds_connection()}}.
+}
 \examples{
 \dontrun{
 set_wrds_credentials()
