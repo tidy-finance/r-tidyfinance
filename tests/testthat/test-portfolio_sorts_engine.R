@@ -1002,3 +1002,88 @@ test_that("the engines agree when a breakpoint exchange holds no stock", {
     quiet = TRUE
   )
 })
+
+# Errors and empty results, under both engines -----------------------------
+
+test_that("both engines abort alike on an unmatched rebalancing month", {
+  skip_without_engine()
+  # The gate lets a univariate sort through even when no row falls in the
+  # rebalancing month, because both engines reach the same abort. Only the
+  # bivariate case is refused, where the baseline returns an empty panel and
+  # the kernels would need a positive firm count. This pins that claim down.
+  data <- make_engine_data(n_months = 8L, start = "2020-01-01")
+  call_with <- function(engine) {
+    compute_portfolio_returns(
+      data,
+      sorting_variables = "size",
+      sorting_method = "univariate",
+      rebalancing_month = 12L,
+      breakpoint_options_main = bp_main,
+      quiet = TRUE,
+      engine = engine
+    )
+  }
+  from_r <- tryCatch(call_with("r"), error = function(e) e)
+  from_cpp11 <- tryCatch(call_with("cpp11"), error = function(e) e)
+  expect_s3_class(from_r, "error")
+  expect_s3_class(from_cpp11, "error")
+  expect_identical(
+    conditionMessage(from_cpp11), conditionMessage(from_r)
+  )
+  expect_match(conditionMessage(from_cpp11), "rebalancing_month")
+})
+
+test_that("a bivariate sort with no rebalancing row keeps the R path", {
+  skip_without_engine()
+  data <- make_engine_data(n_months = 8L, start = "2020-01-01")
+  reason <- cpp11_engine_reject_reason(
+    data = data,
+    sorting_variables = c("size", "bm"),
+    sorting_method = "bivariate-dependent",
+    rebalancing_month = 12L,
+    breakpoint_options_main = bp_main,
+    breakpoint_options_secondary = bp_secondary,
+    breakpoint_function_main = compute_breakpoints,
+    breakpoint_function_secondary = compute_breakpoints,
+    min_portfolio_size = 1L,
+    cap_weight = 0.8,
+    data_options = data_options(),
+    quiet = TRUE,
+    all_dates = unique(data$date)
+  )
+  expect_identical(
+    reason, "no complete observation falls in `rebalancing_month`"
+  )
+})
+
+test_that("both engines return the same empty panel", {
+  skip_without_engine()
+  # Every sorting value missing, so nothing can be assigned and the shared
+  # early return produces an empty result whichever engine was asked for.
+  data <- make_engine_data()
+  data$size <- NA_real_
+  expect_engines_identical(
+    data = data,
+    sorting_variables = "size",
+    sorting_method = "univariate",
+    breakpoint_options_main = bp_main,
+    quiet = TRUE
+  )
+})
+
+test_that("both engines report missing cells the same way", {
+  skip_without_engine()
+  # min_portfolio_size above the firms per cell voids every cell, so the
+  # completed panel is all NA and the informational message counts them.
+  data <- make_engine_data(n_stocks = 9L, n_months = 4L)
+  from_r <- suppressWarnings(compute_portfolio_returns(
+    data, "size", "univariate", breakpoint_options_main = bp_main,
+    min_portfolio_size = 50L, quiet = FALSE, engine = "r"
+  ))
+  from_cpp11 <- suppressWarnings(compute_portfolio_returns(
+    data, "size", "univariate", breakpoint_options_main = bp_main,
+    min_portfolio_size = 50L, quiet = FALSE, engine = "cpp11"
+  ))
+  expect_identical(from_cpp11, from_r)
+  expect_true(all(is.na(from_cpp11$ret_excess_ew)))
+})
