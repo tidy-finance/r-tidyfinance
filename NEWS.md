@@ -2,6 +2,10 @@
 
 ## Bug fixes
 
+- `estimate_fama_macbeth()` with `vcov = "iid"` no longer multiplies the
+  t-statistic by the square root of the number of periods a second time. The
+  standard error of the mean already accounts for it, so the t-statistics were
+  inflated by a factor of sqrt(T) (#322).
 - `download_data_osap()` and `download_data("Open Source Asset Pricing")`
   no longer parse the HTML page that Google Drive returns instead of the data,
   e.g., when the download quota of the file is exceeded. They now return an
