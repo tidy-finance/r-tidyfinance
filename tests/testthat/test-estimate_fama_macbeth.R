@@ -427,3 +427,34 @@ test_that("estimate_fama_macbeth sorts by a renamed date column", {
 
   expect_equal(shuffled, sorted)
 })
+
+test_that("estimate_fama_macbeth iid t-statistic matches a one-sample t-test", {
+  set.seed(42)
+  data <- tibble(
+    date = rep(
+      seq.Date(
+        from = as.Date("2000-01-01"),
+        by = "month",
+        length.out = 60
+      ),
+      each = 50
+    ),
+    permno = rep(1:50, times = 60),
+    beta = rnorm(3000, 1, 0.2),
+    ret_excess = 0.01 * beta + rnorm(3000, 0, 0.1)
+  )
+
+  result <- estimate_fama_macbeth(data, "ret_excess ~ beta", vcov = "iid")
+
+  slopes <- data |>
+    dplyr::group_by(date) |>
+    dplyr::summarize(
+      beta = stats::coef(stats::lm(ret_excess ~ beta))[["beta"]]
+    )
+  expected <- stats::t.test(slopes$beta)
+
+  beta_row <- result[result$factor == "beta", ]
+  expect_equal(beta_row$risk_premium, unname(expected$estimate))
+  expect_equal(beta_row$standard_error, expected$stderr)
+  expect_equal(beta_row$t_statistic, unname(expected$statistic))
+})
