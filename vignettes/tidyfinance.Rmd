@@ -370,6 +370,14 @@ factor_returns_customized <- implement_portfolio_sort(
   compute_long_short_returns(direction = "bottom_minus_top")
 ```
 
+Because the portfolios are rebalanced in July, the screens are evaluated in July
+only: a firm whose earnings turn negative later in the year stays in its portfolio
+until the next rebalancing, so no holding-month return is dropped based on
+information from that month. This is the default
+(`filter_options(timing = "formation")`). Setting `timing = "every_period"`
+applies the screens in every month instead and warns that the factor returns can
+then contain look-ahead bias.
+
 Moving from a univariate to a size-controlled bivariate sort was a one-word change
 to `sorting_method`; the surrounding pipeline is identical. That is the point of
 exposing construction choices as arguments. The lower-level building blocks

@@ -210,8 +210,11 @@ download_data_wrds_crsp <- function(
         )
 
       mktcap_lag <- crsp_monthly |>
-        mutate(date = .data$date %m+% months(1)) |>
-        select("permno", "date", mktcap_lag = "mktcap")
+        mutate(
+          date = .data$date %m+% months(1),
+          prc_lag = abs(na_if(.data$altprc, 0))
+        ) |>
+        select("permno", "date", mktcap_lag = "mktcap", "prc_lag")
 
       crsp_monthly <- crsp_monthly |>
         left_join(mktcap_lag, by = c("permno", "date"))
@@ -372,8 +375,11 @@ download_data_wrds_crsp <- function(
         )
 
       mktcap_lag <- crsp_monthly |>
-        mutate(date = .data$date %m+% months(1)) |>
-        select("permno", "date", mktcap_lag = "mktcap")
+        mutate(
+          date = .data$date %m+% months(1),
+          prc_lag = abs(na_if(.data$prc, 0))
+        ) |>
+        select("permno", "date", mktcap_lag = "mktcap", "prc_lag")
 
       crsp_monthly <- crsp_monthly |>
         left_join(mktcap_lag, by = c("permno", "date"))

@@ -35,6 +35,10 @@ exclude observations with non-positive book equity. Defaults to
 \code{FALSE}.
 \item \code{exclude_negative_earnings} A logical indicating whether to
 exclude observations with non-positive earnings. Defaults to \code{FALSE}.
+\item \code{timing} Either \code{"formation"} (the default) to apply the screens
+only in the formation month when portfolios are rebalanced once a
+year, or \code{"every_period"} to apply them in every month, which can
+introduce look-ahead bias.
 }}
 
 \item{breakpoint_options_main}{A list of class

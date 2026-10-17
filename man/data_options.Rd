@@ -12,7 +12,7 @@ data_options(
   ret_excess = "ret_excess",
   portfolio = "portfolio",
   siccd = "siccd",
-  price = "prc_adj",
+  price = "prc_lag",
   listing_age = "listing_age",
   be = "be",
   earnings = "ib",
@@ -41,8 +41,10 @@ lag variable (defaults to \code{"mktcap_lag"}).}
 \item{siccd}{A character string representing the Standard Industrial
 Classification code variable (defaults to \code{"siccd"}).}
 
-\item{price}{A character string representing the (adjusted) price variable
-(defaults to \code{"prc_adj"}).}
+\item{price}{A character string representing the price variable used by
+the \code{min_stock_price} screen of \code{\link[=filter_sorting_data]{filter_sorting_data()}} (defaults to
+\code{"prc_lag"}, the nominal price at the end of the previous month, as
+returned by \code{download_data("WRDS", "crsp_monthly")}).}
 
 \item{listing_age}{A character string representing the listing age variable
 (defaults to \code{"listing_age"}).}

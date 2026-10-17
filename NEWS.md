@@ -1,5 +1,22 @@
 # tidyfinance (development version)
 
+## Breaking changes
+
+- With annual rebalancing (`rebalancing_month`), `implement_portfolio_sort()`
+  and `filter_sorting_data()` now apply the screens of `filter_options()` in
+  the formation month only and keep every stock that passes them for the whole
+  holding period (ex-ante screens). Before, the screens were applied in every
+  month, so a stock that, e.g., fell below the price screen after formation
+  lost its holding-month returns, which can bias factor returns. The previous
+  behaviour is available with `filter_options(timing = "every_period")` and
+  issues a warning. `filter_sorting_data()` gains a `rebalancing_month`
+  argument (#321).
+- The default price column of `data_options()` is now `prc_lag`, the nominal
+  price at the end of the previous month, instead of `prc_adj`, which the
+  default CRSP v2 download does not return, so the `min_stock_price` screen
+  failed on downloaded data. `download_data("WRDS", "crsp_monthly")` (v1 and
+  v2) and the pseudo CRSP data now return `prc_lag` (#321).
+
 ## Bug fixes
 
 - `estimate_fama_macbeth()` with `vcov = "iid"` no longer multiplies the

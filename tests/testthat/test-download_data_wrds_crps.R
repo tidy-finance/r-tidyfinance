@@ -262,6 +262,7 @@ test_that("monthly CRSP v1 is processed", {
   expect_true("mthvol" %in% names(out))
   expect_true(all(c("mktcap", "mktcap_lag", "listing_age") %in% names(out)))
   expect_true(all(c("exchange", "industry", "prc_adj") %in% names(out)))
+  expect_true("prc_lag" %in% names(out))
 })
 
 test_that("monthly CRSP v2 is processed", {
@@ -278,6 +279,10 @@ test_that("monthly CRSP v2 is processed", {
   expect_s3_class(out, "data.frame")
   expect_equal(out$ret_excess[out$permno == 1 & out$date == "2020-01-01"], 0.09)
   expect_equal(out$mktcap_lag[out$date == "2020-02-01"], 0.05)
+  expect_equal(
+    out$prc_lag[out$permno == 1 & out$date == "2020-02-01"],
+    out$prc[out$permno == 1 & out$date == "2020-01-01"]
+  )
   expect_true("mthvol" %in% names(out))
   expect_false(any(is.na(out$ret_excess)))
   expect_false(any(is.na(out$mktcap)))

@@ -124,3 +124,13 @@ test_that("filter_options errors for non-logical exclude_negative_earnings", {
     "exclude_negative_earnings"
   )
 })
+
+test_that("filter_options validates timing", {
+  expect_equal(filter_options()$timing, "formation")
+  expect_equal(filter_options(timing = "every_period")$timing, "every_period")
+  expect_error(filter_options(timing = "monthly"), "timing")
+  expect_error(
+    filter_options(timing = c("formation", "every_period")),
+    "timing"
+  )
+})

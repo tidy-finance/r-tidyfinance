@@ -17,7 +17,7 @@ test_that("data_options has correct default values", {
   expect_equal(opts$ret_excess, "ret_excess")
   expect_equal(opts$portfolio, "portfolio")
   expect_equal(opts$siccd, "siccd")
-  expect_equal(opts$price, "prc_adj")
+  expect_equal(opts$price, "prc_lag")
   expect_equal(opts$listing_age, "listing_age")
   expect_equal(opts$be, "be")
   expect_equal(opts$earnings, "ib")
