@@ -1,5 +1,38 @@
 # tidyfinance (development version)
 
+## Bug fixes
+
+- `download_data_osap()` and `download_data("Open Source Asset Pricing")`
+  no longer parse the HTML page that Google Drive returns instead of the data,
+  e.g., when the download quota of the file is exceeded. They now return an
+  empty tibble and say why, instead of a tibble whose column names are
+  fragments of the page.
+- `download_data_osap()` downloads the October 2025 release (v2.0.0) of the
+  long-short returns by default instead of the August 2024 release (v1.4.0).
+
+## New features
+
+- `compute_portfolio_returns()` and `implement_portfolio_sort()` gain an
+  `engine` argument. The default, `"r"`, is unchanged. `"cpp11"` selects an
+  alternative engine that hands the per-date work to compiled kernels and is
+  about 2.2 times faster overall on a CRSP-sized panel, 2.5 to 2.9 times on
+  bivariate sorts, but slower on univariate sorts with annual rebalancing, so
+  it is worth measuring for a given sort rather than assuming. It returns
+  results identical to the default engine in every tested scenario and is
+  used only for calls it is known to reproduce; any other call runs the
+  default engine, with a message naming the reason. Its warnings are signalled
+  once per warning type per call rather than through `dplyr`'s per-group
+  collapsing, so code that matches on warning text or counts conditions will
+  see a difference.
+- Added `download_data_damodaran()` and the `"Damodaran"` domain for
+  `download_data()`, which download the cost of capital (WACC) by industry
+  from Aswath Damodaran's data library, e.g.
+  `download_data("Damodaran", "wacc")`. `region` selects the US (default),
+  Europe, Japan, emerging markets, global, China, India, or Australia, New
+  Zealand, and Canada, and `year` reads archived years (from 1998 for the US)
+  into a panel. Reading the Excel files requires the suggested readxl package
+  (#298).
+
 # tidyfinance 0.9.0
 
 ## Breaking changes
