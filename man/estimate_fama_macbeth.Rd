@@ -30,7 +30,9 @@ errors or \code{"newey-west"} for Newey-West standard errors. Default is
 \code{NeweyWest()} function when \code{vcov = "newey-west"}. These can include
 options such as \code{lag}, which specifies the number of lags to use in the
 Newey-West covariance matrix estimation, and \code{prewhite}, which indicates
-whether to apply a prewhitening transformation. Default is an empty list.}
+whether to apply a prewhitening transformation. Default is an empty list,
+which uses the defaults of \code{sandwich::NeweyWest()}: prewhitening with a
+VAR(1) and the automatic bandwidth of Newey and West (1994).}
 
 \item{data_options}{A list of class \code{tidyfinance_data_options} (created via
 \code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{date} element is

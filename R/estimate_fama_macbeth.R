@@ -18,7 +18,9 @@
 #'   `NeweyWest()` function when `vcov = "newey-west"`. These can include
 #'   options such as `lag`, which specifies the number of lags to use in the
 #'   Newey-West covariance matrix estimation, and `prewhite`, which indicates
-#'   whether to apply a prewhitening transformation. Default is an empty list.
+#'   whether to apply a prewhitening transformation. Default is an empty list,
+#'   which uses the defaults of `sandwich::NeweyWest()`: prewhitening with a
+#'   VAR(1) and the automatic bandwidth of Newey and West (1994).
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'   [data_options()]) specifying column name mappings. The `date` element is
 #'   used to specify the date column. Uses [data_options()] default if `NULL`:
@@ -191,13 +193,6 @@ estimate_fama_macbeth <- function(
       ),
       t_statistic = .data$risk_premium / .data$standard_error
     )
-
-  if (vcov == "iid") {
-    aggregations <- aggregations |>
-      mutate(
-        t_statistic = .data$t_statistic * sqrt(.data$n)
-      )
-  }
 
   aggregations <- aggregations |>
     select(

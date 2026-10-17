@@ -2,7 +2,7 @@
 #'
 #' Downloads the data from
 #' [Open Source Asset Pricing](https://www.openassetpricing.com/data/)
-#' from Google Sheets using a specified sheet ID, processes the data
+#' from Google Drive using a specified file ID, processes the data
 #' by converting column names to snake_case, aligning the date to the
 #' beginning of the month, scaling the percentage long-short returns to
 #' numeric values, and optionally filters the data based on a provided
@@ -19,9 +19,15 @@
 #' @param end_date Optional. A character string or Date object in
 #'   "YYYY-MM-DD" format specifying the end date for the data. If not
 #'   provided, the full dataset is returned.
-#' @param sheet_id A character string representing the Google Sheet ID
-#'   from which to download the data. Default is
-#'   `"1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"`.
+#' Google Drive limits how often a shared file can be downloaded. When the
+#' limit is reached, Google Drive returns an error page instead of the data
+#' and the function returns an empty tibble. The limit is usually lifted
+#' within 24 hours.
+#'
+#' @param sheet_id A character string with the Google Drive file ID of the
+#'   wide CSV of monthly long-short returns. The default,
+#'   `"10sOryk_ddjkXagaajTKUk1nwJs2ZLRiI"`, is the October 2025 release
+#'   (v2.0.0). Pass the ID of another release to download it instead.
 #'
 #' @returns A tibble containing the processed data. The column names
 #'   are converted to snake_case, the `date` column is aligned to the
@@ -42,7 +48,7 @@
 download_data_osap <- function(
   start_date = NULL,
   end_date = NULL,
-  sheet_id = "1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"
+  sheet_id = "10sOryk_ddjkXagaajTKUk1nwJs2ZLRiI"
 ) {
   dates <- validate_dates(start_date, end_date)
   start_date <- dates$start_date
@@ -52,9 +58,26 @@ download_data_osap <- function(
 
   raw_data <- handle_download_error(
     function() {
-      suppressWarnings(
-        as_tibble(read.csv(url))
-      )
+      response <- httr2::request(url) |>
+        httr2::req_user_agent(get_random_user_agent()) |>
+        httr2::req_timeout(seconds = 120) |>
+        httr2::req_perform()
+      body <- httr2::resp_body_string(response)
+
+      # Google Drive answers with an HTML page instead of the CSV, e.g., when
+      # the download quota of the file is exceeded.
+      content_type <- httr2::resp_content_type(response)
+      if (grepl("text/html", content_type, fixed = TRUE)) {
+        if (grepl("Quota exceeded", body, fixed = TRUE)) {
+          cli::cli_abort(paste(
+            "The Google Drive download quota of the file is exceeded.",
+            "Try again later, usually within 24 hours."
+          ))
+        }
+        cli::cli_abort("Google Drive returned an HTML page instead of a CSV.")
+      }
+
+      suppressWarnings(as_tibble(read.csv(text = body)))
     },
     fallback = tibble()
   )

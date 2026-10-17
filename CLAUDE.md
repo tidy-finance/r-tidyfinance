@@ -15,3 +15,9 @@
 - The development version lives in the `Version:` field of `DESCRIPTION`; it is
   the fourth, `.9000`-style component (e.g. `0.5.0.9005` -> `0.5.0.9006`).
   Increment that component by one for the PR.
+
+## Checks before merging
+
+- `lintr::lint_package()` and `covr::package_coverage()` must pass before a
+  pull request can be merged. Run both locally and fix any lints or failures
+  before asking for a merge.

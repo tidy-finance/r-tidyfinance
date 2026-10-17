@@ -7,7 +7,7 @@
 download_data_osap(
   start_date = NULL,
   end_date = NULL,
-  sheet_id = "1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"
+  sheet_id = "10sOryk_ddjkXagaajTKUk1nwJs2ZLRiI"
 )
 }
 \arguments{
@@ -17,11 +17,16 @@ not provided, the full dataset is returned.}
 
 \item{end_date}{Optional. A character string or Date object in
 "YYYY-MM-DD" format specifying the end date for the data. If not
-provided, the full dataset is returned.}
+provided, the full dataset is returned.
+Google Drive limits how often a shared file can be downloaded. When the
+limit is reached, Google Drive returns an error page instead of the data
+and the function returns an empty tibble. The limit is usually lifted
+within 24 hours.}
 
-\item{sheet_id}{A character string representing the Google Sheet ID
-from which to download the data. Default is
-\code{"1JyhcF5PRKHcputlioxlu5j5GyLo4JYyY"}.}
+\item{sheet_id}{A character string with the Google Drive file ID of the
+wide CSV of monthly long-short returns. The default,
+\code{"10sOryk_ddjkXagaajTKUk1nwJs2ZLRiI"}, is the October 2025 release
+(v2.0.0). Pass the ID of another release to download it instead.}
 }
 \value{
 A tibble containing the processed data. The column names
@@ -34,7 +39,7 @@ returns, and the data is filtered by the specified date range if
 \description{
 Downloads the data from
 \href{https://www.openassetpricing.com/data/}{Open Source Asset Pricing}
-from Google Sheets using a specified sheet ID, processes the data
+from Google Drive using a specified file ID, processes the data
 by converting column names to snake_case, aligning the date to the
 beginning of the month, scaling the percentage long-short returns to
 numeric values, and optionally filters the data based on a provided
@@ -57,6 +62,7 @@ numeric (decimal) returns.
 Other download functions:
 \code{\link[=download_data]{download_data()}},
 \code{\link[=download_data_constituents]{download_data_constituents()}},
+\code{\link[=download_data_damodaran]{download_data_damodaran()}},
 \code{\link[=download_data_factors_ff]{download_data_factors_ff()}},
 \code{\link[=download_data_factors_q]{download_data_factors_q()}},
 \code{\link[=download_data_fred]{download_data_fred()}},

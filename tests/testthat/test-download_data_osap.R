@@ -1,4 +1,11 @@
 test_that("downloads and processes all rows", {
+  httr2::local_mocked_responses(function(req) {
+    httr2::response(
+      status_code = 200,
+      headers = list("Content-Type" = "text/csv"),
+      body = charToRaw("date\n")
+    )
+  })
   local_mocked_bindings(
     validate_dates = function(start_date, end_date) {
       list(start_date = NULL, end_date = NULL)
@@ -24,6 +31,13 @@ test_that("downloads and processes all rows", {
 })
 
 test_that("filters rows when both dates are supplied", {
+  httr2::local_mocked_responses(function(req) {
+    httr2::response(
+      status_code = 200,
+      headers = list("Content-Type" = "text/csv"),
+      body = charToRaw("date\n")
+    )
+  })
   local_mocked_bindings(
     validate_dates = function(start_date, end_date) {
       list(
@@ -65,6 +79,46 @@ test_that("returns empty tibble after download failure", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
+})
+
+test_that("reports an exceeded Google Drive quota", {
+  httr2::local_mocked_responses(function(req) {
+    httr2::response(
+      status_code = 200,
+      headers = list("Content-Type" = "text/html; charset=utf-8"),
+      body = charToRaw(
+        "<html><head><title>Google Drive - Quota exceeded</title></head></html>"
+      )
+    )
+  })
+
+  expect_message(
+    expect_message(
+      result <- download_data_osap(),
+      "download quota of the file is exceeded"
+    ),
+    "Returning an empty data set due to download failure."
+  )
+  expect_equal(result, tibble())
+})
+
+test_that("rejects other HTML pages instead of parsing them", {
+  httr2::local_mocked_responses(function(req) {
+    httr2::response(
+      status_code = 200,
+      headers = list("Content-Type" = "text/html"),
+      body = charToRaw("<html><body>Sign in</body></html>")
+    )
+  })
+
+  expect_message(
+    expect_message(
+      result <- download_data_osap(),
+      "HTML page instead of a CSV"
+    ),
+    "Returning an empty data set due to download failure."
+  )
+  expect_equal(ncol(result), 0)
 })
 
 test_that("converts names to snake case", {
