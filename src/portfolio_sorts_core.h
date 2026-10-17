@@ -96,7 +96,12 @@ inline double quantile7(const std::vector<double>& sorted, double p) {
   const double x_hi = sorted[(R_xlen_t)hi - 1];
   if (index > lo && x_hi != qs) {
     const double h = index - lo;
-    qs = (1 - h) * qs + h * x_hi;
+    // Split through volatiles for the same reason as in weighted_mean():
+    // stats::quantile() computes (1 - h) * lo + h * hi as separate R
+    // operations, so neither product may be fused into the addition.
+    const volatile double lo_part = (1 - h) * qs;
+    const volatile double hi_part = h * x_hi;
+    qs = lo_part + hi_part;
   }
   return qs;
 }
@@ -154,7 +159,17 @@ inline double weighted_mean(const double* x, const double* w,
   for (R_xlen_t k = 0; k < n; ++k) {
     const R_xlen_t i = rows[k];
     if (w[i] != 0) {
-      const double xw = x[i] * w[i];
+      // `volatile` is load-bearing, not decoration. R evaluates sum(x * w)
+      // by building a double vector first, so every product is rounded to
+      // double before it is accumulated. A plain local does not guarantee
+      // that: compilers default to -ffp-contract=fast, which may fuse the
+      // multiply and the add into a single FMA across the assignment,
+      // skipping the rounding. Reading through a volatile forces the store.
+      // This only bites where LDOUBLE is double, since a double multiply
+      // feeding a long double add is not a fusable pattern - which is why
+      // x86-64 was unaffected and arm64, where long double IS double, drifted
+      // in the last bits.
+      const volatile double xw = x[i] * w[i];
       num += xw;
     }
     den += w[i];
