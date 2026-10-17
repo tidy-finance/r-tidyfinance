@@ -16,3 +16,6 @@ docs
 src/*.o
 src/*.so
 src/*.dll
+src/*.gcda
+src/*.gcno
+src/*.gcov

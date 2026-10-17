@@ -858,3 +858,147 @@ test_that("an NA date or weight is skipped as the baseline skips it", {
   expect_identical(out$ret_excess_ew, mean(c(1, 3)))
   expect_identical(out$n, 2L)
 })
+
+# Smooth bunching, with breakpoints that actually bunch --------------------
+
+# smooth_bunching only does anything when an edge quantile coincides with its
+# neighbour, i.e. when the sorting variable has a mass point at the bottom or
+# the top. A continuous fixture never triggers it, so the whole recomputation
+# branch goes unexercised. These fixtures put a mass point where it matters.
+bunched_data <- function(edge, n_stocks = 60L, n_months = 8L, seed = 3L) {
+  set.seed(seed)
+  dates <- seq.Date(as.Date("2020-01-01"), by = "month",
+                    length.out = n_months)
+  df <- expand.grid(permno = seq_len(n_stocks), date = dates)
+  n <- nrow(df)
+  df$ret_excess <- rnorm(n)
+  df$mktcap_lag <- runif(n, 100, 1000)
+  df$exchange <- "NYSE"
+  # a third of the cross-section sits exactly on the floor, a third exactly on
+  # the ceiling, so the 0th and 1st, or the last two, quantiles coincide
+  value <- runif(n, 2, 9)
+  low <- df$permno <= n_stocks %/% 3L
+  high <- df$permno > n_stocks - n_stocks %/% 3L
+  if (edge %in% c("lower", "both")) value[low] <- 1
+  if (edge %in% c("upper", "both")) value[high] <- 10
+  df$size <- value
+  df
+}
+
+test_that("an edge mass point really does bunch the breakpoints", {
+  # guard the fixture itself: if these are not equal, the tests below are
+  # exercising the ordinary path and prove nothing about smooth bunching
+  for (edge in c("lower", "upper", "both")) {
+    d <- bunched_data(edge)
+    first_date <- d[d$date == min(d$date), ]
+    bp <- stats::quantile(
+      first_date$size, probs = seq(0, 1, length.out = 6L), type = 7
+    )
+    if (edge %in% c("lower", "both")) {
+      expect_identical(unname(bp[1L]), unname(bp[2L]))
+    }
+    if (edge %in% c("upper", "both")) {
+      expect_identical(unname(bp[5L]), unname(bp[6L]))
+    }
+  }
+})
+
+test_that("the engines agree when the breakpoints bunch", {
+  for (edge in c("lower", "upper", "both")) {
+    expect_engines_identical(
+      data = bunched_data(edge),
+      sorting_variables = "size",
+      sorting_method = "univariate",
+      breakpoint_options_main = breakpoint_options(
+        n_portfolios = 5L, smooth_bunching = TRUE
+      ),
+      quiet = TRUE
+    )
+  }
+})
+
+test_that("the engines agree when bunching meets percentiles", {
+  # the percentile route additionally raises the smooth_percentiles warning
+  expect_engines_identical(
+    data = bunched_data("both"),
+    sorting_variables = "size",
+    sorting_method = "univariate",
+    breakpoint_options_main = breakpoint_options(
+      percentiles = c(0.2, 0.4, 0.6, 0.8), smooth_bunching = TRUE
+    ),
+    quiet = TRUE
+  )
+})
+
+test_that("the engines agree when bunching meets a size threshold", {
+  expect_engines_identical(
+    data = bunched_data("both"),
+    sorting_variables = "size",
+    sorting_method = "univariate",
+    breakpoint_options_main = breakpoint_options(
+      n_portfolios = 5L,
+      smooth_bunching = TRUE,
+      breakpoints_exchanges = "NYSE",
+      breakpoints_min_size_threshold = 0.2
+    ),
+    quiet = TRUE
+  )
+})
+
+test_that("the engines agree when bunching meets a bivariate sort", {
+  expect_engines_identical(
+    data = bunched_data("both"),
+    sorting_variables = c("size", "mktcap_lag"),
+    sorting_method = "bivariate-dependent",
+    breakpoint_options_main = breakpoint_options(
+      n_portfolios = 5L, smooth_bunching = TRUE
+    ),
+    breakpoint_options_secondary = bp_secondary,
+    quiet = TRUE
+  )
+})
+
+# Cell and weight edge cases in the kernels --------------------------------
+
+test_that("a cell below min_size is all NA", {
+  out <- tidyfinance:::aggregate_univariate_cpp11(
+    c(1L, 1L), c(1L, 1L), 1L, 1L, c(0.1, 0.2), c(1, 1), c(1, 1), 5
+  )
+  expect_identical(out$n, 2L)
+  expect_true(is.na(out$ret_excess_ew))
+  expect_true(is.na(out$ret_excess_vw))
+  expect_true(is.na(out$ret_excess_vw_capped))
+})
+
+test_that("cap_weights_cpp11() handles missing weights", {
+  # a missing weight becomes zero, as the baseline zero-fills it
+  out <- tidyfinance:::cap_weights_cpp11(
+    c(1, NA, 3, 4), c(1L, 1L, 1L, 1L), 1L, 0.8
+  )
+  expect_identical(out[[2L]], 0)
+  # When every weight in a group is missing, the cap is NA too, because its
+  # sample holds only the non-missing weights. The missing-weight branch is
+  # checked first though, so each weight still becomes zero rather than NA -
+  # which also means the NA-cap branch in cap_weights() cannot be reached: it
+  # needs a present weight alongside an absent cap, and the cap is absent only
+  # when no weight is present.
+  all_na <- tidyfinance:::cap_weights_cpp11(
+    c(NA_real_, NA_real_), c(1L, 1L), 1L, 0.8
+  )
+  expect_identical(all_na, c(0, 0))
+})
+
+test_that("the engines agree when a breakpoint exchange holds no stock", {
+  # the reference sample is empty on one date, so no breakpoints exist there
+  d <- bunched_data("lower")
+  d$exchange[d$date == min(d$date)] <- "NASDAQ"
+  expect_engines_identical(
+    data = d,
+    sorting_variables = "size",
+    sorting_method = "univariate",
+    breakpoint_options_main = breakpoint_options(
+      n_portfolios = 5L, breakpoints_exchanges = "NYSE"
+    ),
+    quiet = TRUE
+  )
+})
