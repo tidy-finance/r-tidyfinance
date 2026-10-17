@@ -26,11 +26,22 @@ make_engine_data <- function(
 bp_main <- breakpoint_options(n_portfolios = 3L)
 bp_secondary <- breakpoint_options(n_portfolios = 2L)
 
+# The engine is refused outright where R accumulates in double while the
+# kernels would accumulate wider, which is CRAN's noLD flavour. That is a
+# property of the build rather than a defect, so skip there instead of failing.
+skip_without_engine <- function() {
+  testthat::skip_if(
+    !isTRUE(capabilities("long.double")) && long_double_is_wider_cpp11(),
+    "this R accumulates in double while the kernels use long double"
+  )
+}
+
 # Comparing the two engines is only meaningful when the compiled one is
 # actually reached, so assert that before comparing: a gate that silently
 # refused everything would make every expectation below compare the baseline
 # with itself and pass.
 expect_engines_identical <- function(..., accelerated = TRUE) {
+  skip_without_engine()
   args <- list(...)
   options <- args$data_options %||% data_options()
   reason <- cpp11_engine_reject_reason(
@@ -49,9 +60,9 @@ expect_engines_identical <- function(..., accelerated = TRUE) {
     all_dates = unique(args$data[[options$date]])
   )
   if (accelerated) {
-    expect_null(reason)
+    testthat::expect_null(reason)
   } else {
-    expect_type(reason, "character")
+    testthat::expect_type(reason, "character")
   }
   from_r <- suppressWarnings(suppressMessages(
     do.call(compute_portfolio_returns, c(args, list(engine = "r")))
@@ -59,7 +70,7 @@ expect_engines_identical <- function(..., accelerated = TRUE) {
   from_cpp11 <- suppressWarnings(suppressMessages(
     do.call(compute_portfolio_returns, c(args, list(engine = "cpp11")))
   ))
-  expect_identical(from_cpp11, from_r)
+  testthat::expect_identical(from_cpp11, from_r)
 }
 
 # Equivalence --------------------------------------------------------------
@@ -259,6 +270,7 @@ test_that("an integer return column keeps the R path", {
 })
 
 test_that("duplicated column names keep the R path", {
+  skip_without_engine()
   data <- make_engine_data()
   data$extra <- data$size
   colnames(data)[colnames(data) == "extra"] <- "size"
@@ -281,6 +293,7 @@ test_that("duplicated column names keep the R path", {
 })
 
 test_that("a missing date keeps the R path", {
+  skip_without_engine()
   data <- make_engine_data()
   data$date[1L] <- NA
   reason <- cpp11_engine_reject_reason(
@@ -302,6 +315,7 @@ test_that("a missing date keeps the R path", {
 })
 
 test_that("a custom breakpoint function keeps the R path", {
+  skip_without_engine()
   wrapper <- function(...) compute_breakpoints(...)
   reason <- cpp11_engine_reject_reason(
     data = make_engine_data(),
@@ -347,5 +361,233 @@ test_that("engine is validated", {
       breakpoint_options_main = bp_main,
       engine = "rcpp"
     )
+  )
+})
+
+# Every reject branch ------------------------------------------------------
+
+# The gate names a reason for each kind of input it will not accelerate. These
+# cover the branches the equivalence tests above do not reach, which is most of
+# them: a reject is only observable through the reason string.
+test_that("the gate names a reason for every input it refuses", {
+  skip_without_engine()
+
+  base <- list(
+    data = make_engine_data(),
+    sorting_variables = "size",
+    sorting_method = "univariate",
+    rebalancing_month = NULL,
+    breakpoint_options_main = bp_main,
+    breakpoint_options_secondary = NULL,
+    breakpoint_function_main = compute_breakpoints,
+    breakpoint_function_secondary = compute_breakpoints,
+    min_portfolio_size = 1L,
+    cap_weight = 0.8,
+    data_options = data_options(),
+    quiet = TRUE,
+    all_dates = unique(make_engine_data()$date)
+  )
+  # Plain assignment, not utils::modifyList(): a data frame is a list, so
+  # modifyList() merges `data` column by column instead of replacing it, which
+  # silently keeps columns a fixture was built to remove.
+  reason_for <- function(changes) {
+    args <- base
+    for (name in names(changes)) {
+      args[[name]] <- changes[[name]]
+    }
+    do.call(cpp11_engine_reject_reason, args)
+  }
+  # the unmodified call must be accepted, or nothing below means anything
+  expect_null(reason_for(list()))
+
+  tamper <- function(options, field, value) {
+    options[[field]] <- value
+    options
+  }
+  no_exchange <- make_engine_data()
+  no_exchange$exchange <- NULL
+  no_mktcap <- make_engine_data(with_mktcap = FALSE)
+  dup_names <- make_engine_data()
+  dup_names$dup <- dup_names$size
+  colnames(dup_names)[colnames(dup_names) == "dup"] <- "size"
+  int_ret <- make_engine_data()
+  int_ret$ret_excess <- 1L
+  matrix_col <- make_engine_data()
+  matrix_col$size <- matrix(matrix_col$size, ncol = 1L)
+  chr_date <- make_engine_data()
+  chr_date$date <- as.character(chr_date$date)
+  na_date <- make_engine_data()
+  na_date$date[1L] <- NA
+  no_ret <- make_engine_data()
+  no_ret$ret_excess <- NULL
+  reserved <- make_engine_data(n_months = 30L)
+  reserved$portfolio <- 1L
+
+  cases <- list(
+    list(list(data = 1L), "`data` is not a data frame"),
+    list(
+      list(data_options = list()),
+      "`data_options` is not a `tidyfinance_data_options` object"
+    ),
+    list(list(quiet = "yes"), "`quiet` is not a single logical"),
+    list(list(sorting_method = 1L), "`sorting_method` is not a single string"),
+    list(
+      list(sorting_method = "trivariate"),
+      "`sorting_method` is not a supported sorting method"
+    ),
+    list(
+      list(sorting_variables = c("size", "bm")),
+      "`sorting_variables` does not match `sorting_method`"
+    ),
+    list(
+      list(cap_weight = 1.5),
+      "`cap_weight` is not a single finite number in [0, 1]"
+    ),
+    list(
+      list(min_portfolio_size = NA_real_),
+      "`min_portfolio_size` is not a single finite number"
+    ),
+    list(
+      list(rebalancing_month = 13L),
+      "`rebalancing_month` is not a single month between 1 and 12"
+    ),
+    list(list(data = dup_names), "`data` has duplicated column names"),
+    list(list(data = no_ret), "`data` is missing a required column"),
+    list(
+      list(data = int_ret),
+      "a sorting variable, the return, or the weight is not a double"
+    ),
+    list(
+      list(data = matrix_col),
+      "a column the kernels read is a matrix or an array"
+    ),
+    list(list(data = chr_date), "the date column is not a `Date`"),
+    list(list(data = na_date), "the date column has missing values"),
+    list(
+      list(breakpoint_function_main = function(...) NULL),
+      "`breakpoint_function_main` is not `compute_breakpoints()`"
+    ),
+    list(
+      list(breakpoint_options_main = list(n_portfolios = 3L)),
+      paste(
+        "`breakpoint_options_main` is not a",
+        "`tidyfinance_breakpoint_options` object"
+      )
+    ),
+    list(
+      list(breakpoint_options_main = tamper(bp_main, "n_portfolios", NULL)),
+      paste(
+        "`breakpoint_options_main` does not set exactly one of",
+        "`n_portfolios` and `percentiles`"
+      )
+    ),
+    list(
+      list(breakpoint_options_main = tamper(bp_main, "n_portfolios", 1L)),
+      "`breakpoint_options_main` has an unsupported `n_portfolios`"
+    ),
+    list(
+      list(breakpoint_options_main = tamper(
+        tamper(bp_main, "n_portfolios", NULL), "percentiles", c(0.5, 1.5)
+      )),
+      "`breakpoint_options_main` has an unsupported `percentiles`"
+    ),
+    list(
+      list(breakpoint_options_main = tamper(bp_main, "smooth_bunching", NA)),
+      "`breakpoint_options_main` has a non-logical `smooth_bunching`"
+    ),
+    list(
+      list(breakpoint_options_main = tamper(
+        bp_main, "breakpoints_exchanges", character(0L)
+      )),
+      "`breakpoint_options_main` has an unsupported `breakpoints_exchanges`"
+    ),
+    list(
+      list(
+        data = no_exchange,
+        breakpoint_options_main = breakpoint_options(
+          n_portfolios = 3L, breakpoints_exchanges = "NYSE"
+        )
+      ),
+      "`breakpoint_options_main` needs an exchange column that `data` lacks"
+    ),
+    list(
+      list(breakpoint_options_main = tamper(
+        bp_main, "breakpoints_min_size_threshold", 1.5
+      )),
+      paste(
+        "`breakpoint_options_main` has an unsupported",
+        "`breakpoints_min_size_threshold`"
+      )
+    ),
+    list(
+      list(
+        data = no_mktcap,
+        breakpoint_options_main = breakpoint_options(
+          n_portfolios = 3L, breakpoints_min_size_threshold = 0.2
+        )
+      ),
+      paste(
+        "`breakpoint_options_main` needs a market capitalization column",
+        "that `data` lacks"
+      )
+    ),
+    list(
+      list(data = reserved, rebalancing_month = 7L),
+      "`data` carries a column name the annual join reserves"
+    )
+  )
+
+  for (case in cases) {
+    expect_identical(reason_for(case[[1L]]), case[[2L]])
+  }
+})
+
+test_that("a bivariate sort checks its secondary options too", {
+  skip_without_engine()
+  reason <- cpp11_engine_reject_reason(
+    data = make_engine_data(),
+    sorting_variables = c("size", "bm"),
+    sorting_method = "bivariate-dependent",
+    rebalancing_month = NULL,
+    breakpoint_options_main = bp_main,
+    breakpoint_options_secondary = list(n_portfolios = 2L),
+    breakpoint_function_main = compute_breakpoints,
+    breakpoint_function_secondary = compute_breakpoints,
+    min_portfolio_size = 1L,
+    cap_weight = 0.8,
+    data_options = data_options(),
+    quiet = TRUE,
+    all_dates = unique(make_engine_data()$date)
+  )
+  expect_identical(
+    reason,
+    paste(
+      "`breakpoint_options_secondary` is not a",
+      "`tidyfinance_breakpoint_options` object"
+    )
+  )
+})
+
+test_that("an oversized portfolio-date grid keeps the R path", {
+  skip_without_engine()
+  data <- make_engine_data()
+  reason <- cpp11_engine_reject_reason(
+    data = data,
+    sorting_variables = "size",
+    sorting_method = "univariate",
+    rebalancing_month = NULL,
+    breakpoint_options_main = breakpoint_options(n_portfolios = 6e6),
+    breakpoint_options_secondary = NULL,
+    breakpoint_function_main = compute_breakpoints,
+    breakpoint_function_secondary = compute_breakpoints,
+    min_portfolio_size = 1L,
+    cap_weight = 0.8,
+    data_options = data_options(),
+    quiet = TRUE,
+    all_dates = unique(data$date)
+  )
+  expect_identical(
+    reason,
+    "the portfolio-date grid is too large for the compiled engine"
   )
 })

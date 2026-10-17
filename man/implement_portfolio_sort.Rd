@@ -111,10 +111,13 @@ the default engine's \code{dplyr} wrapper.
 
 The engine is used only for calls it is known to reproduce; any other call
 runs the default engine instead, with a message naming the reason unless
-\code{quiet} is \code{TRUE}. It is refused on an R built without long double,
-because the kernels rely on long double accumulation to match R's
-\code{sum()}, \code{mean()}, and \code{weighted.mean()}; that refusal is reachable but
-untested here, since no such build was available.}
+\code{quiet} is \code{TRUE}. In particular it is refused where R accumulates in
+\code{double} while the kernels would accumulate in a wider \verb{long double},
+since they rely on matching R's \code{sum()}, \code{mean()}, and \code{weighted.mean()}.
+That is an R built \code{--disable-long-double} on a platform whose compiler
+has the wider type. It is not the case where both are plain \code{double}, so
+the engine is available on Apple Silicon even though
+\code{capabilities("long.double")} is \code{FALSE} there.}
 }
 \value{
 A data frame of portfolio returns as returned by

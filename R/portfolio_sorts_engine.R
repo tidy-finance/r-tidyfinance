@@ -92,10 +92,20 @@ cpp11_engine_reject_reason <- function(
   # The kernels hard-code `typedef long double LDOUBLE` so that sum(), mean()
   # and weighted.mean() accumulate exactly as in R's summary.c. R does not
   # expose HAVE_LONG_DOUBLE in its installed headers, so the kernels cannot
-  # follow that build flag with an #ifdef; the engine is refused here
-  # instead, which is how bit-identity survives CRAN's noLD flavour.
-  if (!isTRUE(capabilities("long.double"))) {
-    return("this R was built without long double")
+  # follow that build flag with an #ifdef.
+  #
+  # `capabilities("long.double")` reports whether R accumulates in long double;
+  # `long_double_is_wider_cpp11()` reports whether the compiler's long double is
+  # any wider than its double. Only one combination diverges: R accumulating in
+  # double while the kernels accumulate wider, i.e. an R built
+  # --disable-long-double on a platform whose compiler does have a wider type,
+  # which is CRAN's noLD flavour. Where both are plain double - every Apple
+  # Silicon build, where `capabilities("long.double")` is FALSE because long
+  # double is not WIDER than double - the two agree and the engine is safe.
+  if (
+    !isTRUE(capabilities("long.double")) && long_double_is_wider_cpp11()
+  ) {
+    return("this R accumulates in double while the kernels use long double")
   }
 
   if (!is.data.frame(data)) {

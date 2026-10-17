@@ -55,6 +55,22 @@ writable::list cell_list(const writable::integers& n,
 
 }  // namespace
 
+// Whether this build accumulates `long double` more precisely than `double`.
+//
+// The kernels accumulate in `long double` to match R's sum(), mean() and
+// weighted.mean(). R uses `long double` for those only when it was built with
+// HAVE_LONG_DOUBLE, which it does not expose in its installed headers, so the
+// kernels cannot follow that flag with an #ifdef. capabilities("long.double")
+// reports R's side; this reports the kernels' side. The two accumulate at the
+// same width unless R was built to use `double` while the compiler does have a
+// wider `long double`, and only that combination can diverge. On Apple Silicon
+// `long double` is `double` for both, so this is FALSE and the engine is safe
+// there even though capabilities("long.double") is FALSE as well.
+[[cpp11::register]]
+bool long_double_is_wider_cpp11() {
+  return LDBL_MANT_DIG > DBL_MANT_DIG;
+}
+
 [[cpp11::register]]
 cpp11::doubles cap_weights_cpp11(cpp11::doubles w, cpp11::integers group,
                                  int n_groups, double cap_weight) {

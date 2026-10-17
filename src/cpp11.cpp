@@ -6,6 +6,13 @@
 #include <R_ext/Visibility.h>
 
 // portfolio_sorts_cpp11.cpp
+bool long_double_is_wider_cpp11();
+extern "C" SEXP _tidyfinance_long_double_is_wider_cpp11() {
+  BEGIN_CPP11
+    return cpp11::as_sexp(long_double_is_wider_cpp11());
+  END_CPP11
+}
+// portfolio_sorts_cpp11.cpp
 cpp11::doubles cap_weights_cpp11(cpp11::doubles w, cpp11::integers group, int n_groups, double cap_weight);
 extern "C" SEXP _tidyfinance_cap_weights_cpp11(SEXP w, SEXP group, SEXP n_groups, SEXP cap_weight) {
   BEGIN_CPP11
@@ -48,6 +55,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_tidyfinance_assign_portfolios_cpp11",    (DL_FUNC) &_tidyfinance_assign_portfolios_cpp11,    11},
     {"_tidyfinance_cap_weights_cpp11",          (DL_FUNC) &_tidyfinance_cap_weights_cpp11,           4},
     {"_tidyfinance_carry_forward_cpp11",        (DL_FUNC) &_tidyfinance_carry_forward_cpp11,         6},
+    {"_tidyfinance_long_double_is_wider_cpp11", (DL_FUNC) &_tidyfinance_long_double_is_wider_cpp11,  0},
     {NULL, NULL, 0}
 };
 }
