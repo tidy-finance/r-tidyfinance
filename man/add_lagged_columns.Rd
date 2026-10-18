@@ -7,7 +7,7 @@
 add_lagged_columns(
   data,
   cols,
-  lag,
+  lag = NULL,
   max_lag = lag,
   by = NULL,
   drop_na = FALSE,
@@ -22,7 +22,8 @@ add_lagged_columns(
 lagged. Each column produces a new column suffixed with \verb{_lag}.}
 
 \item{lag}{An integer or a \code{lubridate::periods()} object, e.g.,
-\code{months(1)}, specifying the minimum lag (inclusive) to apply.}
+\code{months(1)}, specifying the minimum lag (inclusive) to apply. Required
+unless \code{ff_adjustment = TRUE}.}
 
 \item{max_lag}{An integer or a \code{lubridate::periods()} object specifying
 the maximum lag (inclusive) to apply. Defaults to \code{lag} (exact lag).}
@@ -35,10 +36,14 @@ Defaults to \code{NULL}.}
 columns are excluded before matching, so the lookup skips over missing
 observations. Applied independently per column. Defaults to \code{FALSE}.}
 
-\item{ff_adjustment}{A logical value. If \code{TRUE}, only the last observation
-per year (within each group defined by \code{by}) is retained as a source for
-lagged values, following Fama-French conventions for annual accounting
-data. Defaults to \code{FALSE}.}
+\item{ff_adjustment}{A logical value. If \code{TRUE}, applies the Fama and
+French (1993) timing convention for annual accounting data: the last
+observation per calendar year (within each group defined by \code{by}) is used
+from July of the following year through June of the year after that,
+whatever the month of the fiscal year-end. \code{lag} and \code{max_lag} are
+ignored. Combine with \code{drop_na = TRUE} when \code{data} is a monthly panel in
+which the accounting columns are only filled at fiscal year-ends.
+Defaults to \code{FALSE}.}
 
 \item{data_options}{A list of class \code{tidyfinance_data_options} (created via
 \code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{date} element is

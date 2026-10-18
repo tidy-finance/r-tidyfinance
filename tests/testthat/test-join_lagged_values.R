@@ -25,30 +25,75 @@ test_that("normal join adds lagged columns for matching date windows", {
   expect_equal(result$y[1], 20)
 })
 
-test_that("ff_adjustment removes non-last observations per id-year", {
+test_that("ff_adjustment uses the last observation per id-year", {
   orig <- tibble::tibble(
     id = 1L,
-    date = as.Date(c("2022-08-01", "2023-03-01"))
+    date = as.Date(c("2023-06-01", "2023-07-01", "2024-06-01", "2024-07-01"))
   )
   new <- tibble::tibble(
     id = 1L,
     date = as.Date(c("2022-06-01", "2022-12-01")),
     x = c(5, 10)
   )
-  # ff: Jun-2022 dropped, Dec-2022 kept (last in 2022).
-  # Dec window: [Jan-2023, Mar-2023]
-  #   Aug-2022: no match → NA
-  #   Mar-2023: match    → 10
-  result <- join_lagged_values(
-    orig,
-    new,
-    id_keys = "id",
-    min_lag = months(1),
-    max_lag = months(3),
-    ff_adjustment = TRUE
+  # Jun-2022 is dropped, Dec-2022 (last in 2022) is used Jul-2023 to Jun-2024.
+  result <- join_lagged_values(orig, new, id_keys = "id", ff_adjustment = TRUE)
+  expect_equal(result$x, c(NA, 10, 10, NA))
+})
+
+test_that("ff_adjustment updates in July for every fiscal year-end", {
+  orig <- tidyr::expand_grid(
+    id = c("dec", "jun"),
+    date = seq(as.Date("2021-01-01"), as.Date("2022-12-01"), by = "month")
   )
-  expect_true(is.na(result$x[1]))
-  expect_equal(result$x[2], 10)
+  new <- tibble::tibble(
+    id = c("dec", "jun"),
+    date = as.Date(c("2020-12-01", "2020-06-01")),
+    x = c(1, 2)
+  )
+  result <- join_lagged_values(orig, new, id_keys = "id", ff_adjustment = TRUE)
+
+  in_window <- result$date >= as.Date("2021-07-01") &
+    result$date <= as.Date("2022-06-01")
+  expect_equal(result$x[in_window & result$id == "dec"], rep(1, 12))
+  expect_equal(result$x[in_window & result$id == "jun"], rep(2, 12))
+  expect_true(all(is.na(result$x[!in_window])))
+})
+
+test_that("ff_adjustment works with end-of-month dates", {
+  orig <- tibble::tibble(
+    id = 1L,
+    date = as.Date(c("2021-06-30", "2021-07-31", "2022-06-30", "2022-07-31"))
+  )
+  new <- tibble::tibble(id = 1L, date = as.Date("2020-09-30"), x = 3)
+  result <- join_lagged_values(orig, new, id_keys = "id", ff_adjustment = TRUE)
+  expect_equal(result$x, c(NA, 3, 3, NA))
+})
+
+test_that("ff_adjustment ignores lags with a message", {
+  orig <- tibble::tibble(id = 1L, date = as.Date("2021-07-01"))
+  new <- tibble::tibble(id = 1L, date = as.Date("2020-12-01"), x = 1)
+  rlang::local_options(rlib_message_verbosity = "verbose")
+  expect_message(
+    result <- join_lagged_values(
+      orig,
+      new,
+      id_keys = "id",
+      min_lag = months(1),
+      max_lag = months(2),
+      ff_adjustment = TRUE
+    ),
+    "ignored"
+  )
+  expect_equal(result$x, 1)
+})
+
+test_that("min_lag and max_lag are required without ff_adjustment", {
+  orig <- tibble::tibble(id = 1L, date = as.Date("2021-07-01"))
+  new <- tibble::tibble(id = 1L, date = as.Date("2020-12-01"), x = 1)
+  expect_error(
+    join_lagged_values(orig, new, id_keys = "id", min_lag = months(1)),
+    "required"
+  )
 })
 
 test_that("non-NULL data_options uses specified date column", {
