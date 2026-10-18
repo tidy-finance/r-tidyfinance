@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,6 +69,8 @@ portfolio return computation into a single call. Equivalent to calling
 <span>  <span class="va">sorting_variables</span>,</span>
 <span>  <span class="va">sorting_method</span>,</span>
 <span>  rebalancing_month <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  holding_period <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  skip <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  <span class="va">portfolio_sort_options</span>,</span>
 <span>  breakpoint_function_main <span class="op">=</span> <span class="va">compute_breakpoints</span>,</span>
 <span>  breakpoint_function_secondary <span class="op">=</span> <span class="va">compute_breakpoints</span>,</span>
@@ -103,6 +105,16 @@ sort portfolios on.</p></dd>
 portfolios are rebalanced annually. <code>NULL</code> (the default) means monthly
 rebalancing. Also determines the formation month in which the screens of
 <code>filter_options</code> are applied.</p></dd>
+
+
+<dt id="arg-holding-period-skip">holding_period, skip<a class="anchor" aria-label="anchor" href="#arg-holding-period-skip"></a></dt>
+<dd><p>Staggered rebalancing: portfolios are formed
+every period and each cohort is held for <code>holding_period</code> periods,
+starting <code>skip</code> periods after formation. See
+<code><a href="compute_portfolio_returns.html">compute_portfolio_returns()</a></code>. With the default
+<code>filter_options(timing = "formation")</code>, the screens only decide which
+stocks enter the cohort formed in a period; a stock that fails a screen
+later stays in its earlier cohorts until their holding period ends.</p></dd>
 
 
 <dt id="arg-portfolio-sort-options">portfolio_sort_options<a class="anchor" aria-label="anchor" href="#arg-portfolio-sort-options"></a></dt>

@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +78,8 @@ sorting methods.</p>
 <span>  <span class="va">sorting_variables</span>,</span>
 <span>  <span class="va">sorting_method</span>,</span>
 <span>  rebalancing_month <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  holding_period <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  skip <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  <span class="va">breakpoint_options_main</span>,</span>
 <span>  breakpoint_options_secondary <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  breakpoint_function_main <span class="op">=</span> <span class="va">compute_breakpoints</span>,</span>
@@ -128,6 +130,31 @@ in which to form portfolios that are held constant for one year. For
 example, setting it to <code>7</code> creates portfolios in July that are held
 constant until June of the following year. The default <code>NULL</code> corresponds
 to periodic rebalancing.</p></dd>
+
+
+<dt id="arg-holding-period">holding_period<a class="anchor" aria-label="anchor" href="#arg-holding-period"></a></dt>
+<dd><p>A positive integer specifying for how many periods
+portfolios are held. With the default <code>1L</code>, portfolios are rebalanced
+every period. With <code>holding_period = K &gt; 1</code>, portfolios are formed every
+period and each cohort is held for <code>K</code> periods, so that <code>K</code> overlapping
+cohorts are held at any time (staggered rebalancing, as in Jegadeesh and
+Titman, 1993). The return of a portfolio in a period is the
+equal-weighted average of the returns of the cohorts held in that
+period; within a cohort, returns are weighted as in the
+<code>ret_excess_*</code> columns, using the weights of the holding period. A stock
+stays in its cohort for the whole holding period even if its sorting
+variables are missing in a later period. Cannot be combined with
+<code>rebalancing_month</code>.</p></dd>
+
+
+<dt id="arg-skip">skip<a class="anchor" aria-label="anchor" href="#arg-skip"></a></dt>
+<dd><p>A non-negative integer specifying the number of periods
+between portfolio formation and the first holding period. The default
+<code>0L</code> holds a cohort from the period in which it is formed, consistent
+with sorting variables that are already lagged (i.e., known at the start
+of the period). Jegadeesh and Titman (1993), e.g., also report
+strategies that skip one period. Cannot be combined with
+<code>rebalancing_month</code>.</p></dd>
 
 
 <dt id="arg-breakpoint-options-main">breakpoint_options_main<a class="anchor" aria-label="anchor" href="#arg-breakpoint-options-main"></a></dt>
@@ -220,7 +247,12 @@ observations for that portfolio-date.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The function checks for consistency in the provided arguments. For
+    <p>Holding periods and skips are counted on the grid of dates in <code>data</code>,
+which must therefore not have gaps (e.g., one row per stock-month in a
+monthly panel). With staggered rebalancing (<code>holding_period &gt; 1</code> or
+<code>skip &gt; 0</code>), the returned panel starts on the first date on which all
+<code>holding_period</code> cohorts are held.</p>
+<p>The function checks for consistency in the provided arguments. For
 univariate sorts, a single sorting variable and a corresponding number of
 portfolios must be provided. For bivariate sorts, two sorting variables and
 two corresponding numbers of portfolios (or percentiles) are required. The
@@ -237,7 +269,10 @@ columns are missing.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Jensen, T. I., Kelly, B., &amp; Pedersen, L. H. (2023). Is there a
+    <p>Jegadeesh, N., &amp; Titman, S. (1993). Returns to buying winners and selling
+losers: Implications for stock market efficiency. <em>Journal of Finance</em>,
+48(1), 65-91. <a href="https://doi.org/10.1111/j.1540-6261.1993.tb04702.x" class="external-link">doi:10.1111/j.1540-6261.1993.tb04702.x</a></p>
+<p>Jensen, T. I., Kelly, B., &amp; Pedersen, L. H. (2023). Is there a
 replication crisis in finance? <em>Journal of Finance</em>, 78(5), 2465-2518.
 <a href="https://doi.org/10.1111/jofi.13249" class="external-link">doi:10.1111/jofi.13249</a></p>
     </div>

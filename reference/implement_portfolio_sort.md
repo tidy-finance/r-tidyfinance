@@ -14,6 +14,8 @@ implement_portfolio_sort(
   sorting_variables,
   sorting_method,
   rebalancing_month = NULL,
+  holding_period = 1L,
+  skip = 0L,
   portfolio_sort_options,
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
@@ -46,6 +48,17 @@ implement_portfolio_sort(
   rebalanced annually. `NULL` (the default) means monthly rebalancing.
   Also determines the formation month in which the screens of
   `filter_options` are applied.
+
+- holding_period, skip:
+
+  Staggered rebalancing: portfolios are formed every period and each
+  cohort is held for `holding_period` periods, starting `skip` periods
+  after formation. See
+  [`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md).
+  With the default `filter_options(timing = "formation")`, the screens
+  only decide which stocks enter the cohort formed in a period; a stock
+  that fails a screen later stays in its earlier cohorts until their
+  holding period ends.
 
 - portfolio_sort_options:
 

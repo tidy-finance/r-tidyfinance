@@ -100,6 +100,21 @@
 
 ### New features
 
+- [`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md)
+  and
+  [`implement_portfolio_sort()`](https://r.tidy-finance.org/reference/implement_portfolio_sort.md)
+  gain `holding_period` and `skip` for staggered rebalancing
+  ([\#324](https://github.com/tidy-finance/r-tidyfinance/issues/324)):
+  portfolios are formed every period, each cohort is held for
+  `holding_period` periods starting `skip` periods after formation, and
+  a portfolio’s return is the equal-weighted average of the overlapping
+  cohorts held in a period, as in Jegadeesh and Titman (1993). Held
+  stocks stay in their cohort for the whole holding period, and in
+  [`implement_portfolio_sort()`](https://r.tidy-finance.org/reference/implement_portfolio_sort.md)
+  the screens of
+  [`filter_options()`](https://r.tidy-finance.org/reference/filter_options.md)
+  only decide which stocks enter a new cohort. The vignette shows a
+  six-month momentum strategy.
 - WRDS downloads report their progress
   ([\#326](https://github.com/tidy-finance/r-tidyfinance/issues/326)).
   [`get_wrds_connection()`](https://r.tidy-finance.org/reference/get_wrds_connection.md)

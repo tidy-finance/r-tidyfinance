@@ -467,6 +467,54 @@ arguments. The lower-level building blocks
 [`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md))
 remain available when you need finer control over one stage.
 
+Some factors are built with *staggered* rebalancing instead: portfolios
+are formed every month and each cohort is held for several months, so
+that several overlapping cohorts are held at any time. Jegadeesh and
+Titman (1993) build momentum this way. Their six-month strategy sorts
+stocks on the past six-month return and holds each cohort for six
+months; `holding_period = 6` averages the six cohorts held in each
+month, and `skip` delays the first holding month.
+
+``` r
+
+momentum_data <- crsp_monthly |>
+  arrange(permno, date) |>
+  group_by(permno) |>
+  mutate(
+    momentum = slider::slide_index_dbl(
+      ret,
+      date,
+      \(x) if (length(x) == 6) prod(1 + x) - 1 else NA_real_,
+      .before = months(5)
+    )
+  ) |>
+  ungroup() |>
+  add_lagged_columns(cols = "momentum", lag = months(1), by = "permno")
+
+momentum_returns <- implement_portfolio_sort(
+  data = momentum_data,
+  sorting_variables = "momentum_lag",
+  sorting_method = "univariate",
+  holding_period = 6,
+  portfolio_sort_options = portfolio_sort_options(
+    breakpoint_options_main = breakpoint_options(n_portfolios = 10)
+  ),
+  quiet = TRUE
+) |>
+  compute_long_short_returns(direction = "top_minus_bottom")
+```
+
+Both steps work on calendar months rather than rows, so gaps in a
+stock’s history cannot shift the signal: the six-month window is indexed
+by `date` and requires six monthly returns, and
+[`add_lagged_columns()`](https://r.tidy-finance.org/reference/add_lagged_columns.md)
+attaches the value of exactly one month earlier by shifting dates and
+joining, so a stock without a return in the previous month gets `NA`
+instead of an older value. The signal of month $`t`$ therefore uses
+returns up to month $`t-1`$ only, and each cohort is formed with
+information available at the start of the month in which it is first
+held.
+
 ## Step 6: Run an asset-pricing test
 
 A long-short return is one verdict on whether a signal predicts the
@@ -561,6 +609,10 @@ the Returns on Stocks and Bonds.” *Journal of Financial Economics* 33
 Fama, Eugene F., and James D. MacBeth. 1973. “Risk, Return, and
 Equilibrium: Empirical Tests.” *Journal of Political Economy* 81 (3):
 607–636.
+
+Jegadeesh, Narasimhan, and Sheridan Titman. 1993. “Returns to Buying
+Winners and Selling Losers: Implications for Stock Market Efficiency.”
+*The Journal of Finance* 48 (1): 65–91.
 
 Jensen, Theis Ingerslev, Bryan Kelly, and Lasse Heje Pedersen. 2023. “Is
 There a Replication Crisis in Finance?” *The Journal of Finance* 78 (5):

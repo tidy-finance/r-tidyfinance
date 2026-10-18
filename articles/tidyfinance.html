@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -553,6 +553,52 @@ arguments. The lower-level building blocks
 (<code><a href="../reference/compute_breakpoints.html">compute_breakpoints()</a></code>, <code><a href="../reference/assign_portfolio.html">assign_portfolio()</a></code>,
 <code><a href="../reference/compute_portfolio_returns.html">compute_portfolio_returns()</a></code>) remain available when you need
 finer control over one stage.</p>
+<p>Some factors are built with <em>staggered</em> rebalancing instead:
+portfolios are formed every month and each cohort is held for several
+months, so that several overlapping cohorts are held at any time.
+Jegadeesh and Titman (1993) build momentum this way. Their six-month
+strategy sorts stocks on the past six-month return and holds each cohort
+for six months; <code>holding_period = 6</code> averages the six cohorts
+held in each month, and <code>skip</code> delays the first holding
+month.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">momentum_data</span> <span class="op">&lt;-</span> <span class="va">crsp_monthly</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">permno</span>, <span class="va">date</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">permno</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    momentum <span class="op">=</span> <span class="fu">slider</span><span class="fu">::</span><span class="fu"><a href="https://slider.r-lib.org/reference/slide_index.html" class="external-link">slide_index_dbl</a></span><span class="op">(</span></span>
+<span>      <span class="va">ret</span>,</span>
+<span>      <span class="va">date</span>,</span>
+<span>      \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">==</span> <span class="fl">6</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/prod.html" class="external-link">prod</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">x</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span> <span class="kw">else</span> <span class="cn">NA_real_</span>,</span>
+<span>      .before <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/weekday.POSIXt.html" class="external-link">months</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/add_lagged_columns.html">add_lagged_columns</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="st">"momentum"</span>, lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/weekday.POSIXt.html" class="external-link">months</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"permno"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">momentum_returns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/implement_portfolio_sort.html">implement_portfolio_sort</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">momentum_data</span>,</span>
+<span>  sorting_variables <span class="op">=</span> <span class="st">"momentum_lag"</span>,</span>
+<span>  sorting_method <span class="op">=</span> <span class="st">"univariate"</span>,</span>
+<span>  holding_period <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  portfolio_sort_options <span class="op">=</span> <span class="fu"><a href="../reference/portfolio_sort_options.html">portfolio_sort_options</a></span><span class="op">(</span></span>
+<span>    breakpoint_options_main <span class="op">=</span> <span class="fu"><a href="../reference/breakpoint_options.html">breakpoint_options</a></span><span class="op">(</span>n_portfolios <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/compute_long_short_returns.html">compute_long_short_returns</a></span><span class="op">(</span>direction <span class="op">=</span> <span class="st">"top_minus_bottom"</span><span class="op">)</span></span></code></pre></div>
+<p>Both steps work on calendar months rather than rows, so gaps in a
+stock’s history cannot shift the signal: the six-month window is indexed
+by <code>date</code> and requires six monthly returns, and
+<code><a href="../reference/add_lagged_columns.html">add_lagged_columns()</a></code> attaches the value of exactly one
+month earlier by shifting dates and joining, so a stock without a return
+in the previous month gets <code>NA</code> instead of an older value.
+The signal of month
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+therefore uses returns up to month
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t-1</annotation></semantics></math>
+only, and each cohort is formed with information available at the start
+of the month in which it is first held.</p>
 </div>
 <div class="section level2">
 <h2 id="step-6-run-an-asset-pricing-test">Step 6: Run an asset-pricing test<a class="anchor" aria-label="anchor" href="#step-6-run-an-asset-pricing-test"></a>
@@ -566,7 +612,7 @@ risk premium with Newey-West standard errors (Newey and West 1987).
 formula.</p>
 <p>The signal is already winsorized from Step 2, so we only add log
 market capitalization as a size control.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fm_data</span> <span class="op">&lt;-</span> <span class="va">sorting_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="va">asset_growth</span>, <span class="va">mktcap_lag</span>, <span class="va">ret_excess</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>log_mktcap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">mktcap_lag</span><span class="op">)</span><span class="op">)</span></span>
@@ -666,6 +712,9 @@ Economics</em> 33 (1): 3–56.</p>
 <p>Fama, Eugene F., and James D. MacBeth. 1973. “Risk, Return, and
 Equilibrium: Empirical Tests.” <em>Journal of Political Economy</em> 81
 (3): 607–636.</p>
+<p>Jegadeesh, Narasimhan, and Sheridan Titman. 1993. “Returns to Buying
+Winners and Selling Losers: Implications for Stock Market Efficiency.”
+<em>The Journal of Finance</em> 48 (1): 65–91.</p>
 <p>Jensen, Theis Ingerslev, Bryan Kelly, and Lasse Heje Pedersen. 2023.
 “Is There a Replication Crisis in Finance?” <em>The Journal of
 Finance</em> 78 (5): 2465–2518.</p>

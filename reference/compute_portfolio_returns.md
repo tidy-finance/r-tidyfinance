@@ -15,6 +15,8 @@ compute_portfolio_returns(
   sorting_variables,
   sorting_method,
   rebalancing_month = NULL,
+  holding_period = 1L,
+  skip = 0L,
   breakpoint_options_main,
   breakpoint_options_secondary = NULL,
   breakpoint_function_main = compute_breakpoints,
@@ -70,6 +72,30 @@ compute_portfolio_returns(
   it to `7` creates portfolios in July that are held constant until June
   of the following year. The default `NULL` corresponds to periodic
   rebalancing.
+
+- holding_period:
+
+  A positive integer specifying for how many periods portfolios are
+  held. With the default `1L`, portfolios are rebalanced every period.
+  With `holding_period = K > 1`, portfolios are formed every period and
+  each cohort is held for `K` periods, so that `K` overlapping cohorts
+  are held at any time (staggered rebalancing, as in Jegadeesh and
+  Titman, 1993). The return of a portfolio in a period is the
+  equal-weighted average of the returns of the cohorts held in that
+  period; within a cohort, returns are weighted as in the `ret_excess_*`
+  columns, using the weights of the holding period. A stock stays in its
+  cohort for the whole holding period even if its sorting variables are
+  missing in a later period. Cannot be combined with
+  `rebalancing_month`.
+
+- skip:
+
+  A non-negative integer specifying the number of periods between
+  portfolio formation and the first holding period. The default `0L`
+  holds a cohort from the period in which it is formed, consistent with
+  sorting variables that are already lagged (i.e., known at the start of
+  the period). Jegadeesh and Titman (1993), e.g., also report strategies
+  that skip one period. Cannot be combined with `rebalancing_month`.
 
 - breakpoint_options_main:
 
@@ -175,6 +201,12 @@ portfolio-date combinations), containing the following columns:
 
 ## Details
 
+Holding periods and skips are counted on the grid of dates in `data`,
+which must therefore not have gaps (e.g., one row per stock-month in a
+monthly panel). With staggered rebalancing (`holding_period > 1` or
+`skip > 0`), the returned panel starts on the first date on which all
+`holding_period` cohorts are held.
+
 The function checks for consistency in the provided arguments. For
 univariate sorts, a single sorting variable and a corresponding number
 of portfolios must be provided. For bivariate sorts, two sorting
@@ -192,6 +224,11 @@ variables and excess returns (see options and defaults set in
 required columns are missing.
 
 ## References
+
+Jegadeesh, N., & Titman, S. (1993). Returns to buying winners and
+selling losers: Implications for stock market efficiency. *Journal of
+Finance*, 48(1), 65-91.
+[doi:10.1111/j.1540-6261.1993.tb04702.x](https://doi.org/10.1111/j.1540-6261.1993.tb04702.x)
 
 Jensen, T. I., Kelly, B., & Pedersen, L. H. (2023). Is there a
 replication crisis in finance? *Journal of Finance*, 78(5), 2465-2518.
