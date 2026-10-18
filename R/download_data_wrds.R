@@ -18,7 +18,8 @@
 #'   provided, a subset of the dataset is returned.
 #' @param type `r lifecycle::badge("deprecated")` Use `dataset` instead.
 #' @param ... Additional arguments passed to specific download functions
-#'   depending on the `dataset`.
+#'   depending on the `dataset`. For instance, `quiet = TRUE` suppresses the
+#'   messages about the WRDS connection and the download progress.
 #'
 #' @returns A data frame containing the requested data, with the structure
 #'   and contents depending on the specified `dataset`.

@@ -49,7 +49,7 @@ test_that("downloads filtered FISD data for USA issuers", {
   )
 
   testthat::local_mocked_bindings(
-    get_wrds_connection = function() con,
+    get_wrds_connection = function(...) con,
     tbl = function(src, from, ...) {
       expect_identical(src, con)
       switch(
@@ -138,7 +138,7 @@ test_that("returns requested additional columns", {
   )
 
   testthat::local_mocked_bindings(
-    get_wrds_connection = function() con,
+    get_wrds_connection = function(...) con,
     tbl = function(src, from, ...) {
       switch(
         as.character(from),

@@ -11,7 +11,8 @@ download_data_wrds_compustat(
   type = deprecated(),
   additional_columns = NULL,
   only_usd = FALSE,
-  only_us = deprecated()
+  only_us = deprecated(),
+  quiet = FALSE
 )
 }
 \arguments{
@@ -35,6 +36,9 @@ character vector.}
 should be returned.}
 
 \item{only_us}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{only_usd} instead.}
+
+\item{quiet}{A logical indicating whether to suppress the messages about
+the WRDS connection and the download progress. Defaults to \code{FALSE}.}
 }
 \value{
 A data frame with financial data for the specified period,

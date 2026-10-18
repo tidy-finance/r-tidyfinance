@@ -13,7 +13,8 @@ download_data_wrds_crsp(
   version = "v2",
   additional_columns = NULL,
   add_ccm_links = FALSE,
-  adjust_volume = FALSE
+  adjust_volume = FALSE,
+  quiet = FALSE
 )
 }
 \arguments{
@@ -45,6 +46,9 @@ should be added automatically using \code{\link[=download_data_wrds_ccm_links]{d
 
 \item{adjust_volume}{A logical indicating whether daily CRSP trading
 volume data should be adjusted according to Gao & Ritter (2010).}
+
+\item{quiet}{A logical indicating whether to suppress the messages about
+the WRDS connection and the download progress. Defaults to \code{FALSE}.}
 }
 \value{
 A data frame containing CRSP stock returns, including delisting

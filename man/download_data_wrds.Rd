@@ -30,7 +30,8 @@ provided, a subset of the dataset is returned.}
 \item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
 
 \item{...}{Additional arguments passed to specific download functions
-depending on the \code{dataset}.}
+depending on the \code{dataset}. For instance, \code{quiet = TRUE} suppresses the
+messages about the WRDS connection and the download progress.}
 }
 \value{
 A data frame containing the requested data, with the structure

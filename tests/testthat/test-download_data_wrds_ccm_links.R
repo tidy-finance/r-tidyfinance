@@ -12,7 +12,7 @@ test_that("downloads default CCM links and replaces missing end dates", {
   )
 
   testthat::local_mocked_bindings(
-    get_wrds_connection = function() con,
+    get_wrds_connection = function(...) con,
     tbl = function(src, from, ...) {
       expect_identical(src, con)
       expect_identical(as.character(from), "crsp.ccmxpf_lnkhist")
@@ -47,7 +47,7 @@ test_that("passes custom link filters to the CCM query", {
   )
 
   testthat::local_mocked_bindings(
-    get_wrds_connection = function() con,
+    get_wrds_connection = function(...) con,
     tbl = function(src, from, ...) links,
     disconnect_connection = function(src) NULL
   )
@@ -60,4 +60,29 @@ test_that("passes custom link filters to the CCM query", {
   expect_equal(nrow(result), 1)
   expect_equal(result$permno, 3)
   expect_equal(result$gvkey, "003")
+})
+
+test_that("CCM links report progress unless quiet", {
+  links <- tibble::tibble(
+    lpermno = 1,
+    gvkey = "001",
+    linkdt = as.Date("2020-01-01"),
+    linkenddt = as.Date("2021-01-01"),
+    linktype = "LU",
+    linkprim = "P"
+  )
+  quiet_args <- logical()
+  testthat::local_mocked_bindings(
+    get_wrds_connection = function(quiet = FALSE) {
+      quiet_args <<- c(quiet_args, quiet)
+      "con"
+    },
+    tbl = function(src, from, ...) links,
+    disconnect_connection = function(src) invisible(TRUE)
+  )
+  rlang::local_options(cli.dynamic = FALSE)
+
+  expect_message(download_data_wrds_ccm_links(), "Downloading CRSP-Compustat")
+  expect_no_message(download_data_wrds_ccm_links(quiet = TRUE))
+  expect_equal(quiet_args, c(FALSE, TRUE))
 })

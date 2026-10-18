@@ -43,7 +43,9 @@
 #'   see `download_data_huggingface()` for details. If `domain` is
 #'   `"Damodaran"`, arguments such as `region` and `year` are passed to
 #'   `download_data_damodaran()`, which selects years via `year` instead of
-#'   `start_date` and `end_date`.
+#'   `start_date` and `end_date`. If `domain` is `"WRDS"` or `"Pseudo Data"`,
+#'   `quiet = TRUE` suppresses the messages about the WRDS connection and
+#'   the download progress, or the pseudo-data notice.
 #'
 #' @returns A tibble with processed data, including dates and the relevant
 #'   financial metrics, filtered by the specified date range.

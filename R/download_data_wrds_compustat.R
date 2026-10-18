@@ -22,6 +22,8 @@
 #' @param only_usd A logical indicating whether only USD-denominated shares
 #'   should be returned.
 #' @param only_us `r lifecycle::badge("deprecated")` Use `only_usd` instead.
+#' @param quiet A logical indicating whether to suppress the messages about
+#'   the WRDS connection and the download progress. Defaults to `FALSE`.
 #' @returns A data frame with financial data for the specified period,
 #'   including variables for book equity (be), operating profitability (op),
 #'   investment (inv), and others.
@@ -60,7 +62,8 @@ download_data_wrds_compustat <- function(
   type = deprecated(),
   additional_columns = NULL,
   only_usd = FALSE,
-  only_us = deprecated()
+  only_us = deprecated(),
+  quiet = FALSE
 ) {
   # Handle explicit type argument
   if (lifecycle::is_present(type)) {
@@ -101,7 +104,11 @@ download_data_wrds_compustat <- function(
   start_date <- dates$start_date
   end_date <- dates$end_date
 
-  con <- get_wrds_connection()
+  con <- get_wrds_connection(quiet = quiet)
+  wrds_download_step(
+    sub("compustat_", "Compustat ", dataset, fixed = TRUE) |> paste("data"),
+    quiet
+  )
 
   if (dataset == "compustat_annual") {
     funda_db <- tbl(con, I("comp.funda"))

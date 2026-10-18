@@ -4,11 +4,14 @@
 \alias{download_data_wrds_fisd}
 \title{Download Filtered FISD Data from WRDS}
 \usage{
-download_data_wrds_fisd(additional_columns = NULL)
+download_data_wrds_fisd(additional_columns = NULL, quiet = FALSE)
 }
 \arguments{
 \item{additional_columns}{Additional columns from the FISD table
 as a character vector.}
+
+\item{quiet}{A logical indicating whether to suppress the messages about
+the WRDS connection and the download progress. Defaults to \code{FALSE}.}
 }
 \value{
 A data frame containing a subset of FISD data with fields related

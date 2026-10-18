@@ -4,7 +4,11 @@
 \alias{get_wrds_connection}
 \title{Establish a Connection to the WRDS Database}
 \usage{
-get_wrds_connection()
+get_wrds_connection(quiet = FALSE)
+}
+\arguments{
+\item{quiet}{A logical indicating whether to suppress the messages about
+the WRDS connection and the download progress. Defaults to \code{FALSE}.}
 }
 \value{
 An object of class \code{DBIConnection} representing the connection
@@ -42,7 +46,10 @@ restart R.
 \item When you connect, approve the Duo push notification on your
 registered device. The connection waits until you approve it.
 }
-If the connection fails, the error message lists these steps.
+If the connection fails, the error message lists these steps. Unless
+\code{quiet = TRUE}, the function says when it starts connecting and when the
+connection succeeds, so you know when to approve the Duo request and when
+the download starts.
 }
 
 \examples{

@@ -1,7 +1,7 @@
 # get_wrds_connection explains failed connections
 
     Code
-      get_wrds_connection()
+      get_wrds_connection(quiet = TRUE)
     Condition
       Error in `get_wrds_connection()`:
       ! Could not connect to WRDS.

@@ -4,7 +4,12 @@
 \alias{download_data_wrds_trace_enhanced}
 \title{Download Enhanced TRACE Data from WRDS}
 \usage{
-download_data_wrds_trace_enhanced(cusips, start_date = NULL, end_date = NULL)
+download_data_wrds_trace_enhanced(
+  cusips,
+  start_date = NULL,
+  end_date = NULL,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{cusips}{A character vector specifying the 9-digit CUSIPs to
@@ -17,6 +22,9 @@ provided, a subset of the dataset is returned.}
 \item{end_date}{Optional. A character string or Date object in
 "YYYY-MM-DD" format specifying the end date for the data. If not
 provided, a subset of the dataset is returned.}
+
+\item{quiet}{A logical indicating whether to suppress the messages about
+the WRDS connection and the download progress. Defaults to \code{FALSE}.}
 }
 \value{
 A data frame containing the cleaned trade messages from TRACE

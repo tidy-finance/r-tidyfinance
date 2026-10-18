@@ -10,7 +10,7 @@ test_that("CRSP dataset validation rejects unsupported values", {
 
 test_that("CRSP argument validation covers required inputs", {
   local_mocked_bindings(
-    get_wrds_connection = function() "con"
+    get_wrds_connection = function(...) "con"
   )
 
   expect_error(
@@ -464,7 +464,7 @@ test_that("CCM links are added when requested", {
 
   with_crsp_mocks({
     local_mocked_bindings(
-      download_data_wrds_ccm_links = function() ccm_links,
+      download_data_wrds_ccm_links = function(...) ccm_links,
       .env = environment(download_data_wrds_crsp)
     )
 
@@ -480,4 +480,37 @@ test_that("CCM links are added when requested", {
   expect_true("gvkey" %in% names(out))
   expect_equal(out$gvkey[out$permno == 1 & out$date == "2020-01-01"], "001")
   expect_true(all(is.na(out$gvkey[out$permno != 1])))
+})
+
+test_that("CRSP downloads report progress unless quiet", {
+  rlang::local_options(cli.dynamic = FALSE)
+  with_crsp_mocks({
+    msgs <- testthat::capture_messages(
+      download_data_wrds_crsp(
+        dataset = "crsp_monthly",
+        start_date = "2020-01-01",
+        end_date = "2020-12-31"
+      )
+    )
+    expect_no_message(
+      download_data_wrds_crsp(
+        dataset = "crsp_monthly",
+        start_date = "2020-01-01",
+        end_date = "2020-12-31",
+        quiet = TRUE
+      )
+    )
+    expect_no_message(
+      download_data_wrds_crsp(
+        dataset = "crsp_daily",
+        start_date = "2020-01-01",
+        end_date = "2020-01-31",
+        quiet = TRUE
+      )
+    )
+  })
+  msgs <- cli::ansi_strip(paste(msgs, collapse = ""))
+  expect_match(msgs, "Connected to WRDS")
+  expect_match(msgs, "Downloading CRSP monthly data from WRDS")
+  expect_match(msgs, "Downloaded CRSP monthly data from WRDS")
 })
