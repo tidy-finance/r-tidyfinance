@@ -55,7 +55,9 @@ premia and slopes, but the levels too (the uniformly positive "excess" returns
 reflect a built-in drift in the generator, not a market risk premium). Treat the
 code as the lesson and the numbers as placeholders; to reproduce the published
 premium, swap `"Pseudo Data"` for `"WRDS"` (after a one-time
-`set_wrds_credentials()`) and rerun.
+`set_wrds_credentials()`) and rerun. Besides the credentials, WRDS requires
+two-factor authentication (Duo) and acceptance of its terms of use; see the
+"WRDS account setup" section of `?get_wrds_connection`.
 
 ```{r}
 #| label: load-packages

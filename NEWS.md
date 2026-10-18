@@ -2,6 +2,10 @@
 
 ## Bug fixes
 
+- `get_wrds_connection()`, and thus every WRDS download, now explains a failed
+  connection: it lists the likely causes (wrong credentials, missing
+  two-factor authentication, terms of use not accepted) and keeps the
+  original error as the cause (#325).
 - `estimate_fama_macbeth()` with `vcov = "iid"` no longer multiplies the
   t-statistic by the square root of the number of periods a second time. The
   standard error of the mean already accounts for it, so the t-statistics were
@@ -16,6 +20,10 @@
 
 ## New features
 
+- The help pages of `get_wrds_connection()` and `set_wrds_credentials()`, the
+  README, and the vignette document what a WRDS account needs before the first
+  connection: two-factor authentication (Duo) and acceptance of the WRDS terms
+  of use (#325).
 - Added `download_data_damodaran()` and the `"Damodaran"` domain for
   `download_data()`, which download the cost of capital (WACC) by industry
   from Aswath Damodaran's data library, e.g.
