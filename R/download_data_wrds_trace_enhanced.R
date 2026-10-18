@@ -14,6 +14,9 @@
 #'   "YYYY-MM-DD" format specifying the end date for the data. If not
 #'   provided, a subset of the dataset is returned.
 #'
+#' @param quiet A logical indicating whether to suppress the messages about
+#'   the WRDS connection and the download progress. Defaults to `FALSE`.
+#'
 #' @returns A data frame containing the cleaned trade messages from TRACE
 #'   for the selected CUSIPs over the time window specified. Output
 #'   variables include identifying information (i.e., CUSIP, trade
@@ -38,7 +41,8 @@
 download_data_wrds_trace_enhanced <- function(
   cusips,
   start_date = NULL,
-  end_date = NULL
+  end_date = NULL,
+  quiet = FALSE
 ) {
   if (!is.character(cusips) || anyNA(cusips) || !all(nchar(cusips) == 9)) {
     cli::cli_abort(
@@ -53,7 +57,8 @@ download_data_wrds_trace_enhanced <- function(
   start_date <- dates$start_date
   end_date <- dates$end_date
 
-  con <- get_wrds_connection()
+  con <- get_wrds_connection(quiet = quiet)
+  wrds_download_step("enhanced TRACE data", quiet)
 
   trace_enhanced_db <- tbl(con, I("trace.trace_enhanced"))
 

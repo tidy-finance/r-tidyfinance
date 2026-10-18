@@ -4,7 +4,11 @@
 \alias{download_data_wrds_ccm_links}
 \title{Download CCM Links from WRDS}
 \usage{
-download_data_wrds_ccm_links(linktype = c("LU", "LC"), linkprim = c("P", "C"))
+download_data_wrds_ccm_links(
+  linktype = c("LU", "LC"),
+  linkprim = c("P", "C"),
+  quiet = FALSE
+)
 }
 \arguments{
 \item{linktype}{A character vector indicating the type of link to download.
@@ -14,6 +18,9 @@ for "Link CRSP".}
 \item{linkprim}{A character vector indicating the primacy of the link.
 Default is \code{c("P", "C")}, where "P" indicates primary and "C" indicates
 conditional links.}
+
+\item{quiet}{A logical indicating whether to suppress the messages about
+the WRDS connection and the download progress. Defaults to \code{FALSE}.}
 }
 \value{
 A data frame with the columns \code{permno}, \code{gvkey}, \code{linkdt}, and

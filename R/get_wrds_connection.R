@@ -28,7 +28,13 @@
 #'   \item When you connect, approve the Duo push notification on your
 #'     registered device. The connection waits until you approve it.
 #' }
-#' If the connection fails, the error message lists these steps.
+#' If the connection fails, the error message lists these steps. Unless
+#' `quiet = TRUE`, the function says when it starts connecting and when the
+#' connection succeeds, so you know when to approve the Duo request and when
+#' the download starts.
+#'
+#' @param quiet A logical indicating whether to suppress the messages about
+#'   the WRDS connection and the download progress. Defaults to `FALSE`.
 #'
 #' @returns An object of class `DBIConnection` representing the connection
 #'   to the WRDS database. This object can be used with other DBI-compliant
@@ -50,15 +56,30 @@
 #'   # Remember to disconnect after use:
 #'   # disconnect_connection(con)
 #' }
-get_wrds_connection <- function() {
-  if (
-    !nzchar(Sys.getenv("WRDS_USER")) || !nzchar(Sys.getenv("WRDS_PASSWORD"))
-  ) {
+get_wrds_connection <- function(quiet = FALSE) {
+  if (!is.logical(quiet) || length(quiet) != 1 || is.na(quiet)) {
+    cli::cli_abort("{.arg quiet} must be a single logical.")
+  }
+
+  wrds_user <- Sys.getenv("WRDS_USER")
+
+  if (!quiet && (!nzchar(wrds_user) || !nzchar(Sys.getenv("WRDS_PASSWORD")))) {
     cli::cli_inform(
       paste(
         "WRDS credentials not found. Please set them using",
         "{.fn set_wrds_credentials}."
       )
+    )
+  }
+
+  if (!quiet) {
+    cli::cli_progress_step(
+      paste(
+        "Connecting to WRDS as {.val {wrds_user}}.",
+        "Approve the Duo request if prompted."
+      ),
+      msg_done = "Connected to WRDS as {.val {wrds_user}}.",
+      msg_failed = "Connection to WRDS failed."
     )
   }
 
@@ -94,4 +115,27 @@ get_wrds_connection <- function() {
       )
     }
   )
+}
+
+#' Report the progress of a WRDS download
+#'
+#' Shows a progress step that ends, with the elapsed time, when the calling
+#' download function returns.
+#'
+#' @param what A string naming the data, e.g., `"CRSP monthly data"`.
+#' @param quiet A logical; if `TRUE`, nothing is shown.
+#' @param .envir The environment whose exit ends the step.
+#'
+#' @returns Invisibly, the id of the progress step, or `NULL` if `quiet`.
+#' @noRd
+wrds_download_step <- function(what, quiet, .envir = parent.frame()) {
+  if (quiet) {
+    return(invisible(NULL))
+  }
+  invisible(cli::cli_progress_step(
+    paste("Downloading", what, "from WRDS. This can take a few minutes."),
+    msg_done = paste("Downloaded", what, "from WRDS."),
+    msg_failed = paste("Downloading", what, "from WRDS failed."),
+    .envir = .envir
+  ))
 }

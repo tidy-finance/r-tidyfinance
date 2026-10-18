@@ -86,7 +86,7 @@ test_that("download_data_wrds_trace_enhanced cleans TRACE data", {
         end_date = as.Date("2014-01-01")
       )
     },
-    get_wrds_connection = function() con,
+    get_wrds_connection = function(...) con,
     disconnect_connection = function(x) expect_identical(x, con),
     tbl = function(src, from) trace
   )

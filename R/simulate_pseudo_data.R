@@ -12,6 +12,9 @@
 #'   `"compustat_quarterly"`, and `"ccm_links"`.
 #' @param start_date,end_date Optional date bounds passed through to the
 #'   per-dataset generator (see [download_data_pseudo_crsp()] etc.).
+#' @param quiet A logical; if `TRUE`, the pseudo-data notice is not shown.
+#'   Accepted so that `quiet` works the same for `domain = "WRDS"` and
+#'   `domain = "Pseudo Data"`.
 #' @param ... Additional arguments forwarded to the per-dataset generator
 #'   (e.g. `n_assets`, `seed`, `additional_columns`, `add_ccm_links`).
 #'
@@ -24,6 +27,7 @@ simulate_pseudo_data <- function(
   dataset = NULL,
   start_date = NULL,
   end_date = NULL,
+  quiet = FALSE,
   ...
 ) {
   if (is.null(dataset)) {
@@ -32,13 +36,15 @@ simulate_pseudo_data <- function(
 
   check_supported_dataset_pseudo(dataset)
 
-  cli::cli_inform(c(
-    i = paste(
-      "Returning pseudo data from {.code domain = \"Pseudo Data\"}.",
-      "Schema matches {.code domain = \"WRDS\"}, but values are simulated",
-      "and not suitable for inference."
-    )
-  ))
+  if (!quiet) {
+    cli::cli_inform(c(
+      i = paste(
+        "Returning pseudo data from {.code domain = \"Pseudo Data\"}.",
+        "Schema matches {.code domain = \"WRDS\"}, but values are simulated",
+        "and not suitable for inference."
+      )
+    ))
+  }
 
   if (grepl("^crsp", dataset)) {
     download_data_pseudo_crsp(

@@ -39,7 +39,7 @@ test_that("annual data are downloaded and transformed", {
   )
 
   local_mocked_bindings(
-    get_wrds_connection = function() "con",
+    get_wrds_connection = function(...) "con",
     disconnect_connection = function(con) NULL,
     tbl = function(src, from) funda
   )
@@ -90,7 +90,7 @@ test_that("annual data handle pi and invalid lagged assets", {
   )
 
   local_mocked_bindings(
-    get_wrds_connection = function() "con",
+    get_wrds_connection = function(...) "con",
     disconnect_connection = function(con) NULL,
     tbl = function(src, from) funda
   )
@@ -128,7 +128,7 @@ test_that("quarterly data are cleaned and filtered", {
   )
 
   local_mocked_bindings(
-    get_wrds_connection = function() "con",
+    get_wrds_connection = function(...) "con",
     disconnect_connection = function(con) NULL,
     tbl = function(src, from) fundq
   )
@@ -162,7 +162,7 @@ test_that("quarterly data can return non-USD observations", {
   )
 
   local_mocked_bindings(
-    get_wrds_connection = function() "con",
+    get_wrds_connection = function(...) "con",
     disconnect_connection = function(con) NULL,
     tbl = function(src, from) fundq
   )
@@ -204,7 +204,7 @@ test_that("deprecated arguments are supported", {
   )
 
   local_mocked_bindings(
-    get_wrds_connection = function() "con",
+    get_wrds_connection = function(...) "con",
     disconnect_connection = function(con) NULL,
     tbl = function(src, from) funda
   )
@@ -243,7 +243,7 @@ test_that("deprecated arguments are supported", {
 test_that("defensive unsupported branch is covered", {
   local_mocked_bindings(
     check_supported_dataset_wrds_compustat = function(dataset) NULL,
-    get_wrds_connection = function() "con"
+    get_wrds_connection = function(...) "con"
   )
 
   expect_error(

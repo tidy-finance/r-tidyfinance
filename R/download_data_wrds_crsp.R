@@ -26,6 +26,8 @@
 #'   should be added automatically using [download_data_wrds_ccm_links()].
 #' @param adjust_volume A logical indicating whether daily CRSP trading
 #'   volume data should be adjusted according to Gao & Ritter (2010).
+#' @param quiet A logical indicating whether to suppress the messages about
+#'   the WRDS connection and the download progress. Defaults to `FALSE`.
 #'
 #' @returns A data frame containing CRSP stock returns, including delisting
 #'   returns, along with calculated market capitalization and excess returns
@@ -94,7 +96,8 @@ download_data_wrds_crsp <- function(
   version = "v2",
   additional_columns = NULL,
   add_ccm_links = FALSE,
-  adjust_volume = FALSE
+  adjust_volume = FALSE,
+  quiet = FALSE
 ) {
   # Handle explicit type argument
   if (lifecycle::is_present(type)) {
@@ -149,7 +152,10 @@ download_data_wrds_crsp <- function(
     )
   }
 
-  con <- get_wrds_connection()
+  con <- get_wrds_connection(quiet = quiet)
+  if (dataset == "crsp_monthly") {
+    wrds_download_step("CRSP monthly data", quiet)
+  }
 
   if (dataset == "crsp_monthly") {
     if (version == "v1") {
@@ -501,11 +507,13 @@ download_data_wrds_crsp <- function(
 
       crsp_daily_list <- list()
 
-      cli::cli_progress_bar(
-        "Downloading batches",
-        total = batches,
-        clear = TRUE
-      )
+      if (!quiet) {
+        cli::cli_progress_bar(
+          "Downloading CRSP daily data from WRDS in batches",
+          total = batches,
+          clear = TRUE
+        )
+      }
 
       for (j in 1:batches) {
         permno_batch <- permnos[
@@ -609,7 +617,9 @@ download_data_wrds_crsp <- function(
 
           crsp_daily_list[[j]] <- crsp_daily_sub
         }
-        cli::cli_progress_update()
+        if (!quiet) {
+          cli::cli_progress_update()
+        }
       }
 
       disconnect_connection(con)
@@ -658,11 +668,13 @@ download_data_wrds_crsp <- function(
 
       crsp_daily_list <- list()
 
-      cli::cli_progress_bar(
-        "Downloading batches",
-        total = batches,
-        clear = TRUE
-      )
+      if (!quiet) {
+        cli::cli_progress_bar(
+          "Downloading CRSP daily data from WRDS in batches",
+          total = batches,
+          clear = TRUE
+        )
+      }
 
       for (j in 1:batches) {
         permno_batch <- permnos[
@@ -759,7 +771,9 @@ download_data_wrds_crsp <- function(
 
           crsp_daily_list[[j]] <- crsp_daily_sub
         }
-        cli::cli_progress_update()
+        if (!quiet) {
+          cli::cli_progress_update()
+        }
       }
 
       disconnect_connection(con)
@@ -769,7 +783,7 @@ download_data_wrds_crsp <- function(
   }
 
   if (isTRUE(add_ccm_links)) {
-    ccm_links <- download_data_wrds_ccm_links()
+    ccm_links <- download_data_wrds_ccm_links(quiet = quiet)
 
     valid_links <- processed_data |>
       inner_join(

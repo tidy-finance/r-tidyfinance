@@ -249,3 +249,11 @@ test_that("check_supported_domain errors for unsupported domain", {
     'Unsupported domain: "unknown"'
   )
 })
+
+test_that("quiet suppresses the pseudo data notice", {
+  expect_message(
+    download_data("Pseudo Data", "ccm_links"),
+    "pseudo data"
+  )
+  expect_no_message(download_data("Pseudo Data", "ccm_links", quiet = TRUE))
+})

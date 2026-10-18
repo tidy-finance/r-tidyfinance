@@ -56,7 +56,9 @@ specified portfolios directly via \code{download_factor_library_ids()};
 see \code{download_data_huggingface()} for details. If \code{domain} is
 \code{"Damodaran"}, arguments such as \code{region} and \code{year} are passed to
 \code{download_data_damodaran()}, which selects years via \code{year} instead of
-\code{start_date} and \code{end_date}.}
+\code{start_date} and \code{end_date}. If \code{domain} is \code{"WRDS"} or \code{"Pseudo Data"},
+\code{quiet = TRUE} suppresses the messages about the WRDS connection and
+the download progress, or the pseudo-data notice.}
 }
 \value{
 A tibble with processed data, including dates and the relevant

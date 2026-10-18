@@ -12,6 +12,9 @@
 #' @param additional_columns Additional columns from the FISD table
 #'   as a character vector.
 #'
+#' @param quiet A logical indicating whether to suppress the messages about
+#'   the WRDS connection and the download progress. Defaults to `FALSE`.
+#'
 #' @returns A data frame containing a subset of FISD data with fields related
 #'   to the bond's characteristics and issuer information. This includes
 #'   complete CUSIP, maturity date, offering amount, offering date, dated date,
@@ -28,8 +31,9 @@
 #'   additional_columns = c("asset_backed", "defeased")
 #' )
 #' }
-download_data_wrds_fisd <- function(additional_columns = NULL) {
-  con <- get_wrds_connection()
+download_data_wrds_fisd <- function(additional_columns = NULL, quiet = FALSE) {
+  con <- get_wrds_connection(quiet = quiet)
+  wrds_download_step("FISD bond characteristics", quiet)
 
   fisd_mergedissue_db <- tbl(con, I("fisd.fisd_mergedissue"))
 

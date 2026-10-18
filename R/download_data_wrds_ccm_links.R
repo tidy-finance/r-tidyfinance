@@ -11,6 +11,9 @@
 #'   Default is `c("P", "C")`, where "P" indicates primary and "C" indicates
 #'   conditional links.
 #'
+#' @param quiet A logical indicating whether to suppress the messages about
+#'   the WRDS connection and the download progress. Defaults to `FALSE`.
+#'
 #' @returns A data frame with the columns `permno`, `gvkey`, `linkdt`, and
 #'   `linkenddt`, where `linkenddt` is the end date of the link, and missing end
 #'   dates are replaced with today's date.
@@ -25,9 +28,11 @@
 #'
 download_data_wrds_ccm_links <- function(
   linktype = c("LU", "LC"),
-  linkprim = c("P", "C")
+  linkprim = c("P", "C"),
+  quiet = FALSE
 ) {
-  con <- get_wrds_connection()
+  con <- get_wrds_connection(quiet = quiet)
+  wrds_download_step("CRSP-Compustat links", quiet)
 
   ccm_linking_table_db <- tbl(con, I("crsp.ccmxpf_lnkhist"))
 
