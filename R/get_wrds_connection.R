@@ -110,10 +110,36 @@ get_wrds_connection <- function(quiet = FALSE) {
           ),
           "i" = "See {.topic tidyfinance::get_wrds_connection} for details."
         ),
-        parent = e
+        parent = redact_wrds_credentials(e)
       )
     }
   )
+}
+
+#' Remove WRDS credentials from a connection error
+#'
+#' The error of a failed connection can contain the username (e.g.,
+#' "password authentication failed for user ..."). Error messages can end up
+#' in public logs, so the username and password are replaced by placeholders.
+#'
+#' @param e The condition raised by [DBI::dbConnect()].
+#'
+#' @returns The condition with a redacted message.
+#' @noRd
+redact_wrds_credentials <- function(e) {
+  message <- conditionMessage(e)
+  credentials <- c(
+    "<WRDS_PASSWORD>" = Sys.getenv("WRDS_PASSWORD"),
+    "<WRDS_USER>" = Sys.getenv("WRDS_USER")
+  )
+  for (placeholder in names(credentials)) {
+    value <- credentials[[placeholder]]
+    if (nzchar(value)) {
+      message <- gsub(value, placeholder, message, fixed = TRUE)
+    }
+  }
+  e$message <- message
+  e
 }
 
 #' Report the progress of a WRDS download

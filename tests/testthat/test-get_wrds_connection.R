@@ -17,7 +17,7 @@ test_that("get_wrds_connection informs when credentials are missing", {
 local_wrds_mocks <- function(db_connect, env = parent.frame()) {
   withr::local_envvar(
     WRDS_USER = "wrds_jdoe",
-    WRDS_PASSWORD = "pass",
+    WRDS_PASSWORD = "s3cr3t-pw",
     .local_envir = env
   )
   testthat::local_mocked_bindings(
@@ -90,4 +90,20 @@ test_that("get_wrds_connection marks the connection step as failed", {
     cli::ansi_strip(paste(msgs, collapse = "")),
     "Connection to WRDS failed"
   )
+})
+
+test_that("get_wrds_connection removes credentials from the connection error", {
+  local_wrds_mocks(function(...) {
+    stop(
+      "connection to server failed: FATAL: password authentication failed ",
+      "for user \"wrds_jdoe\" (password \"s3cr3t-pw\")"
+    )
+  })
+  err <- expect_error(get_wrds_connection(quiet = TRUE))
+  parent_msg <- conditionMessage(err$parent)
+  expect_match(parent_msg, "for user \"<WRDS_USER>\"", fixed = TRUE)
+  expect_match(parent_msg, "(password \"<WRDS_PASSWORD>\")", fixed = TRUE)
+  full_msg <- cli::ansi_strip(conditionMessage(err))
+  expect_no_match(full_msg, "wrds_jdoe", fixed = TRUE)
+  expect_no_match(full_msg, "s3cr3t-pw", fixed = TRUE)
 })
