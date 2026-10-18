@@ -476,20 +476,25 @@ test_that("cap_weight_exchanges is validated", {
 
 # Dependent sorts with a minimum size threshold -------------------------------
 
-test_that("dependent sorts compute the size cutoff once per date", {
+dependent_cutoff_panel <- function() {
   # Secondary sort splits at the median size. The main breakpoints exclude
   # stocks below the 25th size percentile of the whole date (25.75), not of
   # each size half. In the small half, the main median is then 38 (stocks 26
   # to 50), so stock 35 is in the low portfolio. A cutoff within the small
   # half (13.25) would set the median at 32 and put stock 35 in the high one.
-  data <- tibble::tibble(
+  # Only stock 35 has a non-zero return, so its portfolio is the only one
+  # with a non-zero return.
+  tibble::tibble(
     permno = 1:100,
-    date = as.Date("2020-01-01"),
+    date = as.Date("2020-07-01"),
     mktcap_lag = as.numeric(1:100),
     x = as.numeric(1:100),
-    ret_excess = 0.01
+    ret_excess = dplyr::if_else(1:100 == 35L, 1, 0)
   )
-  out <- compute_portfolio_returns(
+}
+
+dependent_cutoff_sort <- function(data, ...) {
+  compute_portfolio_returns(
     data,
     c("x", "mktcap_lag"),
     "bivariate-dependent",
@@ -499,27 +504,57 @@ test_that("dependent sorts compute the size cutoff once per date", {
     ),
     breakpoint_options_secondary = breakpoint_options(n_portfolios = 2),
     cap_weight_exchanges = NULL,
-    quiet = TRUE
+    quiet = TRUE,
+    ...
   )
-  expect_equal(nrow(out), 2L)
+}
 
-  assigned <- data |>
-    dplyr::mutate(
-      portfolio_secondary = as.integer(mktcap_lag > 50) + 1L
-    )
-  portfolio_main <- assign_portfolio_dependent(
-    assigned,
-    sorting_variable = "x",
-    breakpoint_options = breakpoint_options(
-      n_portfolios = 2,
-      breakpoints_min_size_threshold = 0.25
-    ),
-    breakpoint_function = compute_breakpoints,
-    data_options = data_options()
+test_that("dependent sorts compute the size cutoff once per date", {
+  out <- dependent_cutoff_sort(dependent_cutoff_panel())
+  expect_gt(out$ret_excess_ew[out$portfolio == 1], 0)
+  expect_equal(out$ret_excess_ew[out$portfolio == 2], 0)
+  expect_false(".size_cutoff_main" %in% names(out))
+})
+
+test_that("dependent sorts with annual rebalancing use the per-date cutoff", {
+  out <- dependent_cutoff_sort(dependent_cutoff_panel(), rebalancing_month = 7)
+  expect_gt(out$ret_excess_ew[out$portfolio == 1], 0)
+  expect_equal(out$ret_excess_ew[out$portfolio == 2], 0)
+})
+
+test_that("dependent sorts pass options unchanged to custom breakpoints", {
+  received <- list()
+  custom_breakpoints <- function(data, sorting_variable, breakpoint_options,
+                                 data_options = NULL) {
+    received[[length(received) + 1L]] <<- breakpoint_options
+    compute_breakpoints(data, sorting_variable, breakpoint_options)
+  }
+  dependent_cutoff_sort(
+    dependent_cutoff_panel(),
+    breakpoint_function_main = custom_breakpoints
   )
-  expect_equal(portfolio_main[35], 1L)
-  expect_equal(portfolio_main[40], 2L)
-  # The large half is unaffected: all its stocks are above the cutoff.
-  expect_equal(portfolio_main[75], 1L)
-  expect_equal(portfolio_main[76], 2L)
+  expect_true(all(vapply(
+    received,
+    \(x) is.null(x$breakpoints_min_size_cutoff),
+    logical(1)
+  )))
+})
+
+test_that("dependent size cutoff with exchanges requires the exchange column", {
+  expect_error(
+    compute_portfolio_returns(
+      dependent_cutoff_panel(),
+      c("x", "mktcap_lag"),
+      "bivariate-dependent",
+      breakpoint_options_main = breakpoint_options(
+        n_portfolios = 2,
+        breakpoints_exchanges = "NYSE",
+        breakpoints_min_size_threshold = 0.25
+      ),
+      breakpoint_options_secondary = breakpoint_options(n_portfolios = 2),
+      cap_weight_exchanges = NULL,
+      quiet = TRUE
+    ),
+    "exchange"
+  )
 })

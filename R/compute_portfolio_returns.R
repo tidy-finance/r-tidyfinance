@@ -370,7 +370,9 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- data |>
-        check_new_col(c("portfolio_secondary", "portfolio_main")) |>
+        check_new_col(
+          c("portfolio_secondary", "portfolio_main", ".size_cutoff_main")
+        ) |>
         dplyr::group_by(.data[[date_col]]) |>
         dplyr::mutate(
           portfolio_secondary = assign_portfolio(
@@ -379,21 +381,34 @@ compute_portfolio_returns <- function(
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
+          ),
+          .size_cutoff_main = main_size_cutoff(
+            dplyr::pick(dplyr::everything()),
+            breakpoint_options_main,
+            breakpoint_function_main,
+            data_options
           )
         ) |>
+        dplyr::group_by(.data[[date_col]], .data$portfolio_secondary) |>
         dplyr::mutate(
-          portfolio_main = assign_portfolio_dependent(
+          portfolio_main = assign_portfolio(
             dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1],
-            breakpoint_options = breakpoint_options_main,
+            breakpoint_options = with_size_cutoff(
+              breakpoint_options_main,
+              dplyr::first(.data$.size_cutoff_main)
+            ),
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
-        dplyr::ungroup()
+        dplyr::ungroup() |>
+        dplyr::select(-".size_cutoff_main")
     } else {
       portfolio_data <- data |>
-        check_new_col(c("portfolio_secondary", "portfolio_main")) |>
+        check_new_col(
+          c("portfolio_secondary", "portfolio_main", ".size_cutoff_main")
+        ) |>
         dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
         dplyr::group_by(.data[[date_col]]) |>
         dplyr::mutate(
@@ -403,18 +418,29 @@ compute_portfolio_returns <- function(
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
+          ),
+          .size_cutoff_main = main_size_cutoff(
+            dplyr::pick(dplyr::everything()),
+            breakpoint_options_main,
+            breakpoint_function_main,
+            data_options
           )
         ) |>
+        dplyr::group_by(.data[[date_col]], .data$portfolio_secondary) |>
         dplyr::mutate(
-          portfolio_main = assign_portfolio_dependent(
+          portfolio_main = assign_portfolio(
             dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1L],
-            breakpoint_options = breakpoint_options_main,
+            breakpoint_options = with_size_cutoff(
+              breakpoint_options_main,
+              dplyr::first(.data$.size_cutoff_main)
+            ),
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
         dplyr::ungroup() |>
+        dplyr::select(-".size_cutoff_main") |>
         dplyr::select(all_of(c(
           id_col,
           date_col,
@@ -824,55 +850,57 @@ cap_market_cap <- function(
   data
 }
 
-#' Assign main portfolios within secondary portfolios (internal helper)
+#' Size cutoff of the main breakpoints in dependent sorts (internal helper)
 #'
-#' Used by dependent bivariate sorts on the cross-section of one date. The
-#' main sorting variable is sorted within each secondary portfolio. If the
-#' main breakpoints exclude small stocks via `breakpoints_min_size_threshold`
-#' and the default [compute_breakpoints()] is used, the size cutoff is
-#' computed once from the full cross-section of the date, not within each
-#' secondary portfolio.
+#' In dependent bivariate sorts, the main breakpoints are computed within each
+#' secondary portfolio. The size cutoff of `breakpoints_min_size_threshold`
+#' must nevertheless come from the full cross-section of a date, so it is
+#' computed here, before grouping by the secondary portfolio. Only the default
+#' [compute_breakpoints()] uses it; custom breakpoint functions receive their
+#' options unchanged.
 #'
-#' @param data The cross-section of one date, with a `portfolio_secondary`
-#'   column.
-#' @param sorting_variable,breakpoint_options,breakpoint_function,data_options
-#'   See [assign_portfolio()].
+#' @param data The cross-section of one date.
+#' @param breakpoint_options,breakpoint_function,data_options See
+#'   [assign_portfolio()].
 #'
-#' @returns A vector of main portfolio assignments.
+#' @returns A single numeric cutoff, or `NA` if no cutoff applies.
 #'
 #' @keywords internal
 #' @noRd
-assign_portfolio_dependent <- function(
+main_size_cutoff <- function(
   data,
-  sorting_variable,
   breakpoint_options,
   breakpoint_function,
   data_options
 ) {
   threshold <- breakpoint_options$breakpoints_min_size_threshold
   if (
-    !is.null(threshold) &&
-      identical(breakpoint_function, compute_breakpoints)
+    is.null(threshold) ||
+      !identical(breakpoint_function, compute_breakpoints)
   ) {
-    breakpoint_options$breakpoints_min_size_cutoff <- compute_min_size_cutoff(
-      data,
-      threshold,
-      breakpoint_options$breakpoints_exchanges,
-      data_options
-    )
+    return(NA_real_)
   }
+  compute_min_size_cutoff(
+    data,
+    threshold,
+    breakpoint_options$breakpoints_exchanges,
+    data_options
+  )
+}
 
-  secondary <- data$portfolio_secondary
-  portfolio_main <- rep(NA_integer_, nrow(data))
-  for (p in unique(secondary)) {
-    rows <- if (is.na(p)) which(is.na(secondary)) else which(secondary == p)
-    portfolio_main[rows] <- assign_portfolio(
-      data[rows, , drop = FALSE],
-      sorting_variable = sorting_variable,
-      breakpoint_options = breakpoint_options,
-      breakpoint_function = breakpoint_function,
-      data_options = data_options
-    )
+#' Add an absolute size cutoff to breakpoint options (internal helper)
+#'
+#' @param breakpoint_options A list of class `tidyfinance_breakpoint_options`.
+#' @param size_cutoff A single numeric cutoff, or `NA` to leave the options
+#'   unchanged.
+#'
+#' @returns The breakpoint options.
+#'
+#' @keywords internal
+#' @noRd
+with_size_cutoff <- function(breakpoint_options, size_cutoff) {
+  if (!is.na(size_cutoff)) {
+    breakpoint_options$breakpoints_min_size_cutoff <- size_cutoff
   }
-  portfolio_main
+  breakpoint_options
 }
