@@ -29,7 +29,8 @@ sort portfolios on.}
 
 \item{rebalancing_month}{An optional integer specifying the month in which
 portfolios are rebalanced annually. \code{NULL} (the default) means monthly
-rebalancing.}
+rebalancing. Also determines the formation month in which the screens of
+\code{filter_options} are applied.}
 
 \item{portfolio_sort_options}{A list of class
 \code{tidyfinance_portfolio_sort_options} created by
@@ -41,8 +42,10 @@ include
 created by \code{\link[=filter_options]{filter_options()}}, or \code{NULL} (the default, which applies
 no filters). Options include \code{exclude_financials},
 \code{exclude_utilities}, \code{min_stock_price}, \code{min_size_quantile},
-\code{min_listing_age}, \code{exclude_negative_book_equity}, and
-\code{exclude_negative_earnings}.
+\code{min_listing_age}, \code{exclude_negative_book_equity},
+\code{exclude_negative_earnings}, and \code{timing}. With \code{rebalancing_month},
+the screens apply in the formation month only by default; see
+\code{\link[=filter_sorting_data]{filter_sorting_data()}}.
 \item \code{breakpoint_options_main} A list of class
 \code{tidyfinance_breakpoint_options} created by \code{\link[=breakpoint_options]{breakpoint_options()}},
 specifying breakpoints for the primary sorting variable. Options
@@ -79,7 +82,7 @@ forwarded to \code{\link[=filter_sorting_data]{filter_sorting_data()}} and \code
 Uses \code{\link[=data_options]{data_options()}} default if \code{NULL}: \code{"id" = "permno"},
 \code{"date" = "date"}, \code{"exchange" = "exchange"},
 \code{"mktcap_lag" = "mktcap_lag"}, \code{"ret_excess" = "ret_excess"},
-\code{"siccd" = "siccd"}, \code{"price" = "prc_adj"},
+\code{"siccd" = "siccd"}, \code{"price" = "prc_lag"},
 \code{"listing_age" = "listing_age"}, \code{"be" = "be"}, and
 \code{"earnings" = "ib"}.}
 
@@ -110,7 +113,7 @@ data <- data.frame(
   ),
   mktcap_lag = runif(500, 100, 1000),
   ret_excess = rnorm(500),
-  prc_adj = runif(500, 0.5, 50),
+  prc_lag = runif(500, 0.5, 50),
   size = runif(500, 50, 150)
 )
 implement_portfolio_sort(

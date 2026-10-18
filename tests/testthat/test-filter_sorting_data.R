@@ -88,12 +88,12 @@ test_that("min_stock_price aborts when price column is absent", {
       data.frame(x = 1),
       filter_options = filter_options(min_stock_price = 1)
     ),
-    "prc_adj"
+    "prc_lag"
   )
 })
 
 test_that("min_stock_price removes below-threshold and NA rows, messages", {
-  d <- data.frame(prc_adj = c(NA_real_, 0.9, 1.0, 5.0))
+  d <- data.frame(prc_lag = c(NA_real_, 0.9, 1.0, 5.0))
   expect_message(
     out <- filter_sorting_data(
       d,
@@ -102,7 +102,7 @@ test_that("min_stock_price removes below-threshold and NA rows, messages", {
     "min_stock_price"
   )
   expect_equal(nrow(out), 2L)
-  expect_true(all(out$prc_adj >= 1))
+  expect_true(all(out$prc_lag >= 1))
 })
 
 test_that("min_size_quantile aborts when mktcap_lag column is absent", {
@@ -292,7 +292,7 @@ test_that("quiet = TRUE suppresses messages across all filters", {
   # the `!quiet && n_dropped > 0` guard is FALSE for all of them.
   d <- data.frame(
     siccd = c(6100L, 4950L, 2000L),
-    prc_adj = c(10, 10, 0.5),
+    prc_lag = c(10, 10, 0.5),
     listing_age = c(5L, 12L, 24L),
     be = c(-1, 1, 2),
     ib = c(-1, 1, 2)
@@ -310,5 +310,134 @@ test_that("quiet = TRUE suppresses messages across all filters", {
       ),
       quiet = TRUE
     )
+  )
+})
+
+# Screen timing with annual rebalancing ---------------------------------------
+
+timing_panel <- function() {
+  # Stock 1 passes the price screen in July 2020 but falls below it in
+  # August. Stock 2 fails in July 2020 but rises above it in August. Both
+  # pass in July 2021.
+  data.frame(
+    permno = rep(1:2, each = 4),
+    date = as.Date(rep(
+      c("2020-06-01", "2020-07-01", "2020-08-01", "2021-07-01"),
+      2
+    )),
+    prc_lag = c(9, 6, 2, 8, 9, 2, 6, 8)
+  )
+}
+
+test_that("screens apply at formation only by default", {
+  out <- filter_sorting_data(
+    timing_panel(),
+    filter_options = filter_options(min_stock_price = 5),
+    rebalancing_month = 7,
+    quiet = TRUE
+  )
+  expect_equal(out$permno, c(1L, 1L, 1L, 2L))
+  expect_equal(
+    out$date,
+    as.Date(c("2020-07-01", "2020-08-01", "2021-07-01", "2021-07-01"))
+  )
+})
+
+test_that("filter options without timing default to formation screens", {
+  # E.g., options created with an earlier version of the package
+  opts <- filter_options(min_stock_price = 5)
+  opts$timing <- NULL
+  expect_no_warning(
+    out <- filter_sorting_data(
+      timing_panel(),
+      filter_options = opts,
+      rebalancing_month = 7,
+      quiet = TRUE
+    )
+  )
+  expect_equal(out$permno, c(1L, 1L, 1L, 2L))
+})
+
+test_that("formation screens report removed holding-month rows", {
+  expect_message(
+    filter_sorting_data(
+      timing_panel(),
+      filter_options = filter_options(min_stock_price = 5),
+      rebalancing_month = 7
+    ),
+    "formation month 7"
+  )
+})
+
+test_that("formation screens handle end-of-month dates and cohorts", {
+  d <- data.frame(
+    permno = 1L,
+    date = as.Date(c("2020-07-31", "2021-06-30", "2021-07-31")),
+    prc_lag = c(6, 1, 1)
+  )
+  out <- filter_sorting_data(
+    d,
+    filter_options = filter_options(min_stock_price = 5),
+    rebalancing_month = 7,
+    quiet = TRUE
+  )
+  # The June 2021 row belongs to the July 2020 cohort, which passed.
+  expect_equal(out$date, as.Date(c("2020-07-31", "2021-06-30")))
+})
+
+test_that("every_period screens filter each month and warn", {
+  rlang::local_options(rlib_warning_verbosity = "verbose")
+  expect_warning(
+    out <- filter_sorting_data(
+      timing_panel(),
+      filter_options = filter_options(
+        min_stock_price = 5,
+        timing = "every_period"
+      ),
+      rebalancing_month = 7,
+      quiet = TRUE
+    ),
+    "look-ahead"
+  )
+  expect_true(all(out$prc_lag >= 5))
+  expect_equal(nrow(out), 6L)
+})
+
+test_that("monthly rebalancing screens every row without a warning", {
+  expect_no_warning(
+    out <- filter_sorting_data(
+      timing_panel(),
+      filter_options = filter_options(
+        min_stock_price = 5,
+        timing = "every_period"
+      ),
+      quiet = TRUE
+    )
+  )
+  expect_true(all(out$prc_lag >= 5))
+})
+
+test_that("rebalancing_month without active screens returns data unchanged", {
+  d <- timing_panel()
+  expect_identical(filter_sorting_data(d, rebalancing_month = 7), d)
+})
+
+test_that("rebalancing_month is validated", {
+  expect_error(
+    filter_sorting_data(timing_panel(), rebalancing_month = 13),
+    "rebalancing_month"
+  )
+})
+
+test_that("formation screens require the id column", {
+  d <- timing_panel()
+  d$permno <- NULL
+  expect_error(
+    filter_sorting_data(
+      d,
+      filter_options = filter_options(min_stock_price = 5),
+      rebalancing_month = 7
+    ),
+    "permno"
   )
 })

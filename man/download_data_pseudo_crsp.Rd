@@ -56,10 +56,10 @@ identifier universe used by \code{\link[=download_data_pseudo_compustat]{downloa
 \value{
 For \code{"crsp_monthly"}, a tibble with columns \code{permno}, \code{date},
 \code{calculation_date}, \code{ret}, \code{shrout}, \code{prc}, \code{primaryexch}, \code{siccd},
-\code{listing_age}, \code{mktcap}, \code{mktcap_lag}, \code{exchange}, \code{industry}, and
-\code{ret_excess}. For \code{"crsp_daily"}, a tibble with columns \code{permno}, \code{date},
-\code{ret}, and \code{ret_excess}. If \code{add_ccm_links = TRUE}, a \code{gvkey} column is
-appended.
+\code{listing_age}, \code{mktcap}, \code{mktcap_lag}, \code{prc_lag}, \code{exchange}, \code{industry},
+and \code{ret_excess}. For \code{"crsp_daily"}, a tibble with columns \code{permno},
+\code{date}, \code{ret}, and \code{ret_excess}. If \code{add_ccm_links = TRUE}, a \code{gvkey}
+column is appended.
 }
 \description{
 Returns pseudo CRSP data with the same column layout as
