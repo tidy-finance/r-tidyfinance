@@ -25,6 +25,30 @@ and sslmode as fixed parameters for the connection. Users must set their
 WRDS username and password as environment variables `WRDS_USER` and
 `WRDS_PASSWORD`, respectively, before using this function.
 
+## WRDS account setup
+
+A WRDS username and password alone are not enough to connect. Before the
+first connection:
+
+1.  Get a WRDS account through an institution that subscribes to the
+    data you need (e.g., CRSP and Compustat).
+
+2.  Enroll in two-factor authentication (Duo) for your WRDS account.
+    WRDS requires it for all connections, including connections from R.
+
+3.  Log in to the WRDS website (<https://wrds-www.wharton.upenn.edu>)
+    once and accept the terms of use, if WRDS asks you to.
+
+4.  Store your username and password with
+    [`set_wrds_credentials()`](https://r.tidy-finance.org/reference/set_wrds_credentials.md),
+    or set the `WRDS_USER` and `WRDS_PASSWORD` environment variables,
+    and restart R.
+
+5.  When you connect, approve the Duo push notification on your
+    registered device. The connection waits until you approve it.
+
+If the connection fails, the error message lists these steps.
+
 ## See also
 
 [`RPostgres::Postgres()`](https://rpostgres.r-dbi.org/reference/Postgres.html),

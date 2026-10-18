@@ -20,6 +20,13 @@ set_wrds_credentials()
 Invisibly returns `TRUE`. Displays messages to the user based on their
 input and actions taken.
 
+## Details
+
+Storing credentials is not enough to connect to WRDS: you also need to
+enroll in two-factor authentication (Duo) and accept the WRDS terms of
+use. See the "WRDS account setup" section of
+[`get_wrds_connection()`](https://r.tidy-finance.org/reference/get_wrds_connection.md).
+
 ## See also
 
 Other WRDS functions:

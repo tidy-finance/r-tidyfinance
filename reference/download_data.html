@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -300,22 +300,22 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   IPMAT &lt;dbl&gt;, IPDMAT &lt;dbl&gt;, IPNMAT &lt;dbl&gt;, IPDCONGD &lt;dbl&gt;, IPB51110SQ &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   IPNCONGD &lt;dbl&gt;, IPBUSEQ &lt;dbl&gt;, IPB51220SQ &lt;dbl&gt;, TCU &lt;dbl&gt;, CUMFNS &lt;dbl&gt;, …</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Stock Prices"</span>, symbols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AAPL"</span>, <span class="st">"MSFT"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-10-17 to</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-10-17 to avoid downloading large amounts of data.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 502 × 8</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-10-18 to</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-10-18 to avoid downloading large amounts of data.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 500 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    symbol date         volume  open   low  high close adjusted_close</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AAPL   2024-10-17 32<span style="text-decoration: underline;">993</span>800  233.  231.  234.  232.           230.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AAPL   2024-10-18 46<span style="text-decoration: underline;">431</span>500  236.  234.  236.  235            233.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AAPL   2024-10-21 36<span style="text-decoration: underline;">254</span>500  234.  234.  237.  236.           235.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AAPL   2024-10-22 38<span style="text-decoration: underline;">846</span>600  234.  233.  236.  236.           234.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AAPL   2024-10-23 52<span style="text-decoration: underline;">287</span>000  234.  228.  235.  231.           229.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AAPL   2024-10-24 31<span style="text-decoration: underline;">109</span>500  230.  228.  231.  231.           229.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AAPL   2024-10-25 38<span style="text-decoration: underline;">802</span>300  230.  230.  233.  231.           229.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AAPL   2024-10-28 36<span style="text-decoration: underline;">087</span>100  233.  233.  235.  233.           231.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AAPL   2024-10-29 35<span style="text-decoration: underline;">417</span>200  233.  232.  234.  234.           232.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AAPL   2024-10-30 47<span style="text-decoration: underline;">070</span>900  233.  230.  233.  230.           228.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 492 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AAPL   2024-10-18 46<span style="text-decoration: underline;">431</span>500  236.  234.  236.  235            233.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AAPL   2024-10-21 36<span style="text-decoration: underline;">254</span>500  234.  234.  237.  236.           235.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AAPL   2024-10-22 38<span style="text-decoration: underline;">846</span>600  234.  233.  236.  236.           234.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AAPL   2024-10-23 52<span style="text-decoration: underline;">287</span>000  234.  228.  235.  231.           229.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AAPL   2024-10-24 31<span style="text-decoration: underline;">109</span>500  230.  228.  231.  231.           229.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AAPL   2024-10-25 38<span style="text-decoration: underline;">802</span>300  230.  230.  233.  231.           229.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AAPL   2024-10-28 36<span style="text-decoration: underline;">087</span>100  233.  233.  235.  233.           231.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AAPL   2024-10-29 35<span style="text-decoration: underline;">417</span>200  233.  232.  234.  234.           232.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AAPL   2024-10-30 47<span style="text-decoration: underline;">070</span>900  233.  230.  233.  230.           228.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AAPL   2024-10-31 64<span style="text-decoration: underline;">370</span>100  229.  225.  230.  226.           224.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 490 more rows</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Damodaran"</span>, <span class="st">"wacc"</span>, region <span class="op">=</span> <span class="st">"europe"</span>, year <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 480 × 14</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    region  year industry  number_of_firms  beta cost_of_equity equity_to_capital</span>

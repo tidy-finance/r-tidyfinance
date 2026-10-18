@@ -42,7 +42,10 @@ a market risk premium). Treat the code as the lesson and the numbers as
 placeholders; to reproduce the published premium, swap `"Pseudo Data"`
 for `"WRDS"` (after a one-time
 [`set_wrds_credentials()`](https://r.tidy-finance.org/reference/set_wrds_credentials.md))
-and rerun.
+and rerun. Besides the credentials, WRDS requires two-factor
+authentication (Duo) and acceptance of its terms of use; see the “WRDS
+account setup” section of
+[`?get_wrds_connection`](https://r.tidy-finance.org/reference/get_wrds_connection.md).
 
 ``` r
 

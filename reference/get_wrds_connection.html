@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,6 +84,24 @@ port, and sslmode as fixed parameters for the connection. Users must
 set their WRDS username and password as environment variables
 <code>WRDS_USER</code> and <code>WRDS_PASSWORD</code>, respectively, before using this
 function.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="wrds-account-setup">WRDS account setup<a class="anchor" aria-label="anchor" href="#wrds-account-setup"></a></h2>
+
+
+<p>A WRDS username and password alone are not enough to connect. Before the
+first connection:</p><ol><li><p>Get a WRDS account through an institution that subscribes to the
+data you need (e.g., CRSP and Compustat).</p></li>
+<li><p>Enroll in two-factor authentication (Duo) for your WRDS account.
+WRDS requires it for all connections, including connections from R.</p></li>
+<li><p>Log in to the WRDS website (<a href="https://wrds-www.wharton.upenn.edu" class="external-link">https://wrds-www.wharton.upenn.edu</a>)
+once and accept the terms of use, if WRDS asks you to.</p></li>
+<li><p>Store your username and password with <code><a href="set_wrds_credentials.html">set_wrds_credentials()</a></code>,
+or set the <code>WRDS_USER</code> and <code>WRDS_PASSWORD</code> environment variables, and
+restart R.</p></li>
+<li><p>When you connect, approve the Duo push notification on your
+registered device. The connection waits until you approve it.</p></li>
+</ol><p>If the connection fails, the error message lists these steps.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

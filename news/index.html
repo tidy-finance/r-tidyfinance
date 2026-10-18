@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +56,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>
+<code><a href="../reference/get_wrds_connection.html">get_wrds_connection()</a></code>, and thus every WRDS download, now explains a failed connection: it lists the likely causes (wrong credentials, missing two-factor authentication, terms of use not accepted) and keeps the original error as the cause (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/325" class="external-link">#325</a>).</li>
+<li>
 <code><a href="../reference/estimate_fama_macbeth.html">estimate_fama_macbeth()</a></code> with <code>vcov = "iid"</code> no longer multiplies the t-statistic by the square root of the number of periods a second time. The standard error of the mean already accounts for it, so the t-statistics were inflated by a factor of sqrt(T) (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/322" class="external-link">#322</a>).</li>
 <li>
 <code><a href="../reference/download_data_osap.html">download_data_osap()</a></code> and <code>download_data("Open Source Asset Pricing")</code> no longer parse the HTML page that Google Drive returns instead of the data, e.g., when the download quota of the file is exceeded. They now return an empty tibble and say why, instead of a tibble whose column names are fragments of the page.</li>
@@ -64,7 +66,8 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
-<ul><li>Added <code><a href="../reference/download_data_damodaran.html">download_data_damodaran()</a></code> and the <code>"Damodaran"</code> domain for <code><a href="../reference/download_data.html">download_data()</a></code>, which download the cost of capital (WACC) by industry from Aswath Damodaran’s data library, e.g. <code>download_data("Damodaran", "wacc")</code>. <code>region</code> selects the US (default), Europe, Japan, emerging markets, global, China, India, or Australia, New Zealand, and Canada, and <code>year</code> reads archived years (from 1998 for the US) into a panel. Reading the Excel files requires the suggested readxl package (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/298" class="external-link">#298</a>).</li>
+<ul><li>The help pages of <code><a href="../reference/get_wrds_connection.html">get_wrds_connection()</a></code> and <code><a href="../reference/set_wrds_credentials.html">set_wrds_credentials()</a></code>, the README, and the vignette document what a WRDS account needs before the first connection: two-factor authentication (Duo) and acceptance of the WRDS terms of use (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/325" class="external-link">#325</a>).</li>
+<li>Added <code><a href="../reference/download_data_damodaran.html">download_data_damodaran()</a></code> and the <code>"Damodaran"</code> domain for <code><a href="../reference/download_data.html">download_data()</a></code>, which download the cost of capital (WACC) by industry from Aswath Damodaran’s data library, e.g. <code>download_data("Damodaran", "wacc")</code>. <code>region</code> selects the US (default), Europe, Japan, emerging markets, global, China, India, or Australia, New Zealand, and Canada, and <code>year</code> reads archived years (from 1998 for the US) into a panel. Reading the Excel files requires the suggested readxl package (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/298" class="external-link">#298</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">

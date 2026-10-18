@@ -4,6 +4,12 @@
 
 ### Bug fixes
 
+- [`get_wrds_connection()`](https://r.tidy-finance.org/reference/get_wrds_connection.md),
+  and thus every WRDS download, now explains a failed connection: it
+  lists the likely causes (wrong credentials, missing two-factor
+  authentication, terms of use not accepted) and keeps the original
+  error as the cause
+  ([\#325](https://github.com/tidy-finance/r-tidyfinance/issues/325)).
 - [`estimate_fama_macbeth()`](https://r.tidy-finance.org/reference/estimate_fama_macbeth.md)
   with `vcov = "iid"` no longer multiplies the t-statistic by the square
   root of the number of periods a second time. The standard error of the
@@ -22,6 +28,14 @@
 
 ### New features
 
+- The help pages of
+  [`get_wrds_connection()`](https://r.tidy-finance.org/reference/get_wrds_connection.md)
+  and
+  [`set_wrds_credentials()`](https://r.tidy-finance.org/reference/set_wrds_credentials.md),
+  the README, and the vignette document what a WRDS account needs before
+  the first connection: two-factor authentication (Duo) and acceptance
+  of the WRDS terms of use
+  ([\#325](https://github.com/tidy-finance/r-tidyfinance/issues/325)).
 - Added
   [`download_data_damodaran()`](https://r.tidy-finance.org/reference/download_data_damodaran.md)
   and the `"Damodaran"` domain for
