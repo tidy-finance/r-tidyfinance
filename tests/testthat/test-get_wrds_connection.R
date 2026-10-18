@@ -16,7 +16,7 @@ test_that("get_wrds_connection informs when credentials are missing", {
 
 local_wrds_mocks <- function(db_connect, env = parent.frame()) {
   withr::local_envvar(
-    WRDS_USER = "user",
+    WRDS_USER = "wrds_jdoe",
     WRDS_PASSWORD = "pass",
     .local_envir = env
   )
@@ -40,9 +40,11 @@ test_that("get_wrds_connection reports connecting and success", {
     testthat::capture_messages(result <- get_wrds_connection()),
     collapse = ""
   ))
-  expect_match(msgs, "Connecting to WRDS as \"user\"")
+  expect_match(msgs, "Connecting to WRDS")
   expect_match(msgs, "Approve the Duo request")
-  expect_match(msgs, "Connected to WRDS as \"user\"")
+  expect_match(msgs, "Connected to WRDS")
+  # The username must not appear in messages that may end up in public logs
+  expect_no_match(msgs, "wrds_jdoe")
   expect_identical(result, fake_con)
 })
 

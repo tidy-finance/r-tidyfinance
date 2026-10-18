@@ -74,11 +74,10 @@ get_wrds_connection <- function(quiet = FALSE) {
 
   if (!quiet) {
     cli::cli_progress_step(
-      paste(
-        "Connecting to WRDS as {.val {wrds_user}}.",
-        "Approve the Duo request if prompted."
-      ),
-      msg_done = "Connected to WRDS as {.val {wrds_user}}.",
+      # The username is deliberately not shown, as messages can end up in
+      # public logs (e.g., CI or rendered documents).
+      "Connecting to WRDS. Approve the Duo request if prompted.",
+      msg_done = "Connected to WRDS.",
       msg_failed = "Connection to WRDS failed."
     )
   }
