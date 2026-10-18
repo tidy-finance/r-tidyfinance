@@ -630,10 +630,10 @@ test_that(
     sorting_var <- rnorm(100)
     data <- data.frame(mktcap_lag = mktcap, sorting_var = sorting_var)
 
-    # manual: cutoff = quantile(1:100, 0.2) = 20.8; keep stocks
+    # manual: min_mktcap = quantile(1:100, 0.2) = 20.8; keep stocks
     # with mktcap > 20.8
-    size_cutoff <- quantile(mktcap, 0.2, na.rm = TRUE)
-    above <- mktcap > size_cutoff
+    min_mktcap <- quantile(mktcap, 0.2, na.rm = TRUE)
+    above <- mktcap > min_mktcap
     expected <- unname(quantile(
       sorting_var[above],
       seq(0, 1, length.out = 6),
@@ -653,22 +653,22 @@ test_that(
 test_that(
   paste0(
     "breakpoints_min_size_threshold excludes stocks ",
-    "exactly at the cutoff (strict > not >=)"
+    "exactly at the minimum market cap (strict > not >=)"
   ),
   {
-    # Construct data where one stock lands exactly at the quantile cutoff.
+    # Construct data where one stock lands exactly at the quantile.
     # With mktcap = c(10, 20, 30, 40, 50) and threshold = 0.25:
-    # quantile type 7: h = 1 + 0.25*4 = 2; cutoff = mktcap[2] = 20 (exact
+    # quantile type 7: h = 1 + 0.25*4 = 2; min_mktcap = mktcap[2] = 20 (exact
     # integer index)
     mktcap <- c(10, 20, 30, 40, 50)
     sorting_var <- c(1.0, 2.0, 3.0, 4.0, 5.0)
     data <- data.frame(mktcap_lag = mktcap, sorting_var = sorting_var)
 
-    size_cutoff <- quantile(mktcap, 0.25, na.rm = TRUE)
-    # stocks with mktcap strictly > cutoff are included; the stock at exactly
-    # cutoff is excluded
-    above <- mktcap > size_cutoff
-    expect_false(above[mktcap == size_cutoff]) # boundary stock excluded
+    min_mktcap <- quantile(mktcap, 0.25, na.rm = TRUE)
+    # stocks with mktcap strictly > min_mktcap are included; the stock at
+    # exactly min_mktcap is excluded
+    above <- mktcap > min_mktcap
+    expect_false(above[mktcap == min_mktcap]) # boundary stock excluded
 
     expected <- unname(quantile(
       sorting_var[above],
@@ -710,14 +710,14 @@ test_that(
     expect_true(all(!is.na(bp)))
     expect_length(bp, 4)
 
-    # manual: cutoff uses only non-NA mktcap values; row with mktcap=NA is
+    # manual: min_mktcap uses only non-NA mktcap values; row with mktcap=NA is
     # excluded
-    size_cutoff <- quantile(
+    min_mktcap <- quantile(
       c(10, 20, 30, 40, 50, 60, 70, 80, 90),
       0.2,
       na.rm = TRUE
     )
-    above <- !is.na(data$mktcap_lag) & data$mktcap_lag > size_cutoff
+    above <- !is.na(data$mktcap_lag) & data$mktcap_lag > min_mktcap
     expected <- unname(quantile(
       data$sorting_var[above],
       seq(0, 1, length.out = 4),
@@ -1023,20 +1023,20 @@ test_that(
   }
 )
 
-test_that("an absolute size cutoff matches filtering the data", {
+test_that("an absolute min_mktcap matches filtering the data", {
   data <- tibble::tibble(
     x = as.numeric(1:100),
     mktcap_lag = as.numeric(100:1)
   )
-  with_cutoff <- compute_breakpoints(
+  with_min_mktcap <- compute_breakpoints(
     data,
     "x",
-    breakpoint_options(n_portfolios = 4, breakpoints_min_size_cutoff = 40)
+    breakpoint_options(n_portfolios = 4, breakpoints_min_mktcap = 40)
   )
   filtered <- compute_breakpoints(
     data[data$mktcap_lag > 40, ],
     "x",
     breakpoint_options(n_portfolios = 4)
   )
-  expect_equal(with_cutoff, filtered)
+  expect_equal(with_min_mktcap, filtered)
 })

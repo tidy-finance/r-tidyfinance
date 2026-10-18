@@ -476,11 +476,12 @@ test_that("cap_weight_exchanges is validated", {
 
 # Dependent sorts with a minimum size threshold -------------------------------
 
-dependent_cutoff_panel <- function() {
+dependent_min_mktcap_panel <- function() {
   # Secondary sort splits at the median size. The main breakpoints exclude
-  # stocks below the 25th size percentile of the whole date (25.75), not of
+  # stocks below the 25th size percentile of the whole date (min_mktcap
+  # 25.75), not of
   # each size half. In the small half, the main median is then 38 (stocks 26
-  # to 50), so stock 35 is in the low portfolio. A cutoff within the small
+  # to 50), so stock 35 is in the low portfolio. A minimum within the small
   # half (13.25) would set the median at 32 and put stock 35 in the high one.
   # Only stock 35 has a non-zero return, so its portfolio is the only one
   # with a non-zero return.
@@ -493,7 +494,7 @@ dependent_cutoff_panel <- function() {
   )
 }
 
-dependent_cutoff_sort <- function(data, ...) {
+dependent_min_mktcap_sort <- function(data, ...) {
   compute_portfolio_returns(
     data,
     c("x", "mktcap_lag"),
@@ -509,15 +510,18 @@ dependent_cutoff_sort <- function(data, ...) {
   )
 }
 
-test_that("dependent sorts compute the size cutoff once per date", {
-  out <- dependent_cutoff_sort(dependent_cutoff_panel())
+test_that("dependent sorts compute the minimum market cap once per date", {
+  out <- dependent_min_mktcap_sort(dependent_min_mktcap_panel())
   expect_gt(out$ret_excess_ew[out$portfolio == 1], 0)
   expect_equal(out$ret_excess_ew[out$portfolio == 2], 0)
-  expect_false(".size_cutoff_main" %in% names(out))
+  expect_false(".min_mktcap_main" %in% names(out))
 })
 
-test_that("dependent sorts with annual rebalancing use the per-date cutoff", {
-  out <- dependent_cutoff_sort(dependent_cutoff_panel(), rebalancing_month = 7)
+test_that("dependent sorts with annual rebalancing use per-date min_mktcap", {
+  out <- dependent_min_mktcap_sort(
+    dependent_min_mktcap_panel(),
+    rebalancing_month = 7
+  )
   expect_gt(out$ret_excess_ew[out$portfolio == 1], 0)
   expect_equal(out$ret_excess_ew[out$portfolio == 2], 0)
 })
@@ -529,21 +533,21 @@ test_that("dependent sorts pass options unchanged to custom breakpoints", {
     received[[length(received) + 1L]] <<- breakpoint_options
     compute_breakpoints(data, sorting_variable, breakpoint_options)
   }
-  dependent_cutoff_sort(
-    dependent_cutoff_panel(),
+  dependent_min_mktcap_sort(
+    dependent_min_mktcap_panel(),
     breakpoint_function_main = custom_breakpoints
   )
   expect_true(all(vapply(
     received,
-    \(x) is.null(x$breakpoints_min_size_cutoff),
+    \(x) is.null(x$breakpoints_min_mktcap),
     logical(1)
   )))
 })
 
-test_that("dependent size cutoff with exchanges requires the exchange column", {
+test_that("dependent min_mktcap with exchanges requires the exchange column", {
   expect_error(
     compute_portfolio_returns(
-      dependent_cutoff_panel(),
+      dependent_min_mktcap_panel(),
       c("x", "mktcap_lag"),
       "bivariate-dependent",
       breakpoint_options_main = breakpoint_options(

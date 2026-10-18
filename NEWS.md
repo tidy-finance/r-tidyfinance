@@ -11,8 +11,8 @@
   exchange column, or on dates without NYSE stocks, the cap falls back to all
   stocks with a message (#319).
 - In dependent bivariate sorts, `breakpoints_min_size_threshold` of the main
-  breakpoints is now applied with one size cutoff per date, computed from the
-  full cross-section, instead of a separate cutoff within each secondary
+  breakpoints is now applied with one minimum market cap per date, computed
+  from the full cross-section, instead of a separate one within each secondary
   portfolio. Before, e.g., excluding the smallest 20% of NYSE stocks from the
   asset-growth breakpoints within size halves excluded the smallest 20% of
   each half (#319).

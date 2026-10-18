@@ -371,7 +371,7 @@ compute_portfolio_returns <- function(
     if (is.null(rebalancing_month)) {
       portfolio_returns <- data |>
         check_new_col(
-          c("portfolio_secondary", "portfolio_main", ".size_cutoff_main")
+          c("portfolio_secondary", "portfolio_main", ".min_mktcap_main")
         ) |>
         dplyr::group_by(.data[[date_col]]) |>
         dplyr::mutate(
@@ -382,7 +382,7 @@ compute_portfolio_returns <- function(
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           ),
-          .size_cutoff_main = main_size_cutoff(
+          .min_mktcap_main = main_min_mktcap(
             dplyr::pick(dplyr::everything()),
             breakpoint_options_main,
             breakpoint_function_main,
@@ -394,20 +394,20 @@ compute_portfolio_returns <- function(
           portfolio_main = assign_portfolio(
             dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1],
-            breakpoint_options = with_size_cutoff(
+            breakpoint_options = with_min_mktcap(
               breakpoint_options_main,
-              dplyr::first(.data$.size_cutoff_main)
+              dplyr::first(.data$.min_mktcap_main)
             ),
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
         dplyr::ungroup() |>
-        dplyr::select(-".size_cutoff_main")
+        dplyr::select(-".min_mktcap_main")
     } else {
       portfolio_data <- data |>
         check_new_col(
-          c("portfolio_secondary", "portfolio_main", ".size_cutoff_main")
+          c("portfolio_secondary", "portfolio_main", ".min_mktcap_main")
         ) |>
         dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
         dplyr::group_by(.data[[date_col]]) |>
@@ -419,7 +419,7 @@ compute_portfolio_returns <- function(
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
           ),
-          .size_cutoff_main = main_size_cutoff(
+          .min_mktcap_main = main_min_mktcap(
             dplyr::pick(dplyr::everything()),
             breakpoint_options_main,
             breakpoint_function_main,
@@ -431,16 +431,16 @@ compute_portfolio_returns <- function(
           portfolio_main = assign_portfolio(
             dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1L],
-            breakpoint_options = with_size_cutoff(
+            breakpoint_options = with_min_mktcap(
               breakpoint_options_main,
-              dplyr::first(.data$.size_cutoff_main)
+              dplyr::first(.data$.min_mktcap_main)
             ),
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
         dplyr::ungroup() |>
-        dplyr::select(-".size_cutoff_main") |>
+        dplyr::select(-".min_mktcap_main") |>
         dplyr::select(all_of(c(
           id_col,
           date_col,
@@ -850,10 +850,12 @@ cap_market_cap <- function(
   data
 }
 
-#' Size cutoff of the main breakpoints in dependent sorts (internal helper)
+#' Minimum market cap of the main breakpoints in dependent sorts (internal
+#' helper)
 #'
 #' In dependent bivariate sorts, the main breakpoints are computed within each
-#' secondary portfolio. The size cutoff of `breakpoints_min_size_threshold`
+#' secondary portfolio. The minimum market cap of
+#' `breakpoints_min_size_threshold`
 #' must nevertheless come from the full cross-section of a date, so it is
 #' computed here, before grouping by the secondary portfolio. Only the default
 #' [compute_breakpoints()] uses it; custom breakpoint functions receive their
@@ -863,11 +865,12 @@ cap_market_cap <- function(
 #' @param breakpoint_options,breakpoint_function,data_options See
 #'   [assign_portfolio()].
 #'
-#' @returns A single numeric cutoff, or `NA` if no cutoff applies.
+#' @returns A single numeric minimum market capitalization, or `NA` if none
+#'   applies.
 #'
 #' @keywords internal
 #' @noRd
-main_size_cutoff <- function(
+main_min_mktcap <- function(
   data,
   breakpoint_options,
   breakpoint_function,
@@ -880,7 +883,7 @@ main_size_cutoff <- function(
   ) {
     return(NA_real_)
   }
-  compute_min_size_cutoff(
+  compute_min_mktcap(
     data,
     threshold,
     breakpoint_options$breakpoints_exchanges,
@@ -888,19 +891,20 @@ main_size_cutoff <- function(
   )
 }
 
-#' Add an absolute size cutoff to breakpoint options (internal helper)
+#' Add an absolute minimum market cap to breakpoint options (internal helper)
 #'
 #' @param breakpoint_options A list of class `tidyfinance_breakpoint_options`.
-#' @param size_cutoff A single numeric cutoff, or `NA` to leave the options
+#' @param min_mktcap A single numeric minimum market capitalization, or `NA`
+#'   to leave the options
 #'   unchanged.
 #'
 #' @returns The breakpoint options.
 #'
 #' @keywords internal
 #' @noRd
-with_size_cutoff <- function(breakpoint_options, size_cutoff) {
-  if (!is.na(size_cutoff)) {
-    breakpoint_options$breakpoints_min_size_cutoff <- size_cutoff
+with_min_mktcap <- function(breakpoint_options, min_mktcap) {
+  if (!is.na(min_mktcap)) {
+    breakpoint_options$breakpoints_min_mktcap <- min_mktcap
   }
   breakpoint_options
 }

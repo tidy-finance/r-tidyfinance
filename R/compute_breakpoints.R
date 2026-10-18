@@ -121,22 +121,22 @@ compute_breakpoints <- function(
     sorting_values <- sorting_values[keep]
   }
 
-  # An absolute size cutoff is set internally by dependent bivariate sorts in
-  # compute_portfolio_returns(), which compute it once per date from the full
-  # cross-section instead of within each secondary portfolio.
-  size_cutoff <- breakpoint_options$breakpoints_min_size_cutoff
+  # An absolute minimum market cap is set internally by dependent bivariate
+  # sorts in compute_portfolio_returns(), which compute it once per date from
+  # the full cross-section instead of within each secondary portfolio.
+  min_mktcap <- breakpoint_options$breakpoints_min_mktcap
 
-  if (!is.null(breakpoints_min_size_threshold) || !is.null(size_cutoff)) {
+  if (!is.null(breakpoints_min_size_threshold) || !is.null(min_mktcap)) {
     mktcap_col <- data_options$mktcap_lag
-    if (is.null(size_cutoff)) {
-      size_cutoff <- compute_min_size_cutoff(
+    if (is.null(min_mktcap)) {
+      min_mktcap <- compute_min_mktcap(
         data,
         breakpoints_min_size_threshold,
         breakpoints_exchanges,
         data_options
       )
     }
-    above_size <- !is.na(data[[mktcap_col]]) & data[[mktcap_col]] > size_cutoff
+    above_size <- !is.na(data[[mktcap_col]]) & data[[mktcap_col]] > min_mktcap
     if (!is.null(breakpoints_exchanges)) {
       sorting_values <- data[[sorting_variable]][keep & above_size]
     } else {
@@ -251,7 +251,7 @@ compute_breakpoints <- function(
   breakpoints
 }
 
-#' Compute the size cutoff of breakpoints_min_size_threshold
+#' Compute the minimum market cap of breakpoints_min_size_threshold
 #'
 #' @param data A data frame with the market capitalization column and, if
 #'   `breakpoints_exchanges` is set, the exchange column.
@@ -260,9 +260,9 @@ compute_breakpoints <- function(
 #'   among whose stocks the quantile is computed.
 #' @param data_options A list of class `tidyfinance_data_options`.
 #'
-#' @returns A single numeric cutoff.
+#' @returns A single numeric minimum market capitalization.
 #' @noRd
-compute_min_size_cutoff <- function(
+compute_min_mktcap <- function(
   data,
   breakpoints_min_size_threshold,
   breakpoints_exchanges,
