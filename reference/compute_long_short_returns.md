@@ -82,6 +82,11 @@ portfolio_returns <- compute_portfolio_returns(
   data, "size", "univariate",
   breakpoint_options_main = breakpoint_options(n_portfolios = 5)
 )
+#> Column "exchange" not found: capping market capitalization at the percentile of
+#> all stocks.
+#> ℹ Add the exchange column or set `cap_weight_exchanges = NULL` to silence this
+#>   message.
+#> This message is displayed once every 8 hours.
 
 compute_long_short_returns(portfolio_returns)
 #> # A tibble: 100 × 4

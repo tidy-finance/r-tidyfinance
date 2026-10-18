@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,7 +109,10 @@ between 0 and 1, stocks with market capitalization below this quantile are
 excluded from breakpoint computation. The quantile is computed among
 <code>breakpoints_exchanges</code> stocks if specified, otherwise among all stocks.
 Requires a market capitalization column in the data (see
-<code><a href="data_options.html">data_options()</a></code>). Defaults to <code>NULL</code> (no size filtering).</p></dd>
+<code><a href="data_options.html">data_options()</a></code>). Defaults to <code>NULL</code> (no size filtering). In dependent
+bivariate sorts, the quantile for the main sorting variable is computed
+once per date from the full cross-section, not within each secondary
+portfolio.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

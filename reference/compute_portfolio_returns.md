@@ -21,6 +21,7 @@ compute_portfolio_returns(
   breakpoint_function_secondary = compute_breakpoints,
   min_portfolio_size = 1L,
   cap_weight = 0.8,
+  cap_weight_exchanges = "NYSE",
   data_options = NULL,
   quiet = FALSE
 )
@@ -114,6 +115,18 @@ compute_portfolio_returns(
   value-weighted excess returns (i.e., `ret_excess_vw_capped`). Defaults
   to `0.8`.
 
+- cap_weight_exchanges:
+
+  A character vector of exchanges whose stocks determine the cap: market
+  capitalization is capped at the `cap_weight` percentile of the stocks
+  listed on these exchanges on each date. Defaults to `"NYSE"`,
+  following Jensen, Kelly, and Pedersen (2023), who cap at the 80th
+  percentile of NYSE stocks. `NULL` uses all stocks. If the exchange
+  column (mapped via
+  [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
+  is missing, or no stock is listed on these exchanges on a date, the
+  percentile of all stocks is used and a message says so.
+
 - data_options:
 
   A list of class `tidyfinance_data_options` (created via
@@ -124,7 +137,9 @@ compute_portfolio_returns(
   `mktcap_lag` is used to specify the market capitalization. Uses
   [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)
   default if `NULL`: `"id" = "permno"`, `"date" = "date"`,
-  `"ret_excess" = "ret_excess"`, and `"mktcap_lag" = "mktcap_lag"`.
+  `"ret_excess" = "ret_excess"`, and `"mktcap_lag" = "mktcap_lag"`. The
+  `exchange` element (default `"exchange"`) is used with
+  `cap_weight_exchanges`.
 
 - quiet:
 
@@ -175,6 +190,12 @@ Ensure that `data` contains all required columns: the specified sorting
 variables and excess returns (see options and defaults set in
 `data_options`). The function will stop and throw an error if any
 required columns are missing.
+
+## References
+
+Jensen, T. I., Kelly, B., & Pedersen, L. H. (2023). Is there a
+replication crisis in finance? *Journal of Finance*, 78(5), 2465-2518.
+[doi:10.1111/jofi.13249](https://doi.org/10.1111/jofi.13249)
 
 ## See also
 

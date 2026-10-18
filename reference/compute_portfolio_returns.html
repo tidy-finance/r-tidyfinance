@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,6 +84,7 @@ sorting methods.</p>
 <span>  breakpoint_function_secondary <span class="op">=</span> <span class="va">compute_breakpoints</span>,</span>
 <span>  min_portfolio_size <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  cap_weight <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>  cap_weight_exchanges <span class="op">=</span> <span class="st">"NYSE"</span>,</span>
 <span>  data_options <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -170,6 +171,17 @@ value-weighted excess returns (i.e., <code>ret_excess_vw_capped</code>). Default
 <code>0.8</code>.</p></dd>
 
 
+<dt id="arg-cap-weight-exchanges">cap_weight_exchanges<a class="anchor" aria-label="anchor" href="#arg-cap-weight-exchanges"></a></dt>
+<dd><p>A character vector of exchanges whose stocks
+determine the cap: market capitalization is capped at the <code>cap_weight</code>
+percentile of the stocks listed on these exchanges on each date. Defaults
+to <code>"NYSE"</code>, following Jensen, Kelly, and Pedersen (2023), who cap at the
+80th percentile of NYSE stocks. <code>NULL</code> uses all stocks. If the exchange
+column (mapped via <code><a href="data_options.html">data_options()</a></code>) is missing, or no stock is listed on
+these exchanges on a date, the percentile of all stocks is used and a
+message says so.</p></dd>
+
+
 <dt id="arg-data-options">data_options<a class="anchor" aria-label="anchor" href="#arg-data-options"></a></dt>
 <dd><p>A list of class <code>tidyfinance_data_options</code> (created via
 <code><a href="data_options.html">data_options()</a></code>) specifying column name mappings. The <code>id</code> element is
@@ -178,7 +190,8 @@ date column, <code>ret_excess</code> is used to specify the excess return column
 <code>mktcap_lag</code> is used to specify the market capitalization. Uses
 <code><a href="data_options.html">data_options()</a></code> default if <code>NULL</code>: <code>"id" = "permno"</code>,
 <code>"date" = "date"</code>, <code>"ret_excess" = "ret_excess"</code>, and
-<code>"mktcap_lag" = "mktcap_lag"</code>.</p></dd>
+<code>"mktcap_lag" = "mktcap_lag"</code>. The <code>exchange</code> element (default
+<code>"exchange"</code>) is used with <code>cap_weight_exchanges</code>.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
@@ -221,6 +234,12 @@ based on the specified sorting method and rebalancing frequency.</p>
 sorting variables and excess returns (see options and defaults set in
 <code>data_options</code>). The function will stop and throw an error if any required
 columns are missing.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Jensen, T. I., Kelly, B., &amp; Pedersen, L. H. (2023). Is there a
+replication crisis in finance? <em>Journal of Finance</em>, 78(5), 2465-2518.
+<a href="https://doi.org/10.1111/jofi.13249" class="external-link">doi:10.1111/jofi.13249</a></p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

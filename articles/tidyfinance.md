@@ -322,26 +322,27 @@ portfolio_returns
 #> # A tibble: 3,030 × 5
 #>    portfolio date       ret_excess_vw ret_excess_ew ret_excess_vw_capped
 #>        <int> <date>             <dbl>         <dbl>                <dbl>
-#>  1         1 1974-07-01       0.00440      0.00268              0.00329 
-#>  2         1 1974-08-01       0.0144       0.0155               0.0183  
-#>  3         1 1974-09-01       0.0127       0.0174               0.0122  
-#>  4         1 1974-10-01       0.00393     -0.00804             -0.000116
-#>  5         1 1974-11-01       0.00896      0.00957              0.0118  
-#>  6         1 1974-12-01       0.00973      0.00277              0.00876 
-#>  7         1 1975-01-01       0.00745      0.0136               0.00862 
-#>  8         1 1975-02-01       0.00381     -0.000778             0.00609 
-#>  9         1 1975-03-01       0.00760      0.0111               0.00828 
-#> 10         1 1975-04-01      -0.00240     -0.00264             -0.00322 
+#>  1         1 1974-07-01       0.00440      0.00268              0.00304 
+#>  2         1 1974-08-01       0.0144       0.0155               0.0178  
+#>  3         1 1974-09-01       0.0127       0.0174               0.0123  
+#>  4         1 1974-10-01       0.00393     -0.00804             -0.000101
+#>  5         1 1974-11-01       0.00896      0.00957              0.0119  
+#>  6         1 1974-12-01       0.00973      0.00277              0.00881 
+#>  7         1 1975-01-01       0.00745      0.0136               0.00849 
+#>  8         1 1975-02-01       0.00381     -0.000778             0.00573 
+#>  9         1 1975-03-01       0.00760      0.0111               0.00829 
+#> 10         1 1975-04-01      -0.00240     -0.00264             -0.00323 
 #> # ℹ 3,020 more rows
 ```
 
 This baseline call named only two things; everything else came from a
 documented default. That is the point: a default call reproduces
 standard practice, and every construction choice that papers usually
-leave implicit — an 80th-percentile cap for the capped value-weighted
-return, no minimum portfolio size, the standard CRSP/Compustat column
-names — is here an argument you can see and change. The output reports
-three weighting schemes per portfolio-month: value-weighted
+leave implicit — a cap at the 80th percentile of NYSE market
+capitalization for the capped value-weighted return (Jensen, Kelly, and
+Pedersen 2023), no minimum portfolio size, the standard CRSP/Compustat
+column names — is here an argument you can see and change. The output
+reports three weighting schemes per portfolio-month: value-weighted
 (`ret_excess_vw`), equal-weighted (`ret_excess_ew`), and capped
 value-weighted (`ret_excess_vw_capped`).
 
@@ -560,6 +561,10 @@ the Returns on Stocks and Bonds.” *Journal of Financial Economics* 33
 Fama, Eugene F., and James D. MacBeth. 1973. “Risk, Return, and
 Equilibrium: Empirical Tests.” *Journal of Political Economy* 81 (3):
 607–636.
+
+Jensen, Theis Ingerslev, Bryan Kelly, and Lasse Heje Pedersen. 2023. “Is
+There a Replication Crisis in Finance?” *The Journal of Finance* 78 (5):
+2465–2518.
 
 Newey, Whitney K., and Kenneth D. West. 1987. “A Simple, Positive
 Semi-Definite, Heteroskedasticity and Autocorrelation Consistent

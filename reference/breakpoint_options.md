@@ -50,7 +50,9 @@ breakpoint_options(
   stocks if specified, otherwise among all stocks. Requires a market
   capitalization column in the data (see
   [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)).
-  Defaults to `NULL` (no size filtering).
+  Defaults to `NULL` (no size filtering). In dependent bivariate sorts,
+  the quantile for the main sorting variable is computed once per date
+  from the full cross-section, not within each secondary portfolio.
 
 - ...:
 

@@ -19,6 +19,7 @@ implement_portfolio_sort(
   breakpoint_function_secondary = compute_breakpoints,
   min_portfolio_size = 1L,
   cap_weight = 0.8,
+  cap_weight_exchanges = "NYSE",
   data_options = NULL,
   quiet = FALSE
 )
@@ -108,6 +109,12 @@ implement_portfolio_sort(
   A numeric between 0 and 1 specifying the quantile at which portfolio
   weights are capped for the capped value-weighted return. Defaults to
   `0.8`.
+
+- cap_weight_exchanges:
+
+  A character vector of exchanges whose stocks determine the cap, or
+  `NULL` for all stocks. Defaults to `"NYSE"`. See
+  [`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md).
 
 - data_options:
 
