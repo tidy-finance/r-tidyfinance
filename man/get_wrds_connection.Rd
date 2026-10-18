@@ -25,6 +25,26 @@ set their WRDS username and password as environment variables
 \code{WRDS_USER} and \code{WRDS_PASSWORD}, respectively, before using this
 function.
 }
+\section{WRDS account setup}{
+
+A WRDS username and password alone are not enough to connect. Before the
+first connection:
+\enumerate{
+\item Get a WRDS account through an institution that subscribes to the
+data you need (e.g., CRSP and Compustat).
+\item Enroll in two-factor authentication (Duo) for your WRDS account.
+WRDS requires it for all connections, including connections from R.
+\item Log in to the WRDS website (\url{https://wrds-www.wharton.upenn.edu})
+once and accept the terms of use, if WRDS asks you to.
+\item Store your username and password with \code{\link[=set_wrds_credentials]{set_wrds_credentials()}},
+or set the \code{WRDS_USER} and \code{WRDS_PASSWORD} environment variables, and
+restart R.
+\item When you connect, approve the Duo push notification on your
+registered device. The connection waits until you approve it.
+}
+If the connection fails, the error message lists these steps.
+}
+
 \examples{
 \dontrun{
   # Before using this function, set your WRDS credentials:
