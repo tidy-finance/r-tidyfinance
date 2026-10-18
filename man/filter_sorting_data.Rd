@@ -8,6 +8,7 @@ filter_sorting_data(
   data,
   filter_options = NULL,
   data_options = NULL,
+  rebalancing_month = NULL,
   quiet = FALSE
 )
 }
@@ -41,19 +42,32 @@ exclude observations with non-positive book equity. Defaults to
 \code{FALSE}.
 \item \code{exclude_negative_earnings} A logical indicating whether to
 exclude observations with non-positive earnings. Defaults to \code{FALSE}.
+\item \code{timing} Either \code{"formation"} (the default) to apply the screens
+only in the formation month when portfolios are rebalanced once a
+year, or \code{"every_period"} to apply them in every month, which can
+introduce look-ahead bias.
 }}
 
 \item{data_options}{A list of class \code{tidyfinance_data_options} (created via
 \code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{siccd} element is
 used to specify the SIC code column, \code{price} is used to specify the
-(adjusted) price column, \code{mktcap_lag} is used to specify the market
-capitalization column, \code{date} is used to specify the date column,
+price column of the \code{min_stock_price} screen, \code{mktcap_lag} is used to
+specify the market capitalization column, \code{date} is used to specify the
+date column,
 \code{listing_age} is used to specify the listing age column, \code{be} is used to
 specify the book equity column, and \code{earnings} is used to specify the
 earnings column. Uses \code{\link[=data_options]{data_options()}} default if \code{NULL}:
-\code{"siccd" = "siccd"}, \code{"price" = "prc_adj"}, \code{"exchange" = "exchange"}
+\code{"siccd" = "siccd"}, \code{"price" = "prc_lag"}, \code{"exchange" = "exchange"}
 \code{"mktcap_lag" = "mktcap_lag"}, \code{"date" = "date"},
-\code{"listing_age" = "listing_age"}, \code{"be" = "be"}, and \code{"earnings" = "ib"}.}
+\code{"listing_age" = "listing_age"}, \code{"be" = "be"}, and \code{"earnings" = "ib"}.
+With \code{rebalancing_month}, the \code{id} element (default \code{"permno"}) is used
+to keep a stock across its holding period.}
+
+\item{rebalancing_month}{An optional integer between 1 and 12 specifying
+the month in which portfolios are formed when they are rebalanced once a
+year (see \code{\link[=compute_portfolio_returns]{compute_portfolio_returns()}}). \code{NULL} (the default) means
+monthly rebalancing. Together with the \code{timing} element of
+\code{filter_options}, it determines when the screens apply; see Details.}
 
 \item{quiet}{A logical indicating whether informational messages should be
 suppressed. Defaults to \code{FALSE}.}
@@ -70,12 +84,30 @@ listing age, positive book equity, and positive earnings. An informational
 message is emitted for each filter that actually removes at least one
 observation.
 }
+\details{
+Without \code{rebalancing_month}, every month is a formation month and each row
+is screened on its own values. The screens are then free of look-ahead bias
+only if the screened columns are known at the start of the month: the
+default price column \code{prc_lag} and \code{mktcap_lag} are lagged by one month,
+and accounting variables such as book equity and earnings should be lagged
+as well (e.g., with \code{\link[=join_lagged_values]{join_lagged_values()}}).
+
+With \code{rebalancing_month}, portfolios are formed once a year and held for
+twelve months. By default (\code{filter_options(timing = "formation")}), each
+screen is evaluated in the formation month only, and a stock that passes
+all screens keeps all its rows until the next formation month, even if it
+fails a screen in a holding month. Rows of stocks that fail a screen at
+formation, and rows before the first formation month, are removed. With
+\code{timing = "every_period"}, the screens are evaluated in every month
+(ex-post) and a warning is issued, because dropping holding-month returns
+based on information from those months can bias factor returns.
+}
 \examples{
 data <- data.frame(
   permno = 1:5,
   date = as.Date("2020-01-01"),
   siccd = c(6100, 2000, 4950, 3000, 6500),
-  prc_adj = c(5, 0.5, 15, 20, 10)
+  prc_lag = c(5, 0.5, 15, 20, 10)
 )
 
 data |>
@@ -84,6 +116,20 @@ data |>
       exclude_financials = TRUE,
       min_stock_price = 1
     )
+  )
+
+# Annual rebalancing in July: the price screen is evaluated in July only,
+# so stock 1 is kept in August although its price falls below 1
+data_annual <- data.frame(
+  permno = rep(1:2, each = 2),
+  date = as.Date(rep(c("2020-07-01", "2020-08-01"), 2)),
+  prc_lag = c(2, 0.5, 0.5, 2)
+)
+
+data_annual |>
+  filter_sorting_data(
+    filter_options = filter_options(min_stock_price = 1),
+    rebalancing_month = 7
   )
 
 }

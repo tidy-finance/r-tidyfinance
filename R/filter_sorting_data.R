@@ -7,6 +7,24 @@
 #' message is emitted for each filter that actually removes at least one
 #' observation.
 #'
+#' @details
+#' Without `rebalancing_month`, every month is a formation month and each row
+#' is screened on its own values. The screens are then free of look-ahead bias
+#' only if the screened columns are known at the start of the month: the
+#' default price column `prc_lag` and `mktcap_lag` are lagged by one month,
+#' and accounting variables such as book equity and earnings should be lagged
+#' as well (e.g., with [join_lagged_values()]).
+#'
+#' With `rebalancing_month`, portfolios are formed once a year and held for
+#' twelve months. By default (`filter_options(timing = "formation")`), each
+#' screen is evaluated in the formation month only, and a stock that passes
+#' all screens keeps all its rows until the next formation month, even if it
+#' fails a screen in a holding month. Rows of stocks that fail a screen at
+#' formation, and rows before the first formation month, are removed. With
+#' `timing = "every_period"`, the screens are evaluated in every month
+#' (ex-post) and a warning is issued, because dropping holding-month returns
+#' based on information from those months can bias factor returns.
+#'
 #' @param data A data frame containing the stock-level panel data to be
 #'   filtered.
 #' @param filter_options A list of class `tidyfinance_filter_options` created
@@ -35,18 +53,30 @@
 #'       `FALSE`.
 #'     \item `exclude_negative_earnings` A logical indicating whether to
 #'       exclude observations with non-positive earnings. Defaults to `FALSE`.
+#'     \item `timing` Either `"formation"` (the default) to apply the screens
+#'       only in the formation month when portfolios are rebalanced once a
+#'       year, or `"every_period"` to apply them in every month, which can
+#'       introduce look-ahead bias.
 #'   }
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'   [data_options()]) specifying column name mappings. The `siccd` element is
 #'   used to specify the SIC code column, `price` is used to specify the
-#'   (adjusted) price column, `mktcap_lag` is used to specify the market
-#'   capitalization column, `date` is used to specify the date column,
+#'   price column of the `min_stock_price` screen, `mktcap_lag` is used to
+#'   specify the market capitalization column, `date` is used to specify the
+#'   date column,
 #'   `listing_age` is used to specify the listing age column, `be` is used to
 #'   specify the book equity column, and `earnings` is used to specify the
 #'   earnings column. Uses [data_options()] default if `NULL`:
-#'   `"siccd" = "siccd"`, `"price" = "prc_adj"`, `"exchange" = "exchange"`
+#'   `"siccd" = "siccd"`, `"price" = "prc_lag"`, `"exchange" = "exchange"`
 #'   `"mktcap_lag" = "mktcap_lag"`, `"date" = "date"`,
 #'   `"listing_age" = "listing_age"`, `"be" = "be"`, and `"earnings" = "ib"`.
+#'   With `rebalancing_month`, the `id` element (default `"permno"`) is used
+#'   to keep a stock across its holding period.
+#' @param rebalancing_month An optional integer between 1 and 12 specifying
+#'   the month in which portfolios are formed when they are rebalanced once a
+#'   year (see [compute_portfolio_returns()]). `NULL` (the default) means
+#'   monthly rebalancing. Together with the `timing` element of
+#'   `filter_options`, it determines when the screens apply; see Details.
 #' @param quiet A logical indicating whether informational messages should be
 #'   suppressed. Defaults to `FALSE`.
 #'
@@ -61,7 +91,7 @@
 #'   permno = 1:5,
 #'   date = as.Date("2020-01-01"),
 #'   siccd = c(6100, 2000, 4950, 3000, 6500),
-#'   prc_adj = c(5, 0.5, 15, 20, 10)
+#'   prc_lag = c(5, 0.5, 15, 20, 10)
 #' )
 #'
 #' data |>
@@ -72,10 +102,25 @@
 #'     )
 #'   )
 #'
+#' # Annual rebalancing in July: the price screen is evaluated in July only,
+#' # so stock 1 is kept in August although its price falls below 1
+#' data_annual <- data.frame(
+#'   permno = rep(1:2, each = 2),
+#'   date = as.Date(rep(c("2020-07-01", "2020-08-01"), 2)),
+#'   prc_lag = c(2, 0.5, 0.5, 2)
+#' )
+#'
+#' data_annual |>
+#'   filter_sorting_data(
+#'     filter_options = filter_options(min_stock_price = 1),
+#'     rebalancing_month = 7
+#'   )
+#'
 filter_sorting_data <- function(
   data,
   filter_options = NULL,
   data_options = NULL,
+  rebalancing_month = NULL,
   quiet = FALSE
 ) {
   if (!is.logical(quiet) || length(quiet) != 1 || is.na(quiet)) {
@@ -89,6 +134,132 @@ filter_sorting_data <- function(
   if (is.null(data_options)) {
     data_options <- data_options()
   }
+
+  if (
+    !is.null(rebalancing_month) &&
+      (!is.numeric(rebalancing_month) ||
+        length(rebalancing_month) != 1L ||
+        is.na(rebalancing_month) ||
+        !rebalancing_month %in% 1:12)
+  ) {
+    cli::cli_abort(
+      "{.arg rebalancing_month} must be a single integer between 1 and 12."
+    )
+  }
+
+  if (is.null(rebalancing_month) || !has_active_screens(filter_options)) {
+    return(apply_screens(data, filter_options, data_options, quiet))
+  }
+
+  timing <- filter_options$timing
+  if (is.null(timing)) {
+    timing <- "formation"
+  }
+
+  if (timing == "every_period") {
+    cli::cli_warn(
+      c(
+        "Screens are applied in every month, including holding months.",
+        "!" = paste(
+          "A stock that fails a screen after portfolio formation loses those",
+          "months' returns, so factor returns can contain look-ahead bias."
+        ),
+        "i" = paste(
+          "Use {.code filter_options(timing = \"formation\")} to apply",
+          "the screens only when portfolios are formed."
+        )
+      ),
+      .frequency = "regularly",
+      .frequency_id = "tidyfinance_every_period_screens"
+    )
+    return(apply_screens(data, filter_options, data_options, quiet))
+  }
+
+  screen_at_formation(
+    data,
+    filter_options,
+    data_options,
+    rebalancing_month,
+    quiet
+  )
+}
+
+#' Apply screens in the formation month and keep passing stocks for the
+#' holding period
+#'
+#' @param data,filter_options,data_options,rebalancing_month,quiet See
+#'   [filter_sorting_data()].
+#'
+#' @returns The filtered data frame.
+#' @noRd
+screen_at_formation <- function(
+  data,
+  filter_options,
+  data_options,
+  rebalancing_month,
+  quiet
+) {
+  col_id <- data_options$id
+  col_date <- data_options$date
+  require_column(data, col_id, "data_options$id")
+  require_column(data, col_date, "data_options$date")
+
+  # Portfolios formed in rebalancing_month of year y are held until the month
+  # before rebalancing_month of year y + 1.
+  cohort <- lubridate::year(data[[col_date]]) -
+    (lubridate::month(data[[col_date]]) < rebalancing_month)
+  is_formation <- lubridate::month(data[[col_date]]) == rebalancing_month
+
+  passed <- apply_screens(
+    data[is_formation, , drop = FALSE],
+    filter_options,
+    data_options,
+    quiet
+  )
+
+  passed_keys <- paste(
+    passed[[col_id]],
+    lubridate::year(passed[[col_date]])
+  )
+  keep <- paste(data[[col_id]], cohort) %in% passed_keys
+
+  n_holding_dropped <- sum(!keep & !is_formation)
+  if (!quiet && n_holding_dropped > 0) {
+    cli::cli_inform(
+      paste(
+        "Screens applied in formation month {rebalancing_month}: removed",
+        "{n_holding_dropped} holding-month observation{?s} of stocks that",
+        "failed a screen at formation or precede the first formation month."
+      )
+    )
+  }
+
+  data[keep, , drop = FALSE]
+}
+
+#' Check whether any screen in filter options is active
+#'
+#' @param filter_options A list of class `tidyfinance_filter_options`.
+#'
+#' @returns A single logical.
+#' @noRd
+has_active_screens <- function(filter_options) {
+  isTRUE(filter_options$exclude_financials) ||
+    isTRUE(filter_options$exclude_utilities) ||
+    !is.null(filter_options$min_stock_price) ||
+    !is.null(filter_options$min_size_quantile) ||
+    !is.null(filter_options$min_listing_age) ||
+    isTRUE(filter_options$exclude_negative_book_equity) ||
+    isTRUE(filter_options$exclude_negative_earnings)
+}
+
+#' Apply all screens row by row
+#'
+#' @param data,filter_options,data_options,quiet See [filter_sorting_data()].
+#'
+#' @returns The filtered data frame.
+#' @noRd
+apply_screens <- function(data, filter_options, data_options, quiet) {
 
   # exclude_financials / exclude_utilities (share the same SIC column)
   if (

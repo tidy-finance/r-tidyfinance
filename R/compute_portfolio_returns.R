@@ -66,6 +66,14 @@
 #'   at which market capitalization is capped per date when computing capped
 #'   value-weighted excess returns (i.e., `ret_excess_vw_capped`). Defaults to
 #'   `0.8`.
+#' @param cap_weight_exchanges A character vector of exchanges whose stocks
+#'   determine the cap: market capitalization is capped at the `cap_weight`
+#'   percentile of the stocks listed on these exchanges on each date. Defaults
+#'   to `"NYSE"`, following Jensen, Kelly, and Pedersen (2023), who cap at the
+#'   80th percentile of NYSE stocks. `NULL` uses all stocks. If the exchange
+#'   column (mapped via [data_options()]) is missing, or no stock is listed on
+#'   these exchanges on a date, the percentile of all stocks is used and a
+#'   message says so.
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'   [data_options()]) specifying column name mappings. The `id` element is
 #'   used to specify the entity (i.e., firm), `date` is used to specify the
@@ -73,7 +81,8 @@
 #'   `mktcap_lag` is used to specify the market capitalization. Uses
 #'   [data_options()] default if `NULL`: `"id" = "permno"`,
 #'   `"date" = "date"`, `"ret_excess" = "ret_excess"`, and
-#'   `"mktcap_lag" = "mktcap_lag"`.
+#'   `"mktcap_lag" = "mktcap_lag"`. The `exchange` element (default
+#'   `"exchange"`) is used with `cap_weight_exchanges`.
 #' @param quiet A logical value indicating whether to suppress informational
 #'   messages about missing values in the output panel (default is `FALSE`).
 #'
@@ -101,6 +110,11 @@
 #'       capped at the `cap_weight` percentile per date. `NA` if insufficient
 #'       observations for that portfolio-date.
 #'   }
+#'
+#' @references
+#'   Jensen, T. I., Kelly, B., & Pedersen, L. H. (2023). Is there a
+#'   replication crisis in finance? *Journal of Finance*, 78(5), 2465-2518.
+#'   \doi{10.1111/jofi.13249}
 #'
 #' @family portfolio functions
 #' @export
@@ -146,6 +160,7 @@ compute_portfolio_returns <- function(
   breakpoint_function_secondary = compute_breakpoints,
   min_portfolio_size = 1L,
   cap_weight = 0.8,
+  cap_weight_exchanges = "NYSE",
   data_options = NULL,
   quiet = FALSE
 ) {
@@ -187,6 +202,17 @@ compute_portfolio_returns <- function(
     cli::cli_abort("'cap_weight' must be a single numeric value in [0, 1].")
   }
 
+  if (
+    !is.null(cap_weight_exchanges) &&
+      (!is.character(cap_weight_exchanges) ||
+        length(cap_weight_exchanges) == 0L ||
+        anyNA(cap_weight_exchanges))
+  ) {
+    cli::cli_abort(
+      "{.arg cap_weight_exchanges} must be {.val NULL} or a character vector."
+    )
+  }
+
   id_col <- data_options$id
   date_col <- data_options$date
   ret_col <- data_options$ret_excess
@@ -219,14 +245,15 @@ compute_portfolio_returns <- function(
   # so that the quantile is not distorted by zero-filled missing values
   data <- data |>
     check_new_col(w_capped_col) |>
-    dplyr::group_by(.data[[date_col]]) |>
-    dplyr::mutate(
-      !!w_capped_col := pmin(
-        .data[[w_col]],
-        stats::quantile(.data[[w_col]], cap_weight, na.rm = TRUE)
-      )
-    ) |>
-    dplyr::ungroup()
+    cap_market_cap(
+      w_col,
+      w_capped_col,
+      date_col,
+      data_options$exchange,
+      cap_weight,
+      if (mktcap_lag_missing) NULL else cap_weight_exchanges,
+      quiet
+    )
 
   # Replace NA market caps with 0, as these observations should not contribute
   # to the value-weighted return
@@ -343,7 +370,9 @@ compute_portfolio_returns <- function(
 
     if (is.null(rebalancing_month)) {
       portfolio_returns <- data |>
-        check_new_col(c("portfolio_secondary", "portfolio_main")) |>
+        check_new_col(
+          c("portfolio_secondary", "portfolio_main", ".min_mktcap_main")
+        ) |>
         dplyr::group_by(.data[[date_col]]) |>
         dplyr::mutate(
           portfolio_secondary = assign_portfolio(
@@ -352,23 +381,34 @@ compute_portfolio_returns <- function(
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
+          ),
+          .min_mktcap_main = main_min_mktcap(
+            dplyr::pick(dplyr::everything()),
+            breakpoint_options_main,
+            breakpoint_function_main,
+            data_options
           )
         ) |>
-        dplyr::ungroup() |>
         dplyr::group_by(.data[[date_col]], .data$portfolio_secondary) |>
         dplyr::mutate(
           portfolio_main = assign_portfolio(
             dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1],
-            breakpoint_options = breakpoint_options_main,
+            breakpoint_options = with_min_mktcap(
+              breakpoint_options_main,
+              dplyr::first(.data$.min_mktcap_main)
+            ),
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
-        dplyr::ungroup()
+        dplyr::ungroup() |>
+        dplyr::select(-".min_mktcap_main")
     } else {
       portfolio_data <- data |>
-        check_new_col(c("portfolio_secondary", "portfolio_main")) |>
+        check_new_col(
+          c("portfolio_secondary", "portfolio_main", ".min_mktcap_main")
+        ) |>
         dplyr::filter(month(.data[[date_col]]) == rebalancing_month) |>
         dplyr::group_by(.data[[date_col]]) |>
         dplyr::mutate(
@@ -378,20 +418,29 @@ compute_portfolio_returns <- function(
             breakpoint_options = breakpoint_options_secondary,
             breakpoint_function = breakpoint_function_secondary,
             data_options = data_options
+          ),
+          .min_mktcap_main = main_min_mktcap(
+            dplyr::pick(dplyr::everything()),
+            breakpoint_options_main,
+            breakpoint_function_main,
+            data_options
           )
         ) |>
-        dplyr::ungroup() |>
         dplyr::group_by(.data[[date_col]], .data$portfolio_secondary) |>
         dplyr::mutate(
           portfolio_main = assign_portfolio(
             dplyr::pick(dplyr::everything()),
             sorting_variable = sorting_variables[1L],
-            breakpoint_options = breakpoint_options_main,
+            breakpoint_options = with_min_mktcap(
+              breakpoint_options_main,
+              dplyr::first(.data$.min_mktcap_main)
+            ),
             breakpoint_function = breakpoint_function_main,
             data_options = data_options
           )
         ) |>
         dplyr::ungroup() |>
+        dplyr::select(-".min_mktcap_main") |>
         dplyr::select(all_of(c(
           id_col,
           date_col,
@@ -709,4 +758,153 @@ join_rebalanced_portfolios <- function(
       relationship = "many-to-one"
     ) |>
     dplyr::rename("{date_col}" := "..date", "{id_col}" := "..id")
+}
+
+#' Cap market capitalization per date (internal helper)
+#'
+#' Caps `w_col` at the `cap_weight` percentile of the stocks listed on
+#' `cap_weight_exchanges` on each date, or of all stocks if
+#' `cap_weight_exchanges` is `NULL`, the exchange column is missing, or no
+#' stock is listed on these exchanges on a date.
+#'
+#' @param data A data frame.
+#' @param w_col,w_capped_col,date_col,exchange_col Column names.
+#' @param cap_weight The percentile at which to cap.
+#' @param cap_weight_exchanges `NULL` or a character vector of exchanges.
+#' @param quiet A logical; if `TRUE`, no message is emitted.
+#'
+#' @returns `data` with the capped column `w_capped_col`.
+#'
+#' @keywords internal
+#' @noRd
+cap_market_cap <- function(
+  data,
+  w_col,
+  w_capped_col,
+  date_col,
+  exchange_col,
+  cap_weight,
+  cap_weight_exchanges,
+  quiet
+) {
+  if (!is.null(cap_weight_exchanges) && !exchange_col %in% colnames(data)) {
+    if (!quiet) {
+      cli::cli_inform(
+        c(
+          paste(
+            "Column {.val {exchange_col}} not found: capping market",
+            "capitalization at the percentile of all stocks."
+          ),
+          "i" = paste(
+            "Add the exchange column or set",
+            "{.code cap_weight_exchanges = NULL} to silence this message."
+          )
+        ),
+        .frequency = "regularly",
+        .frequency_id = "tidyfinance_cap_weight_exchanges"
+      )
+    }
+    cap_weight_exchanges <- NULL
+  }
+
+  if (is.null(cap_weight_exchanges)) {
+    reference <- rep(TRUE, nrow(data))
+  } else {
+    reference <- data[[exchange_col]] %in% cap_weight_exchanges
+  }
+
+  caps <- tibble::tibble(
+    .date = data[[date_col]],
+    .w = data[[w_col]],
+    .reference = reference
+  ) |>
+    dplyr::group_by(.data$.date) |>
+    dplyr::summarise(
+      .has_reference = any(.data$.reference & !is.na(.data$.w)),
+      .cap = stats::quantile(
+        if (any(.data$.reference & !is.na(.data$.w))) {
+          .data$.w[.data$.reference]
+        } else {
+          .data$.w
+        },
+        cap_weight,
+        na.rm = TRUE,
+        names = FALSE
+      ),
+      .groups = "drop"
+    )
+
+  n_fallback <- sum(!caps$.has_reference)
+  if (!quiet && !is.null(cap_weight_exchanges) && n_fallback > 0L) {
+    cli::cli_inform(
+      paste(
+        "No {.val {cap_weight_exchanges}} stocks with market capitalization",
+        "on {n_fallback} date{?s}: capping at the percentile of all stocks",
+        "on {cli::qty(n_fallback)}{?that date/these dates}."
+      )
+    )
+  }
+
+  cap <- caps$.cap[match(data[[date_col]], caps$.date)]
+  data[[w_capped_col]] <- pmin(data[[w_col]], cap)
+  data
+}
+
+#' Minimum market cap of the main breakpoints in dependent sorts (internal
+#' helper)
+#'
+#' In dependent bivariate sorts, the main breakpoints are computed within each
+#' secondary portfolio. The minimum market cap of
+#' `breakpoints_min_size_threshold`
+#' must nevertheless come from the full cross-section of a date, so it is
+#' computed here, before grouping by the secondary portfolio. Only the default
+#' [compute_breakpoints()] uses it; custom breakpoint functions receive their
+#' options unchanged.
+#'
+#' @param data The cross-section of one date.
+#' @param breakpoint_options,breakpoint_function,data_options See
+#'   [assign_portfolio()].
+#'
+#' @returns A single numeric minimum market capitalization, or `NA` if none
+#'   applies.
+#'
+#' @keywords internal
+#' @noRd
+main_min_mktcap <- function(
+  data,
+  breakpoint_options,
+  breakpoint_function,
+  data_options
+) {
+  threshold <- breakpoint_options$breakpoints_min_size_threshold
+  if (
+    is.null(threshold) ||
+      !identical(breakpoint_function, compute_breakpoints)
+  ) {
+    return(NA_real_)
+  }
+  compute_min_mktcap(
+    data,
+    threshold,
+    breakpoint_options$breakpoints_exchanges,
+    data_options
+  )
+}
+
+#' Add an absolute minimum market cap to breakpoint options (internal helper)
+#'
+#' @param breakpoint_options A list of class `tidyfinance_breakpoint_options`.
+#' @param min_mktcap A single numeric minimum market capitalization, or `NA`
+#'   to leave the options
+#'   unchanged.
+#'
+#' @returns The breakpoint options.
+#'
+#' @keywords internal
+#' @noRd
+with_min_mktcap <- function(breakpoint_options, min_mktcap) {
+  if (!is.na(min_mktcap)) {
+    breakpoint_options$breakpoints_min_mktcap <- min_mktcap
+  }
+  breakpoint_options
 }

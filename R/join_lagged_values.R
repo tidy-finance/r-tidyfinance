@@ -12,12 +12,16 @@
 #'   and joined.
 #' @param id_keys A character vector specifying the identifier column(s).
 #' @param min_lag A `lubridate::Period` specifying the lower lag bound
-#'   (inclusive).
+#'   (inclusive). Required unless `ff_adjustment = TRUE`.
 #' @param max_lag A `lubridate::Period` specifying the upper lag bound
-#'   (inclusive).
-#' @param ff_adjustment Logical; if `TRUE`, keeps only the last observation
-#'   per identifier and year before lagging (Fama-French convention). Defaults
-#'   to `FALSE`.
+#'   (inclusive). Required unless `ff_adjustment = TRUE`.
+#' @param ff_adjustment Logical; if `TRUE`, applies the Fama and French
+#'   (1993) timing convention: the last observation per identifier and
+#'   calendar year (the fiscal year-end) is used from July of the following
+#'   year through June of the year after that, whatever the month of the
+#'   fiscal year-end. A value for a fiscal year ending in December 2020 or in
+#'   June 2020 is thus used from July 2021 to June 2022. `min_lag` and
+#'   `max_lag` are ignored. Defaults to `FALSE`.
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'   [data_options()]) specifying column name mappings. The `date` element is
 #'   used to identify the date column. Uses [data_options()] default if
@@ -49,12 +53,24 @@
 #'   min_lag = months(1),
 #'   max_lag = months(3)
 #' )
+#'
+#' # Fama-French timing: annual values are used from July to June
+#' annual <- tibble(
+#'   id = 1:2,
+#'   date = as.Date(c("2019-12-01", "2019-06-01")),
+#'   x = c(10, 20)
+#' )
+#' monthly <- tibble(
+#'   id = rep(1:2, each = 3),
+#'   date = rep(as.Date(c("2020-06-01", "2020-07-01", "2021-06-01")), 2)
+#' )
+#' join_lagged_values(monthly, annual, id_keys = "id", ff_adjustment = TRUE)
 join_lagged_values <- function(
   original_data,
   new_data,
   id_keys,
-  min_lag,
-  max_lag,
+  min_lag = NULL,
+  max_lag = NULL,
   ff_adjustment = FALSE,
   data_options = NULL
 ) {
@@ -66,6 +82,20 @@ join_lagged_values <- function(
     data_options <- data_options()
   }
   id_date <- data_options$date
+
+  if (ff_adjustment) {
+    inform_ff_lags_ignored(c(
+      if (!is.null(min_lag)) "min_lag",
+      if (!is.null(max_lag)) "max_lag"
+    ))
+  } else if (is.null(min_lag) || is.null(max_lag)) {
+    cli::cli_abort(
+      paste(
+        "{.arg min_lag} and {.arg max_lag} are required unless",
+        "{.code ff_adjustment = TRUE}."
+      )
+    )
+  }
 
   if (!is.character(id_keys)) {
     cli::cli_abort(
@@ -138,32 +168,26 @@ join_lagged_values <- function(
     )
   }
 
-  new_data <- new_data |>
-    check_new_col(c(".lower", ".upper")) |>
-    dplyr::mutate(
-      .lower = .data[[id_date]] %m+% min_lag,
-      .upper = .data[[id_date]] %m+% max_lag
-    )
-
   if (ff_adjustment) {
+    new_data <- check_new_col(new_data, c(".lower", ".upper", ".year"))
+    new_column_names <- setdiff(new_column_names, ".year")
+  } else {
     new_data <- new_data |>
-      check_new_col(".year") |>
-      dplyr::mutate(.year = lubridate::year(.data[[id_date]]))
+      check_new_col(c(".lower", ".upper")) |>
+      dplyr::mutate(
+        .lower = .data[[id_date]] %m+% min_lag,
+        .upper = .data[[id_date]] %m+% max_lag
+      )
   }
 
   for (col_name in new_column_names) {
-    tmp_data <- new_data |>
-      dplyr::select(
-        dplyr::all_of(c(id_keys, id_date, col_name, ".lower", ".upper")),
-        dplyr::any_of(".year")
-      )
-
     if (ff_adjustment) {
-      tmp_data <- tmp_data |>
-        dplyr::group_by(dplyr::across(dplyr::all_of(c(id_keys, ".year")))) |>
-        dplyr::slice_max(order_by = .data[[id_date]], n = 1) |>
-        dplyr::ungroup() |>
-        dplyr::select(-dplyr::all_of(id_date))
+      tmp_data <- ff_windows(new_data, id_keys, id_date, col_name)
+    } else {
+      tmp_data <- new_data |>
+        dplyr::select(
+          dplyr::all_of(c(id_keys, col_name, ".lower", ".upper"))
+        )
     }
 
     col_values <- original_data |>
@@ -184,4 +208,40 @@ join_lagged_values <- function(
   }
 
   original_data
+}
+
+# Fama-French timing: keep the last observation per id and calendar year of
+# the fiscal year-end, and use it from July of the following year through June
+# of the year after that.
+ff_windows <- function(data, id_keys, date_col, cols) {
+  .year <- NULL
+
+  data |>
+    dplyr::select(dplyr::all_of(c(id_keys, date_col, cols))) |>
+    dplyr::mutate(.year = lubridate::year(.data[[date_col]])) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(c(id_keys, ".year")))) |>
+    dplyr::slice_max(order_by = .data[[date_col]], n = 1, with_ties = FALSE) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(
+      .lower = lubridate::make_date(.year + 1L, 7L, 1L),
+      .upper = lubridate::make_date(.year + 2L, 6L, 30L)
+    ) |>
+    dplyr::select(-dplyr::all_of(c(date_col, ".year")))
+}
+
+inform_ff_lags_ignored <- function(args) {
+  if (length(args) == 0) {
+    return(invisible())
+  }
+  cli::cli_inform(
+    c(
+      "i" = paste(
+        "{.arg {args}} {?is/are} ignored with {.code ff_adjustment = TRUE}.",
+        "A value for a fiscal year ending in calendar year t is used from",
+        "July of t + 1 through June of t + 2."
+      )
+    ),
+    .frequency = "regularly",
+    .frequency_id = "tidyfinance_ff_adjustment_lags"
+  )
 }

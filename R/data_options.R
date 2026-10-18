@@ -20,8 +20,10 @@
 #'   (defaults to `"portfolio"`).
 #' @param siccd A character string representing the Standard Industrial
 #'   Classification code variable (defaults to `"siccd"`).
-#' @param price A character string representing the (adjusted) price variable
-#'   (defaults to `"prc_adj"`).
+#' @param price A character string representing the price variable used by
+#'   the `min_stock_price` screen of [filter_sorting_data()] (defaults to
+#'   `"prc_lag"`, the nominal price at the end of the previous month, as
+#'   returned by `download_data("WRDS", "crsp_monthly")`).
 #' @param listing_age A character string representing the listing age variable
 #'   (defaults to `"listing_age"`).
 #' @param be A character string representing the book equity variable (defaults
@@ -52,7 +54,7 @@ data_options <- function(
   ret_excess = "ret_excess",
   portfolio = "portfolio",
   siccd = "siccd",
-  price = "prc_adj",
+  price = "prc_lag",
   listing_age = "listing_age",
   be = "be",
   earnings = "ib",
@@ -69,7 +71,7 @@ data_options <- function(
     "siccd",
     "Standard Industrial Classification code"
   )
-  validate_column_name(price, "price", "(adjusted) price")
+  validate_column_name(price, "price", "price")
   validate_column_name(listing_age, "listing_age", "listing age")
   validate_column_name(be, "be", "book equity")
   validate_column_name(earnings, "earnings", "earnings")

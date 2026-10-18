@@ -78,27 +78,57 @@ test_that("drop_na skips NA source rows in window lag", {
   expect_equal(r_drop$size_lag[4], 1)
 })
 
-# NOTE: ff_adjustment with a non-NULL `by` crashes in the current source
-# due to `interaction(lagged[by], yr)` receiving a data frame instead of
-# a vector. That branch cannot be covered until the source is fixed to use
-# `lagged[[by]]` (or an equivalent do.call approach for multi-column by).
-
 test_that("ff_adjustment without by uses year grouping only", {
-  # Tests the `else yr` branch of the ff_adjustment block.
   data <- tibble::tibble(
-    date = as.Date(c("2022-06-01", "2022-12-01", "2023-06-01")),
-    size = c(10, 20, 30)
+    date = as.Date(c("2022-06-01", "2022-12-01", "2023-06-01", "2023-07-01")),
+    size = c(10, 20, 30, 40)
   )
-  # ff: 2022 → Dec kept (20); 2023 → Jun kept (30).
-  # Shifted +6m: Jun-2023 (20), Dec-2023 (30).
+  # 2022: Dec kept (20), used Jul-2023 to Jun-2024.
+  result <- add_lagged_columns(data, cols = "size", ff_adjustment = TRUE)
+  expect_equal(result$size_lag, c(NA, NA, NA, 20))
+})
+
+test_that("ff_adjustment with by updates in July for every fiscal year-end", {
+  data <- tidyr::expand_grid(
+    permno = 1:2,
+    date = seq(as.Date("2020-01-01"), as.Date("2022-12-01"), by = "month")
+  ) |>
+    dplyr::mutate(
+      fye = (permno == 1 & lubridate::month(date) == 12) |
+        (permno == 2 & lubridate::month(date) == 6),
+      be = dplyr::if_else(fye, lubridate::year(date) * 10 + permno, NA)
+    ) |>
+    dplyr::select(-"fye")
+
   result <- add_lagged_columns(
     data,
-    cols = "size",
-    lag = months(6),
+    cols = "be",
+    by = "permno",
+    drop_na = TRUE,
     ff_adjustment = TRUE
   )
-  jun23 <- result$date == as.Date("2023-06-01")
-  expect_equal(result$size_lag[jun23], 20)
+
+  expect_named(result, c("permno", "date", "be", "be_lag"))
+  expect_equal(nrow(result), nrow(data))
+  jul21_jun22 <- result$date >= as.Date("2021-07-01") &
+    result$date <= as.Date("2022-06-01")
+  expect_equal(
+    result$be_lag[jul21_jun22 & result$permno == 1],
+    rep(20201, 12)
+  )
+  expect_equal(
+    result$be_lag[jul21_jun22 & result$permno == 2],
+    rep(20202, 12)
+  )
+  expect_equal(
+    result$be_lag[result$date == as.Date("2022-07-01")],
+    c(20211, 20212)
+  )
+})
+
+test_that("lag is required without ff_adjustment", {
+  data <- tibble::tibble(date = as.Date("2023-01-01"), size = 1)
+  expect_error(add_lagged_columns(data, cols = "size"), "required")
 })
 
 test_that("non-NULL data_options uses the specified date column name", {

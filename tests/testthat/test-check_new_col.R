@@ -207,8 +207,6 @@ test_that(
         original_data = original,
         new_data = new,
         id_keys = "permno",
-        min_lag = months(1),
-        max_lag = months(3),
         ff_adjustment = TRUE
       ),
       "overwrites"

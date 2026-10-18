@@ -55,7 +55,9 @@ premia and slopes, but the levels too (the uniformly positive "excess" returns
 reflect a built-in drift in the generator, not a market risk premium). Treat the
 code as the lesson and the numbers as placeholders; to reproduce the published
 premium, swap `"Pseudo Data"` for `"WRDS"` (after a one-time
-`set_wrds_credentials()`) and rerun.
+`set_wrds_credentials()`) and rerun. Besides the credentials, WRDS requires
+two-factor authentication (Duo) and acceptance of its terms of use; see the
+"WRDS account setup" section of `?get_wrds_connection`.
 
 ```{r}
 #| label: load-packages
@@ -205,14 +207,13 @@ look-ahead bias (slipping in information that was not yet public) creeps in if
 you are not careful: the accounting for fiscal year $t$ is not public the
 instant the year ends.
 
-`join_lagged_values()` merges the annual signal onto the monthly panel through a
-configurable lag window. Setting `ff_adjustment = TRUE` applies the Fama and
-French (1993) timing convention: accounting data are assumed public roughly six
-months after the fiscal year-end and held for the following twelve months.
-Because the pseudo statements all carry a December fiscal year-end, the
-7-to-18-month window places each signal in the July-to-June holding period that
-the convention prescribes. The window is anchored on the statement date, so for real firms with
-other fiscal year-ends the exact calendar months shift accordingly.
+`join_lagged_values()` merges the annual signal onto the monthly panel. Without
+further options it uses a lag window set by `min_lag` and `max_lag`. Setting
+`ff_adjustment = TRUE` applies the Fama and French (1993) timing convention
+instead: the accounting data of a fiscal year ending in calendar year $t$ are
+assumed public by the end of June of $t+1$ and are used from July of $t+1$
+through June of $t+2$. Every firm updates in July, whatever its fiscal
+year-end, so no lag window is needed.
 
 ```{r}
 #| label: align-signal
@@ -220,8 +221,6 @@ sorting_data <- crsp_monthly |>
   join_lagged_values(
     new_data = sorting_variable_data,
     id_keys = "gvkey",
-    min_lag = months(7),
-    max_lag = months(18),
     ff_adjustment = TRUE
   ) |>
   select(
@@ -276,8 +275,9 @@ portfolio_returns
 
 This baseline call named only two things; everything else came from a documented
 default. That is the point: a default call reproduces standard practice, and every
-construction choice that papers usually leave implicit --- an 80th-percentile cap
-for the capped value-weighted return, no minimum portfolio size, the standard
+construction choice that papers usually leave implicit --- a cap at the 80th
+percentile of NYSE market capitalization for the capped value-weighted return
+(Jensen, Kelly, and Pedersen 2023), no minimum portfolio size, the standard
 CRSP/Compustat column names --- is here an argument you can see and change. The
 output reports three weighting schemes per portfolio-month: value-weighted
 (`ret_excess_vw`), equal-weighted (`ret_excess_ew`), and capped value-weighted
@@ -370,6 +370,14 @@ factor_returns_customized <- implement_portfolio_sort(
   compute_long_short_returns(direction = "bottom_minus_top")
 ```
 
+Because the portfolios are rebalanced in July, the screens are evaluated in July
+only: a firm whose earnings turn negative later in the year stays in its portfolio
+until the next rebalancing, so no holding-month return is dropped based on
+information from that month. This is the default
+(`filter_options(timing = "formation")`). Setting `timing = "every_period"`
+applies the screens in every month instead and warns that the factor returns can
+then contain look-ahead bias.
+
 Moving from a univariate to a size-controlled bivariate sort was a one-word change
 to `sorting_method`; the surrounding pipeline is identical. That is the point of
 exposing construction choices as arguments. The lower-level building blocks
@@ -446,6 +454,10 @@ Returns on Stocks and Bonds." *Journal of Financial Economics* 33 (1): 3--56.
 
 Fama, Eugene F., and James D. MacBeth. 1973. "Risk, Return, and Equilibrium:
 Empirical Tests." *Journal of Political Economy* 81 (3): 607--636.
+
+Jensen, Theis Ingerslev, Bryan Kelly, and Lasse Heje Pedersen. 2023. "Is
+There a Replication Crisis in Finance?" *The Journal of Finance* 78 (5):
+2465--2518.
 
 Newey, Whitney K., and Kenneth D. West. 1987. "A Simple, Positive
 Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance

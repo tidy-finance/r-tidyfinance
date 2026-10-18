@@ -1,5 +1,36 @@
 # tidyfinance (development version)
 
+## Breaking changes
+
+- The capped value-weighted returns of `compute_portfolio_returns()` and
+  `implement_portfolio_sort()` (`ret_excess_vw_capped`) now cap market
+  capitalization at the `cap_weight` percentile of NYSE stocks on each date,
+  following Jensen, Kelly, and Pedersen (2023), instead of the percentile of
+  all stocks. The new `cap_weight_exchanges` argument selects the exchanges;
+  `cap_weight_exchanges = NULL` restores the previous behaviour. Without an
+  exchange column, or on dates without NYSE stocks, the cap falls back to all
+  stocks with a message (#319).
+- In dependent bivariate sorts, `breakpoints_min_size_threshold` of the main
+  breakpoints is now applied with one minimum market cap per date, computed
+  from the full cross-section, instead of a separate one within each secondary
+  portfolio. Before, e.g., excluding the smallest 20% of NYSE stocks from the
+  asset-growth breakpoints within size halves excluded the smallest 20% of
+  each half (#319).
+- With annual rebalancing (`rebalancing_month`), `implement_portfolio_sort()`
+  and `filter_sorting_data()` now apply the screens of `filter_options()` in
+  the formation month only and keep every stock that passes them for the whole
+  holding period (ex-ante screens). Before, the screens were applied in every
+  month, so a stock that, e.g., fell below the price screen after formation
+  lost its holding-month returns, which can bias factor returns. The previous
+  behaviour is available with `filter_options(timing = "every_period")` and
+  issues a warning. `filter_sorting_data()` gains a `rebalancing_month`
+  argument (#321).
+- The default price column of `data_options()` is now `prc_lag`, the nominal
+  price at the end of the previous month, instead of `prc_adj`, which the
+  default CRSP v2 download does not return, so the `min_stock_price` screen
+  failed on downloaded data. `download_data("WRDS", "crsp_monthly")` (v1 and
+  v2) and the pseudo CRSP data now return `prc_lag` (#321).
+
 ## Bug fixes
 
 - `download_data_wrds_crsp()` with `version = "v2"` (the default) now keeps the
@@ -12,6 +43,18 @@
   19,858 stock-months with an average return of -6.9%, and the share of
   delistings with a delisting return whose month is in the data rises from 13%
   to over 99%.
+- `ff_adjustment = TRUE` in `join_lagged_values()` and `add_lagged_columns()`
+  now implements the Fama and French (1993) timing: the value of a fiscal year
+  ending in calendar year t is used from July of t + 1 through June of t + 2,
+  for every fiscal year-end. Before, it kept the last observation per year and
+  then applied the `min_lag`/`max_lag` window from the fiscal year-end, so a
+  firm with a June fiscal year-end updated in January instead of July. The lag
+  arguments are now optional and ignored with `ff_adjustment = TRUE` (#323).
+- `add_lagged_columns(ff_adjustment = TRUE)` no longer fails when `by` is set.
+- `get_wrds_connection()`, and thus every WRDS download, now explains a failed
+  connection: it lists the likely causes (wrong credentials, missing
+  two-factor authentication, terms of use not accepted) and keeps the
+  original error as the cause (#325).
 - `estimate_fama_macbeth()` with `vcov = "iid"` no longer multiplies the
   t-statistic by the square root of the number of periods a second time. The
   standard error of the mean already accounts for it, so the t-statistics were
@@ -26,6 +69,10 @@
 
 ## New features
 
+- The help pages of `get_wrds_connection()` and `set_wrds_credentials()`, the
+  README, and the vignette document what a WRDS account needs before the first
+  connection: two-factor authentication (Duo) and acceptance of the WRDS terms
+  of use (#325).
 - Added `download_data_damodaran()` and the `"Damodaran"` domain for
   `download_data()`, which download the cost of capital (WACC) by industry
   from Aswath Damodaran's data library, e.g.

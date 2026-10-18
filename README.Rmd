@@ -205,6 +205,8 @@ download_data(
 
 You can also download data directly from  WRDS if you have access to the underlying data and set your credentials via `Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")` or the `set_wrds_credentials()` helper function. 
 
+A WRDS account alone is not enough to connect: you also need to enroll in two-factor authentication (Duo) and accept the WRDS terms of use on the WRDS website. When you connect, approve the Duo push notification on your device. See `?get_wrds_connection` for the full setup checklist.
+
 To download monthly CRSP data:
 
 ```{r}

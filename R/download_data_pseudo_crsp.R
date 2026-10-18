@@ -37,10 +37,10 @@
 #'
 #' @returns For `"crsp_monthly"`, a tibble with columns `permno`, `date`,
 #'   `calculation_date`, `ret`, `shrout`, `prc`, `primaryexch`, `siccd`,
-#'   `listing_age`, `mktcap`, `mktcap_lag`, `exchange`, `industry`, and
-#'   `ret_excess`. For `"crsp_daily"`, a tibble with columns `permno`, `date`,
-#'   `ret`, and `ret_excess`. If `add_ccm_links = TRUE`, a `gvkey` column is
-#'   appended.
+#'   `listing_age`, `mktcap`, `mktcap_lag`, `prc_lag`, `exchange`, `industry`,
+#'   and `ret_excess`. For `"crsp_daily"`, a tibble with columns `permno`,
+#'   `date`, `ret`, and `ret_excess`. If `add_ccm_links = TRUE`, a `gvkey`
+#'   column is appended.
 #'
 #' @family pseudo functions
 #' @export
@@ -152,7 +152,8 @@ simulate_pseudo_crsp_monthly <- function(
     group_by(.data$permno) |>
     mutate(
       listing_age = seq_len(dplyr::n()) - 1L,
-      mktcap_lag = dplyr::lag(.data$mktcap)
+      mktcap_lag = dplyr::lag(.data$mktcap),
+      prc_lag = dplyr::lag(.data$prc)
     ) |>
     ungroup() |>
     mutate(
@@ -182,6 +183,7 @@ simulate_pseudo_crsp_monthly <- function(
       "listing_age",
       "mktcap",
       "mktcap_lag",
+      "prc_lag",
       "exchange",
       "industry",
       "ret_excess",

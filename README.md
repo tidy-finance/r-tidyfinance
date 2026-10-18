@@ -449,6 +449,11 @@ underlying data and set your credentials via
 `Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")`
 or the `set_wrds_credentials()` helper function.
 
+A WRDS account alone is not enough to connect: you also need to enroll
+in two-factor authentication (Duo) and accept the WRDS terms of use on
+the WRDS website. When you connect, approve the Duo push notification on
+your device. See `?get_wrds_connection` for the full setup checklist.
+
 To download monthly CRSP data:
 
 ``` r
@@ -485,7 +490,7 @@ download_data(
   start_date = "2020-01-01",
   end_date = "2020-12-31"
 )
-#> # A tibble: 11,992 × 25
+#> # A tibble: 11,993 × 25
 #>    gvkey  date       datadate        seq     ceq      at      lt  txditc    txdb
 #>    <chr>  <date>     <date>        <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
 #>  1 001004 2020-05-01 2020-05-31   903.    9.03e2 2.08e+3 1.18e+3 0       0      
@@ -498,7 +503,7 @@ download_data(
 #>  8 001078 2020-12-01 2020-12-31 32784     3.28e4 7.25e+4 3.95e+4 1.41e+3 1.41e+3
 #>  9 001084 2020-12-01 2020-12-31    -2.67 -2.67e0 6.92e-1 3.36e+0 0       0      
 #> 10 001096 2020-12-01 2020-12-31  3372.    3.37e3 1.11e+4 6.69e+3 6.48e+2 6.48e+2
-#> # ℹ 11,982 more rows
+#> # ℹ 11,983 more rows
 #> # ℹ 16 more variables: itcb <dbl>, pstkrv <dbl>, pstkl <dbl>, pstk <dbl>,
 #> #   capx <dbl>, oancf <dbl>, sale <dbl>, cogs <dbl>, xint <dbl>, xsga <dbl>,
 #> #   ib <dbl>, curcd <chr>, be <dbl>, op <dbl>, at_lag <dbl>, inv <dbl>
@@ -518,7 +523,7 @@ download_data(
 #>  2  10015 001001 1983-09-20 1986-07-31
 #>  3  10023 001002 1972-12-14 1973-06-05
 #>  4  10031 001003 1983-12-07 1989-08-16
-#>  5  54594 001004 1972-04-24 2026-10-05
+#>  5  54594 001004 1972-04-24 2026-10-18
 #>  6  61903 001005 1973-01-31 1983-01-31
 #>  7  10058 001007 1973-10-01 1979-01-30
 #>  8  10058 001007 1979-01-31 1984-09-28
