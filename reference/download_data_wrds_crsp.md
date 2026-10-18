@@ -2,8 +2,9 @@
 
 Downloads and processes stock return data from the CRSP database for a
 specified period. Users can choose between monthly and daily datasets.
-The function also adjusts returns for delisting and calculates market
-capitalization and excess returns over the risk-free rate.
+The function also includes delisting returns (see the section on
+delisting returns) and calculates market capitalization and excess
+returns over the risk-free rate.
 
 ## Usage
 
@@ -73,12 +74,39 @@ download_data_wrds_crsp(
 
 ## Value
 
-A data frame containing CRSP stock returns, adjusted for delistings,
+A data frame containing CRSP stock returns, including delisting returns,
 along with calculated market capitalization and excess returns over the
 risk-free rate. The structure of the returned data frame depends on the
 selected dataset.
 
+## Delisting returns
+
+How delisting returns enter the data depends on `version`:
+
+- `"v2"` (CIZ): CRSP already includes the delisting return in the
+  monthly (`mthret`) and daily (`dlyret`) returns of the month and the
+  day in which a stock delists, so `ret` and `ret_excess` include it
+  without further adjustment. The common-stock screens of the security
+  history (`crsp.stksecurityinfohist`) are evaluated on the stock's last
+  trading day for these observations, because the history holds no
+  active record after it. Without this, the month or day that carries
+  the delisting return would be dropped.
+
+- `"v1"` (legacy SIZ), monthly: the delisting return `dlret` from
+  `crsp.msedelist` replaces the return of the delisting month in
+  `ret_adj`, which `ret_excess` is based on. If `dlret` is missing, the
+  return is set to -30% for performance-related delistings (codes 500,
+  520, 551-574, 580, and 584; Shumway, 1997), kept for code 100, and set
+  to -100% otherwise. `ret` is the unadjusted return.
+
+- `"v1"` (legacy SIZ), daily: the delisting return replaces the return
+  on the delisting date, and later observations are dropped.
+
 ## References
+
+Shumway, T. (1997). The delisting bias in CRSP data. *Journal of
+Finance*, 52(1), 327-340.
+[doi:10.1111/j.1540-6261.1997.tb03818.x](https://doi.org/10.1111/j.1540-6261.1997.tb03818.x)
 
 Gao, X., & Ritter, J. R. (2010). The marketing of seasoned equity
 offerings. *Journal of Financial Economics*, 97(1), 33-52.

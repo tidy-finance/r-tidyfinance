@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,6 +63,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>
+<code><a href="../reference/download_data_wrds_crsp.html">download_data_wrds_crsp()</a></code> with <code>version = "v2"</code> (the default) now keeps the month and the day that carry a stock’s delisting return (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/320" class="external-link">#320</a>). CIZ includes the delisting return in <code>mthret</code> and <code>dlyret</code>, but <code>stksecurityinfohist</code> holds no active record after a stock’s last trading day, so the common-stock filters were evaluated at month end (or on the delisting day) and dropped these observations. Their security information is now looked up on the last trading day (<code>securityenddt</code>). On CRSP data for 1960-2025, the fix restores 19,858 stock-months with an average return of -6.9%, and the share of delistings with a delisting return whose month is in the data rises from 13% to over 99%.</li>
+<li>
 <code>ff_adjustment = TRUE</code> in <code><a href="../reference/join_lagged_values.html">join_lagged_values()</a></code> and <code><a href="../reference/add_lagged_columns.html">add_lagged_columns()</a></code> now implements the Fama and French (1993) timing: the value of a fiscal year ending in calendar year t is used from July of t + 1 through June of t + 2, for every fiscal year-end. Before, it kept the last observation per year and then applied the <code>min_lag</code>/<code>max_lag</code> window from the fiscal year-end, so a firm with a June fiscal year-end updated in January instead of July. The lag arguments are now optional and ignored with <code>ff_adjustment = TRUE</code> (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/323" class="external-link">#323</a>).</li>
 <li>
 <code>add_lagged_columns(ff_adjustment = TRUE)</code> no longer fails when <code>by</code> is set.</li>
