@@ -33,6 +33,16 @@
 
 ## Bug fixes
 
+- `download_data_wrds_crsp()` with `version = "v2"` (the default) now keeps the
+  month and the day that carry a stock's delisting return (#320). CIZ includes
+  the delisting return in `mthret` and `dlyret`, but `stksecurityinfohist`
+  holds no active record after a stock's last trading day, so the common-stock
+  filters were evaluated at month end (or on the delisting day) and dropped
+  these observations. Their security information is now looked up on the last
+  trading day (`securityenddt`). On CRSP data for 1960-2025, the fix restores
+  19,858 stock-months with an average return of -6.9%, and the share of
+  delistings with a delisting return whose month is in the data rises from 13%
+  to over 99%.
 - `ff_adjustment = TRUE` in `join_lagged_values()` and `add_lagged_columns()`
   now implements the Fama and French (1993) timing: the value of a fiscal year
   ending in calendar year t is used from July of t + 1 through June of t + 2,
