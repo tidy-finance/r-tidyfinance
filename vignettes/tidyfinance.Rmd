@@ -397,16 +397,19 @@ momentum_data <- crsp_monthly |>
   arrange(permno, date) |>
   group_by(permno) |>
   mutate(
-    momentum = slider::slide_dbl(
-      ret, \(x) prod(1 + x) - 1, .before = 5, .complete = TRUE
-    ),
-    momentum = lag(momentum)
+    momentum = slider::slide_index_dbl(
+      ret,
+      date,
+      \(x) if (length(x) == 6) prod(1 + x) - 1 else NA_real_,
+      .before = months(5)
+    )
   ) |>
-  ungroup()
+  ungroup() |>
+  add_lagged_columns(cols = "momentum", lag = months(1), by = "permno")
 
 momentum_returns <- implement_portfolio_sort(
   data = momentum_data,
-  sorting_variables = "momentum",
+  sorting_variables = "momentum_lag",
   sorting_method = "univariate",
   holding_period = 6,
   portfolio_sort_options = portfolio_sort_options(
@@ -417,9 +420,14 @@ momentum_returns <- implement_portfolio_sort(
   compute_long_short_returns(direction = "top_minus_bottom")
 ```
 
-The `lag()` makes the signal of month $t$ use returns up to month $t-1$ only,
-so each cohort is formed with information available at the start of the month
-in which it is first held.
+Both steps work on calendar months rather than rows, so gaps in a stock's
+history cannot shift the signal: the six-month window is indexed by `date` and
+requires six monthly returns, and `add_lagged_columns()` attaches the value of
+exactly one month earlier by shifting dates and joining, so a stock without a
+return in the previous month gets `NA` instead of an older value. The signal
+of month $t$ therefore uses returns up to month $t-1$ only, and each cohort is
+formed with information available at the start of the month in which it is
+first held.
 
 ## Step 6: Run an asset-pricing test
 
