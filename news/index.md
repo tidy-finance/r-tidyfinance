@@ -100,6 +100,19 @@
 
 ### New features
 
+- WRDS downloads report their progress
+  ([\#326](https://github.com/tidy-finance/r-tidyfinance/issues/326)).
+  [`get_wrds_connection()`](https://r.tidy-finance.org/reference/get_wrds_connection.md)
+  says when it connects (with a reminder to approve the Duo request) and
+  when the connection succeeds. CRSP monthly, Compustat, CCM links,
+  FISD, and TRACE downloads show a step that ends with the elapsed time;
+  daily CRSP keeps its batch progress bar.
+  [`get_wrds_connection()`](https://r.tidy-finance.org/reference/get_wrds_connection.md)
+  and all `download_data_wrds_*()` functions gain `quiet = FALSE` to
+  suppress these messages, which can also be passed through
+  [`download_data()`](https://r.tidy-finance.org/reference/download_data.md).
+  `download_data("Pseudo Data", ...)` accepts `quiet` too and then omits
+  its notice, so the same call works for both domains.
 - The help pages of
   [`get_wrds_connection()`](https://r.tidy-finance.org/reference/get_wrds_connection.md)
   and

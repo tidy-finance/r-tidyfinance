@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -420,6 +420,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </h2>
 <p>You can also download data directly from WRDS if you have access to the underlying data and set your credentials via <code>Sys.setenv(WRDS_USER = "your_username", WRDS_PASSWORD = "your_password")</code> or the <code><a href="reference/set_wrds_credentials.html">set_wrds_credentials()</a></code> helper function.</p>
 <p>A WRDS account alone is not enough to connect: you also need to enroll in two-factor authentication (Duo) and accept the WRDS terms of use on the WRDS website. When you connect, approve the Duo push notification on your device. See <code><a href="reference/get_wrds_connection.html">?get_wrds_connection</a></code> for the full setup checklist.</p>
+<p>The WRDS downloads tell you when they connect and how long the download took. Pass <code>quiet = TRUE</code> to suppress these messages.</p>
 <p>To download monthly CRSP data:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/download_data.html">download_data</a></span><span class="op">(</span></span>
@@ -428,22 +429,28 @@ document.addEventListener('DOMContentLoaded', function () {
 <span>  start_date <span class="op">=</span> <span class="st">"2020-01-01"</span>,</span>
 <span>  end_date <span class="op">=</span> <span class="st">"2020-12-31"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 43,329 × 14</span></span>
+<span><span class="co">#&gt; ℹ Connecting to WRDS. Approve the Duo request if prompted.</span></span>
+<span><span class="co">#&gt; ✔ Connected to WRDS. [2.7s]</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ℹ Downloading CRSP monthly data from WRDS. This can take a few minutes.</span></span>
+<span><span class="co">#&gt; ✔ Downloaded CRSP monthly data from WRDS. [2.8s]</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; # A tibble: 43,478 × 15</span></span>
 <span><span class="co">#&gt;    permno date       calculation_date      ret   shrout    prc primaryexch siccd</span></span>
 <span><span class="co">#&gt;     &lt;int&gt; &lt;date&gt;     &lt;date&gt;              &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;       &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  1  10026 2020-01-01 2020-01-31       -0.100     1.89e7 166.   Q            2052</span></span>
-<span><span class="co">#&gt;  2  10028 2020-01-01 2020-01-31        0.607     2.69e7   2.17 A            5094</span></span>
-<span><span class="co">#&gt;  3  10032 2020-01-01 2020-01-31       -0.0756    2.92e7  71.1  Q            3672</span></span>
-<span><span class="co">#&gt;  4  10044 2020-01-01 2020-01-31       -0.0986    6   e6   8.32 Q            2060</span></span>
-<span><span class="co">#&gt;  5  10051 2020-01-01 2020-01-31       -0.115     3.73e7  24.4  N            8093</span></span>
-<span><span class="co">#&gt;  6  10104 2020-01-01 2020-01-31       -0.00561   3.21e9  52.4  N            7372</span></span>
-<span><span class="co">#&gt;  7  10107 2020-01-01 2020-01-31        0.0795    7.61e9 170.   Q            7370</span></span>
-<span><span class="co">#&gt;  8  10138 2020-01-01 2020-01-31        0.0959    2.35e8 134.   Q            6211</span></span>
-<span><span class="co">#&gt;  9  10145 2020-01-01 2020-01-31       -0.0214    7.15e8 173.   N            5099</span></span>
-<span><span class="co">#&gt; 10  10158 2020-01-01 2020-01-31        0.0966    2.90e7  19.2  N            8711</span></span>
-<span><span class="co">#&gt; # ℹ 43,319 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 6 more variables: listing_age &lt;int&gt;, mktcap &lt;dbl&gt;, mktcap_lag &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   exchange &lt;chr&gt;, industry &lt;chr&gt;, ret_excess &lt;dbl&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  1  14313 2020-01-01 2020-01-31        0.00609   2.10e6   2.31 Q            3629</span></span>
+<span><span class="co">#&gt;  2  14316 2020-01-01 2020-01-31       -0.158     6.54e7  16.2  Q            2834</span></span>
+<span><span class="co">#&gt;  3  14317 2020-01-01 2020-01-31        0.129     2.54e7  79.7  Q            1542</span></span>
+<span><span class="co">#&gt;  4  14318 2020-01-01 2020-01-31       -0.0380    6.84e7  31.9  Q            6351</span></span>
+<span><span class="co">#&gt;  5  14325 2020-01-01 2020-01-31        0.276     5.94e7  76.0  Q            3841</span></span>
+<span><span class="co">#&gt;  6  14328 2020-01-01 2020-01-31       -0.0994    5.21e7   6.52 N            7832</span></span>
+<span><span class="co">#&gt;  7  14329 2020-01-01 2020-01-31        0.0171    2.49e8  44.1  N            5812</span></span>
+<span><span class="co">#&gt;  8  14338 2020-01-01 2020-01-31       -0.0280    2.82e8 108.   N            7011</span></span>
+<span><span class="co">#&gt;  9  14339 2020-01-01 2020-01-31        0.111     2.05e7   6.5  Q            6799</span></span>
+<span><span class="co">#&gt; 10  14352 2020-01-01 2020-01-31        0.0295    3.92e7   8.73 Q            2834</span></span>
+<span><span class="co">#&gt; # ℹ 43,468 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 7 more variables: listing_age &lt;int&gt;, mktcap &lt;dbl&gt;, mktcap_lag &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   prc_lag &lt;dbl&gt;, exchange &lt;chr&gt;, industry &lt;chr&gt;, ret_excess &lt;dbl&gt;</span></span></code></pre></div>
 <p>To download annual (or quaterly) Compustat data:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/download_data.html">download_data</a></span><span class="op">(</span></span>
@@ -452,6 +459,12 @@ document.addEventListener('DOMContentLoaded', function () {
 <span>  start_date <span class="op">=</span> <span class="st">"2020-01-01"</span>,</span>
 <span>  end_date <span class="op">=</span> <span class="st">"2020-12-31"</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ Connecting to WRDS. Approve the Duo request if prompted.</span></span>
+<span><span class="co">#&gt; ✔ Connected to WRDS. [2.6s]</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ℹ Downloading Compustat annual data from WRDS. This can take a few minutes.</span></span>
+<span><span class="co">#&gt; ✔ Downloaded Compustat annual data from WRDS. [1.2s]</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; # A tibble: 11,993 × 25</span></span>
 <span><span class="co">#&gt;    gvkey  date       datadate        seq     ceq      at      lt  txditc    txdb</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;  &lt;date&gt;     &lt;date&gt;        &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
@@ -475,6 +488,12 @@ document.addEventListener('DOMContentLoaded', function () {
 <span>  domain <span class="op">=</span> <span class="st">"WRDS"</span>,</span>
 <span>  dataset <span class="op">=</span> <span class="st">"ccm_links"</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ Connecting to WRDS. Approve the Duo request if prompted.</span></span>
+<span><span class="co">#&gt; ✔ Connected to WRDS. [2.8s]</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ℹ Downloading CRSP-Compustat links from WRDS. This can take a few minutes.</span></span>
+<span><span class="co">#&gt; ✔ Downloaded CRSP-Compustat links from WRDS. [716ms]</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; # A tibble: 33,324 × 4</span></span>
 <span><span class="co">#&gt;    permno gvkey  linkdt     linkenddt </span></span>
 <span><span class="co">#&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;date&gt;     &lt;date&gt;    </span></span>
@@ -498,6 +517,12 @@ document.addEventListener('DOMContentLoaded', function () {
 <span>  start_date <span class="op">=</span> <span class="st">"2019-01-01"</span>,</span>
 <span>  end_date <span class="op">=</span> <span class="st">"2021-12-31"</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ Connecting to WRDS. Approve the Duo request if prompted.</span></span>
+<span><span class="co">#&gt; ✔ Connected to WRDS. [2.7s]</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ℹ Downloading enhanced TRACE data from WRDS. This can take a few minutes.</span></span>
+<span><span class="co">#&gt; ✔ Downloaded enhanced TRACE data from WRDS. [753ms]</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; # A tibble: 7,694 × 8</span></span>
 <span><span class="co">#&gt;    cusip_id  trd_exctn_dt trd_exctn_tm rptd_pr entrd_vol_qt yld_pt rpt_side_cd</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;     &lt;date&gt;       &lt;time&gt;         &lt;dbl&gt;        &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;      </span></span>

@@ -7,7 +7,11 @@ primacy of the link (`linkprim`).
 ## Usage
 
 ``` r
-download_data_wrds_ccm_links(linktype = c("LU", "LC"), linkprim = c("P", "C"))
+download_data_wrds_ccm_links(
+  linktype = c("LU", "LC"),
+  linkprim = c("P", "C"),
+  quiet = FALSE
+)
 ```
 
 ## Arguments
@@ -23,6 +27,11 @@ download_data_wrds_ccm_links(linktype = c("LU", "LC"), linkprim = c("P", "C"))
   A character vector indicating the primacy of the link. Default is
   `c("P", "C")`, where "P" indicates primary and "C" indicates
   conditional links.
+
+- quiet:
+
+  A logical indicating whether to suppress the messages about the WRDS
+  connection and the download progress. Defaults to `FALSE`.
 
 ## Value
 

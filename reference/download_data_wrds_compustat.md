@@ -19,7 +19,8 @@ download_data_wrds_compustat(
   type = deprecated(),
   additional_columns = NULL,
   only_usd = FALSE,
-  only_us = deprecated()
+  only_us = deprecated(),
+  quiet = FALSE
 )
 ```
 
@@ -57,6 +58,11 @@ download_data_wrds_compustat(
 - only_us:
 
   **\[deprecated\]** Use `only_usd` instead.
+
+- quiet:
+
+  A logical indicating whether to suppress the messages about the WRDS
+  connection and the download progress. Defaults to `FALSE`.
 
 ## Value
 

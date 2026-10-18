@@ -45,7 +45,8 @@ download_data_wrds(
 - ...:
 
   Additional arguments passed to specific download functions depending
-  on the `dataset`.
+  on the `dataset`. For instance, `quiet = TRUE` suppresses the messages
+  about the WRDS connection and the download progress.
 
 ## Value
 

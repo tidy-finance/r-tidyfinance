@@ -13,7 +13,7 @@ domiciled in the USA.
 ## Usage
 
 ``` r
-download_data_wrds_fisd(additional_columns = NULL)
+download_data_wrds_fisd(additional_columns = NULL, quiet = FALSE)
 ```
 
 ## Arguments
@@ -21,6 +21,11 @@ download_data_wrds_fisd(additional_columns = NULL)
 - additional_columns:
 
   Additional columns from the FISD table as a character vector.
+
+- quiet:
+
+  A logical indicating whether to suppress the messages about the WRDS
+  connection and the download progress. Defaults to `FALSE`.
 
 ## Value
 

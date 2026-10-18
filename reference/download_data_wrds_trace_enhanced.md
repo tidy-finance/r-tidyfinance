@@ -8,7 +8,12 @@ CUSIPs trade messages from the Trade Reporting and Compliance Engine
 ## Usage
 
 ``` r
-download_data_wrds_trace_enhanced(cusips, start_date = NULL, end_date = NULL)
+download_data_wrds_trace_enhanced(
+  cusips,
+  start_date = NULL,
+  end_date = NULL,
+  quiet = FALSE
+)
 ```
 
 ## Arguments
@@ -28,6 +33,11 @@ download_data_wrds_trace_enhanced(cusips, start_date = NULL, end_date = NULL)
   Optional. A character string or Date object in "YYYY-MM-DD" format
   specifying the end date for the data. If not provided, a subset of the
   dataset is returned.
+
+- quiet:
+
+  A logical indicating whether to suppress the messages about the WRDS
+  connection and the download progress. Defaults to `FALSE`.
 
 ## Value
 

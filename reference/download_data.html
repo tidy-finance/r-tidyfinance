@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -137,7 +137,9 @@ specified portfolios directly via <code><a href="download_factor_library_ids.htm
 see <code><a href="download_data_huggingface.html">download_data_huggingface()</a></code> for details. If <code>domain</code> is
 <code>"Damodaran"</code>, arguments such as <code>region</code> and <code>year</code> are passed to
 <code><a href="download_data_damodaran.html">download_data_damodaran()</a></code>, which selects years via <code>year</code> instead of
-<code>start_date</code> and <code>end_date</code>.</p></dd>
+<code>start_date</code> and <code>end_date</code>. If <code>domain</code> is <code>"WRDS"</code> or <code>"Pseudo Data"</code>,
+<code>quiet = TRUE</code> suppresses the messages about the WRDS connection and
+the download progress, or the pseudo-data notice.</p></dd>
 
 </dl></div>
     <div class="section level2">

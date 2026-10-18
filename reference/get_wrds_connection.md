@@ -8,8 +8,15 @@ environment variables.
 ## Usage
 
 ``` r
-get_wrds_connection()
+get_wrds_connection(quiet = FALSE)
 ```
+
+## Arguments
+
+- quiet:
+
+  A logical indicating whether to suppress the messages about the WRDS
+  connection and the download progress. Defaults to `FALSE`.
 
 ## Value
 
@@ -47,7 +54,10 @@ first connection:
 5.  When you connect, approve the Duo push notification on your
     registered device. The connection waits until you approve it.
 
-If the connection fails, the error message lists these steps.
+If the connection fails, the error message lists these steps. Unless
+`quiet = TRUE`, the function says when it starts connecting and when the
+connection succeeds, so you know when to approve the Duo request and
+when the download starts.
 
 ## See also
 

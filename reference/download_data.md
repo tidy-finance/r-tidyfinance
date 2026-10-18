@@ -76,6 +76,9 @@ download_data(
   and `year` are passed to
   [`download_data_damodaran()`](https://r.tidy-finance.org/reference/download_data_damodaran.md),
   which selects years via `year` instead of `start_date` and `end_date`.
+  If `domain` is `"WRDS"` or `"Pseudo Data"`, `quiet = TRUE` suppresses
+  the messages about the WRDS connection and the download progress, or
+  the pseudo-data notice.
 
 ## Value
 

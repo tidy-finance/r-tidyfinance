@@ -20,6 +20,7 @@
 
 ## Checks before merging
 
-- `lintr::lint_package()` and `covr::package_coverage()` must pass
-  before a pull request can be merged. Run both locally and fix any
-  lints or failures before asking for a merge.
+- [`lintr::lint_package()`](https://lintr.r-lib.org/reference/lint.html)
+  and `covr::package_coverage()` must pass before a pull request can be
+  merged. Run both locally and fix any lints or failures before asking
+  for a merge.
