@@ -19,8 +19,8 @@ You can install the development version of `tidyfinance` from
 [GitHub](https://github.com/tidy-finance/r-tidyfinance) via:
 
 ``` R
-# install.packages("pak")
-pak::pak("tidy-finance/r-tidyfinance")
+# install.packages("remotes")
+remotes::install_github("tidy-finance/r-tidyfinance")
 ```
 
 ## Usage
