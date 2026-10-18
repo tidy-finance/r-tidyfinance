@@ -377,3 +377,149 @@ test_that("bivariate-independent annual produces valid output", {
   expect_s3_class(result, "data.frame")
   expect_gt(nrow(result), 0L)
 })
+
+# Capped value weights --------------------------------------------------------
+
+cap_panel <- function() {
+  # One date, two portfolios. NYSE stocks are small, NASDAQ stocks are large,
+  # so the NYSE and the all-stock percentiles differ.
+  tibble::tibble(
+    permno = 1:10,
+    date = as.Date("2020-01-01"),
+    size = 1:10,
+    exchange = rep(c("NYSE", "NASDAQ"), each = 5),
+    mktcap_lag = c(1, 2, 3, 4, 5, 60, 70, 80, 90, 100),
+    ret_excess = c(rep(0.01, 5), 0.02, 0.03, 0.04, 0.05, 0.06)
+  )
+}
+
+expected_capped <- function(data, cap) {
+  w <- pmin(data$mktcap_lag, cap)
+  top <- data$size > 5
+  c(
+    stats::weighted.mean(data$ret_excess[!top], w[!top]),
+    stats::weighted.mean(data$ret_excess[top], w[top])
+  )
+}
+
+test_that("capped weights use the NYSE percentile by default", {
+  data <- cap_panel()
+  out <- compute_portfolio_returns(
+    data,
+    "size",
+    "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 2),
+    quiet = TRUE
+  )
+  nyse_cap <- stats::quantile(1:5, 0.8, names = FALSE)
+  expect_equal(out$ret_excess_vw_capped, expected_capped(data, nyse_cap))
+})
+
+test_that("cap_weight_exchanges = NULL caps at the percentile of all stocks", {
+  data <- cap_panel()
+  out <- compute_portfolio_returns(
+    data,
+    "size",
+    "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 2),
+    cap_weight_exchanges = NULL,
+    quiet = TRUE
+  )
+  all_cap <- stats::quantile(data$mktcap_lag, 0.8, names = FALSE)
+  expect_equal(out$ret_excess_vw_capped, expected_capped(data, all_cap))
+})
+
+test_that("capping falls back to all stocks without an exchange column", {
+  data <- dplyr::select(cap_panel(), -"exchange")
+  rlang::local_options(rlib_message_verbosity = "verbose")
+  expect_message(
+    out <- compute_portfolio_returns(
+      data,
+      "size",
+      "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 2)
+    ),
+    "not found"
+  )
+  all_cap <- stats::quantile(data$mktcap_lag, 0.8, names = FALSE)
+  expect_equal(out$ret_excess_vw_capped, expected_capped(data, all_cap))
+})
+
+test_that("capping falls back to all stocks on dates without NYSE stocks", {
+  data <- cap_panel() |>
+    dplyr::mutate(exchange = "NASDAQ")
+  expect_message(
+    out <- compute_portfolio_returns(
+      data,
+      "size",
+      "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 2)
+    ),
+    "on 1 date"
+  )
+  all_cap <- stats::quantile(data$mktcap_lag, 0.8, names = FALSE)
+  expect_equal(out$ret_excess_vw_capped, expected_capped(data, all_cap))
+})
+
+test_that("cap_weight_exchanges is validated", {
+  expect_error(
+    compute_portfolio_returns(
+      cap_panel(),
+      "size",
+      "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 2),
+      cap_weight_exchanges = 1
+    ),
+    "cap_weight_exchanges"
+  )
+})
+
+# Dependent sorts with a minimum size threshold -------------------------------
+
+test_that("dependent sorts compute the size cutoff once per date", {
+  # Secondary sort splits at the median size. The main breakpoints exclude
+  # stocks below the 25th size percentile of the whole date (25.75), not of
+  # each size half. In the small half, the main median is then 38 (stocks 26
+  # to 50), so stock 35 is in the low portfolio. A cutoff within the small
+  # half (13.25) would set the median at 32 and put stock 35 in the high one.
+  data <- tibble::tibble(
+    permno = 1:100,
+    date = as.Date("2020-01-01"),
+    mktcap_lag = as.numeric(1:100),
+    x = as.numeric(1:100),
+    ret_excess = 0.01
+  )
+  out <- compute_portfolio_returns(
+    data,
+    c("x", "mktcap_lag"),
+    "bivariate-dependent",
+    breakpoint_options_main = breakpoint_options(
+      n_portfolios = 2,
+      breakpoints_min_size_threshold = 0.25
+    ),
+    breakpoint_options_secondary = breakpoint_options(n_portfolios = 2),
+    cap_weight_exchanges = NULL,
+    quiet = TRUE
+  )
+  expect_equal(nrow(out), 2L)
+
+  assigned <- data |>
+    dplyr::mutate(
+      portfolio_secondary = as.integer(mktcap_lag > 50) + 1L
+    )
+  portfolio_main <- assign_portfolio_dependent(
+    assigned,
+    sorting_variable = "x",
+    breakpoint_options = breakpoint_options(
+      n_portfolios = 2,
+      breakpoints_min_size_threshold = 0.25
+    ),
+    breakpoint_function = compute_breakpoints,
+    data_options = data_options()
+  )
+  expect_equal(portfolio_main[35], 1L)
+  expect_equal(portfolio_main[40], 2L)
+  # The large half is unaffected: all its stocks are above the cutoff.
+  expect_equal(portfolio_main[75], 1L)
+  expect_equal(portfolio_main[76], 2L)
+})

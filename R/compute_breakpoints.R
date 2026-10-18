@@ -121,26 +121,21 @@ compute_breakpoints <- function(
     sorting_values <- sorting_values[keep]
   }
 
-  if (!is.null(breakpoints_min_size_threshold)) {
+  # An absolute size cutoff is set internally by dependent bivariate sorts in
+  # compute_portfolio_returns(), which compute it once per date from the full
+  # cross-section instead of within each secondary portfolio.
+  size_cutoff <- breakpoint_options$breakpoints_min_size_cutoff
+
+  if (!is.null(breakpoints_min_size_threshold) || !is.null(size_cutoff)) {
     mktcap_col <- data_options$mktcap_lag
-    if (!(mktcap_col %in% colnames(data))) {
-      cli::cli_abort(
-        paste(
-          "Column {.val {mktcap_col}} is required",
-          "when using {.arg breakpoints_min_size_threshold}."
-        )
+    if (is.null(size_cutoff)) {
+      size_cutoff <- compute_min_size_cutoff(
+        data,
+        breakpoints_min_size_threshold,
+        breakpoints_exchanges,
+        data_options
       )
     }
-    if (!is.null(breakpoints_exchanges)) {
-      mktcap_ref <- data[[mktcap_col]][keep]
-    } else {
-      mktcap_ref <- data[[mktcap_col]]
-    }
-    size_cutoff <- quantile(
-      mktcap_ref,
-      breakpoints_min_size_threshold,
-      na.rm = TRUE
-    )
     above_size <- !is.na(data[[mktcap_col]]) & data[[mktcap_col]] > size_cutoff
     if (!is.null(breakpoints_exchanges)) {
       sorting_values <- data[[sorting_variable]][keep & above_size]
@@ -254,4 +249,53 @@ compute_breakpoints <- function(
   breakpoints[2:(n_portfolios + 1L)] <- breakpoints[2:(n_portfolios + 1L)] +
     1e-20
   breakpoints
+}
+
+#' Compute the size cutoff of breakpoints_min_size_threshold
+#'
+#' @param data A data frame with the market capitalization column and, if
+#'   `breakpoints_exchanges` is set, the exchange column.
+#' @param breakpoints_min_size_threshold A quantile between 0 and 1.
+#' @param breakpoints_exchanges An optional character vector of exchanges
+#'   among whose stocks the quantile is computed.
+#' @param data_options A list of class `tidyfinance_data_options`.
+#'
+#' @returns A single numeric cutoff.
+#' @noRd
+compute_min_size_cutoff <- function(
+  data,
+  breakpoints_min_size_threshold,
+  breakpoints_exchanges,
+  data_options
+) {
+  mktcap_col <- data_options$mktcap_lag
+  if (!(mktcap_col %in% colnames(data))) {
+    cli::cli_abort(
+      paste(
+        "Column {.val {mktcap_col}} is required",
+        "when using {.arg breakpoints_min_size_threshold}."
+      ),
+      call = rlang::caller_env()
+    )
+  }
+  mktcap_ref <- data[[mktcap_col]]
+  if (!is.null(breakpoints_exchanges)) {
+    exchange_col <- data_options$exchange
+    if (!(exchange_col %in% colnames(data))) {
+      cli::cli_abort(
+        paste(
+          "Please provide the column {exchange_col}",
+          "when filtering using {.arg breakpoints_exchanges}."
+        ),
+        call = rlang::caller_env()
+      )
+    }
+    mktcap_ref <- mktcap_ref[data[[exchange_col]] %in% breakpoints_exchanges]
+  }
+  stats::quantile(
+    mktcap_ref,
+    breakpoints_min_size_threshold,
+    na.rm = TRUE,
+    names = FALSE
+  )
 }

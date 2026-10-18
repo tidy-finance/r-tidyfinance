@@ -1022,3 +1022,21 @@ test_that(
     expect_length(result, 4L)
   }
 )
+
+test_that("an absolute size cutoff matches filtering the data", {
+  data <- tibble::tibble(
+    x = as.numeric(1:100),
+    mktcap_lag = as.numeric(100:1)
+  )
+  with_cutoff <- compute_breakpoints(
+    data,
+    "x",
+    breakpoint_options(n_portfolios = 4, breakpoints_min_size_cutoff = 40)
+  )
+  filtered <- compute_breakpoints(
+    data[data$mktcap_lag > 40, ],
+    "x",
+    breakpoint_options(n_portfolios = 4)
+  )
+  expect_equal(with_cutoff, filtered)
+})

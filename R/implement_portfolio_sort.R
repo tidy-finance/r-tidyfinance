@@ -52,6 +52,9 @@
 #' @param cap_weight A numeric between 0 and 1 specifying the quantile at which
 #'   portfolio weights are capped for the capped value-weighted return.
 #'   Defaults to `0.8`.
+#' @param cap_weight_exchanges A character vector of exchanges whose stocks
+#'   determine the cap, or `NULL` for all stocks. Defaults to `"NYSE"`. See
+#'   [compute_portfolio_returns()].
 #' @param data_options A list of class `tidyfinance_data_options` (created via
 #'   [data_options()]) specifying column name mappings. All elements are
 #'   forwarded to [filter_sorting_data()] and [compute_portfolio_returns()].
@@ -111,6 +114,7 @@ implement_portfolio_sort <- function(
   breakpoint_function_secondary = compute_breakpoints,
   min_portfolio_size = 1L,
   cap_weight = 0.8,
+  cap_weight_exchanges = "NYSE",
   data_options = NULL,
   quiet = FALSE
 ) {
@@ -167,6 +171,7 @@ implement_portfolio_sort <- function(
     breakpoint_function_secondary = breakpoint_function_secondary,
     min_portfolio_size = min_portfolio_size,
     cap_weight = cap_weight,
+    cap_weight_exchanges = cap_weight_exchanges,
     data_options = data_options,
     quiet = quiet
   )
