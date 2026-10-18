@@ -9,6 +9,8 @@ implement_portfolio_sort(
   sorting_variables,
   sorting_method,
   rebalancing_month = NULL,
+  holding_period = 1L,
+  skip = 0L,
   portfolio_sort_options,
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
@@ -32,6 +34,14 @@ sort portfolios on.}
 portfolios are rebalanced annually. \code{NULL} (the default) means monthly
 rebalancing. Also determines the formation month in which the screens of
 \code{filter_options} are applied.}
+
+\item{holding_period, skip}{Staggered rebalancing: portfolios are formed
+every period and each cohort is held for \code{holding_period} periods,
+starting \code{skip} periods after formation. See
+\code{\link[=compute_portfolio_returns]{compute_portfolio_returns()}}. With the default
+\code{filter_options(timing = "formation")}, the screens only decide which
+stocks enter the cohort formed in a period; a stock that fails a screen
+later stays in its earlier cohorts until their holding period ends.}
 
 \item{portfolio_sort_options}{A list of class
 \code{tidyfinance_portfolio_sort_options} created by
