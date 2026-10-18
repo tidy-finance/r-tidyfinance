@@ -98,6 +98,10 @@ exclude observations with non-positive book equity. Defaults to
 <code>FALSE</code>.</p></li>
 <li><p><code>exclude_negative_earnings</code> A logical indicating whether to
 exclude observations with non-positive earnings. Defaults to <code>FALSE</code>.</p></li>
+<li><p><code>timing</code> Either <code>"formation"</code> (the default) to apply the screens
+only in the formation month when portfolios are rebalanced once a
+year, or <code>"every_period"</code> to apply them in every month, which can
+introduce look-ahead bias.</p></li>
 </ul></dd>
 
 
@@ -182,6 +186,9 @@ the specified options.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $exclude_negative_earnings</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $timing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "formation"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tidyfinance_filter_options"</span>

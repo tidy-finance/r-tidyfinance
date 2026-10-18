@@ -144,10 +144,10 @@ identifier universe used by <code><a href="download_data_pseudo_compustat.html">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>For <code>"crsp_monthly"</code>, a tibble with columns <code>permno</code>, <code>date</code>,
 <code>calculation_date</code>, <code>ret</code>, <code>shrout</code>, <code>prc</code>, <code>primaryexch</code>, <code>siccd</code>,
-<code>listing_age</code>, <code>mktcap</code>, <code>mktcap_lag</code>, <code>exchange</code>, <code>industry</code>, and
-<code>ret_excess</code>. For <code>"crsp_daily"</code>, a tibble with columns <code>permno</code>, <code>date</code>,
-<code>ret</code>, and <code>ret_excess</code>. If <code>add_ccm_links = TRUE</code>, a <code>gvkey</code> column is
-appended.</p>
+<code>listing_age</code>, <code>mktcap</code>, <code>mktcap_lag</code>, <code>prc_lag</code>, <code>exchange</code>, <code>industry</code>,
+and <code>ret_excess</code>. For <code>"crsp_daily"</code>, a tibble with columns <code>permno</code>,
+<code>date</code>, <code>ret</code>, and <code>ret_excess</code>. If <code>add_ccm_links = TRUE</code>, a <code>gvkey</code>
+column is appended.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -170,7 +170,7 @@ pseudo calendar approximates a trading-day grid.</p>
 <span class="r-in"><span>  end_date <span class="op">=</span> <span class="st">"2024-12-31"</span>,</span></span>
 <span class="r-in"><span>  n_assets <span class="op">=</span> <span class="fl">20</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,200 × 14</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,200 × 15</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    permno date       calculation_date      ret shrout   prc primaryexch siccd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>      1 2020-01-01 2020-01-31       -<span style="color: #BB0000;">0.187</span>   <span style="text-decoration: underline;">12</span>887. 269.  Q            <span style="text-decoration: underline;">2</span>118</span>
@@ -184,8 +184,8 @@ pseudo calendar approximates a trading-day grid.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>      1 2020-09-01 2020-09-30       -<span style="color: #BB0000;">0.003</span><span style="color: #BB0000; text-decoration: underline;">22</span> <span style="text-decoration: underline;">27</span>728. 402.  Q            <span style="text-decoration: underline;">2</span>118</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>      1 2020-10-01 2020-10-31        0.096<span style="text-decoration: underline;">8</span>  <span style="text-decoration: underline;">11</span>404. 383.  Q            <span style="text-decoration: underline;">2</span>118</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,190 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 6 more variables: listing_age &lt;int&gt;, mktcap &lt;dbl&gt;, mktcap_lag &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   exchange &lt;chr&gt;, industry &lt;chr&gt;, ret_excess &lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7 more variables: listing_age &lt;int&gt;, mktcap &lt;dbl&gt;, mktcap_lag &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   prc_lag &lt;dbl&gt;, exchange &lt;chr&gt;, industry &lt;chr&gt;, ret_excess &lt;dbl&gt;</span></span>
 <span class="r-in"><span><span class="fu">download_data_pseudo_crsp</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"crsp_daily"</span>,</span></span>
 <span class="r-in"><span>  start_date <span class="op">=</span> <span class="st">"2020-01-01"</span>,</span></span>

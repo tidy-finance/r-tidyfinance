@@ -53,6 +53,11 @@ portfolio_sort_options(
   - `exclude_negative_earnings` A logical indicating whether to exclude
     observations with non-positive earnings. Defaults to `FALSE`.
 
+  - `timing` Either `"formation"` (the default) to apply the screens
+    only in the formation month when portfolios are rebalanced once a
+    year, or `"every_period"` to apply them in every month, which can
+    introduce look-ahead bias.
+
 - breakpoint_options_main:
 
   A list of class `tidyfinance_breakpoint_options` created by
@@ -142,6 +147,9 @@ portfolio_sort_options(
 #> 
 #> $exclude_negative_earnings
 #> [1] FALSE
+#> 
+#> $timing
+#> [1] "formation"
 #> 
 #> attr(,"class")
 #> [1] "tidyfinance_filter_options"

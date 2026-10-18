@@ -88,10 +88,10 @@ download_data_pseudo_crsp(
 
 For `"crsp_monthly"`, a tibble with columns `permno`, `date`,
 `calculation_date`, `ret`, `shrout`, `prc`, `primaryexch`, `siccd`,
-`listing_age`, `mktcap`, `mktcap_lag`, `exchange`, `industry`, and
-`ret_excess`. For `"crsp_daily"`, a tibble with columns `permno`,
-`date`, `ret`, and `ret_excess`. If `add_ccm_links = TRUE`, a `gvkey`
-column is appended.
+`listing_age`, `mktcap`, `mktcap_lag`, `prc_lag`, `exchange`,
+`industry`, and `ret_excess`. For `"crsp_daily"`, a tibble with columns
+`permno`, `date`, `ret`, and `ret_excess`. If `add_ccm_links = TRUE`, a
+`gvkey` column is appended.
 
 ## Details
 
@@ -114,7 +114,7 @@ download_data_pseudo_crsp(
   end_date = "2024-12-31",
   n_assets = 20
 )
-#> # A tibble: 1,200 × 14
+#> # A tibble: 1,200 × 15
 #>    permno date       calculation_date      ret shrout   prc primaryexch siccd
 #>     <int> <date>     <date>              <dbl>  <dbl> <dbl> <chr>       <int>
 #>  1      1 2020-01-01 2020-01-31       -0.187   12887. 269.  Q            2118
@@ -128,8 +128,8 @@ download_data_pseudo_crsp(
 #>  9      1 2020-09-01 2020-09-30       -0.00322 27728. 402.  Q            2118
 #> 10      1 2020-10-01 2020-10-31        0.0968  11404. 383.  Q            2118
 #> # ℹ 1,190 more rows
-#> # ℹ 6 more variables: listing_age <int>, mktcap <dbl>, mktcap_lag <dbl>,
-#> #   exchange <chr>, industry <chr>, ret_excess <dbl>
+#> # ℹ 7 more variables: listing_age <int>, mktcap <dbl>, mktcap_lag <dbl>,
+#> #   prc_lag <dbl>, exchange <chr>, industry <chr>, ret_excess <dbl>
 download_data_pseudo_crsp(
   "crsp_daily",
   start_date = "2020-01-01",

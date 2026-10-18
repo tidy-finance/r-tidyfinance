@@ -94,7 +94,7 @@ crsp_monthly <- download_data(
   add_ccm_links = TRUE
 )
 crsp_monthly
-#> # A tibble: 636,000 × 15
+#> # A tibble: 636,000 × 16
 #>    permno date       calculation_date      ret shrout   prc primaryexch siccd
 #>     <int> <date>     <date>              <dbl>  <dbl> <dbl> <chr>       <int>
 #>  1      1 1972-01-01 1972-01-31       -0.0361  12887. 201.  Q            1284
@@ -108,8 +108,9 @@ crsp_monthly
 #>  9      1 1972-09-01 1972-09-30       -0.0371  27728. 366.  Q            1284
 #> 10      1 1972-10-01 1972-10-31       -0.0859  11404.  66.9 Q            1284
 #> # ℹ 635,990 more rows
-#> # ℹ 7 more variables: listing_age <int>, mktcap <dbl>, mktcap_lag <dbl>,
-#> #   exchange <chr>, industry <chr>, ret_excess <dbl>, gvkey <chr>
+#> # ℹ 8 more variables: listing_age <int>, mktcap <dbl>, mktcap_lag <dbl>,
+#> #   prc_lag <dbl>, exchange <chr>, industry <chr>, ret_excess <dbl>,
+#> #   gvkey <chr>
 ```
 
 Each row is one stock-month, already cleaned: market capitalization
@@ -450,6 +451,14 @@ factor_returns_customized <- implement_portfolio_sort(
 ) |>
   compute_long_short_returns(direction = "bottom_minus_top")
 ```
+
+Because the portfolios are rebalanced in July, the screens are evaluated
+in July only: a firm whose earnings turn negative later in the year
+stays in its portfolio until the next rebalancing, so no holding-month
+return is dropped based on information from that month. This is the
+default (`filter_options(timing = "formation")`). Setting
+`timing = "every_period"` applies the screens in every month instead and
+warns that the factor returns can then contain look-ahead bias.
 
 Moving from a univariate to a size-controlled bivariate sort was a
 one-word change to `sorting_method`; the surrounding pipeline is

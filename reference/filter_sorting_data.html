@@ -77,6 +77,7 @@ observation.</p>
 <span>  <span class="va">data</span>,</span>
 <span>  filter_options <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  data_options <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rebalancing_month <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -115,6 +116,10 @@ exclude observations with non-positive book equity. Defaults to
 <code>FALSE</code>.</p></li>
 <li><p><code>exclude_negative_earnings</code> A logical indicating whether to
 exclude observations with non-positive earnings. Defaults to <code>FALSE</code>.</p></li>
+<li><p><code>timing</code> Either <code>"formation"</code> (the default) to apply the screens
+only in the formation month when portfolios are rebalanced once a
+year, or <code>"every_period"</code> to apply them in every month, which can
+introduce look-ahead bias.</p></li>
 </ul></dd>
 
 
@@ -122,14 +127,25 @@ exclude observations with non-positive earnings. Defaults to <code>FALSE</code>.
 <dd><p>A list of class <code>tidyfinance_data_options</code> (created via
 <code><a href="data_options.html">data_options()</a></code>) specifying column name mappings. The <code>siccd</code> element is
 used to specify the SIC code column, <code>price</code> is used to specify the
-(adjusted) price column, <code>mktcap_lag</code> is used to specify the market
-capitalization column, <code>date</code> is used to specify the date column,
+price column of the <code>min_stock_price</code> screen, <code>mktcap_lag</code> is used to
+specify the market capitalization column, <code>date</code> is used to specify the
+date column,
 <code>listing_age</code> is used to specify the listing age column, <code>be</code> is used to
 specify the book equity column, and <code>earnings</code> is used to specify the
 earnings column. Uses <code><a href="data_options.html">data_options()</a></code> default if <code>NULL</code>:
-<code>"siccd" = "siccd"</code>, <code>"price" = "prc_adj"</code>, <code>"exchange" = "exchange"</code>
+<code>"siccd" = "siccd"</code>, <code>"price" = "prc_lag"</code>, <code>"exchange" = "exchange"</code>
 <code>"mktcap_lag" = "mktcap_lag"</code>, <code>"date" = "date"</code>,
-<code>"listing_age" = "listing_age"</code>, <code>"be" = "be"</code>, and <code>"earnings" = "ib"</code>.</p></dd>
+<code>"listing_age" = "listing_age"</code>, <code>"be" = "be"</code>, and <code>"earnings" = "ib"</code>.
+With <code>rebalancing_month</code>, the <code>id</code> element (default <code>"permno"</code>) is used
+to keep a stock across its holding period.</p></dd>
+
+
+<dt id="arg-rebalancing-month">rebalancing_month<a class="anchor" aria-label="anchor" href="#arg-rebalancing-month"></a></dt>
+<dd><p>An optional integer between 1 and 12 specifying
+the month in which portfolios are formed when they are rebalanced once a
+year (see <code><a href="compute_portfolio_returns.html">compute_portfolio_returns()</a></code>). <code>NULL</code> (the default) means
+monthly rebalancing. Together with the <code>timing</code> element of
+<code>filter_options</code>, it determines when the screens apply; see Details.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
@@ -141,6 +157,24 @@ suppressed. Defaults to <code>FALSE</code>.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>The filtered data frame, preserving the class and structure of the
 input.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Without <code>rebalancing_month</code>, every month is a formation month and each row
+is screened on its own values. The screens are then free of look-ahead bias
+only if the screened columns are known at the start of the month: the
+default price column <code>prc_lag</code> and <code>mktcap_lag</code> are lagged by one month,
+and accounting variables such as book equity and earnings should be lagged
+as well (e.g., with <code><a href="join_lagged_values.html">join_lagged_values()</a></code>).</p>
+<p>With <code>rebalancing_month</code>, portfolios are formed once a year and held for
+twelve months. By default (<code>filter_options(timing = "formation")</code>), each
+screen is evaluated in the formation month only, and a stock that passes
+all screens keeps all its rows until the next formation month, even if it
+fails a screen in a holding month. Rows of stocks that fail a screen at
+formation, and rows before the first formation month, are removed. With
+<code>timing = "every_period"</code>, the screens are evaluated in every month
+(ex-post) and a warning is issued, because dropping holding-month returns
+based on information from those months can bias factor returns.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -162,7 +196,7 @@ input.</p>
 <span class="r-in"><span>  permno <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,</span></span>
 <span class="r-in"><span>  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  siccd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6100</span>, <span class="fl">2000</span>, <span class="fl">4950</span>, <span class="fl">3000</span>, <span class="fl">6500</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  prc_adj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">0.5</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  prc_lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">0.5</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">|&gt;</span></span></span>
@@ -174,9 +208,29 @@ input.</p>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Filter 'exclude_financials': removed 2 observations.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Filter 'min_stock_price': removed 1 observation.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   permno       date siccd prc_adj</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   permno       date siccd prc_lag</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1      3 2020-01-01  4950      15</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2      4 2020-01-01  3000      20</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Annual rebalancing in July: the price screen is evaluated in July only,</span></span></span>
+<span class="r-in"><span><span class="co"># so stock 1 is kept in August although its price falls below 1</span></span></span>
+<span class="r-in"><span><span class="va">data_annual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  permno <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, each <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2020-07-01"</span>, <span class="st">"2020-08-01"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  prc_lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">data_annual</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">filter_sorting_data</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    filter_options <span class="op">=</span> <span class="fu"><a href="filter_options.html">filter_options</a></span><span class="op">(</span>min_stock_price <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    rebalancing_month <span class="op">=</span> <span class="fl">7</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Filter 'min_stock_price': removed 1 observation.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Screens applied in formation month 7: removed 1 holding-month observation of</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> stocks that failed a screen at formation or precede the first formation month.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   permno       date prc_lag</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      1 2020-07-01     2.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      1 2020-08-01     0.5</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -14,6 +14,7 @@ filter_sorting_data(
   data,
   filter_options = NULL,
   data_options = NULL,
+  rebalancing_month = NULL,
   quiet = FALSE
 )
 ```
@@ -63,22 +64,38 @@ filter_sorting_data(
   - `exclude_negative_earnings` A logical indicating whether to exclude
     observations with non-positive earnings. Defaults to `FALSE`.
 
+  - `timing` Either `"formation"` (the default) to apply the screens
+    only in the formation month when portfolios are rebalanced once a
+    year, or `"every_period"` to apply them in every month, which can
+    introduce look-ahead bias.
+
 - data_options:
 
   A list of class `tidyfinance_data_options` (created via
   [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
   specifying column name mappings. The `siccd` element is used to
-  specify the SIC code column, `price` is used to specify the (adjusted)
-  price column, `mktcap_lag` is used to specify the market
-  capitalization column, `date` is used to specify the date column,
-  `listing_age` is used to specify the listing age column, `be` is used
-  to specify the book equity column, and `earnings` is used to specify
-  the earnings column. Uses
+  specify the SIC code column, `price` is used to specify the price
+  column of the `min_stock_price` screen, `mktcap_lag` is used to
+  specify the market capitalization column, `date` is used to specify
+  the date column, `listing_age` is used to specify the listing age
+  column, `be` is used to specify the book equity column, and `earnings`
+  is used to specify the earnings column. Uses
   [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)
-  default if `NULL`: `"siccd" = "siccd"`, `"price" = "prc_adj"`,
+  default if `NULL`: `"siccd" = "siccd"`, `"price" = "prc_lag"`,
   `"exchange" = "exchange"` `"mktcap_lag" = "mktcap_lag"`,
   `"date" = "date"`, `"listing_age" = "listing_age"`, `"be" = "be"`, and
-  `"earnings" = "ib"`.
+  `"earnings" = "ib"`. With `rebalancing_month`, the `id` element
+  (default `"permno"`) is used to keep a stock across its holding
+  period.
+
+- rebalancing_month:
+
+  An optional integer between 1 and 12 specifying the month in which
+  portfolios are formed when they are rebalanced once a year (see
+  [`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md)).
+  `NULL` (the default) means monthly rebalancing. Together with the
+  `timing` element of `filter_options`, it determines when the screens
+  apply; see Details.
 
 - quiet:
 
@@ -89,6 +106,26 @@ filter_sorting_data(
 
 The filtered data frame, preserving the class and structure of the
 input.
+
+## Details
+
+Without `rebalancing_month`, every month is a formation month and each
+row is screened on its own values. The screens are then free of
+look-ahead bias only if the screened columns are known at the start of
+the month: the default price column `prc_lag` and `mktcap_lag` are
+lagged by one month, and accounting variables such as book equity and
+earnings should be lagged as well (e.g., with
+[`join_lagged_values()`](https://r.tidy-finance.org/reference/join_lagged_values.md)).
+
+With `rebalancing_month`, portfolios are formed once a year and held for
+twelve months. By default (`filter_options(timing = "formation")`), each
+screen is evaluated in the formation month only, and a stock that passes
+all screens keeps all its rows until the next formation month, even if
+it fails a screen in a holding month. Rows of stocks that fail a screen
+at formation, and rows before the first formation month, are removed.
+With `timing = "every_period"`, the screens are evaluated in every month
+(ex-post) and a warning is issued, because dropping holding-month
+returns based on information from those months can bias factor returns.
 
 ## See also
 
@@ -110,7 +147,7 @@ data <- data.frame(
   permno = 1:5,
   date = as.Date("2020-01-01"),
   siccd = c(6100, 2000, 4950, 3000, 6500),
-  prc_adj = c(5, 0.5, 15, 20, 10)
+  prc_lag = c(5, 0.5, 15, 20, 10)
 )
 
 data |>
@@ -122,7 +159,27 @@ data |>
   )
 #> Filter 'exclude_financials': removed 2 observations.
 #> Filter 'min_stock_price': removed 1 observation.
-#>   permno       date siccd prc_adj
+#>   permno       date siccd prc_lag
 #> 1      3 2020-01-01  4950      15
 #> 2      4 2020-01-01  3000      20
+
+# Annual rebalancing in July: the price screen is evaluated in July only,
+# so stock 1 is kept in August although its price falls below 1
+data_annual <- data.frame(
+  permno = rep(1:2, each = 2),
+  date = as.Date(rep(c("2020-07-01", "2020-08-01"), 2)),
+  prc_lag = c(2, 0.5, 0.5, 2)
+)
+
+data_annual |>
+  filter_sorting_data(
+    filter_options = filter_options(min_stock_price = 1),
+    rebalancing_month = 7
+  )
+#> Filter 'min_stock_price': removed 1 observation.
+#> Screens applied in formation month 7: removed 1 holding-month observation of
+#> stocks that failed a screen at formation or precede the first formation month.
+#>   permno       date prc_lag
+#> 1      1 2020-07-01     2.0
+#> 2      1 2020-08-01     0.5
 ```

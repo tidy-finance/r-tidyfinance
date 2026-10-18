@@ -72,6 +72,7 @@ control which observations are retained before portfolio sorting.</p>
 <span>  min_listing_age <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  exclude_negative_book_equity <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  exclude_negative_earnings <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  timing <span class="op">=</span> <span class="st">"formation"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -119,6 +120,21 @@ observations with non-positive book equity. Defaults to <code>FALSE</code>.</p><
 <dt id="arg-exclude-negative-earnings">exclude_negative_earnings<a class="anchor" aria-label="anchor" href="#arg-exclude-negative-earnings"></a></dt>
 <dd><p>A logical indicating whether to exclude
 observations with non-positive earnings. Defaults to <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-timing">timing<a class="anchor" aria-label="anchor" href="#arg-timing"></a></dt>
+<dd><p>A character string specifying when the screens apply if
+portfolios are rebalanced once a year (<code>rebalancing_month</code> in
+<code><a href="filter_sorting_data.html">filter_sorting_data()</a></code> or <code><a href="implement_portfolio_sort.html">implement_portfolio_sort()</a></code>). <code>"formation"</code>
+(the default) evaluates the screens in the formation month only and keeps
+every stock that passes them for the whole holding period (ex-ante
+screens). <code>"every_period"</code> evaluates them in every month, so a stock that
+fails a screen in a holding month loses that month's return (ex-post
+screens). Ex-post screens use information that is not available when the
+portfolios are formed, so the resulting factor returns can contain
+look-ahead bias; a warning is issued when they are used. With monthly
+rebalancing, every month is a formation month and both options are
+identical.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -172,6 +188,38 @@ specified filter options.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $exclude_negative_earnings</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $timing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "formation"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tidyfinance_filter_options"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Apply the screens in every month (ex-post), not only at formation</span></span></span>
+<span class="r-in"><span><span class="fu">filter_options</span><span class="op">(</span>min_stock_price <span class="op">=</span> <span class="fl">5</span>, timing <span class="op">=</span> <span class="st">"every_period"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $exclude_financials</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $exclude_utilities</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $min_stock_price</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $min_size_quantile</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $min_listing_age</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $exclude_negative_book_equity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $exclude_negative_earnings</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $timing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "every_period"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tidyfinance_filter_options"</span>

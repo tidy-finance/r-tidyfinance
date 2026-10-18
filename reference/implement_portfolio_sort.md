@@ -43,6 +43,8 @@ implement_portfolio_sort(
 
   An optional integer specifying the month in which portfolios are
   rebalanced annually. `NULL` (the default) means monthly rebalancing.
+  Also determines the formation month in which the screens of
+  `filter_options` are applied.
 
 - portfolio_sort_options:
 
@@ -59,7 +61,10 @@ implement_portfolio_sort(
     or `NULL` (the default, which applies no filters). Options include
     `exclude_financials`, `exclude_utilities`, `min_stock_price`,
     `min_size_quantile`, `min_listing_age`,
-    `exclude_negative_book_equity`, and `exclude_negative_earnings`.
+    `exclude_negative_book_equity`, `exclude_negative_earnings`, and
+    `timing`. With `rebalancing_month`, the screens apply in the
+    formation month only by default; see
+    [`filter_sorting_data()`](https://r.tidy-finance.org/reference/filter_sorting_data.md).
 
   - `breakpoint_options_main` A list of class
     `tidyfinance_breakpoint_options` created by
@@ -117,7 +122,7 @@ implement_portfolio_sort(
   default if `NULL`: `"id" = "permno"`, `"date" = "date"`,
   `"exchange" = "exchange"`, `"mktcap_lag" = "mktcap_lag"`,
   `"ret_excess" = "ret_excess"`, `"siccd" = "siccd"`,
-  `"price" = "prc_adj"`, `"listing_age" = "listing_age"`, `"be" = "be"`,
+  `"price" = "prc_lag"`, `"listing_age" = "listing_age"`, `"be" = "be"`,
   and `"earnings" = "ib"`.
 
 - quiet:
@@ -160,7 +165,7 @@ data <- data.frame(
   ),
   mktcap_lag = runif(500, 100, 1000),
   ret_excess = rnorm(500),
-  prc_adj = runif(500, 0.5, 50),
+  prc_lag = runif(500, 0.5, 50),
   size = runif(500, 50, 150)
 )
 implement_portfolio_sort(

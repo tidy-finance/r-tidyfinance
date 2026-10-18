@@ -17,7 +17,7 @@ data_options(
   ret_excess = "ret_excess",
   portfolio = "portfolio",
   siccd = "siccd",
-  price = "prc_adj",
+  price = "prc_lag",
   listing_age = "listing_age",
   be = "be",
   earnings = "ib",
@@ -64,8 +64,11 @@ data_options(
 
 - price:
 
-  A character string representing the (adjusted) price variable
-  (defaults to `"prc_adj"`).
+  A character string representing the price variable used by the
+  `min_stock_price` screen of
+  [`filter_sorting_data()`](https://r.tidy-finance.org/reference/filter_sorting_data.md)
+  (defaults to `"prc_lag"`, the nominal price at the end of the previous
+  month, as returned by `download_data("WRDS", "crsp_monthly")`).
 
 - listing_age:
 
@@ -134,7 +137,7 @@ data_options(
 #> [1] "siccd"
 #> 
 #> $price
-#> [1] "prc_adj"
+#> [1] "prc_lag"
 #> 
 #> $listing_age
 #> [1] "listing_age"

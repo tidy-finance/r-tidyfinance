@@ -78,7 +78,7 @@ options can be passed through <code>...</code>.</p>
 <span>  ret_excess <span class="op">=</span> <span class="st">"ret_excess"</span>,</span>
 <span>  portfolio <span class="op">=</span> <span class="st">"portfolio"</span>,</span>
 <span>  siccd <span class="op">=</span> <span class="st">"siccd"</span>,</span>
-<span>  price <span class="op">=</span> <span class="st">"prc_adj"</span>,</span>
+<span>  price <span class="op">=</span> <span class="st">"prc_lag"</span>,</span>
 <span>  listing_age <span class="op">=</span> <span class="st">"listing_age"</span>,</span>
 <span>  be <span class="op">=</span> <span class="st">"be"</span>,</span>
 <span>  earnings <span class="op">=</span> <span class="st">"ib"</span>,</span>
@@ -126,8 +126,10 @@ Classification code variable (defaults to <code>"siccd"</code>).</p></dd>
 
 
 <dt id="arg-price">price<a class="anchor" aria-label="anchor" href="#arg-price"></a></dt>
-<dd><p>A character string representing the (adjusted) price variable
-(defaults to <code>"prc_adj"</code>).</p></dd>
+<dd><p>A character string representing the price variable used by
+the <code>min_stock_price</code> screen of <code><a href="filter_sorting_data.html">filter_sorting_data()</a></code> (defaults to
+<code>"prc_lag"</code>, the nominal price at the end of the previous month, as
+returned by <code>download_data("WRDS", "crsp_monthly")</code>).</p></dd>
 
 
 <dt id="arg-listing-age">listing_age<a class="anchor" aria-label="anchor" href="#arg-listing-age"></a></dt>
@@ -198,7 +200,7 @@ data options.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "siccd"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $price</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "prc_adj"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "prc_lag"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $listing_age</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "listing_age"</span>

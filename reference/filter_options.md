@@ -16,6 +16,7 @@ filter_options(
   min_listing_age = NULL,
   exclude_negative_book_equity = FALSE,
   exclude_negative_earnings = FALSE,
+  timing = "formation",
   ...
 )
 ```
@@ -63,6 +64,23 @@ filter_options(
 
   A logical indicating whether to exclude observations with non-positive
   earnings. Defaults to `FALSE`.
+
+- timing:
+
+  A character string specifying when the screens apply if portfolios are
+  rebalanced once a year (`rebalancing_month` in
+  [`filter_sorting_data()`](https://r.tidy-finance.org/reference/filter_sorting_data.md)
+  or
+  [`implement_portfolio_sort()`](https://r.tidy-finance.org/reference/implement_portfolio_sort.md)).
+  `"formation"` (the default) evaluates the screens in the formation
+  month only and keeps every stock that passes them for the whole
+  holding period (ex-ante screens). `"every_period"` evaluates them in
+  every month, so a stock that fails a screen in a holding month loses
+  that month's return (ex-post screens). Ex-post screens use information
+  that is not available when the portfolios are formed, so the resulting
+  factor returns can contain look-ahead bias; a warning is issued when
+  they are used. With monthly rebalancing, every month is a formation
+  month and both options are identical.
 
 - ...:
 
@@ -115,6 +133,38 @@ filter_options(
 #> 
 #> $exclude_negative_earnings
 #> [1] FALSE
+#> 
+#> $timing
+#> [1] "formation"
+#> 
+#> attr(,"class")
+#> [1] "tidyfinance_filter_options"
+
+# Apply the screens in every month (ex-post), not only at formation
+filter_options(min_stock_price = 5, timing = "every_period")
+#> $exclude_financials
+#> [1] FALSE
+#> 
+#> $exclude_utilities
+#> [1] FALSE
+#> 
+#> $min_stock_price
+#> [1] 5
+#> 
+#> $min_size_quantile
+#> NULL
+#> 
+#> $min_listing_age
+#> NULL
+#> 
+#> $exclude_negative_book_equity
+#> [1] FALSE
+#> 
+#> $exclude_negative_earnings
+#> [1] FALSE
+#> 
+#> $timing
+#> [1] "every_period"
 #> 
 #> attr(,"class")
 #> [1] "tidyfinance_filter_options"

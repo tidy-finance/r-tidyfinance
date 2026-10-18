@@ -165,7 +165,7 @@ need to merge in accounting data later.</p>
 <span>  add_ccm_links <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">crsp_monthly</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 636,000 × 15</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 636,000 × 16</span></span></span>
 <span><span class="co">#&gt;    permno date       calculation_date      ret shrout   prc primaryexch siccd</span></span>
 <span><span class="co">#&gt;     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>      1 1972-01-01 1972-01-31       -<span style="color: #BB0000;">0.036</span><span style="color: #BB0000; text-decoration: underline;">1</span>  <span style="text-decoration: underline;">12</span>887. 201.  Q            <span style="text-decoration: underline;">1</span>284</span></span>
@@ -179,8 +179,9 @@ need to merge in accounting data later.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>      1 1972-09-01 1972-09-30       -<span style="color: #BB0000;">0.037</span><span style="color: #BB0000; text-decoration: underline;">1</span>  <span style="text-decoration: underline;">27</span>728. 366.  Q            <span style="text-decoration: underline;">1</span>284</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>      1 1972-10-01 1972-10-31       -<span style="color: #BB0000;">0.085</span><span style="color: #BB0000; text-decoration: underline;">9</span>  <span style="text-decoration: underline;">11</span>404.  66.9 Q            <span style="text-decoration: underline;">1</span>284</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 635,990 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 7 more variables: listing_age &lt;int&gt;, mktcap &lt;dbl&gt;, mktcap_lag &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   exchange &lt;chr&gt;, industry &lt;chr&gt;, ret_excess &lt;dbl&gt;, gvkey &lt;chr&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 8 more variables: listing_age &lt;int&gt;, mktcap &lt;dbl&gt;, mktcap_lag &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   prc_lag &lt;dbl&gt;, exchange &lt;chr&gt;, industry &lt;chr&gt;, ret_excess &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   gvkey &lt;chr&gt;</span></span></span></code></pre></div>
 <p>Each row is one stock-month, already cleaned: market capitalization
 (<code>mktcap</code>) and its one-month lag (<code>mktcap_lag</code>)
 for value weighting, a readable <code>exchange</code> label, the SIC
@@ -533,6 +534,14 @@ then sorting on asset growth within each bucket.</p>
 <span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/compute_long_short_returns.html">compute_long_short_returns</a></span><span class="op">(</span>direction <span class="op">=</span> <span class="st">"bottom_minus_top"</span><span class="op">)</span></span></code></pre></div>
+<p>Because the portfolios are rebalanced in July, the screens are
+evaluated in July only: a firm whose earnings turn negative later in the
+year stays in its portfolio until the next rebalancing, so no
+holding-month return is dropped based on information from that month.
+This is the default (<code>filter_options(timing = "formation")</code>).
+Setting <code>timing = "every_period"</code> applies the screens in
+every month instead and warns that the factor returns can then contain
+look-ahead bias.</p>
 <p>Moving from a univariate to a size-controlled bivariate sort was a
 one-word change to <code>sorting_method</code>; the surrounding pipeline
 is identical. That is the point of exposing construction choices as
