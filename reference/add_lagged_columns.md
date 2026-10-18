@@ -9,7 +9,7 @@ join-based approach.
 add_lagged_columns(
   data,
   cols,
-  lag,
+  lag = NULL,
   max_lag = lag,
   by = NULL,
   drop_na = FALSE,
@@ -34,7 +34,7 @@ add_lagged_columns(
   An integer or a
   [`lubridate::periods()`](https://lubridate.tidyverse.org/reference/period.html)
   object, e.g., `months(1)`, specifying the minimum lag (inclusive) to
-  apply.
+  apply. Required unless `ff_adjustment = TRUE`.
 
 - max_lag:
 
@@ -57,10 +57,14 @@ add_lagged_columns(
 
 - ff_adjustment:
 
-  A logical value. If `TRUE`, only the last observation per year (within
-  each group defined by `by`) is retained as a source for lagged values,
-  following Fama-French conventions for annual accounting data. Defaults
-  to `FALSE`.
+  A logical value. If `TRUE`, applies the Fama and French (1993) timing
+  convention for annual accounting data: the last observation per
+  calendar year (within each group defined by `by`) is used from July of
+  the following year through June of the year after that, whatever the
+  month of the fiscal year-end. `lag` and `max_lag` are ignored. Combine
+  with `drop_na = TRUE` when `data` is a monthly panel in which the
+  accounting columns are only filled at fiscal year-ends. Defaults to
+  `FALSE`.
 
 - data_options:
 

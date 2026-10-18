@@ -323,22 +323,25 @@ accounting for fiscal year
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 is not public the instant the year ends.</p>
 <p><code><a href="../reference/join_lagged_values.html">join_lagged_values()</a></code> merges the annual signal onto the
-monthly panel through a configurable lag window. Setting
+monthly panel. Without further options it uses a lag window set by
+<code>min_lag</code> and <code>max_lag</code>. Setting
 <code>ff_adjustment = TRUE</code> applies the Fama and French (1993)
-timing convention: accounting data are assumed public roughly six months
-after the fiscal year-end and held for the following twelve months.
-Because the pseudo statements all carry a December fiscal year-end, the
-7-to-18-month window places each signal in the July-to-June holding
-period that the convention prescribes. The window is anchored on the
-statement date, so for real firms with other fiscal year-ends the exact
-calendar months shift accordingly.</p>
+timing convention instead: the accounting data of a fiscal year ending
+in calendar year
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+are assumed public by the end of June of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t+1</annotation></semantics></math>
+and are used from July of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t+1</annotation></semantics></math>
+through June of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>+</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">t+2</annotation></semantics></math>.
+Every firm updates in July, whatever its fiscal year-end, so no lag
+window is needed.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sorting_data</span> <span class="op">&lt;-</span> <span class="va">crsp_monthly</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/join_lagged_values.html">join_lagged_values</a></span><span class="op">(</span></span>
 <span>    new_data <span class="op">=</span> <span class="va">sorting_variable_data</span>,</span>
 <span>    id_keys <span class="op">=</span> <span class="st">"gvkey"</span>,</span>
-<span>    min_lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/weekday.POSIXt.html" class="external-link">months</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span>,</span>
-<span>    max_lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/weekday.POSIXt.html" class="external-link">months</a></span><span class="op">(</span><span class="fl">18</span><span class="op">)</span>,</span>
 <span>    ff_adjustment <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>

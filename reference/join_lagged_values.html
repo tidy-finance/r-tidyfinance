@@ -74,8 +74,8 @@ data into quarterly target data).</p>
 <span>  <span class="va">original_data</span>,</span>
 <span>  <span class="va">new_data</span>,</span>
 <span>  <span class="va">id_keys</span>,</span>
-<span>  <span class="va">min_lag</span>,</span>
-<span>  <span class="va">max_lag</span>,</span>
+<span>  min_lag <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max_lag <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ff_adjustment <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  data_options <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -101,18 +101,22 @@ and joined.</p></dd>
 
 <dt id="arg-min-lag">min_lag<a class="anchor" aria-label="anchor" href="#arg-min-lag"></a></dt>
 <dd><p>A <code>lubridate::Period</code> specifying the lower lag bound
-(inclusive).</p></dd>
+(inclusive). Required unless <code>ff_adjustment = TRUE</code>.</p></dd>
 
 
 <dt id="arg-max-lag">max_lag<a class="anchor" aria-label="anchor" href="#arg-max-lag"></a></dt>
 <dd><p>A <code>lubridate::Period</code> specifying the upper lag bound
-(inclusive).</p></dd>
+(inclusive). Required unless <code>ff_adjustment = TRUE</code>.</p></dd>
 
 
 <dt id="arg-ff-adjustment">ff_adjustment<a class="anchor" aria-label="anchor" href="#arg-ff-adjustment"></a></dt>
-<dd><p>Logical; if <code>TRUE</code>, keeps only the last observation
-per identifier and year before lagging (Fama-French convention). Defaults
-to <code>FALSE</code>.</p></dd>
+<dd><p>Logical; if <code>TRUE</code>, applies the Fama and French
+(1993) timing convention: the last observation per identifier and
+calendar year (the fiscal year-end) is used from July of the following
+year through June of the year after that, whatever the month of the
+fiscal year-end. A value for a fiscal year ending in December 2020 or in
+June 2020 is thus used from July 2021 to June 2022. <code>min_lag</code> and
+<code>max_lag</code> are ignored. Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-data-options">data_options<a class="anchor" aria-label="anchor" href="#arg-data-options"></a></dt>
@@ -175,6 +179,27 @@ lagged columns from <code>new_data</code> (keeping their original names).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     2 2020-04-01  2.02  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>     2 2020-05-01 -<span style="color: #BB0000;">0.062</span><span style="color: #BB0000; text-decoration: underline;">7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span>     2 2020-06-01  1.30  </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fama-French timing: annual values are used from July to June</span></span></span>
+<span class="r-in"><span><span class="va">annual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2019-12-01"</span>, <span class="st">"2019-06-01"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">monthly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2020-06-01"</span>, <span class="st">"2020-07-01"</span>, <span class="st">"2021-06-01"</span><span class="op">)</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">join_lagged_values</span><span class="op">(</span><span class="va">monthly</span>, <span class="va">annual</span>, id_keys <span class="op">=</span> <span class="st">"id"</span>, ff_adjustment <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      id date           x</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 2020-06-01    <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     1 2020-07-01    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     1 2021-06-01    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     2 2020-06-01    <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     2 2020-07-01    20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>     2 2021-06-01    20</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

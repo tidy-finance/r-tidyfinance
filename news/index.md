@@ -30,6 +30,20 @@
 
 ### Bug fixes
 
+- `ff_adjustment = TRUE` in
+  [`join_lagged_values()`](https://r.tidy-finance.org/reference/join_lagged_values.md)
+  and
+  [`add_lagged_columns()`](https://r.tidy-finance.org/reference/add_lagged_columns.md)
+  now implements the Fama and French (1993) timing: the value of a
+  fiscal year ending in calendar year t is used from July of t + 1
+  through June of t + 2, for every fiscal year-end. Before, it kept the
+  last observation per year and then applied the `min_lag`/`max_lag`
+  window from the fiscal year-end, so a firm with a June fiscal year-end
+  updated in January instead of July. The lag arguments are now optional
+  and ignored with `ff_adjustment = TRUE`
+  ([\#323](https://github.com/tidy-finance/r-tidyfinance/issues/323)).
+- `add_lagged_columns(ff_adjustment = TRUE)` no longer fails when `by`
+  is set.
 - [`get_wrds_connection()`](https://r.tidy-finance.org/reference/get_wrds_connection.md),
   and thus every WRDS download, now explains a failed connection: it
   lists the likely causes (wrong credentials, missing two-factor

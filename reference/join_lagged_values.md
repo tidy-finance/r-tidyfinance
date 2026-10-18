@@ -14,8 +14,8 @@ join_lagged_values(
   original_data,
   new_data,
   id_keys,
-  min_lag,
-  max_lag,
+  min_lag = NULL,
+  max_lag = NULL,
   ff_adjustment = FALSE,
   data_options = NULL
 )
@@ -40,15 +40,22 @@ join_lagged_values(
 - min_lag:
 
   A `lubridate::Period` specifying the lower lag bound (inclusive).
+  Required unless `ff_adjustment = TRUE`.
 
 - max_lag:
 
   A `lubridate::Period` specifying the upper lag bound (inclusive).
+  Required unless `ff_adjustment = TRUE`.
 
 - ff_adjustment:
 
-  Logical; if `TRUE`, keeps only the last observation per identifier and
-  year before lagging (Fama-French convention). Defaults to `FALSE`.
+  Logical; if `TRUE`, applies the Fama and French (1993) timing
+  convention: the last observation per identifier and calendar year (the
+  fiscal year-end) is used from July of the following year through June
+  of the year after that, whatever the month of the fiscal year-end. A
+  value for a fiscal year ending in December 2020 or in June 2020 is
+  thus used from July 2021 to June 2022. `min_lag` and `max_lag` are
+  ignored. Defaults to `FALSE`.
 
 - data_options:
 
@@ -112,4 +119,25 @@ join_lagged_values(
 #> 10     2 2020-04-01  2.02  
 #> 11     2 2020-05-01 -0.0627
 #> 12     2 2020-06-01  1.30  
+
+# Fama-French timing: annual values are used from July to June
+annual <- tibble(
+  id = 1:2,
+  date = as.Date(c("2019-12-01", "2019-06-01")),
+  x = c(10, 20)
+)
+monthly <- tibble(
+  id = rep(1:2, each = 3),
+  date = rep(as.Date(c("2020-06-01", "2020-07-01", "2021-06-01")), 2)
+)
+join_lagged_values(monthly, annual, id_keys = "id", ff_adjustment = TRUE)
+#> # A tibble: 6 × 3
+#>      id date           x
+#>   <int> <date>     <dbl>
+#> 1     1 2020-06-01    NA
+#> 2     1 2020-07-01    10
+#> 3     1 2021-06-01    10
+#> 4     2 2020-06-01    NA
+#> 5     2 2020-07-01    20
+#> 6     2 2021-06-01    20
 ```

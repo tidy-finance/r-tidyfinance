@@ -61,6 +61,10 @@ document.addEventListener('DOMContentLoaded', function () {
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>
+<code>ff_adjustment = TRUE</code> in <code><a href="../reference/join_lagged_values.html">join_lagged_values()</a></code> and <code><a href="../reference/add_lagged_columns.html">add_lagged_columns()</a></code> now implements the Fama and French (1993) timing: the value of a fiscal year ending in calendar year t is used from July of t + 1 through June of t + 2, for every fiscal year-end. Before, it kept the last observation per year and then applied the <code>min_lag</code>/<code>max_lag</code> window from the fiscal year-end, so a firm with a June fiscal year-end updated in January instead of July. The lag arguments are now optional and ignored with <code>ff_adjustment = TRUE</code> (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/323" class="external-link">#323</a>).</li>
+<li>
+<code>add_lagged_columns(ff_adjustment = TRUE)</code> no longer fails when <code>by</code> is set.</li>
+<li>
 <code><a href="../reference/get_wrds_connection.html">get_wrds_connection()</a></code>, and thus every WRDS download, now explains a failed connection: it lists the likely causes (wrong credentials, missing two-factor authentication, terms of use not accepted) and keeps the original error as the cause (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/325" class="external-link">#325</a>).</li>
 <li>
 <code><a href="../reference/estimate_fama_macbeth.html">estimate_fama_macbeth()</a></code> with <code>vcov = "iid"</code> no longer multiplies the t-statistic by the square root of the number of periods a second time. The standard error of the mean already accounts for it, so the t-statistics were inflated by a factor of sqrt(T) (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/322" class="external-link">#322</a>).</li>

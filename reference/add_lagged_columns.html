@@ -64,7 +64,7 @@ join-based approach.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">add_lagged_columns</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">cols</span>,</span>
-<span>  <span class="va">lag</span>,</span>
+<span>  lag <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_lag <span class="op">=</span> <span class="va">lag</span>,</span>
 <span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  drop_na <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -88,7 +88,8 @@ lagged. Each column produces a new column suffixed with <code>_lag</code>.</p></
 
 <dt id="arg-lag">lag<a class="anchor" aria-label="anchor" href="#arg-lag"></a></dt>
 <dd><p>An integer or a <code><a href="https://lubridate.tidyverse.org/reference/period.html" class="external-link">lubridate::periods()</a></code> object, e.g.,
-<code>months(1)</code>, specifying the minimum lag (inclusive) to apply.</p></dd>
+<code>months(1)</code>, specifying the minimum lag (inclusive) to apply. Required
+unless <code>ff_adjustment = TRUE</code>.</p></dd>
 
 
 <dt id="arg-max-lag">max_lag<a class="anchor" aria-label="anchor" href="#arg-max-lag"></a></dt>
@@ -109,10 +110,14 @@ observations. Applied independently per column. Defaults to <code>FALSE</code>.<
 
 
 <dt id="arg-ff-adjustment">ff_adjustment<a class="anchor" aria-label="anchor" href="#arg-ff-adjustment"></a></dt>
-<dd><p>A logical value. If <code>TRUE</code>, only the last observation
-per year (within each group defined by <code>by</code>) is retained as a source for
-lagged values, following Fama-French conventions for annual accounting
-data. Defaults to <code>FALSE</code>.</p></dd>
+<dd><p>A logical value. If <code>TRUE</code>, applies the Fama and
+French (1993) timing convention for annual accounting data: the last
+observation per calendar year (within each group defined by <code>by</code>) is used
+from July of the following year through June of the year after that,
+whatever the month of the fiscal year-end. <code>lag</code> and <code>max_lag</code> are
+ignored. Combine with <code>drop_na = TRUE</code> when <code>data</code> is a monthly panel in
+which the accounting columns are only filled at fiscal year-ends.
+Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-data-options">data_options<a class="anchor" aria-label="anchor" href="#arg-data-options"></a></dt>
