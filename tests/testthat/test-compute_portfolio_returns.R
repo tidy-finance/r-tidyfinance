@@ -377,3 +377,188 @@ test_that("bivariate-independent annual produces valid output", {
   expect_s3_class(result, "data.frame")
   expect_gt(nrow(result), 0L)
 })
+
+# Capped value weights --------------------------------------------------------
+
+cap_panel <- function() {
+  # One date, two portfolios. NYSE stocks are small, NASDAQ stocks are large,
+  # so the NYSE and the all-stock percentiles differ.
+  tibble::tibble(
+    permno = 1:10,
+    date = as.Date("2020-01-01"),
+    size = 1:10,
+    exchange = rep(c("NYSE", "NASDAQ"), each = 5),
+    mktcap_lag = c(1, 2, 3, 4, 5, 60, 70, 80, 90, 100),
+    ret_excess = c(rep(0.01, 5), 0.02, 0.03, 0.04, 0.05, 0.06)
+  )
+}
+
+expected_capped <- function(data, cap) {
+  w <- pmin(data$mktcap_lag, cap)
+  top <- data$size > 5
+  c(
+    stats::weighted.mean(data$ret_excess[!top], w[!top]),
+    stats::weighted.mean(data$ret_excess[top], w[top])
+  )
+}
+
+test_that("capped weights use the NYSE percentile by default", {
+  data <- cap_panel()
+  out <- compute_portfolio_returns(
+    data,
+    "size",
+    "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 2),
+    quiet = TRUE
+  )
+  nyse_cap <- stats::quantile(1:5, 0.8, names = FALSE)
+  expect_equal(out$ret_excess_vw_capped, expected_capped(data, nyse_cap))
+})
+
+test_that("cap_weight_exchanges = NULL caps at the percentile of all stocks", {
+  data <- cap_panel()
+  out <- compute_portfolio_returns(
+    data,
+    "size",
+    "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 2),
+    cap_weight_exchanges = NULL,
+    quiet = TRUE
+  )
+  all_cap <- stats::quantile(data$mktcap_lag, 0.8, names = FALSE)
+  expect_equal(out$ret_excess_vw_capped, expected_capped(data, all_cap))
+})
+
+test_that("capping falls back to all stocks without an exchange column", {
+  data <- dplyr::select(cap_panel(), -"exchange")
+  rlang::local_options(rlib_message_verbosity = "verbose")
+  expect_message(
+    out <- compute_portfolio_returns(
+      data,
+      "size",
+      "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 2)
+    ),
+    "not found"
+  )
+  all_cap <- stats::quantile(data$mktcap_lag, 0.8, names = FALSE)
+  expect_equal(out$ret_excess_vw_capped, expected_capped(data, all_cap))
+})
+
+test_that("capping falls back to all stocks on dates without NYSE stocks", {
+  data <- cap_panel() |>
+    dplyr::mutate(exchange = "NASDAQ")
+  expect_message(
+    out <- compute_portfolio_returns(
+      data,
+      "size",
+      "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 2)
+    ),
+    "on 1 date"
+  )
+  all_cap <- stats::quantile(data$mktcap_lag, 0.8, names = FALSE)
+  expect_equal(out$ret_excess_vw_capped, expected_capped(data, all_cap))
+})
+
+test_that("cap_weight_exchanges is validated", {
+  expect_error(
+    compute_portfolio_returns(
+      cap_panel(),
+      "size",
+      "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 2),
+      cap_weight_exchanges = 1
+    ),
+    "cap_weight_exchanges"
+  )
+})
+
+# Dependent sorts with a minimum size threshold -------------------------------
+
+dependent_min_mktcap_panel <- function() {
+  # Secondary sort splits at the median size. The main breakpoints exclude
+  # stocks below the 25th size percentile of the whole date (min_mktcap
+  # 25.75), not of
+  # each size half. In the small half, the main median is then 38 (stocks 26
+  # to 50), so stock 35 is in the low portfolio. A minimum within the small
+  # half (13.25) would set the median at 32 and put stock 35 in the high one.
+  # Only stock 35 has a non-zero return, so its portfolio is the only one
+  # with a non-zero return.
+  tibble::tibble(
+    permno = 1:100,
+    date = as.Date("2020-07-01"),
+    mktcap_lag = as.numeric(1:100),
+    x = as.numeric(1:100),
+    ret_excess = dplyr::if_else(1:100 == 35L, 1, 0)
+  )
+}
+
+dependent_min_mktcap_sort <- function(data, ...) {
+  compute_portfolio_returns(
+    data,
+    c("x", "mktcap_lag"),
+    "bivariate-dependent",
+    breakpoint_options_main = breakpoint_options(
+      n_portfolios = 2,
+      breakpoints_min_size_threshold = 0.25
+    ),
+    breakpoint_options_secondary = breakpoint_options(n_portfolios = 2),
+    cap_weight_exchanges = NULL,
+    quiet = TRUE,
+    ...
+  )
+}
+
+test_that("dependent sorts compute the minimum market cap once per date", {
+  out <- dependent_min_mktcap_sort(dependent_min_mktcap_panel())
+  expect_gt(out$ret_excess_ew[out$portfolio == 1], 0)
+  expect_equal(out$ret_excess_ew[out$portfolio == 2], 0)
+  expect_false(".min_mktcap_main" %in% names(out))
+})
+
+test_that("dependent sorts with annual rebalancing use per-date min_mktcap", {
+  out <- dependent_min_mktcap_sort(
+    dependent_min_mktcap_panel(),
+    rebalancing_month = 7
+  )
+  expect_gt(out$ret_excess_ew[out$portfolio == 1], 0)
+  expect_equal(out$ret_excess_ew[out$portfolio == 2], 0)
+})
+
+test_that("dependent sorts pass options unchanged to custom breakpoints", {
+  received <- list()
+  custom_breakpoints <- function(data, sorting_variable, breakpoint_options,
+                                 data_options = NULL) {
+    received[[length(received) + 1L]] <<- breakpoint_options
+    compute_breakpoints(data, sorting_variable, breakpoint_options)
+  }
+  dependent_min_mktcap_sort(
+    dependent_min_mktcap_panel(),
+    breakpoint_function_main = custom_breakpoints
+  )
+  expect_true(all(vapply(
+    received,
+    \(x) is.null(x$breakpoints_min_mktcap),
+    logical(1)
+  )))
+})
+
+test_that("dependent min_mktcap with exchanges requires the exchange column", {
+  expect_error(
+    compute_portfolio_returns(
+      dependent_min_mktcap_panel(),
+      c("x", "mktcap_lag"),
+      "bivariate-dependent",
+      breakpoint_options_main = breakpoint_options(
+        n_portfolios = 2,
+        breakpoints_exchanges = "NYSE",
+        breakpoints_min_size_threshold = 0.25
+      ),
+      breakpoint_options_secondary = breakpoint_options(n_portfolios = 2),
+      cap_weight_exchanges = NULL,
+      quiet = TRUE
+    ),
+    "exchange"
+  )
+})

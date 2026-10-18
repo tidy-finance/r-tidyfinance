@@ -14,6 +14,7 @@ implement_portfolio_sort(
   breakpoint_function_secondary = compute_breakpoints,
   min_portfolio_size = 1L,
   cap_weight = 0.8,
+  cap_weight_exchanges = "NYSE",
   data_options = NULL,
   quiet = FALSE
 )
@@ -75,6 +76,10 @@ Set to \code{0L} to deactivate the check. See \code{\link[=compute_portfolio_ret
 \item{cap_weight}{A numeric between 0 and 1 specifying the quantile at which
 portfolio weights are capped for the capped value-weighted return.
 Defaults to \code{0.8}.}
+
+\item{cap_weight_exchanges}{A character vector of exchanges whose stocks
+determine the cap, or \code{NULL} for all stocks. Defaults to \code{"NYSE"}. See
+\code{\link[=compute_portfolio_returns]{compute_portfolio_returns()}}.}
 
 \item{data_options}{A list of class \code{tidyfinance_data_options} (created via
 \code{\link[=data_options]{data_options()}}) specifying column name mappings. All elements are

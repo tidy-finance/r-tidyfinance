@@ -15,6 +15,7 @@ compute_portfolio_returns(
   breakpoint_function_secondary = compute_breakpoints,
   min_portfolio_size = 1L,
   cap_weight = 0.8,
+  cap_weight_exchanges = "NYSE",
   data_options = NULL,
   quiet = FALSE
 )
@@ -80,6 +81,15 @@ at which market capitalization is capped per date when computing capped
 value-weighted excess returns (i.e., \code{ret_excess_vw_capped}). Defaults to
 \code{0.8}.}
 
+\item{cap_weight_exchanges}{A character vector of exchanges whose stocks
+determine the cap: market capitalization is capped at the \code{cap_weight}
+percentile of the stocks listed on these exchanges on each date. Defaults
+to \code{"NYSE"}, following Jensen, Kelly, and Pedersen (2023), who cap at the
+80th percentile of NYSE stocks. \code{NULL} uses all stocks. If the exchange
+column (mapped via \code{\link[=data_options]{data_options()}}) is missing, or no stock is listed on
+these exchanges on a date, the percentile of all stocks is used and a
+message says so.}
+
 \item{data_options}{A list of class \code{tidyfinance_data_options} (created via
 \code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{id} element is
 used to specify the entity (i.e., firm), \code{date} is used to specify the
@@ -87,7 +97,8 @@ date column, \code{ret_excess} is used to specify the excess return column, and
 \code{mktcap_lag} is used to specify the market capitalization. Uses
 \code{\link[=data_options]{data_options()}} default if \code{NULL}: \code{"id" = "permno"},
 \code{"date" = "date"}, \code{"ret_excess" = "ret_excess"}, and
-\code{"mktcap_lag" = "mktcap_lag"}.}
+\code{"mktcap_lag" = "mktcap_lag"}. The \code{exchange} element (default
+\code{"exchange"}) is used with \code{cap_weight_exchanges}.}
 
 \item{quiet}{A logical value indicating whether to suppress informational
 messages about missing values in the output panel (default is \code{FALSE}).}
@@ -166,6 +177,11 @@ compute_portfolio_returns(
   breakpoint_options_secondary = breakpoint_options(n_portfolios = 3),
 )
 
+}
+\references{
+Jensen, T. I., Kelly, B., & Pedersen, L. H. (2023). Is there a
+replication crisis in finance? \emph{Journal of Finance}, 78(5), 2465-2518.
+\doi{10.1111/jofi.13249}
 }
 \seealso{
 Other portfolio functions:

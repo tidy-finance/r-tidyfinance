@@ -275,8 +275,9 @@ portfolio_returns
 
 This baseline call named only two things; everything else came from a documented
 default. That is the point: a default call reproduces standard practice, and every
-construction choice that papers usually leave implicit --- an 80th-percentile cap
-for the capped value-weighted return, no minimum portfolio size, the standard
+construction choice that papers usually leave implicit --- a cap at the 80th
+percentile of NYSE market capitalization for the capped value-weighted return
+(Jensen, Kelly, and Pedersen 2023), no minimum portfolio size, the standard
 CRSP/Compustat column names --- is here an argument you can see and change. The
 output reports three weighting schemes per portfolio-month: value-weighted
 (`ret_excess_vw`), equal-weighted (`ret_excess_ew`), and capped value-weighted
@@ -453,6 +454,10 @@ Returns on Stocks and Bonds." *Journal of Financial Economics* 33 (1): 3--56.
 
 Fama, Eugene F., and James D. MacBeth. 1973. "Risk, Return, and Equilibrium:
 Empirical Tests." *Journal of Political Economy* 81 (3): 607--636.
+
+Jensen, Theis Ingerslev, Bryan Kelly, and Lasse Heje Pedersen. 2023. "Is
+There a Replication Crisis in Finance?" *The Journal of Finance* 78 (5):
+2465--2518.
 
 Newey, Whitney K., and Kenneth D. West. 1987. "A Simple, Positive
 Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance

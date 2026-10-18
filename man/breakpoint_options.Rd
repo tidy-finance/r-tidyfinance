@@ -33,7 +33,10 @@ between 0 and 1, stocks with market capitalization below this quantile are
 excluded from breakpoint computation. The quantile is computed among
 \code{breakpoints_exchanges} stocks if specified, otherwise among all stocks.
 Requires a market capitalization column in the data (see
-\code{\link[=data_options]{data_options()}}). Defaults to \code{NULL} (no size filtering).}
+\code{\link[=data_options]{data_options()}}). Defaults to \code{NULL} (no size filtering). In dependent
+bivariate sorts, the quantile for the main sorting variable is computed
+once per date from the full cross-section, not within each secondary
+portfolio.}
 
 \item{...}{Additional optional arguments. These will be captured in the
 resulting structure as a list.}

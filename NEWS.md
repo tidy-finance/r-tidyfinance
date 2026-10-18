@@ -2,6 +2,20 @@
 
 ## Breaking changes
 
+- The capped value-weighted returns of `compute_portfolio_returns()` and
+  `implement_portfolio_sort()` (`ret_excess_vw_capped`) now cap market
+  capitalization at the `cap_weight` percentile of NYSE stocks on each date,
+  following Jensen, Kelly, and Pedersen (2023), instead of the percentile of
+  all stocks. The new `cap_weight_exchanges` argument selects the exchanges;
+  `cap_weight_exchanges = NULL` restores the previous behaviour. Without an
+  exchange column, or on dates without NYSE stocks, the cap falls back to all
+  stocks with a message (#319).
+- In dependent bivariate sorts, `breakpoints_min_size_threshold` of the main
+  breakpoints is now applied with one minimum market cap per date, computed
+  from the full cross-section, instead of a separate one within each secondary
+  portfolio. Before, e.g., excluding the smallest 20% of NYSE stocks from the
+  asset-growth breakpoints within size halves excluded the smallest 20% of
+  each half (#319).
 - With annual rebalancing (`rebalancing_month`), `implement_portfolio_sort()`
   and `filter_sorting_data()` now apply the screens of `filter_options()` in
   the formation month only and keep every stock that passes them for the whole
