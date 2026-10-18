@@ -69,6 +69,15 @@
 
 ## New features
 
+- `compute_portfolio_returns()` and `implement_portfolio_sort()` gain
+  `holding_period` and `skip` for staggered rebalancing (#324): portfolios are
+  formed every period, each cohort is held for `holding_period` periods
+  starting `skip` periods after formation, and a portfolio's return is the
+  equal-weighted average of the overlapping cohorts held in a period, as in
+  Jegadeesh and Titman (1993). Held stocks stay in their cohort for the whole
+  holding period, and in `implement_portfolio_sort()` the screens of
+  `filter_options()` only decide which stocks enter a new cohort. The
+  vignette shows a six-month momentum strategy.
 - WRDS downloads report their progress (#326). `get_wrds_connection()` says
   when it connects (with a reminder to approve the Duo request) and when the
   connection succeeds. CRSP monthly, Compustat, CCM links, FISD, and TRACE

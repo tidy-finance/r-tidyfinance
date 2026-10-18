@@ -13,6 +13,13 @@
 #'   portfolios are rebalanced annually. `NULL` (the default) means monthly
 #'   rebalancing. Also determines the formation month in which the screens of
 #'   `filter_options` are applied.
+#' @param holding_period,skip Staggered rebalancing: portfolios are formed
+#'   every period and each cohort is held for `holding_period` periods,
+#'   starting `skip` periods after formation. See
+#'   [compute_portfolio_returns()]. With the default
+#'   `filter_options(timing = "formation")`, the screens only decide which
+#'   stocks enter the cohort formed in a period; a stock that fails a screen
+#'   later stays in its earlier cohorts until their holding period ends.
 #' @param portfolio_sort_options A list of class
 #'   `tidyfinance_portfolio_sort_options` created by
 #'   [portfolio_sort_options()], bundling filter and breakpoint
@@ -109,6 +116,8 @@ implement_portfolio_sort <- function(
   sorting_variables,
   sorting_method,
   rebalancing_month = NULL,
+  holding_period = 1L,
+  skip = 0L,
   portfolio_sort_options,
   breakpoint_function_main = compute_breakpoints,
   breakpoint_function_secondary = compute_breakpoints,
@@ -151,13 +160,26 @@ implement_portfolio_sort <- function(
     portfolio_sort_options$breakpoint_options_secondary
 
   # Apply sample construction filters
-  data <- filter_sorting_data(
-    data,
-    filter_options = filter_options,
-    data_options = data_options,
-    rebalancing_month = rebalancing_month,
-    quiet = quiet
-  )
+  staggered <- !identical(as.numeric(holding_period), 1) ||
+    !identical(as.numeric(skip), 0)
+  if (staggered && !is.null(filter_options) &&
+    has_active_screens(filter_options)) {
+    data <- screen_staggered_formation(
+      data,
+      sorting_variables = sorting_variables,
+      filter_options = filter_options,
+      data_options = data_options,
+      quiet = quiet
+    )
+  } else {
+    data <- filter_sorting_data(
+      data,
+      filter_options = filter_options,
+      data_options = data_options,
+      rebalancing_month = rebalancing_month,
+      quiet = quiet
+    )
+  }
 
   # Compute and return portfolio returns
   compute_portfolio_returns(
@@ -165,6 +187,8 @@ implement_portfolio_sort <- function(
     sorting_variables = sorting_variables,
     sorting_method = sorting_method,
     rebalancing_month = rebalancing_month,
+    holding_period = holding_period,
+    skip = skip,
     breakpoint_options_main = breakpoint_options_main,
     breakpoint_options_secondary = breakpoint_options_secondary,
     breakpoint_function_main = breakpoint_function_main,
@@ -175,4 +199,50 @@ implement_portfolio_sort <- function(
     data_options = data_options,
     quiet = quiet
   )
+}
+
+#' Apply screens to the formation of staggered portfolios (internal helper)
+#'
+#' With staggered rebalancing, every month is a formation month, but stocks
+#' are held for several months. With `timing = "formation"`, a stock that
+#' fails a screen is not added to the cohort formed in that month, but stays
+#' in the cohorts formed earlier: its sorting variables are set to `NA` in
+#' that month instead of removing the row. With `timing = "every_period"`,
+#' failing rows are removed, so earlier cohorts lose the stock's return, and
+#' a warning is issued.
+#'
+#' @param data,sorting_variables,filter_options,data_options,quiet See
+#'   [implement_portfolio_sort()].
+#'
+#' @returns `data`, screened.
+#' @noRd
+screen_staggered_formation <- function(
+  data,
+  sorting_variables,
+  filter_options,
+  data_options,
+  quiet
+) {
+  if (is.null(data_options)) {
+    data_options <- data_options()
+  }
+
+  passed <- apply_screens(data, filter_options, data_options, quiet)
+
+  if (identical(filter_options$timing, "every_period")) {
+    warn_every_period_screens()
+    return(passed)
+  }
+
+  id_col <- data_options$id
+  date_col <- data_options$date
+  require_column(data, id_col, "data_options$id")
+  require_column(data, date_col, "data_options$date")
+
+  keep <- paste(data[[id_col]], data[[date_col]]) %in%
+    paste(passed[[id_col]], passed[[date_col]])
+  for (sorting_variable in sorting_variables) {
+    data[[sorting_variable]][!keep] <- NA
+  }
+  data
 }

@@ -157,21 +157,7 @@ filter_sorting_data <- function(
   }
 
   if (timing == "every_period") {
-    cli::cli_warn(
-      c(
-        "Screens are applied in every month, including holding months.",
-        "!" = paste(
-          "A stock that fails a screen after portfolio formation loses those",
-          "months' returns, so factor returns can contain look-ahead bias."
-        ),
-        "i" = paste(
-          "Use {.code filter_options(timing = \"formation\")} to apply",
-          "the screens only when portfolios are formed."
-        )
-      ),
-      .frequency = "regularly",
-      .frequency_id = "tidyfinance_every_period_screens"
-    )
+    warn_every_period_screens()
     return(apply_screens(data, filter_options, data_options, quiet))
   }
 
@@ -181,6 +167,29 @@ filter_sorting_data <- function(
     data_options,
     rebalancing_month,
     quiet
+  )
+}
+
+#' Warn that screens applied in every period can bias factor returns
+#'
+#' @returns Called for its side effect.
+#' @noRd
+warn_every_period_screens <- function() {
+  cli::cli_warn(
+    c(
+      "Screens are applied in every month, including holding months.",
+      "!" = paste(
+        "A stock that fails a screen after portfolio formation loses those",
+        "months' returns, so factor returns can contain look-ahead bias."
+      ),
+      "i" = paste(
+        "Use {.code filter_options(timing = \"formation\")} to apply",
+        "the screens only when portfolios are formed."
+      )
+    ),
+    .frequency = "regularly",
+    .frequency_id = "tidyfinance_every_period_screens",
+    call = rlang::caller_env()
   )
 }
 
