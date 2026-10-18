@@ -34,7 +34,7 @@ test_that(
   }
 )
 
-test_that("get_wrds_connection propagates errors from DBI::dbConnect", {
+test_that("get_wrds_connection explains failed connections", {
   withr::local_envvar(WRDS_USER = "user", WRDS_PASSWORD = "pass")
   local_mocked_bindings(
     Postgres = function() "pg_driver",
@@ -44,8 +44,10 @@ test_that("get_wrds_connection propagates errors from DBI::dbConnect", {
     dbConnect = function(...) stop("connection refused"),
     .package = "DBI"
   )
-  expect_error(
-    get_wrds_connection(),
-    "connection refused"
-  )
+  err <- expect_error(get_wrds_connection(), "Could not connect to WRDS")
+  expect_match(conditionMessage(err$parent), "connection refused")
+  msg <- cli::ansi_strip(conditionMessage(err))
+  expect_match(msg, "two-factor authentication")
+  expect_match(msg, "terms of use")
+  expect_snapshot(get_wrds_connection(), error = TRUE)
 })

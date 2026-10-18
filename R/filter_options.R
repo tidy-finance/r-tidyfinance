@@ -24,6 +24,18 @@
 #'   observations with non-positive book equity. Defaults to `FALSE`.
 #' @param exclude_negative_earnings A logical indicating whether to exclude
 #'   observations with non-positive earnings. Defaults to `FALSE`.
+#' @param timing A character string specifying when the screens apply if
+#'   portfolios are rebalanced once a year (`rebalancing_month` in
+#'   [filter_sorting_data()] or [implement_portfolio_sort()]). `"formation"`
+#'   (the default) evaluates the screens in the formation month only and keeps
+#'   every stock that passes them for the whole holding period (ex-ante
+#'   screens). `"every_period"` evaluates them in every month, so a stock that
+#'   fails a screen in a holding month loses that month's return (ex-post
+#'   screens). Ex-post screens use information that is not available when the
+#'   portfolios are formed, so the resulting factor returns can contain
+#'   look-ahead bias; a warning is issued when they are used. With monthly
+#'   rebalancing, every month is a formation month and both options are
+#'   identical.
 #' @param ... Additional arguments to be included in the filter options list.
 #'
 #' @returns A list of class `tidyfinance_filter_options` containing the
@@ -40,6 +52,9 @@
 #'   min_listing_age = 12
 #' )
 #'
+#' # Apply the screens in every month (ex-post), not only at formation
+#' filter_options(min_stock_price = 5, timing = "every_period")
+#'
 filter_options <- function(
   exclude_financials = FALSE,
   exclude_utilities = FALSE,
@@ -48,12 +63,23 @@ filter_options <- function(
   min_listing_age = NULL,
   exclude_negative_book_equity = FALSE,
   exclude_negative_earnings = FALSE,
+  timing = "formation",
   ...
 ) {
   validate_flag(exclude_financials, "exclude_financials")
   validate_flag(exclude_utilities, "exclude_utilities")
   validate_flag(exclude_negative_book_equity, "exclude_negative_book_equity")
   validate_flag(exclude_negative_earnings, "exclude_negative_earnings")
+
+  if (
+    !is.character(timing) ||
+      length(timing) != 1L ||
+      !timing %in% c("formation", "every_period")
+  ) {
+    cli::cli_abort(
+      "{.arg timing} must be either {.val formation} or {.val every_period}."
+    )
+  }
 
   validate_optional_number(
     min_stock_price,
@@ -91,6 +117,7 @@ filter_options <- function(
       "min_listing_age" = min_listing_age,
       "exclude_negative_book_equity" = exclude_negative_book_equity,
       "exclude_negative_earnings" = exclude_negative_earnings,
+      "timing" = timing,
       ...
     ),
     class = "tidyfinance_filter_options"

@@ -55,7 +55,9 @@ premia and slopes, but the levels too (the uniformly positive "excess" returns
 reflect a built-in drift in the generator, not a market risk premium). Treat the
 code as the lesson and the numbers as placeholders; to reproduce the published
 premium, swap `"Pseudo Data"` for `"WRDS"` (after a one-time
-`set_wrds_credentials()`) and rerun.
+`set_wrds_credentials()`) and rerun. Besides the credentials, WRDS requires
+two-factor authentication (Duo) and acceptance of its terms of use; see the
+"WRDS account setup" section of `?get_wrds_connection`.
 
 ```{r}
 #| label: load-packages
@@ -366,6 +368,14 @@ factor_returns_customized <- implement_portfolio_sort(
 ) |>
   compute_long_short_returns(direction = "bottom_minus_top")
 ```
+
+Because the portfolios are rebalanced in July, the screens are evaluated in July
+only: a firm whose earnings turn negative later in the year stays in its portfolio
+until the next rebalancing, so no holding-month return is dropped based on
+information from that month. This is the default
+(`filter_options(timing = "formation")`). Setting `timing = "every_period"`
+applies the screens in every month instead and warns that the factor returns can
+then contain look-ahead bias.
 
 Moving from a univariate to a size-controlled bivariate sort was a one-word change
 to `sorting_method`; the surrounding pipeline is identical. That is the point of

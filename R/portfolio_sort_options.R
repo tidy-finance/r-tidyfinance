@@ -27,6 +27,10 @@
 #'       `FALSE`.
 #'     \item `exclude_negative_earnings` A logical indicating whether to
 #'       exclude observations with non-positive earnings. Defaults to `FALSE`.
+#'     \item `timing` Either `"formation"` (the default) to apply the screens
+#'       only in the formation month when portfolios are rebalanced once a
+#'       year, or `"every_period"` to apply them in every month, which can
+#'       introduce look-ahead bias.
 #'   }
 #' @param breakpoint_options_main A list of class
 #'   `tidyfinance_breakpoint_options` created by [breakpoint_options()],
