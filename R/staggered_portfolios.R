@@ -127,7 +127,7 @@ assign_formation_portfolios <- function(
 #'   this grid, so it must not have gaps.
 #' @param ret_col,w_col,w_capped_col,min_portfolio_size See
 #'   [compute_portfolio_returns()].
-#' @param ... Passed to [assign_formation_portfolios()].
+#' @param ... Passed to `assign_formation_portfolios()`.
 #'
 #' @returns A data frame with columns `portfolio`, the date column,
 #'   `ret_excess_vw`, `ret_excess_ew`, and `ret_excess_vw_capped`.
