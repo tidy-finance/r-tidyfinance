@@ -100,6 +100,32 @@
 
 ### New features
 
+- `download_data("Tidy Finance", ...)` gains two datasets of the factor
+  library. `"factor_library_costs"` downloads the turnover, the trading
+  cost, and the microcap share of each portfolio from January 1994, with
+  the same filters and `ids` as `"factor_library"` and the grid joined
+  in the same way. `"factor_library_persistence"` downloads how up to
+  date each sorting variable is under each lag and rebalancing
+  frequency, optionally for some `sorting_variable`s only.
+- The factor library downloads can be pinned to a release. `revision`
+  selects the commit of the Hugging Face dataset
+  `tidy-finance/factor-library`, which holds the returns and the costs,
+  and `grid_revision` the commit of `tidy-finance/factor-library-grid`,
+  which holds the grid and the persistence. Both default to `"main"`.
+  [`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md)
+  and
+  [`download_factor_library_grid()`](https://r.tidy-finance.org/reference/download_factor_library_grid.md)
+  gain the same arguments, and the grid is cached once per revision.
+  `download_data("Tidy Finance", "factor_library_grid")` now also passes
+  `refresh` on.
+- The factor library downloads up to 16 files at once and 8 per second
+  on average, also across calls, which keeps it below the limit of
+  Hugging Face for anonymous users of 3,000 files per five minutes. When
+  Hugging Face still refuses a file with HTTP 429, the download waits
+  until the limit resets and tries again, twice at most, before it fails
+  with a message that explains the limit. A revision that the dataset
+  does not have now fails with a clear message. httr2 1.1.1 or later is
+  required.
 - [`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md)
   and
   [`implement_portfolio_sort()`](https://r.tidy-finance.org/reference/implement_portfolio_sort.md)

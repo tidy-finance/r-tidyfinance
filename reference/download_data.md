@@ -65,12 +65,13 @@ download_data(
   arguments such as `region`, `factors`, `classification`, `frequency`,
   and `weighting` are passed to
   [`download_data_jkp()`](https://r.tidy-finance.org/reference/download_data_jkp.md).
-  If `domain` is `"Tidy Finance"` and `dataset` is `"factor_library"`,
-  arguments are either filter inputs (e.g., `sorting_variable`,
-  `rebalancing`, `fill_all`) or an explicit `ids` vector that bypasses
-  the grid filter and downloads the specified portfolios directly via
-  [`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md);
-  see
+  If `domain` is `"Tidy Finance"` and `dataset` is `"factor_library"` or
+  `"factor_library_costs"`, arguments are either filter inputs (e.g.,
+  `sorting_variable`, `rebalancing`, `fill_all`) or an explicit `ids`
+  vector that bypasses the grid filter and downloads the specified
+  portfolios directly. `revision` and `grid_revision` pin the factor
+  library datasets to a release, and `"factor_library_persistence"`
+  takes an optional `sorting_variable`; see
   [`download_data_huggingface()`](https://r.tidy-finance.org/reference/download_data_huggingface.md)
   for details. If `domain` is `"Damodaran"`, arguments such as `region`
   and `year` are passed to
@@ -152,13 +153,13 @@ download_data("Index Constituents", index = "DAX")
 #>  1 SAP.DE  SAP                                Deutschland Xetra         EUR     
 #>  2 SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     
 #>  3 ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     
-#>  4 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
-#>  5 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
+#>  4 ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     
+#>  5 AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     
 #>  6 DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     
 #>  7 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
 #>  8 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
 #>  9 DB1.DE  DEUTSCHE BOERSE AG                 Deutschland Xetra         EUR     
-#> 10 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
+#> 10 DHL.DE  DHL AG                             Deutschland Xetra         EUR     
 #> # ℹ 30 more rows
 download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> No `start_date` or `end_date` provided. Returning the full data set.
@@ -240,22 +241,22 @@ download_data("FRED", "FRED-QD", vintage = "2020-03")
 #> #   IPMAT <dbl>, IPDMAT <dbl>, IPNMAT <dbl>, IPDCONGD <dbl>, IPB51110SQ <dbl>,
 #> #   IPNCONGD <dbl>, IPBUSEQ <dbl>, IPB51220SQ <dbl>, TCU <dbl>, CUMFNS <dbl>, …
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-10-18 to
-#> 2025-10-18 to avoid downloading large amounts of data.
-#> # A tibble: 500 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-10-21 to
+#> 2025-10-21 to avoid downloading large amounts of data.
+#> # A tibble: 502 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-10-18 46431500  236.  234.  236.  235            233.
-#>  2 AAPL   2024-10-21 36254500  234.  234.  237.  236.           235.
-#>  3 AAPL   2024-10-22 38846600  234.  233.  236.  236.           234.
-#>  4 AAPL   2024-10-23 52287000  234.  228.  235.  231.           229.
-#>  5 AAPL   2024-10-24 31109500  230.  228.  231.  231.           229.
-#>  6 AAPL   2024-10-25 38802300  230.  230.  233.  231.           229.
-#>  7 AAPL   2024-10-28 36087100  233.  233.  235.  233.           231.
-#>  8 AAPL   2024-10-29 35417200  233.  232.  234.  234.           232.
-#>  9 AAPL   2024-10-30 47070900  233.  230.  233.  230.           228.
-#> 10 AAPL   2024-10-31 64370100  229.  225.  230.  226.           224.
-#> # ℹ 490 more rows
+#>  1 AAPL   2024-10-21 36254500  234.  234.  237.  236.           235.
+#>  2 AAPL   2024-10-22 38846600  234.  233.  236.  236.           234.
+#>  3 AAPL   2024-10-23 52287000  234.  228.  235.  231.           229.
+#>  4 AAPL   2024-10-24 31109500  230.  228.  231.  231.           229.
+#>  5 AAPL   2024-10-25 38802300  230.  230.  233.  231.           229.
+#>  6 AAPL   2024-10-28 36087100  233.  233.  235.  233.           231.
+#>  7 AAPL   2024-10-29 35417200  233.  232.  234.  234.           232.
+#>  8 AAPL   2024-10-30 47070900  233.  230.  233.  230.           228.
+#>  9 AAPL   2024-10-31 64370100  229.  225.  230.  226.           224.
+#> 10 AAPL   2024-11-01 65276700  221.  220.  225.  223.           221.
+#> # ℹ 492 more rows
 download_data("Damodaran", "wacc", region = "europe", year = 2020:2024)
 #> # A tibble: 480 × 14
 #>    region  year industry  number_of_firms  beta cost_of_equity equity_to_capital
@@ -327,16 +328,16 @@ download_data(
 #> # A data frame: 774 × 19
 #>        id date            ret sorting_variable min_size_quantile min_stock_price
 #>     <int> <date>        <dbl> <chr>                        <dbl>           <dbl>
-#>  1 2.53e6 1960-07-01 -0.0186  high52                         0.2              NA
-#>  2 2.53e6 1960-08-01  0.00310 high52                         0.2              NA
-#>  3 2.53e6 1960-09-01  0.00178 high52                         0.2              NA
-#>  4 2.53e6 1960-10-01  0.0264  high52                         0.2              NA
-#>  5 2.53e6 1960-11-01 -0.00333 high52                         0.2              NA
-#>  6 2.53e6 1960-12-01  0.0197  high52                         0.2              NA
-#>  7 2.53e6 1961-01-01 -0.0526  high52                         0.2              NA
-#>  8 2.53e6 1961-02-01  0.0352  high52                         0.2              NA
-#>  9 2.53e6 1961-03-01  0.00377 high52                         0.2              NA
-#> 10 2.53e6 1961-04-01 -0.0138  high52                         0.2              NA
+#>  1 2.53e6 1960-07-01 -1.98e-2 high52                         0.2              NA
+#>  2 2.53e6 1960-08-01 -7.72e-3 high52                         0.2              NA
+#>  3 2.53e6 1960-09-01  3.77e-4 high52                         0.2              NA
+#>  4 2.53e6 1960-10-01 -6.84e-3 high52                         0.2              NA
+#>  5 2.53e6 1960-11-01 -7.89e-3 high52                         0.2              NA
+#>  6 2.53e6 1960-12-01 -4.65e-2 high52                         0.2              NA
+#>  7 2.53e6 1961-01-01 -3.12e-2 high52                         0.2              NA
+#>  8 2.53e6 1961-02-01  1.12e-3 high52                         0.2              NA
+#>  9 2.53e6 1961-03-01 -9.88e-3 high52                         0.2              NA
+#> 10 2.53e6 1961-04-01  1.57e-2 high52                         0.2              NA
 #> # ℹ 764 more rows
 #> # ℹ 13 more variables: min_listing_age <int>, exclude_financials <lgl>,
 #> #   exclude_utilities <lgl>, exclude_negative_book_equity <lgl>,
@@ -346,26 +347,52 @@ download_data(
 #> #   breakpoints_exchanges <chr>, weighting_scheme <chr>
 download_data("Tidy Finance", "factor_library", ids = c(1L, 2L, 3L))
 #> No `start_date` or `end_date` provided. Returning the full data set.
-#> # A data frame: 2,337 × 19
+#> # A data frame: 2,340 × 19
 #>       id date         ret sorting_variable min_size_quantile min_stock_price
 #>    <int> <date>     <dbl> <chr>                        <dbl>           <dbl>
-#>  1     1 1960-02-01     0 abnormalaccruals                NA              NA
-#>  2     1 1960-03-01     0 abnormalaccruals                NA              NA
-#>  3     1 1960-04-01     0 abnormalaccruals                NA              NA
-#>  4     1 1960-05-01     0 abnormalaccruals                NA              NA
-#>  5     1 1960-06-01     0 abnormalaccruals                NA              NA
-#>  6     1 1960-07-01     0 abnormalaccruals                NA              NA
-#>  7     1 1960-08-01     0 abnormalaccruals                NA              NA
-#>  8     1 1960-09-01     0 abnormalaccruals                NA              NA
-#>  9     1 1960-10-01     0 abnormalaccruals                NA              NA
-#> 10     1 1960-11-01     0 abnormalaccruals                NA              NA
-#> # ℹ 2,327 more rows
+#>  1     1 1960-01-01     0 abnormalaccruals                NA              NA
+#>  2     1 1960-02-01     0 abnormalaccruals                NA              NA
+#>  3     1 1960-03-01     0 abnormalaccruals                NA              NA
+#>  4     1 1960-04-01     0 abnormalaccruals                NA              NA
+#>  5     1 1960-05-01     0 abnormalaccruals                NA              NA
+#>  6     1 1960-06-01     0 abnormalaccruals                NA              NA
+#>  7     1 1960-07-01     0 abnormalaccruals                NA              NA
+#>  8     1 1960-08-01     0 abnormalaccruals                NA              NA
+#>  9     1 1960-09-01     0 abnormalaccruals                NA              NA
+#> 10     1 1960-10-01     0 abnormalaccruals                NA              NA
+#> # ℹ 2,330 more rows
 #> # ℹ 13 more variables: min_listing_age <int>, exclude_financials <lgl>,
 #> #   exclude_utilities <lgl>, exclude_negative_book_equity <lgl>,
 #> #   exclude_negative_earnings <lgl>, sorting_variable_lag <chr>,
 #> #   rebalancing <chr>, n_portfolios_main <dbl>, sorting_method <chr>,
 #> #   breakpoints_min_size_threshold <dbl>, n_portfolios_secondary <dbl>,
 #> #   breakpoints_exchanges <chr>, weighting_scheme <chr>
+download_data(
+  "Tidy Finance",
+  "factor_library_costs",
+  sorting_variable = "bm"
+)
+#> No `start_date` or `end_date` provided. Returning the full data set.
+#> # A data frame: 372 × 21
+#>         id date       turnover     cost microcap_share sorting_variable
+#>      <int> <date>        <dbl>    <dbl>          <dbl> <chr>           
+#>  1 2162066 1994-01-01   0.0612 0.000920              0 bm              
+#>  2 2162066 1994-02-01   0.0207 0.000432              0 bm              
+#>  3 2162066 1994-03-01   0.0276 0.000562              0 bm              
+#>  4 2162066 1994-04-01   0.0257 0.000494              0 bm              
+#>  5 2162066 1994-05-01   0.0429 0.000667              0 bm              
+#>  6 2162066 1994-06-01   0.0941 0.00120               0 bm              
+#>  7 2162066 1994-07-01   0.0460 0.000787              0 bm              
+#>  8 2162066 1994-08-01   0.0634 0.000974              0 bm              
+#>  9 2162066 1994-09-01   0.0684 0.000967              0 bm              
+#> 10 2162066 1994-10-01   0.0341 0.000584              0 bm              
+#> # ℹ 362 more rows
+#> # ℹ 15 more variables: min_size_quantile <dbl>, min_stock_price <dbl>,
+#> #   min_listing_age <int>, exclude_financials <lgl>, exclude_utilities <lgl>,
+#> #   exclude_negative_book_equity <lgl>, exclude_negative_earnings <lgl>,
+#> #   sorting_variable_lag <chr>, rebalancing <chr>, n_portfolios_main <dbl>,
+#> #   sorting_method <chr>, breakpoints_min_size_threshold <dbl>,
+#> #   n_portfolios_secondary <dbl>, breakpoints_exchanges <chr>, …
 download_data("Tidy Finance", "factor_library_grid")
 #> # A data frame: 4,105,728 × 17
 #>       id sorting_variable min_size_quantile min_stock_price min_listing_age
@@ -387,5 +414,25 @@ download_data("Tidy Finance", "factor_library_grid")
 #> #   sorting_method <chr>, breakpoints_min_size_threshold <dbl>,
 #> #   n_portfolios_secondary <dbl>, breakpoints_exchanges <chr>,
 #> #   weighting_scheme <chr>
+download_data(
+  "Tidy Finance",
+  "factor_library_persistence",
+  sorting_variable = "bm"
+)
+#> No `start_date` or `end_date` provided. Returning the full data set.
+#> # A data frame: 6,240 × 5
+#>    sorting_variable sorting_variable_lag rebalancing date       persistence
+#>    <chr>            <chr>                <chr>       <date>           <dbl>
+#>  1 bm               1m                   annual      1960-01-01      NA    
+#>  2 bm               1m                   annual      1960-02-01      NA    
+#>  3 bm               1m                   annual      1960-03-01      NA    
+#>  4 bm               1m                   annual      1960-04-01      NA    
+#>  5 bm               1m                   annual      1960-05-01      NA    
+#>  6 bm               1m                   annual      1960-06-01      NA    
+#>  7 bm               1m                   annual      1960-07-01       1    
+#>  8 bm               1m                   annual      1960-08-01       0.999
+#>  9 bm               1m                   annual      1960-09-01       0.999
+#> 10 bm               1m                   annual      1960-10-01       0.998
+#> # ℹ 6,230 more rows
 # }
 ```

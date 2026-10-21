@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,10 +130,12 @@ depending on the <code>domain</code>. For instance, if <code>domain</code> is
 the <code>dataset</code> argument and arguments such as <code>region</code>, <code>factors</code>,
 <code>classification</code>, <code>frequency</code>, and <code>weighting</code> are passed to
 <code><a href="download_data_jkp.html">download_data_jkp()</a></code>. If <code>domain</code> is <code>"Tidy Finance"</code> and
-<code>dataset</code> is <code>"factor_library"</code>, arguments are either filter inputs
-(e.g., <code>sorting_variable</code>, <code>rebalancing</code>, <code>fill_all</code>) or an explicit
-<code>ids</code> vector that bypasses the grid filter and downloads the
-specified portfolios directly via <code><a href="download_factor_library_ids.html">download_factor_library_ids()</a></code>;
+<code>dataset</code> is <code>"factor_library"</code> or <code>"factor_library_costs"</code>, arguments
+are either filter inputs (e.g., <code>sorting_variable</code>, <code>rebalancing</code>,
+<code>fill_all</code>) or an explicit <code>ids</code> vector that bypasses the grid filter
+and downloads the specified portfolios directly. <code>revision</code> and
+<code>grid_revision</code> pin the factor library datasets to a release, and
+<code>"factor_library_persistence"</code> takes an optional <code>sorting_variable</code>;
 see <code><a href="download_data_huggingface.html">download_data_huggingface()</a></code> for details. If <code>domain</code> is
 <code>"Damodaran"</code>, arguments such as <code>region</code> and <code>year</code> are passed to
 <code><a href="download_data_damodaran.html">download_data_damodaran()</a></code>, which selects years via <code>year</code> instead of
@@ -214,13 +216,13 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> SAP.DE  SAP                                Deutschland Xetra         EUR     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> SIE.DE  SIEMENS N AG                       Deutschland Xetra         EUR     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ALV.DE  ALLIANZ                            Deutschland Xetra         EUR     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ENR.DE  SIEMENS ENERGY N AG                Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AIR.BE  AIRBUS                             Frankreich  Boerse Berlin EUR     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DTE.DE  DEUTSCHE TELEKOM N AG              Deutschland Xetra         EUR     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DB1.DE  DEUTSCHE BOERSE AG                 Deutschland Xetra         EUR     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DHL.DE  DHL AG                             Deutschland Xetra         EUR     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 30 more rows</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"FRED"</span>, series <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GDP"</span>, <span class="st">"CPIAUCNS"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Returning the full data set.</span>
@@ -302,22 +304,22 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   IPMAT &lt;dbl&gt;, IPDMAT &lt;dbl&gt;, IPNMAT &lt;dbl&gt;, IPDCONGD &lt;dbl&gt;, IPB51110SQ &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   IPNCONGD &lt;dbl&gt;, IPBUSEQ &lt;dbl&gt;, IPB51220SQ &lt;dbl&gt;, TCU &lt;dbl&gt;, CUMFNS &lt;dbl&gt;, …</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Stock Prices"</span>, symbols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AAPL"</span>, <span class="st">"MSFT"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-10-18 to</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-10-18 to avoid downloading large amounts of data.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 500 × 8</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-10-21 to</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-10-21 to avoid downloading large amounts of data.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 502 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    symbol date         volume  open   low  high close adjusted_close</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AAPL   2024-10-18 46<span style="text-decoration: underline;">431</span>500  236.  234.  236.  235            233.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AAPL   2024-10-21 36<span style="text-decoration: underline;">254</span>500  234.  234.  237.  236.           235.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AAPL   2024-10-22 38<span style="text-decoration: underline;">846</span>600  234.  233.  236.  236.           234.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AAPL   2024-10-23 52<span style="text-decoration: underline;">287</span>000  234.  228.  235.  231.           229.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AAPL   2024-10-24 31<span style="text-decoration: underline;">109</span>500  230.  228.  231.  231.           229.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AAPL   2024-10-25 38<span style="text-decoration: underline;">802</span>300  230.  230.  233.  231.           229.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AAPL   2024-10-28 36<span style="text-decoration: underline;">087</span>100  233.  233.  235.  233.           231.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AAPL   2024-10-29 35<span style="text-decoration: underline;">417</span>200  233.  232.  234.  234.           232.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AAPL   2024-10-30 47<span style="text-decoration: underline;">070</span>900  233.  230.  233.  230.           228.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AAPL   2024-10-31 64<span style="text-decoration: underline;">370</span>100  229.  225.  230.  226.           224.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 490 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AAPL   2024-10-21 36<span style="text-decoration: underline;">254</span>500  234.  234.  237.  236.           235.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AAPL   2024-10-22 38<span style="text-decoration: underline;">846</span>600  234.  233.  236.  236.           234.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AAPL   2024-10-23 52<span style="text-decoration: underline;">287</span>000  234.  228.  235.  231.           229.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AAPL   2024-10-24 31<span style="text-decoration: underline;">109</span>500  230.  228.  231.  231.           229.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AAPL   2024-10-25 38<span style="text-decoration: underline;">802</span>300  230.  230.  233.  231.           229.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AAPL   2024-10-28 36<span style="text-decoration: underline;">087</span>100  233.  233.  235.  233.           231.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AAPL   2024-10-29 35<span style="text-decoration: underline;">417</span>200  233.  232.  234.  234.           232.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AAPL   2024-10-30 47<span style="text-decoration: underline;">070</span>900  233.  230.  233.  230.           228.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AAPL   2024-10-31 64<span style="text-decoration: underline;">370</span>100  229.  225.  230.  226.           224.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AAPL   2024-11-01 65<span style="text-decoration: underline;">276</span>700  221.  220.  225.  223.           221.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 492 more rows</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Damodaran"</span>, <span class="st">"wacc"</span>, region <span class="op">=</span> <span class="st">"europe"</span>, year <span class="op">=</span> <span class="fl">2020</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 480 × 14</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    region  year industry  number_of_firms  beta cost_of_equity equity_to_capital</span>
@@ -389,16 +391,16 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 774 × 19</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        id date            ret sorting_variable min_size_quantile min_stock_price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2.53<span style="color: #949494;">e</span>6 1960-07-01 -<span style="color: #BB0000;">0.018</span><span style="color: #BB0000; text-decoration: underline;">6</span>  high52                         0.2              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2.53<span style="color: #949494;">e</span>6 1960-08-01  0.003<span style="text-decoration: underline;">10</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2.53<span style="color: #949494;">e</span>6 1960-09-01  0.001<span style="text-decoration: underline;">78</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 2.53<span style="color: #949494;">e</span>6 1960-10-01  0.026<span style="text-decoration: underline;">4</span>  high52                         0.2              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2.53<span style="color: #949494;">e</span>6 1960-11-01 -<span style="color: #BB0000;">0.003</span><span style="color: #BB0000; text-decoration: underline;">33</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 2.53<span style="color: #949494;">e</span>6 1960-12-01  0.019<span style="text-decoration: underline;">7</span>  high52                         0.2              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2.53<span style="color: #949494;">e</span>6 1961-01-01 -<span style="color: #BB0000;">0.052</span><span style="color: #BB0000; text-decoration: underline;">6</span>  high52                         0.2              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 2.53<span style="color: #949494;">e</span>6 1961-02-01  0.035<span style="text-decoration: underline;">2</span>  high52                         0.2              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2.53<span style="color: #949494;">e</span>6 1961-03-01  0.003<span style="text-decoration: underline;">77</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2.53<span style="color: #949494;">e</span>6 1961-04-01 -<span style="color: #BB0000;">0.013</span><span style="color: #BB0000; text-decoration: underline;">8</span>  high52                         0.2              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2.53<span style="color: #949494;">e</span>6 1960-07-01 -<span style="color: #BB0000;">1.98</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2.53<span style="color: #949494;">e</span>6 1960-08-01 -<span style="color: #BB0000;">7.72</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2.53<span style="color: #949494;">e</span>6 1960-09-01  3.77<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 2.53<span style="color: #949494;">e</span>6 1960-10-01 -<span style="color: #BB0000;">6.84</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2.53<span style="color: #949494;">e</span>6 1960-11-01 -<span style="color: #BB0000;">7.89</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 2.53<span style="color: #949494;">e</span>6 1960-12-01 -<span style="color: #BB0000;">4.65</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2.53<span style="color: #949494;">e</span>6 1961-01-01 -<span style="color: #BB0000;">3.12</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 2.53<span style="color: #949494;">e</span>6 1961-02-01  1.12<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2.53<span style="color: #949494;">e</span>6 1961-03-01 -<span style="color: #BB0000;">9.88</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2.53<span style="color: #949494;">e</span>6 1961-04-01  1.57<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span> high52                         0.2              <span style="color: #BB0000;">NA</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 764 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 13 more variables: min_listing_age &lt;int&gt;, exclude_financials &lt;lgl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   exclude_utilities &lt;lgl&gt;, exclude_negative_book_equity &lt;lgl&gt;,</span></span>
@@ -408,26 +410,52 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   breakpoints_exchanges &lt;chr&gt;, weighting_scheme &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Tidy Finance"</span>, <span class="st">"factor_library"</span>, ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">3L</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Returning the full data set.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 2,337 × 19</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 2,340 × 19</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       id date         ret sorting_variable min_size_quantile min_stock_price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1 1960-02-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     1 1960-03-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     1 1960-04-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     1 1960-05-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     1 1960-06-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     1 1960-07-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     1 1960-08-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     1 1960-09-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     1 1960-10-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     1 1960-11-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2,327 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1 1960-01-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     1 1960-02-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     1 1960-03-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     1 1960-04-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     1 1960-05-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     1 1960-06-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     1 1960-07-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     1 1960-08-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     1 1960-09-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     1 1960-10-01     0 abnormalaccruals                <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2,330 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 13 more variables: min_listing_age &lt;int&gt;, exclude_financials &lt;lgl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   exclude_utilities &lt;lgl&gt;, exclude_negative_book_equity &lt;lgl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   exclude_negative_earnings &lt;lgl&gt;, sorting_variable_lag &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   rebalancing &lt;chr&gt;, n_portfolios_main &lt;dbl&gt;, sorting_method &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   breakpoints_min_size_threshold &lt;dbl&gt;, n_portfolios_secondary &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   breakpoints_exchanges &lt;chr&gt;, weighting_scheme &lt;chr&gt;</span></span>
+<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"Tidy Finance"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"factor_library_costs"</span>,</span></span>
+<span class="r-in"><span>  sorting_variable <span class="op">=</span> <span class="st">"bm"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Returning the full data set.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 372 × 21</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         id date       turnover     cost microcap_share sorting_variable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2<span style="text-decoration: underline;">162</span>066 1994-01-01   0.061<span style="text-decoration: underline;">2</span> 0.000<span style="text-decoration: underline;">920</span>              0 bm              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2<span style="text-decoration: underline;">162</span>066 1994-02-01   0.020<span style="text-decoration: underline;">7</span> 0.000<span style="text-decoration: underline;">432</span>              0 bm              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2<span style="text-decoration: underline;">162</span>066 1994-03-01   0.027<span style="text-decoration: underline;">6</span> 0.000<span style="text-decoration: underline;">562</span>              0 bm              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 2<span style="text-decoration: underline;">162</span>066 1994-04-01   0.025<span style="text-decoration: underline;">7</span> 0.000<span style="text-decoration: underline;">494</span>              0 bm              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2<span style="text-decoration: underline;">162</span>066 1994-05-01   0.042<span style="text-decoration: underline;">9</span> 0.000<span style="text-decoration: underline;">667</span>              0 bm              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 2<span style="text-decoration: underline;">162</span>066 1994-06-01   0.094<span style="text-decoration: underline;">1</span> 0.001<span style="text-decoration: underline;">20</span>               0 bm              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2<span style="text-decoration: underline;">162</span>066 1994-07-01   0.046<span style="text-decoration: underline;">0</span> 0.000<span style="text-decoration: underline;">787</span>              0 bm              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 2<span style="text-decoration: underline;">162</span>066 1994-08-01   0.063<span style="text-decoration: underline;">4</span> 0.000<span style="text-decoration: underline;">974</span>              0 bm              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2<span style="text-decoration: underline;">162</span>066 1994-09-01   0.068<span style="text-decoration: underline;">4</span> 0.000<span style="text-decoration: underline;">967</span>              0 bm              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2<span style="text-decoration: underline;">162</span>066 1994-10-01   0.034<span style="text-decoration: underline;">1</span> 0.000<span style="text-decoration: underline;">584</span>              0 bm              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 362 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 15 more variables: min_size_quantile &lt;dbl&gt;, min_stock_price &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   min_listing_age &lt;int&gt;, exclude_financials &lt;lgl&gt;, exclude_utilities &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   exclude_negative_book_equity &lt;lgl&gt;, exclude_negative_earnings &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   sorting_variable_lag &lt;chr&gt;, rebalancing &lt;chr&gt;, n_portfolios_main &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   sorting_method &lt;chr&gt;, breakpoints_min_size_threshold &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_portfolios_secondary &lt;dbl&gt;, breakpoints_exchanges &lt;chr&gt;, …</span></span>
 <span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span><span class="st">"Tidy Finance"</span>, <span class="st">"factor_library_grid"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 4,105,728 × 17</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       id sorting_variable min_size_quantile min_stock_price min_listing_age</span>
@@ -449,6 +477,26 @@ financial metrics, filtered by the specified date range.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   sorting_method &lt;chr&gt;, breakpoints_min_size_threshold &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_portfolios_secondary &lt;dbl&gt;, breakpoints_exchanges &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   weighting_scheme &lt;chr&gt;</span></span>
+<span class="r-in"><span><span class="fu">download_data</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"Tidy Finance"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"factor_library_persistence"</span>,</span></span>
+<span class="r-in"><span>  sorting_variable <span class="op">=</span> <span class="st">"bm"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Returning the full data set.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 6,240 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    sorting_variable sorting_variable_lag rebalancing date       persistence</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> bm               1m                   annual      1960-01-01      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> bm               1m                   annual      1960-02-01      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> bm               1m                   annual      1960-03-01      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> bm               1m                   annual      1960-04-01      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> bm               1m                   annual      1960-05-01      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> bm               1m                   annual      1960-06-01      <span style="color: #BB0000;">NA</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> bm               1m                   annual      1960-07-01       1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> bm               1m                   annual      1960-08-01       0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> bm               1m                   annual      1960-09-01       0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> bm               1m                   annual      1960-10-01       0.998</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 6,230 more rows</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

@@ -2,12 +2,15 @@
 
 Downloads data from a supported Hugging Face dataset. For
 `"high_frequency_sp500"`, parquet files are filtered by date range and
-row-bound. For `"factor_library"`, portfolio characteristics are
-selected via `filter_factor_library_grid()`, the matching return data is
-downloaded, and the result is filtered to `start_date`/`end_date` when
-both are supplied. For `"factor_library_grid"`, the grid itself is
+row-bound. For `"factor_library"` and `"factor_library_costs"`,
+portfolio characteristics are selected via
+`filter_factor_library_grid()`, the matching returns or trading costs
+are downloaded, and the result is filtered to `start_date`/`end_date`
+when both are supplied. For `"factor_library_grid"`, the grid itself is
 returned via
 [`download_factor_library_grid()`](https://r.tidy-finance.org/reference/download_factor_library_grid.md).
+For `"factor_library_persistence"`, the persistence of the sorting
+variables is returned.
 
 ## Usage
 
@@ -26,14 +29,16 @@ download_data_huggingface(
 - dataset:
 
   Character(1). The dataset to download. Supported values are
-  `"high_frequency_sp500"`, `"factor_library"`, and
-  `"factor_library_grid"`.
+  `"high_frequency_sp500"`, `"factor_library"`,
+  `"factor_library_costs"`, `"factor_library_grid"`, and
+  `"factor_library_persistence"`.
 
 - start_date:
 
   Date or character. Start date (inclusive) in `"YYYY-MM-DD"` format.
-  Used for `"high_frequency_sp500"` and `"factor_library"`. When omitted
-  for `"factor_library"`, the full return history is returned;
+  Used for `"high_frequency_sp500"`, `"factor_library"`,
+  `"factor_library_costs"`, and `"factor_library_persistence"`. When
+  omitted for the factor library, the full history is returned;
   `"high_frequency_sp500"` falls back to a built-in sample window.
 
 - end_date:
@@ -47,10 +52,9 @@ download_data_huggingface(
 
 - ...:
 
-  For `dataset = "factor_library"`: either named arguments used to
-  filter the portfolio grid, or `ids = <vector>` to bypass the grid
-  filter and download specific portfolios directly via
-  [`download_factor_library_ids()`](https://r.tidy-finance.org/reference/download_factor_library_ids.md).
+  For `dataset = "factor_library"` and `"factor_library_costs"`: either
+  named arguments used to filter the portfolio grid, or `ids = <vector>`
+  to bypass the grid filter and download specific portfolios directly.
   Filter arguments take the form `column = value`, where `value` may be
   a vector to match multiple levels. Optionally pass `fill_all = TRUE`
   to leave unspecified columns unrestricted (default: `FALSE`, i.e.
@@ -59,8 +63,15 @@ download_data_huggingface(
   values for that column (e.g., `min_size_quantile = NULL` includes all
   size groups). Passing an unrecognised column name raises an error
   listing the supported names. `ids` cannot be combined with filter
-  arguments. Ignored when `dataset != "factor_library"`. See the Details
-  section for supported columns and their defaults.
+  arguments. See the Details section for supported columns and their
+  defaults.
+
+  For all four factor library datasets: `revision` and `grid_revision`
+  select the release, see the section Revisions. For
+  `"factor_library_grid"`: `refresh`, see
+  [`download_factor_library_grid()`](https://r.tidy-finance.org/reference/download_factor_library_grid.md).
+  For `"factor_library_persistence"`: optionally `sorting_variable`, a
+  vector of sorting variables; all are returned without it.
 
 ## Value
 
@@ -68,7 +79,15 @@ A tibble with the downloaded data. For `"high_frequency_sp500"`,
 contains 5-second aggregated orderbook snapshots filtered to the
 requested date range. For `"factor_library"`, contains the columns `id`,
 `date`, and `ret` joined with the full grid metadata for the matched
-portfolio IDs.
+portfolio IDs. For `"factor_library_costs"`, contains the columns `id`,
+`date`, `turnover`, `cost`, and `microcap_share` joined with the grid
+metadata in the same way. The costs start in January 1994; `turnover`
+and `cost` are `0` in months without trades and `microcap_share` is `NA`
+in months without holdings. For `"factor_library_persistence"`, contains
+the columns `sorting_variable`, `sorting_variable_lag`, `rebalancing`,
+`date`, and `persistence`, the Spearman correlation across stocks
+between the value of the sorting variable under the lag and rebalancing
+and its up-to-date value.
 
 ## Details
 
@@ -130,6 +149,31 @@ Supported columns and their defaults for `...`:
   portfolios: `"VW"` for value-weighted, `"EW"` for equal-weighted, or
   `"capped VW"` for value-weighted with capped weights.
 
+## Revisions
+
+The factor library is published in two Hugging Face datasets.
+`tidy-finance/factor-library` holds the returns and the trading costs.
+`tidy-finance/factor-library-grid` holds the grid and the persistence.
+Each release is a commit of both datasets. `revision` selects the commit
+of `tidy-finance/factor-library`, and `grid_revision` the commit of
+`tidy-finance/factor-library-grid`. A revision is a commit hash, a
+branch, or a tag, and both default to `"main"`, the latest release. The
+grid and the persistence take only `grid_revision`.
+
+To make a download reproducible, pin both to the commits of one release.
+The IDs of one release need not match the grid of another.
+
+## Download limits
+
+Hugging Face allows anonymous users 3,000 file downloads per five
+minutes and IP address. The returns and the costs are stored in files of
+1,000 portfolio IDs, so all portfolios of one sorting variable take
+about 27 files of each. The factor library downloads up to 16 files at
+once and 8 files per second on average, also across calls, which keeps
+it below the limit. If Hugging Face still refuses a download with HTTP
+429, e.g. because of other downloads from the same IP address, the
+download waits until the limit resets and tries again, twice at most.
+
 ## See also
 
 Other download functions:
@@ -172,5 +216,20 @@ if (FALSE) { # \dontrun{
     end_date = "2020-12-31"
   )
   download_data_huggingface("factor_library", ids = c(1L, 2L, 3L))
+
+  # All portfolios of one sorting variable from the release of
+  # 20 October 2026
+  download_data_huggingface(
+    "factor_library_costs",
+    sorting_variable = "bm",
+    fill_all = TRUE,
+    revision = "e47bd85accd9b9b168ac7f478f12fe89ba5c2430",
+    grid_revision = "a5a74cdf1df0c2c3d1ce3d7bf6403a8386fbf99d"
+  )
+  download_data_huggingface(
+    "factor_library_persistence",
+    sorting_variable = "bm",
+    grid_revision = "a5a74cdf1df0c2c3d1ce3d7bf6403a8386fbf99d"
+  )
 } # }
 ```

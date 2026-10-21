@@ -59,7 +59,7 @@ Other utility functions:
 ``` r
 # List all supported datasets as a data frame
 list_supported_datasets()
-#> # A tibble: 332 × 3
+#> # A tibble: 334 × 3
 #>    type                     dataset_name                   domain     
 #>    <chr>                    <chr>                          <chr>      
 #>  1 factors_q5_daily         q5_factors_daily_2024          Global Q   
@@ -72,7 +72,7 @@ list_supported_datasets()
 #>  8 factors_ff_3_weekly      Fama/French 3 Factors [Weekly] Fama-French
 #>  9 factors_ff_3_daily       Fama/French 3 Factors [Daily]  Fama-French
 #> 10 factors_ff_5_2x3_monthly Fama/French 5 Factors (2x3)    Fama-French
-#> # ℹ 322 more rows
+#> # ℹ 324 more rows
 
 # Filter by domain
 list_supported_datasets(domain = "WRDS")
@@ -420,5 +420,7 @@ list_supported_datasets(as_vector = TRUE)
 #> [329] "risk_free"                                                            
 #> [330] "high_frequency_sp500"                                                 
 #> [331] "factor_library"                                                       
-#> [332] "factor_library_grid"                                                  
+#> [332] "factor_library_costs"                                                 
+#> [333] "factor_library_grid"                                                  
+#> [334] "factor_library_persistence"                                           
 ```
