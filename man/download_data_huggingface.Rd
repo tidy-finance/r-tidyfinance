@@ -14,23 +14,25 @@ download_data_huggingface(
 }
 \arguments{
 \item{dataset}{Character(1). The dataset to download. Supported values are
-\code{"high_frequency_sp500"}, \code{"factor_library"}, and \code{"factor_library_grid"}.}
+\code{"high_frequency_sp500"}, \code{"factor_library"}, \code{"factor_library_costs"},
+\code{"factor_library_grid"}, and \code{"factor_library_persistence"}.}
 
 \item{start_date}{Date or character. Start date (inclusive) in
-\code{"YYYY-MM-DD"} format. Used for \code{"high_frequency_sp500"} and
-\code{"factor_library"}. When omitted for \code{"factor_library"}, the full return
-history is returned; \code{"high_frequency_sp500"} falls back to a built-in
-sample window.}
+\code{"YYYY-MM-DD"} format. Used for \code{"high_frequency_sp500"},
+\code{"factor_library"}, \code{"factor_library_costs"}, and
+\code{"factor_library_persistence"}. When omitted for the factor library, the
+full history is returned; \code{"high_frequency_sp500"} falls back to a
+built-in sample window.}
 
 \item{end_date}{Date or character. End date (inclusive) in \code{"YYYY-MM-DD"}
 format. See \code{start_date}.}
 
 \item{type}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset} instead.}
 
-\item{...}{For \code{dataset = "factor_library"}: either named arguments used
-to filter the portfolio grid, or \verb{ids = <vector>} to bypass the grid
-filter and download specific portfolios directly via
-\code{\link[=download_factor_library_ids]{download_factor_library_ids()}}. Filter arguments take the form
+\item{...}{For \code{dataset = "factor_library"} and \code{"factor_library_costs"}:
+either named arguments used to filter the portfolio grid, or
+\verb{ids = <vector>} to bypass the grid filter and download specific
+portfolios directly. Filter arguments take the form
 \code{column = value}, where \code{value} may be a vector to match multiple
 levels. Optionally pass \code{fill_all = TRUE} to leave unspecified columns
 unrestricted (default: \code{FALSE}, i.e. unspecified columns are fixed at
@@ -38,24 +40,40 @@ the defaults listed below). Passing \code{NULL} for any parameter removes
 that filter entirely, returning all values for that column (e.g.,
 \code{min_size_quantile = NULL} includes all size groups). Passing an
 unrecognised column name raises an error listing the supported names.
-\code{ids} cannot be combined with filter arguments. Ignored when
-\code{dataset != "factor_library"}. See the Details section for supported
-columns and their defaults.}
+\code{ids} cannot be combined with filter arguments. See the Details section
+for supported columns and their defaults.
+
+For all four factor library datasets: \code{revision} and \code{grid_revision}
+select the release, see the section Revisions. For
+\code{"factor_library_grid"}: \code{refresh}, see \code{\link[=download_factor_library_grid]{download_factor_library_grid()}}.
+For \code{"factor_library_persistence"}: optionally \code{sorting_variable}, a
+vector of sorting variables; all are returned without it.}
 }
 \value{
 A tibble with the downloaded data. For \code{"high_frequency_sp500"},
 contains 5-second aggregated orderbook snapshots filtered to the requested
 date range. For \code{"factor_library"}, contains the columns \code{id}, \code{date}, and
 \code{ret} joined with the full grid metadata for the matched portfolio IDs.
+For \code{"factor_library_costs"}, contains the columns \code{id}, \code{date},
+\code{turnover}, \code{cost}, and \code{microcap_share} joined with the grid metadata in
+the same way. The costs start in January 1994; \code{turnover} and \code{cost} are
+\code{0} in months without trades and \code{microcap_share} is \code{NA} in months
+without holdings. For \code{"factor_library_persistence"}, contains the columns
+\code{sorting_variable}, \code{sorting_variable_lag}, \code{rebalancing}, \code{date}, and
+\code{persistence}, the Spearman correlation across stocks between the value
+of the sorting variable under the lag and rebalancing and its up-to-date
+value.
 }
 \description{
 Downloads data from a supported Hugging Face dataset. For
 \code{"high_frequency_sp500"}, parquet files are filtered by date range and
-row-bound. For \code{"factor_library"}, portfolio characteristics are selected via
-\code{filter_factor_library_grid()}, the matching return data is downloaded, and
-the result is filtered to \code{start_date}/\code{end_date} when both are supplied.
-For \code{"factor_library_grid"}, the grid itself is returned via
-\code{\link[=download_factor_library_grid]{download_factor_library_grid()}}.
+row-bound. For \code{"factor_library"} and \code{"factor_library_costs"}, portfolio
+characteristics are selected via \code{filter_factor_library_grid()}, the
+matching returns or trading costs are downloaded, and the result is filtered
+to \code{start_date}/\code{end_date} when both are supplied. For
+\code{"factor_library_grid"}, the grid itself is returned via
+\code{\link[=download_factor_library_grid]{download_factor_library_grid()}}. For \code{"factor_library_persistence"}, the
+persistence of the sorting variables is returned.
 }
 \details{
 \strong{Note on \code{dataset = "factor_library"} defaults:} The defaults below reflect
@@ -105,6 +123,33 @@ portfolios: \code{"VW"} for value-weighted, \code{"EW"} for equal-weighted, or
 \code{"capped VW"} for value-weighted with capped weights.
 }
 }
+\section{Revisions}{
+
+The factor library is published in two Hugging Face datasets.
+\code{tidy-finance/factor-library} holds the returns and the trading costs.
+\code{tidy-finance/factor-library-grid} holds the grid and the persistence. Each
+release is a commit of both datasets. \code{revision} selects the commit of
+\code{tidy-finance/factor-library}, and \code{grid_revision} the commit of
+\code{tidy-finance/factor-library-grid}. A revision is a commit hash, a branch,
+or a tag, and both default to \code{"main"}, the latest release. The grid and the
+persistence take only \code{grid_revision}.
+
+To make a download reproducible, pin both to the commits of one release.
+The IDs of one release need not match the grid of another.
+}
+
+\section{Download limits}{
+
+Hugging Face allows anonymous users 3,000 file downloads per five minutes
+and IP address. The returns and the costs are stored in files of 1,000
+portfolio IDs, so all portfolios of one sorting variable take about 27
+files of each. The factor library downloads up to 16 files at once and 8
+files per second on average, also across calls, which keeps it below the
+limit. If Hugging Face still refuses a download with HTTP 429, e.g. because
+of other downloads from the same IP address, the download waits until the
+limit resets and tries again, twice at most.
+}
+
 \examples{
 \dontrun{
   download_data_huggingface(
@@ -125,6 +170,21 @@ portfolios: \code{"VW"} for value-weighted, \code{"EW"} for equal-weighted, or
     end_date = "2020-12-31"
   )
   download_data_huggingface("factor_library", ids = c(1L, 2L, 3L))
+
+  # All portfolios of one sorting variable from the release of
+  # 20 October 2026
+  download_data_huggingface(
+    "factor_library_costs",
+    sorting_variable = "bm",
+    fill_all = TRUE,
+    revision = "e47bd85accd9b9b168ac7f478f12fe89ba5c2430",
+    grid_revision = "a5a74cdf1df0c2c3d1ce3d7bf6403a8386fbf99d"
+  )
+  download_data_huggingface(
+    "factor_library_persistence",
+    sorting_variable = "bm",
+    grid_revision = "a5a74cdf1df0c2c3d1ce3d7bf6403a8386fbf99d"
+  )
 }
 }
 \seealso{

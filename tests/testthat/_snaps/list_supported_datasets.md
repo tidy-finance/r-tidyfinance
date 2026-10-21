@@ -92,21 +92,23 @@
     Code
       result
     Output
-      # A tibble: 14 x 3
-         type                 dataset_name                      domain                
-         <chr>                <chr>                             <chr>                 
-       1 stock_prices         YahooFinance                      Stock Prices          
-       2 constituents         various                           Index Constituents    
-       3 fred                 various                           FRED                  
-       4 FRED-MD              FRED-MD (McCracken-Ng, monthly)   FRED                  
-       5 FRED-QD              FRED-QD (McCracken-Ng, quarterly) FRED                  
-       6 osap                 Open Source Asset Pricing         Open Source Asset Pri~
-       7 jkp                  Global Factor Data                Global Factor Data    
-       8 liquidity            Liquidity Factors                 Pastor-Stambaugh      
-       9 mispricing           Mispricing Factors                Stambaugh-Yuan        
-      10 wacc                 Cost of Capital by Industry       Damodaran             
-      11 risk_free            Risk-Free Rate                    Tidy Finance          
-      12 high_frequency_sp500 High Frequency S&P 500            Tidy Finance          
-      13 factor_library       Factor Library                    Tidy Finance          
-      14 factor_library_grid  Factor Library Grid               Tidy Finance          
+      # A tibble: 16 x 3
+         type                       dataset_name                      domain          
+         <chr>                      <chr>                             <chr>           
+       1 stock_prices               YahooFinance                      Stock Prices    
+       2 constituents               various                           Index Constitue~
+       3 fred                       various                           FRED            
+       4 FRED-MD                    FRED-MD (McCracken-Ng, monthly)   FRED            
+       5 FRED-QD                    FRED-QD (McCracken-Ng, quarterly) FRED            
+       6 osap                       Open Source Asset Pricing         Open Source Ass~
+       7 jkp                        Global Factor Data                Global Factor D~
+       8 liquidity                  Liquidity Factors                 Pastor-Stambaugh
+       9 mispricing                 Mispricing Factors                Stambaugh-Yuan  
+      10 wacc                       Cost of Capital by Industry       Damodaran       
+      11 risk_free                  Risk-Free Rate                    Tidy Finance    
+      12 high_frequency_sp500       High Frequency S&P 500            Tidy Finance    
+      13 factor_library             Factor Library                    Tidy Finance    
+      14 factor_library_costs       Factor Library Costs              Tidy Finance    
+      15 factor_library_grid        Factor Library Grid               Tidy Finance    
+      16 factor_library_persistence Factor Library Persistence        Tidy Finance    
 

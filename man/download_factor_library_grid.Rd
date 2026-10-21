@@ -4,11 +4,16 @@
 \alias{download_factor_library_grid}
 \title{Download the Factor Library Grid from Hugging Face}
 \usage{
-download_factor_library_grid(refresh = FALSE)
+download_factor_library_grid(refresh = FALSE, grid_revision = "main")
 }
 \arguments{
 \item{refresh}{Logical(1). If \code{TRUE}, the grid is downloaded again and
 replaces the copy cached in the current session. Defaults to \code{FALSE}.}
+
+\item{grid_revision}{Character(1). The revision of
+\code{tidy-finance/factor-library-grid} to read: a commit hash, a branch, or a
+tag. Defaults to \code{"main"}, the latest release. Pin it to the release of
+the returns, see the section Revisions of \code{\link[=download_data_huggingface]{download_data_huggingface()}}.}
 }
 \value{
 A tibble with one row per portfolio construction in the factor
@@ -27,14 +32,19 @@ exist before requesting their returns with
 Equivalent to calling
 \code{download_data("Tidy Finance", "factor_library_grid")}.
 
-The grid is downloaded once per R session and cached in memory, so repeated
-calls (including those made by \code{\link[=download_factor_library_ids]{download_factor_library_ids()}} and
+The grid is downloaded once per R session and revision and cached in
+memory, so repeated calls (including those made by
+\code{\link[=download_factor_library_ids]{download_factor_library_ids()}} and
 \code{download_data("Tidy Finance", "factor_library", ...)}) reuse it. Set
-\code{refresh = TRUE} to download it again.
+\code{refresh = TRUE} to download it again. Each revision is cached separately
+and takes about 450 MB of memory.
 }
 \examples{
 \dontrun{
   download_factor_library_grid()
+  download_factor_library_grid(
+    grid_revision = "a5a74cdf1df0c2c3d1ce3d7bf6403a8386fbf99d"
+  )
 }
 }
 \seealso{

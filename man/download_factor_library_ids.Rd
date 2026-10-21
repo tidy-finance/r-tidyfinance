@@ -4,11 +4,20 @@
 \alias{download_factor_library_ids}
 \title{Download factor library returns for a vector of portfolio IDs}
 \usage{
-download_factor_library_ids(ids)
+download_factor_library_ids(ids, revision = "main", grid_revision = "main")
 }
 \arguments{
 \item{ids}{Integer or numeric vector of portfolio IDs to download. IDs
 correspond to rows of the \code{tidy-finance/factor-library-grid} dataset.}
+
+\item{revision}{Character(1). The revision of \code{tidy-finance/factor-library}
+to read the returns from: a commit hash, a branch, or a tag. Defaults to
+\code{"main"}, the latest release.}
+
+\item{grid_revision}{Character(1). The revision of
+\code{tidy-finance/factor-library-grid} to read: a commit hash, a branch, or a
+tag. Defaults to \code{"main"}, the latest release. Pin it to the release of
+the returns, see the section Revisions of \code{\link[=download_data_huggingface]{download_data_huggingface()}}.}
 }
 \value{
 A tibble with the columns \code{id}, \code{date}, and \code{ret} (the monthly
@@ -40,6 +49,11 @@ months without a valid long-short return are stored as \code{0}.
 \examples{
 \dontrun{
   download_factor_library_ids(c(1L, 2L, 3L))
+  download_factor_library_ids(
+    c(1L, 2L, 3L),
+    revision = "e47bd85accd9b9b168ac7f478f12fe89ba5c2430",
+    grid_revision = "a5a74cdf1df0c2c3d1ce3d7bf6403a8386fbf99d"
+  )
 }
 }
 \seealso{

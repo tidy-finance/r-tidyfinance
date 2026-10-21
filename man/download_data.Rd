@@ -49,10 +49,12 @@ depending on the \code{domain}. For instance, if \code{domain} is
 the \code{dataset} argument and arguments such as \code{region}, \code{factors},
 \code{classification}, \code{frequency}, and \code{weighting} are passed to
 \code{download_data_jkp()}. If \code{domain} is \code{"Tidy Finance"} and
-\code{dataset} is \code{"factor_library"}, arguments are either filter inputs
-(e.g., \code{sorting_variable}, \code{rebalancing}, \code{fill_all}) or an explicit
-\code{ids} vector that bypasses the grid filter and downloads the
-specified portfolios directly via \code{download_factor_library_ids()};
+\code{dataset} is \code{"factor_library"} or \code{"factor_library_costs"}, arguments
+are either filter inputs (e.g., \code{sorting_variable}, \code{rebalancing},
+\code{fill_all}) or an explicit \code{ids} vector that bypasses the grid filter
+and downloads the specified portfolios directly. \code{revision} and
+\code{grid_revision} pin the factor library datasets to a release, and
+\code{"factor_library_persistence"} takes an optional \code{sorting_variable};
 see \code{download_data_huggingface()} for details. If \code{domain} is
 \code{"Damodaran"}, arguments such as \code{region} and \code{year} are passed to
 \code{download_data_damodaran()}, which selects years via \code{year} instead of
@@ -106,7 +108,17 @@ download_data(
   rebalancing = "annual"
 )
 download_data("Tidy Finance", "factor_library", ids = c(1L, 2L, 3L))
+download_data(
+  "Tidy Finance",
+  "factor_library_costs",
+  sorting_variable = "bm"
+)
 download_data("Tidy Finance", "factor_library_grid")
+download_data(
+  "Tidy Finance",
+  "factor_library_persistence",
+  sorting_variable = "bm"
+)
 }
 }
 \seealso{

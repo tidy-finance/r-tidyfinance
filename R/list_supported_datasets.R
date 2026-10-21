@@ -512,7 +512,9 @@ list_supported_datasets_other <- function() {
       "risk_free",
       "high_frequency_sp500",
       "factor_library",
-      "factor_library_grid"
+      "factor_library_costs",
+      "factor_library_grid",
+      "factor_library_persistence"
     ),
     "dataset_name" = c(
       "YahooFinance",
@@ -528,7 +530,9 @@ list_supported_datasets_other <- function() {
       "Risk-Free Rate",
       "High Frequency S&P 500",
       "Factor Library",
-      "Factor Library Grid"
+      "Factor Library Costs",
+      "Factor Library Grid",
+      "Factor Library Persistence"
     ),
     "domain" = c(
       "Stock Prices",
@@ -541,6 +545,8 @@ list_supported_datasets_other <- function() {
       "Pastor-Stambaugh",
       "Stambaugh-Yuan",
       "Damodaran",
+      "Tidy Finance",
+      "Tidy Finance",
       "Tidy Finance",
       "Tidy Finance",
       "Tidy Finance",
