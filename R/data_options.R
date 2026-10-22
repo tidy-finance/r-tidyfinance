@@ -76,6 +76,15 @@ data_options <- function(
   validate_column_name(be, "be", "book equity")
   validate_column_name(earnings, "earnings", "earnings")
 
+  warn_near_option_names(
+    names(list(...)),
+    c(
+      "id", "date", "exchange", "mktcap_lag", "ret_excess", "portfolio",
+      "siccd", "price", "listing_age", "be", "earnings"
+    ),
+    "data_options"
+  )
+
   # Create the list structure with class attribute
   structure(
     list(

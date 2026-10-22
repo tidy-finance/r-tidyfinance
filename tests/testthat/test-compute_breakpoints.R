@@ -237,23 +237,21 @@ test_that("NULL data_options uses defaults without error", {
 })
 
 
-test_that("interior breakpoints are slightly larger than raw quantiles", {
-  data <- data.frame(id = 1:1000, value = seq_len(1000))
-  bp <- compute_breakpoints(data, "value", breakpoint_options(n_portfolios = 5))
-  raw_q <- quantile(
-    data$value,
-    probs = seq(0, 1, length.out = 6),
-    na.rm = TRUE,
-    names = FALSE
-  )
+test_that("a value equal to an interior breakpoint joins the portfolio above it", {
+  # assign_portfolio() uses findInterval(), which counts breakpoints <= value,
+  # so a value lying exactly on an interior breakpoint joins the upper
+  # portfolio. This pins down the tie behaviour that the previous test (which
+  # compared a quantile to itself plus 1e-20) could not detect. The treatment
+  # of a breakpoint exactly at zero is a separate, known edge case.
+  data <- data.frame(id = 1:5, value = c(1, 2, 3, 4, 5))
+  options <- breakpoint_options(n_portfolios = 2)
 
-  # First breakpoint is untouched
-  expect_equal(bp[1], raw_q[1])
-  # Interior breakpoints (indices 2 through n+1) have epsilon added
+  breakpoints <- compute_breakpoints(data, "value", options)
+  expect_equal(unname(breakpoints[2]), 3) # the single interior breakpoint
 
-  for (i in 2:6) {
-    expect_equal(bp[i], raw_q[i] + 1e-20, tolerance = 1e-25)
-  }
+  portfolios <- assign_portfolio(data, "value", options)
+  expect_identical(portfolios, c(1L, 1L, 2L, 2L, 2L))
+  expect_identical(portfolios[data$value == 3], 2L)
 })
 
 test_that("smooth_bunching handles clustering on both edges", {

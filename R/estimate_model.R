@@ -147,7 +147,13 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
     if (insufficient) {
       result$tstats <- na_tibble()
     } else {
-      result$tstats <- to_tibble(summary(fit)$coefficients[, "t value"])
+      # Indexing a one-row coefficient matrix (e.g. an intercept-only model)
+      # drops the row name, so restore it before to_tibble() renames
+      # "(Intercept)" to "intercept".
+      coef_matrix <- summary(fit)$coefficients
+      t_values <- coef_matrix[, "t value"]
+      names(t_values) <- rownames(coef_matrix)
+      result$tstats <- to_tibble(t_values)
     }
   }
 

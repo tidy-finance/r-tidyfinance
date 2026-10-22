@@ -65,3 +65,9 @@ test_that("values beyond cut quantiles are replaced with NA", {
   # Length is preserved (NA replaces, does not remove)
   expect_length(result, length(x))
 })
+
+test_that("trim keeps the length and sets the tails to NA", {
+  out <- trim(1:100, 0.05)
+  expect_length(out, 100)
+  expect_equal(sum(is.na(out)), 10)
+})

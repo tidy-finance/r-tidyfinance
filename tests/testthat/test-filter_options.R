@@ -134,3 +134,13 @@ test_that("filter_options validates timing", {
     "timing"
   )
 })
+
+test_that("an option name close to a known one warns about the likely typo", {
+  expect_warning(
+    filter_options(exclude_finacials = TRUE),
+    "exclude_financials"
+  )
+  # A non-prefix typo, so R's partial matching does not rescue it to the formal
+  expect_warning(breakpoint_options(n_portfolioss = 5), "n_portfolios")
+  expect_warning(data_options(prices = "prc"), "price")
+})

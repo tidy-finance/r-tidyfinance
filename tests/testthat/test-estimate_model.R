@@ -301,3 +301,11 @@ test_that(
     expect_equal(result, NA_real_)
   }
 )
+
+test_that("intercept-only t-statistic is named intercept", {
+  # A second column keeps data[complete, ] a data frame (an intercept-only
+  # model has no regressors to keep it one otherwise); "y ~ 1" still fits only
+  # the intercept.
+  x <- data.frame(y = c(1, 2, 3, 5), z = c(0, 1, 0, 1))
+  expect_named(estimate_model(x, "y ~ 1", output = "tstats"), "intercept")
+})

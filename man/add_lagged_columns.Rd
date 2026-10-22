@@ -67,6 +67,14 @@ within the window \verb{[date - max_lag, date - lag]} is selected.
 
 The combination of \code{by} and date columns must be unique in \code{data}. If \code{by}
 is \code{NULL}, dates alone must be unique.
+
+For lags expressed in whole months or years (for example \code{months(1)} or
+\code{years(1)}), the dates should be the first of the month, as returned by the
+\code{download_data()} functions. On other days of the month, month arithmetic
+such as \code{date - months(1)} can return \code{NA} (e.g., 31 January minus one
+month) or a value from the wrong month; floor the dates with
+\code{lubridate::floor_date(date, "month")} beforehand. This does not apply to
+\code{ff_adjustment = TRUE}, which works on calendar years.
 }
 \examples{
 set.seed(42)

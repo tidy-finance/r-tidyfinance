@@ -6,6 +6,14 @@
 #' joining across data frames with different date grids (e.g., monthly source
 #' data into quarterly target data).
 #'
+#' For `min_lag`/`max_lag` expressed in whole months or years, the dates in
+#' both data frames should be the first of the month, as returned by the
+#' `download_data()` functions. On other days of the month the monthly offset
+#' can miss the intended match (for example, a source dated 30 April never
+#' matches a target dated 31 May); floor the dates with
+#' `lubridate::floor_date(date, "month")` beforehand. This does not apply to
+#' `ff_adjustment = TRUE`, which works on calendar years.
+#'
 #' @param original_data A data frame containing the target panel data.
 #' @param new_data A data frame containing the source variables to lag and
 #'   merge. All columns besides `id_keys` and the date column will be lagged

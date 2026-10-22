@@ -107,6 +107,16 @@ filter_options <- function(
     min = 0
   )
 
+  warn_near_option_names(
+    names(list(...)),
+    c(
+      "exclude_financials", "exclude_utilities", "min_stock_price",
+      "min_size_quantile", "min_listing_age", "exclude_negative_book_equity",
+      "exclude_negative_earnings", "timing"
+    ),
+    "filter_options"
+  )
+
   # Create the list structure with class attribute
   structure(
     list(

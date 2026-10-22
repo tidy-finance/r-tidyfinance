@@ -53,3 +53,27 @@ test_that("compute_long_short_returns handles a single per-date long leg", {
   expect_true(is.na(out$ret_excess_ew[out$date == panel$date[1]]))
   expect_true(all(!is.na(out$ret_excess_ew[out$date != panel$date[1]])))
 })
+
+test_that("an unknown direction is an error", {
+  panel <- make_portfolio_panel(n_portfolios = 2L, n_months = 4L)
+  expect_error(
+    compute_long_short_returns(panel, direction = "bottom-minus-top"),
+    "direction"
+  )
+})
+
+test_that("compute_long_short_returns accepts the options used for the sort", {
+  d <- data.frame(
+    id = rep(1:10, 2),
+    date = rep(as.Date(c("2020-01-01", "2020-02-01")), each = 10),
+    s = rep(1:10, 2),
+    rx = rep((1:10) / 100, 2)
+  )
+  o <- data_options(id = "id", ret_excess = "rx")
+  pr <- compute_portfolio_returns(
+    d, "s", "univariate",
+    data_options = o,
+    breakpoint_options_main = breakpoint_options(n_portfolios = 2)
+  )
+  expect_no_error(compute_long_short_returns(pr, data_options = o))
+})

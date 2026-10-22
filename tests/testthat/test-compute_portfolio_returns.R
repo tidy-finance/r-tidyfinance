@@ -238,7 +238,7 @@ test_that("min_portfolio_size produces NAs and emits message", {
       breakpoint_options_main = bp3,
       min_portfolio_size = 10L
     ),
-    "missing value"
+    "missing portfolio return"
   )
   expect_true(any(is.na(result$ret_excess_ew)))
 })
@@ -560,5 +560,21 @@ test_that("dependent min_mktcap with exchanges requires the exchange column", {
       quiet = TRUE
     ),
     "exchange"
+  )
+})
+
+test_that("a missing-return NA names the missing return as a cause", {
+  d <- data.frame(
+    permno = 1:6,
+    date = as.Date("2020-01-01"),
+    s = 1:6,
+    ret_excess = c(0.01, 0.02, 0.03, 0.04, 0.05, NA)
+  )
+  expect_message(
+    compute_portfolio_returns(
+      d, "s", "univariate",
+      breakpoint_options_main = breakpoint_options(n_portfolios = 2)
+    ),
+    "missing return"
   )
 })

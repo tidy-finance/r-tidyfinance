@@ -33,6 +33,33 @@
 
 ## Bug fixes
 
+- `estimate_model(output = "tstats")` now names the t-statistic column
+  `intercept` for an intercept-only model, instead of leaving it unnamed, so
+  `$intercept` works as it does for models with regressors.
+- `compute_long_short_returns()` now reads the portfolio return columns
+  (`ret_excess_vw`, `ret_excess_ew`, `ret_excess_vw_capped`) that
+  `compute_portfolio_returns()` produces, so the same custom `data_options`
+  (for example a renamed `ret_excess` column) can be passed to both functions;
+  previously `compute_long_short_returns()` failed with a cryptic tidyr error.
+  Data without any of these columns now raises an informative error.
+- `compute_long_short_returns()` now validates `direction`, which must be
+  `"top_minus_bottom"` or `"bottom_minus_top"`; a misspelled value previously
+  defaulted silently to top minus bottom.
+- `filter_options()`, `breakpoint_options()`, and `data_options()` now warn
+  when an argument passed through `...` is within one edit of a known option
+  name (for example `exclude_finacials`), which usually signals a typo; the
+  argument is still kept, so genuine custom options keep working.
+- The messages of `compute_portfolio_returns()` for an empty panel and for
+  missing portfolio returns now name the actual cause (a missing sorting
+  value, no assigned stocks, a cross-section below `min_portfolio_size`, or a
+  missing constituent return) instead of always citing "insufficient
+  observations".
+- The help page of `trim()` now states that the function sets the extreme
+  values to `NA` and keeps the length of `x`; it previously said the vector
+  gets shorter.
+- The help pages of `add_lagged_columns()` and `join_lagged_values()` now
+  state that month- and year-based lags require first-of-month dates (as
+  returned by `download_data()`) and how to floor other dates.
 - `download_data_wrds_crsp()` with `version = "v2"` (the default) now keeps the
   month and the day that carry a stock's delisting return (#320). CIZ includes
   the delisting return in `mthret` and `dlyret`, but `stksecurityinfohist`

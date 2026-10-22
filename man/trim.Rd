@@ -14,13 +14,14 @@ distribution. For example, a \code{cut} of 0.05 will remove the lowest and
 highest 5\% of the data. Must be in [0, 0.5].}
 }
 \value{
-A numeric vector with the extreme values removed.
+A numeric vector the same length as \code{x}, with the values outside
+the \code{cut} and \code{1 - cut} quantiles set to \code{NA}.
 }
 \description{
-Removes the values in a numeric vector that are beyond the specified
-quantiles, effectively trimming the distribution based on the \code{cut}
-parameter. This process reduces the vector's length by excluding extreme
-values from both tails of the distribution.
+Sets the values in a numeric vector that are beyond the specified quantiles
+to \code{NA}, based on the \code{cut} parameter. Values below the \code{cut} quantile and
+above the \code{1 - cut} quantile become \code{NA}; the length of \code{x} is unchanged,
+which is the useful behaviour inside \code{dplyr::mutate()}.
 }
 \examples{
 set.seed(123)
