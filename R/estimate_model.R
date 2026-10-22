@@ -115,7 +115,7 @@ estimate_model <- function(data, model, min_obs = 1, output = "coefficients") {
 
   fit <- NULL
   if (!insufficient) {
-    fit <- stats::lm(formula, data = data[complete, ])
+    fit <- stats::lm(formula, data = data[complete, , drop = FALSE])
   }
 
   to_tibble <- function(x) {

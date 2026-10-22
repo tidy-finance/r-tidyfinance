@@ -36,6 +36,9 @@
 - `estimate_model(output = "tstats")` now names the t-statistic column
   `intercept` for an intercept-only model, instead of leaving it unnamed, so
   `$intercept` works as it does for models with regressors.
+- `estimate_model()` no longer fails for a single-column data frame (for
+  example `estimate_model(data.frame(y = 1:5), "y ~ 1")`); row subsetting
+  previously dropped the one column to a vector before `lm()`.
 - `compute_long_short_returns()` now reads the portfolio return columns
   (`ret_excess_vw`, `ret_excess_ew`, `ret_excess_vw_capped`) that
   `compute_portfolio_returns()` produces, so the same custom `data_options`
