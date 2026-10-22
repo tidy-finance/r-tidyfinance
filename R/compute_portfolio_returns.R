@@ -14,6 +14,11 @@
 #' `skip > 0`), the returned panel starts on the first date on which all
 #' `holding_period` cohorts are held.
 #'
+#' A portfolio's return on a date is `NA` when the portfolio holds fewer than
+#' `min_portfolio_size` stocks or when a constituent return is missing, because
+#' the equal- and value-weighted averages are taken over all assigned stocks
+#' without dropping `NA`s.
+#'
 #' The function checks for consistency in the provided arguments. For
 #' univariate sorts, a single sorting variable and a corresponding number of
 #' portfolios must be provided. For bivariate sorts, two sorting variables and
