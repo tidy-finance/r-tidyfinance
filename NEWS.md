@@ -33,6 +33,11 @@
 
 ## Bug fixes
 
+- With staggered rebalancing (`holding_period > 1` or `skip > 0`),
+  `compute_portfolio_returns()` no longer counts missing `mktcap_lag` as zero
+  when computing the `cap_weight` percentile for held stocks, which made the
+  cap too low and `ret_excess_vw_capped` wrong for panels with missing market
+  caps (#337).
 - `estimate_model(output = "tstats")` now names the t-statistic column
   `intercept` for an intercept-only model, instead of leaving it unnamed, so
   `$intercept` works as it does for models with regressors.
