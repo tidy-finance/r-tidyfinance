@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,6 +63,19 @@ document.addEventListener('DOMContentLoaded', function () {
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>
+<code>estimate_model(output = "tstats")</code> now names the t-statistic column <code>intercept</code> for an intercept-only model, instead of leaving it unnamed, so <code>$intercept</code> works as it does for models with regressors.</li>
+<li>
+<code><a href="../reference/estimate_model.html">estimate_model()</a></code> no longer fails for a single-column data frame (for example <code>estimate_model(data.frame(y = 1:5), "y ~ 1")</code>); row subsetting previously dropped the one column to a vector before <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>.</li>
+<li>
+<code><a href="../reference/compute_long_short_returns.html">compute_long_short_returns()</a></code> now reads the portfolio return columns (<code>ret_excess_vw</code>, <code>ret_excess_ew</code>, <code>ret_excess_vw_capped</code>) that <code><a href="../reference/compute_portfolio_returns.html">compute_portfolio_returns()</a></code> produces, so the same custom <code>data_options</code> (for example a renamed <code>ret_excess</code> column) can be passed to both functions; previously <code><a href="../reference/compute_long_short_returns.html">compute_long_short_returns()</a></code> failed with a cryptic tidyr error. Data without any of these columns now raises an informative error.</li>
+<li>
+<code><a href="../reference/compute_long_short_returns.html">compute_long_short_returns()</a></code> now validates <code>direction</code>, which must be <code>"top_minus_bottom"</code> or <code>"bottom_minus_top"</code>; a misspelled value previously defaulted silently to top minus bottom.</li>
+<li>
+<code><a href="../reference/filter_options.html">filter_options()</a></code>, <code><a href="../reference/breakpoint_options.html">breakpoint_options()</a></code>, and <code><a href="../reference/data_options.html">data_options()</a></code> now warn when an argument passed through <code>...</code> is within one edit of a known option name (for example <code>exclude_finacials</code>), which usually signals a typo; the argument is still kept, so genuine custom options keep working.</li>
+<li>The messages of <code><a href="../reference/compute_portfolio_returns.html">compute_portfolio_returns()</a></code> for an empty panel and for missing portfolio returns now name the actual cause (a missing sorting value, no assigned stocks, a cross-section below <code>min_portfolio_size</code>, or a missing constituent return) instead of always citing “insufficient observations”.</li>
+<li>The help page of <code><a href="../reference/trim.html">trim()</a></code> now states that the function sets the extreme values to <code>NA</code> and keeps the length of <code>x</code>; it previously said the vector gets shorter.</li>
+<li>The help pages of <code><a href="../reference/add_lagged_columns.html">add_lagged_columns()</a></code> and <code><a href="../reference/join_lagged_values.html">join_lagged_values()</a></code> now state that month- and year-based lags require first-of-month dates (as returned by <code><a href="../reference/download_data.html">download_data()</a></code>) and how to floor other dates.</li>
+<li>
 <code><a href="../reference/download_data_wrds_crsp.html">download_data_wrds_crsp()</a></code> with <code>version = "v2"</code> (the default) now keeps the month and the day that carry a stock’s delisting return (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/320" class="external-link">#320</a>). CIZ includes the delisting return in <code>mthret</code> and <code>dlyret</code>, but <code>stksecurityinfohist</code> holds no active record after a stock’s last trading day, so the common-stock filters were evaluated at month end (or on the delisting day) and dropped these observations. Their security information is now looked up on the last trading day (<code>securityenddt</code>). On CRSP data for 1960-2025, the fix restores 19,858 stock-months with an average return of -6.9%, and the share of delistings with a delisting return whose month is in the data rises from 13% to over 99%.</li>
 <li>
 <code>ff_adjustment = TRUE</code> in <code><a href="../reference/join_lagged_values.html">join_lagged_values()</a></code> and <code><a href="../reference/add_lagged_columns.html">add_lagged_columns()</a></code> now implements the Fama and French (1993) timing: the value of a fiscal year ending in calendar year t is used from July of t + 1 through June of t + 2, for every fiscal year-end. Before, it kept the last observation per year and then applied the <code>min_lag</code>/<code>max_lag</code> window from the fiscal year-end, so a firm with a June fiscal year-end updated in January instead of July. The lag arguments are now optional and ignored with <code>ff_adjustment = TRUE</code> (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/323" class="external-link">#323</a>).</li>

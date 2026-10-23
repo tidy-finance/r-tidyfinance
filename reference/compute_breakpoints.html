@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,6 +136,15 @@ specify the market capitalization. Uses <code><a href="data_options.html">data_o
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A numeric vector of breakpoints of the desired length.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Breakpoints are computed from the cross-section passed in <code>data</code>; in a sort,
+pass the cross-section available at formation. When the resulting breakpoints
+are passed to <code><a href="assign_portfolio.html">assign_portfolio()</a></code>, a stock whose sorting value equals an
+interior breakpoint joins the portfolio <em>above</em> that breakpoint (the
+intervals are left-closed, right-open), and values at or beyond the extreme
+breakpoints fall in the first and last portfolios.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>

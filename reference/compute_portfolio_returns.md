@@ -207,6 +207,11 @@ monthly panel). With staggered rebalancing (`holding_period > 1` or
 `skip > 0`), the returned panel starts on the first date on which all
 `holding_period` cohorts are held.
 
+A portfolio's return on a date is `NA` when the portfolio holds fewer
+than `min_portfolio_size` stocks or when a constituent return is
+missing, because the equal- and value-weighted averages are taken over
+all assigned stocks without dropping `NA`s.
+
 The function checks for consistency in the provided arguments. For
 univariate sorts, a single sorting variable and a corresponding number
 of portfolios must be provided. For bivariate sorts, two sorting
@@ -300,9 +305,10 @@ compute_portfolio_returns(
 #> ! The number of portfolios differs from the specified parameter due to clusters
 #> in the sorting variable.
 #> ℹ Run `dplyr::last_dplyr_warnings()` to see the 23 remaining warnings.
-#> Returning a complete panel with 430 missing values in factor returns due to
-#> insufficient observations (fewer than 1 firm per (portfolio, date)
-#> cross-section).
+#> Returning a complete panel with 430 missing portfolio returns. A portfolio
+#> return is missing on a date when the portfolio has no assigned stocks, has
+#> fewer stocks than `min_portfolio_size` (1), or has a stock with a missing
+#> return.
 #> # A tibble: 470 × 5
 #>    portfolio date       ret_excess_vw ret_excess_ew ret_excess_vw_capped
 #>        <int> <date>             <dbl>         <dbl>                <dbl>

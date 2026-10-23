@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -141,6 +141,13 @@ an inequality join is used: for each row, the most recent source value
 within the window <code>[date - max_lag, date - lag]</code> is selected.</p>
 <p>The combination of <code>by</code> and date columns must be unique in <code>data</code>. If <code>by</code>
 is <code>NULL</code>, dates alone must be unique.</p>
+<p>For lags expressed in whole months or years (for example <code>months(1)</code> or
+<code>years(1)</code>), the dates should be the first of the month, as returned by the
+<code><a href="download_data.html">download_data()</a></code> functions. On other days of the month, month arithmetic
+such as <code>date - months(1)</code> can return <code>NA</code> (e.g., 31 January minus one
+month) or a value from the wrong month; floor the dates with
+<code>lubridate::floor_date(date, "month")</code> beforehand. This does not apply to
+<code>ff_adjustment = TRUE</code>, which works on calendar years.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

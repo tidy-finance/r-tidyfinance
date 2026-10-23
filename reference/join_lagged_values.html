@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,6 +130,16 @@ used to identify the date column. Uses <code><a href="data_options.html">data_op
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data frame with all columns from <code>original_data</code> plus the
 lagged columns from <code>new_data</code> (keeping their original names).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>For <code>min_lag</code>/<code>max_lag</code> expressed in whole months or years, the dates in
+both data frames should be the first of the month, as returned by the
+<code><a href="download_data.html">download_data()</a></code> functions. On other days of the month the monthly offset
+can miss the intended match (for example, a source dated 30 April never
+matches a target dated 31 May); floor the dates with
+<code>lubridate::floor_date(date, "month")</code> beforehand. This does not apply to
+<code>ff_adjustment = TRUE</code>, which works on calendar years.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

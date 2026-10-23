@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -175,6 +175,11 @@ formation, and rows before the first formation month, are removed. With
 <code>timing = "every_period"</code>, the screens are evaluated in every month
 (ex-post) and a warning is issued, because dropping holding-month returns
 based on information from those months can bias factor returns.</p>
+<p>The threshold and sign screens (<code>min_stock_price</code>, <code>min_size_quantile</code>,
+<code>min_listing_age</code>, <code>exclude_negative_book_equity</code>,
+<code>exclude_negative_earnings</code>) drop an observation when the screened value is
+missing; the industry exclusions (<code>exclude_financials</code>, <code>exclude_utilities</code>)
+keep an observation whose SIC code is missing.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -252,6 +252,10 @@ which must therefore not have gaps (e.g., one row per stock-month in a
 monthly panel). With staggered rebalancing (<code>holding_period &gt; 1</code> or
 <code>skip &gt; 0</code>), the returned panel starts on the first date on which all
 <code>holding_period</code> cohorts are held.</p>
+<p>A portfolio's return on a date is <code>NA</code> when the portfolio holds fewer than
+<code>min_portfolio_size</code> stocks or when a constituent return is missing, because
+the equal- and value-weighted averages are taken over all assigned stocks
+without dropping <code>NA</code>s.</p>
 <p>The function checks for consistency in the provided arguments. For
 univariate sorts, a single sorting variable and a corresponding number of
 portfolios must be provided. For bivariate sorts, two sorting variables and
@@ -342,9 +346,10 @@ replication crisis in finance? <em>Journal of Finance</em>, 78(5), 2465-2518.
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> The number of portfolios differs from the specified parameter due to clusters</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> in the sorting variable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Run `dplyr::last_dplyr_warnings()` to see the 23 remaining warnings.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Returning a complete panel with 430 missing values in factor returns due to</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> insufficient observations (fewer than 1 firm per (portfolio, date)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> cross-section).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Returning a complete panel with 430 missing portfolio returns. A portfolio</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> return is missing on a date when the portfolio has no assigned stocks, has</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> fewer stocks than `min_portfolio_size` (1), or has a stock with a missing</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> return.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 470 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    portfolio date       ret_excess_vw ret_excess_ew ret_excess_vw_capped</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>

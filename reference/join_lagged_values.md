@@ -71,6 +71,17 @@ join_lagged_values(
 A data frame with all columns from `original_data` plus the lagged
 columns from `new_data` (keeping their original names).
 
+## Details
+
+For `min_lag`/`max_lag` expressed in whole months or years, the dates in
+both data frames should be the first of the month, as returned by the
+[`download_data()`](https://r.tidy-finance.org/reference/download_data.md)
+functions. On other days of the month the monthly offset can miss the
+intended match (for example, a source dated 30 April never matches a
+target dated 31 May); floor the dates with
+`lubridate::floor_date(date, "month")` beforehand. This does not apply
+to `ff_adjustment = TRUE`, which works on calendar years.
+
 ## See also
 
 Other rolling and lagging functions:

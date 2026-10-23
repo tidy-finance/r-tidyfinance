@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,21 +121,21 @@ reported by Yahoo Finance, and the range is inclusive of both
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span>  <span class="fu">download_data_stock_prices</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AAPL"</span>, <span class="st">"MSFT"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-10-21 to</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-10-21 to avoid downloading large amounts of data.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No `start_date` or `end_date` provided. Using the range 2024-10-23 to</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 2025-10-23 to avoid downloading large amounts of data.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 502 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    symbol date         volume  open   low  high close adjusted_close</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AAPL   2024-10-21 36<span style="text-decoration: underline;">254</span>500  234.  234.  237.  236.           235.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AAPL   2024-10-22 38<span style="text-decoration: underline;">846</span>600  234.  233.  236.  236.           234.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AAPL   2024-10-23 52<span style="text-decoration: underline;">287</span>000  234.  228.  235.  231.           229.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AAPL   2024-10-24 31<span style="text-decoration: underline;">109</span>500  230.  228.  231.  231.           229.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AAPL   2024-10-25 38<span style="text-decoration: underline;">802</span>300  230.  230.  233.  231.           229.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AAPL   2024-10-28 36<span style="text-decoration: underline;">087</span>100  233.  233.  235.  233.           231.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AAPL   2024-10-29 35<span style="text-decoration: underline;">417</span>200  233.  232.  234.  234.           232.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AAPL   2024-10-30 47<span style="text-decoration: underline;">070</span>900  233.  230.  233.  230.           228.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AAPL   2024-10-31 64<span style="text-decoration: underline;">370</span>100  229.  225.  230.  226.           224.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AAPL   2024-11-01 65<span style="text-decoration: underline;">276</span>700  221.  220.  225.  223.           221.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AAPL   2024-10-23 52<span style="text-decoration: underline;">287</span>000  234.  228.  235.  231.           229.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AAPL   2024-10-24 31<span style="text-decoration: underline;">109</span>500  230.  228.  231.  231.           229.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AAPL   2024-10-25 38<span style="text-decoration: underline;">802</span>300  230.  230.  233.  231.           229.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AAPL   2024-10-28 36<span style="text-decoration: underline;">087</span>100  233.  233.  235.  233.           231.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AAPL   2024-10-29 35<span style="text-decoration: underline;">417</span>200  233.  232.  234.  234.           232.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AAPL   2024-10-30 47<span style="text-decoration: underline;">070</span>900  233.  230.  233.  230.           228.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AAPL   2024-10-31 64<span style="text-decoration: underline;">370</span>100  229.  225.  230.  226.           224.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AAPL   2024-11-01 65<span style="text-decoration: underline;">276</span>700  221.  220.  225.  223.           221.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AAPL   2024-11-04 44<span style="text-decoration: underline;">944</span>500  221.  220.  223.  222.           220.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AAPL   2024-11-05 28<span style="text-decoration: underline;">111</span>300  222.  221.  224.  223.           222.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 492 more rows</span></span>
 <span class="r-in"><span>  <span class="fu">download_data_stock_prices</span><span class="op">(</span><span class="st">"GOOGL"</span>, <span class="st">"2021-01-01"</span>, <span class="st">"2022-01-01"</span> <span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 252 × 8</span></span>

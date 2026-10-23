@@ -127,6 +127,12 @@ With `timing = "every_period"`, the screens are evaluated in every month
 (ex-post) and a warning is issued, because dropping holding-month
 returns based on information from those months can bias factor returns.
 
+The threshold and sign screens (`min_stock_price`, `min_size_quantile`,
+`min_listing_age`, `exclude_negative_book_equity`,
+`exclude_negative_earnings`) drop an observation when the screened value
+is missing; the industry exclusions (`exclude_financials`,
+`exclude_utilities`) keep an observation whose SIC code is missing.
+
 ## See also
 
 Other portfolio functions:

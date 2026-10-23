@@ -20,9 +20,11 @@ compute_long_short_returns(
 
 - data:
 
-  A data frame containing portfolio returns. The data frame must include
-  columns for the portfolio identifier, date, and return measurements
-  (as specified in `data_options`).
+  A data frame of portfolio returns as returned by
+  [`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md).
+  It must include the portfolio identifier and date columns (named via
+  `data_options`) and at least one of the return columns
+  `ret_excess_vw`, `ret_excess_ew`, and `ret_excess_vw_capped`.
 
 - direction:
 
@@ -35,20 +37,17 @@ compute_long_short_returns(
 
   A list of class `tidyfinance_data_options` (created via
   [`data_options()`](https://r.tidy-finance.org/reference/data_options.md))
-  specifying column name mappings. The `date` element is used to specify
-  the date column, the `ret_excess` element is used to specify the
-  excess return column, and `portfolio` is used to specify the assigned
-  portfolio. Uses
+  specifying column name mappings. The `date` element specifies the date
+  column and `portfolio` the assigned portfolio. Uses
   [`data_options()`](https://r.tidy-finance.org/reference/data_options.md)
-  default if `NULL`: `"date" = "date"`, `"ret_excess" = "ret_excess"`,
-  and `"portfolio" = "portfolio"`.
+  default if `NULL`: `"date" = "date"` and `"portfolio" = "portfolio"`.
 
 ## Value
 
-A data frame with columns for date, return measurement types (from the
-"ret_measure" column), and the computed long-short returns. The data
-frame is arranged by date and pivoted to have return measurement types
-as columns with their corresponding long-short returns.
+A data frame with the date column and one column per portfolio return
+measure present in `data` (`ret_excess_vw`, `ret_excess_ew`, and
+`ret_excess_vw_capped`), each holding the long-short return for that
+measure, arranged by date.
 
 ## See also
 

@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,9 +82,11 @@ subtracted from or added to the return from the "top" portfolio.</p>
 
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>A data frame containing portfolio returns. The data frame must
-include columns for the portfolio identifier, date, and return
-measurements (as specified in <code>data_options</code>).</p></dd>
+<dd><p>A data frame of portfolio returns as returned by
+<code><a href="compute_portfolio_returns.html">compute_portfolio_returns()</a></code>. It must include the portfolio identifier
+and date columns (named via <code>data_options</code>) and at least one of the
+return columns <code>ret_excess_vw</code>, <code>ret_excess_ew</code>, and
+<code>ret_excess_vw_capped</code>.</p></dd>
 
 
 <dt id="arg-direction">direction<a class="anchor" aria-label="anchor" href="#arg-direction"></a></dt>
@@ -96,20 +98,18 @@ long-short return calculation. It can be either <code>"top_minus_bottom"</code> 
 
 <dt id="arg-data-options">data_options<a class="anchor" aria-label="anchor" href="#arg-data-options"></a></dt>
 <dd><p>A list of class <code>tidyfinance_data_options</code> (created via
-<code><a href="data_options.html">data_options()</a></code>) specifying column name mappings. The <code>date</code> element is
-used to specify the date column, the <code>ret_excess</code> element is used to
-specify the excess return column, and <code>portfolio</code> is used to specify the
-assigned portfolio. Uses <code><a href="data_options.html">data_options()</a></code> default if <code>NULL</code>:
-<code>"date" = "date"</code>, <code>"ret_excess" = "ret_excess"</code>, and
+<code><a href="data_options.html">data_options()</a></code>) specifying column name mappings. The <code>date</code> element
+specifies the date column and <code>portfolio</code> the assigned portfolio. Uses
+<code><a href="data_options.html">data_options()</a></code> default if <code>NULL</code>: <code>"date" = "date"</code> and
 <code>"portfolio" = "portfolio"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame with columns for date, return measurement types (from
-the "ret_measure" column), and the computed long-short returns. The data
-frame is arranged by date and pivoted to have return measurement types as
-columns with their corresponding long-short returns.</p>
+    <p>A data frame with the date column and one column per portfolio
+return measure present in <code>data</code> (<code>ret_excess_vw</code>, <code>ret_excess_ew</code>, and
+<code>ret_excess_vw_capped</code>), each holding the long-short return for that
+measure, arranged by date.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
