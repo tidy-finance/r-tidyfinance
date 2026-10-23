@@ -144,3 +144,13 @@ test_that("an option name close to a known one warns about the likely typo", {
   expect_warning(breakpoint_options(n_portfolioss = 5), "n_portfolios")
   expect_warning(data_options(prices = "prc"), "price")
 })
+
+test_that("unnamed extra options are skipped by the typo check", {
+  expect_no_warning(
+    warn_near_option_names(c("", "custom"), "n_portfolios", "f")
+  )
+  expect_warning(
+    warn_near_option_names(c("", "n_portfolioss"), "n_portfolios", "f"),
+    "n_portfolios"
+  )
+})

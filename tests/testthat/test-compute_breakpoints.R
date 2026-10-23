@@ -237,7 +237,7 @@ test_that("NULL data_options uses defaults without error", {
 })
 
 
-test_that("a value equal to an interior breakpoint joins the portfolio above it", {
+test_that("a value on an interior breakpoint joins the portfolio above", {
   # assign_portfolio() uses findInterval(), which counts breakpoints <= value,
   # so a value lying exactly on an interior breakpoint joins the upper
   # portfolio. This pins down the tie behaviour that the previous test (which

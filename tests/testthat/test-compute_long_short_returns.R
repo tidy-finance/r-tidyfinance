@@ -77,3 +77,12 @@ test_that("compute_long_short_returns accepts the options used for the sort", {
   )
   expect_no_error(compute_long_short_returns(pr, data_options = o))
 })
+
+test_that("data without portfolio return columns is an error", {
+  panel <- make_portfolio_panel(n_portfolios = 2L, n_months = 2L) |>
+    dplyr::rename(r1 = ret_excess_ew, r2 = ret_excess_vw)
+  expect_error(
+    compute_long_short_returns(panel),
+    "No portfolio return columns"
+  )
+})
