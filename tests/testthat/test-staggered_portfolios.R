@@ -23,6 +23,12 @@ staggered_panel <- function(n_stocks = 40L, n_months = 12L) {
       size = stats::runif(dplyr::n(), 1, 100),
       mktcap_lag = stats::runif(dplyr::n(), 10, 1000),
       ret_excess = stats::rnorm(dplyr::n(), 0.01, 0.05)
+    ) |>
+    # Missing market caps must not enter the cap percentile as zeros (#337)
+    dplyr::mutate(
+      mktcap_lag = dplyr::if_else(
+        dplyr::row_number() %% 9L == 0L, NA_real_, .data$mktcap_lag
+      )
     )
 }
 
