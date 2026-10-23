@@ -14,6 +14,11 @@
 #' `skip > 0`), the returned panel starts on the first date on which all
 #' `holding_period` cohorts are held.
 #'
+#' A portfolio's return on a date is `NA` when the portfolio holds fewer than
+#' `min_portfolio_size` stocks or when a constituent return is missing, because
+#' the equal- and value-weighted averages are taken over all assigned stocks
+#' without dropping `NA`s.
+#'
 #' The function checks for consistency in the provided arguments. For
 #' univariate sorts, a single sorting variable and a corresponding number of
 #' portfolios must be provided. For bivariate sorts, two sorting variables and
@@ -352,8 +357,8 @@ compute_portfolio_returns <- function(
     if (!quiet) {
       cli::cli_inform(
         paste0(
-          "Returning an empty panel: all observations were filtered out ",
-          "(n() <= {min_portfolio_size} on every date)."
+          "Returning an empty panel: every row has a missing sorting value, ",
+          "so no portfolio could be formed."
         )
       )
     }
@@ -650,10 +655,11 @@ compute_portfolio_returns <- function(
   if (!quiet && n_missing > 0L) {
     cli::cli_inform(
       paste0(
-        "Returning a complete panel with {n_missing} missing value{?s} ",
-        "in factor returns due to insufficient observations ",
-        "(fewer than {min_portfolio_size} firm{?s} per (portfolio, date) ",
-        "cross-section)."
+        "Returning a complete panel with {n_missing} missing portfolio ",
+        "return{?s}. A portfolio return is missing on a date when the ",
+        "portfolio has no assigned stocks, has fewer stocks than ",
+        "{.arg min_portfolio_size} ({min_portfolio_size}), or has a stock ",
+        "with a missing return."
       )
     )
   }

@@ -1,16 +1,17 @@
 #' Trim a Numeric Vector
 #'
-#' Removes the values in a numeric vector that are beyond the specified
-#' quantiles, effectively trimming the distribution based on the `cut`
-#' parameter. This process reduces the vector's length by excluding extreme
-#' values from both tails of the distribution.
+#' Sets the values in a numeric vector that are beyond the specified quantiles
+#' to `NA`, based on the `cut` parameter. Values below the `cut` quantile and
+#' above the `1 - cut` quantile become `NA`; the length of `x` is unchanged,
+#' which is the useful behaviour inside `dplyr::mutate()`.
 #'
 #' @param x A numeric vector to be trimmed.
 #' @param cut The proportion of data to be trimmed from both ends of the
 #'   distribution. For example, a `cut` of 0.05 will remove the lowest and
 #'   highest 5% of the data. Must be in \[0, 0.5\].
 #'
-#' @returns A numeric vector with the extreme values removed.
+#' @returns A numeric vector the same length as `x`, with the values outside
+#'   the `cut` and `1 - cut` quantiles set to `NA`.
 #'
 #' @family utility functions
 #' @export

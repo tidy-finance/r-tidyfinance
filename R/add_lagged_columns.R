@@ -11,6 +11,14 @@
 #' The combination of `by` and date columns must be unique in `data`. If `by`
 #' is `NULL`, dates alone must be unique.
 #'
+#' For lags expressed in whole months or years (for example `months(1)` or
+#' `years(1)`), the dates should be the first of the month, as returned by the
+#' `download_data()` functions. On other days of the month, month arithmetic
+#' such as `date - months(1)` can return `NA` (e.g., 31 January minus one
+#' month) or a value from the wrong month; floor the dates with
+#' `lubridate::floor_date(date, "month")` beforehand. This does not apply to
+#' `ff_adjustment = TRUE`, which works on calendar years.
+#'
 #' @param data A data frame containing the variables to lag.
 #' @param cols A character vector specifying the names of the columns to be
 #'   lagged. Each column produces a new column suffixed with `_lag`.

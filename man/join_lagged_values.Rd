@@ -53,6 +53,15 @@ and \code{max_lag}. Unlike \code{\link[=add_lagged_columns]{add_lagged_columns()
 joining across data frames with different date grids (e.g., monthly source
 data into quarterly target data).
 }
+\details{
+For \code{min_lag}/\code{max_lag} expressed in whole months or years, the dates in
+both data frames should be the first of the month, as returned by the
+\code{download_data()} functions. On other days of the month the monthly offset
+can miss the intended match (for example, a source dated 30 April never
+matches a target dated 31 May); floor the dates with
+\code{lubridate::floor_date(date, "month")} beforehand. This does not apply to
+\code{ff_adjustment = TRUE}, which works on calendar years.
+}
 \examples{
 set.seed(42)
 library(dplyr)

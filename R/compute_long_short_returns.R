@@ -6,25 +6,25 @@
 #' adjusted based on whether the return from the "bottom" portfolio is
 #' subtracted from or added to the return from the "top" portfolio.
 #'
-#' @param data A data frame containing portfolio returns. The data frame must
-#'   include columns for the portfolio identifier, date, and return
-#'   measurements (as specified in `data_options`).
+#' @param data A data frame of portfolio returns as returned by
+#'   [compute_portfolio_returns()]. It must include the portfolio identifier
+#'   and date columns (named via `data_options`) and at least one of the
+#'   return columns `ret_excess_vw`, `ret_excess_ew`, and
+#'   `ret_excess_vw_capped`.
 #' @param direction A character string specifying the direction of the
 #'   long-short return calculation. It can be either `"top_minus_bottom"` or
 #'   `"bottom_minus_top"`. Default is `"top_minus_bottom"`. If set to
 #'   `"bottom_minus_top"`, the return will be computed as (bottom - top).
 #' @param data_options A list of class `tidyfinance_data_options` (created via
-#'   [data_options()]) specifying column name mappings. The `date` element is
-#'   used to specify the date column, the `ret_excess` element is used to
-#'   specify the excess return column, and `portfolio` is used to specify the
-#'   assigned portfolio. Uses [data_options()] default if `NULL`:
-#'   `"date" = "date"`, `"ret_excess" = "ret_excess"`, and
+#'   [data_options()]) specifying column name mappings. The `date` element
+#'   specifies the date column and `portfolio` the assigned portfolio. Uses
+#'   [data_options()] default if `NULL`: `"date" = "date"` and
 #'   `"portfolio" = "portfolio"`.
 #'
-#' @returns A data frame with columns for date, return measurement types (from
-#'   the "ret_measure" column), and the computed long-short returns. The data
-#'   frame is arranged by date and pivoted to have return measurement types as
-#'   columns with their corresponding long-short returns.
+#' @returns A data frame with the date column and one column per portfolio
+#'   return measure present in `data` (`ret_excess_vw`, `ret_excess_ew`, and
+#'   `ret_excess_vw_capped`), each holding the long-short return for that
+#'   measure, arranged by date.
 #'
 #' @family portfolio functions
 #' @export
@@ -54,6 +54,17 @@ compute_long_short_returns <- function(
   direction = "top_minus_bottom",
   data_options = NULL
 ) {
+  valid_directions <- c("top_minus_bottom", "bottom_minus_top")
+  if (
+    !is.character(direction) ||
+      length(direction) != 1L ||
+      !direction %in% valid_directions
+  ) {
+    cli::cli_abort(
+      "{.arg direction} must be one of {.val {valid_directions}}."
+    )
+  }
+
   if (is.null(data_options)) {
     data_options <- data_options()
   }
@@ -61,6 +72,27 @@ compute_long_short_returns <- function(
   data <- data |>
     check_new_col("..date") |>
     dplyr::mutate(..date = .data[[data_options$date]])
+
+  # The return columns are those that compute_portfolio_returns() produces
+  # (ret_excess_vw, ret_excess_ew, ret_excess_vw_capped), which it names the
+  # same way regardless of data_options$ret_excess. For backward compatibility
+  # also accept any column whose name contains the configured ret_excess name.
+  # Columns are kept in data order.
+  canonical <- c("ret_excess_vw", "ret_excess_ew", "ret_excess_vw_capped")
+  ret_cols <- colnames(data)[
+    colnames(data) %in% canonical |
+      grepl(data_options$ret_excess, colnames(data), fixed = TRUE)
+  ]
+  if (length(ret_cols) == 0L) {
+    cli::cli_abort(c(
+      "No portfolio return columns found in {.arg data}.",
+      "i" = paste(
+        "Expected one or more of {.val {canonical}} (as returned by",
+        "{.fn compute_portfolio_returns}), or a column whose name contains",
+        "{.val {data_options$ret_excess}}."
+      )
+    ))
+  }
 
   data |>
     group_by(.data$..date) |>
@@ -84,7 +116,7 @@ compute_long_short_returns <- function(
     ) |>
     ungroup() |>
     tidyr::pivot_longer(
-      contains(data_options$ret_excess),
+      dplyr::all_of(ret_cols),
       names_to = "ret_measure",
       values_to = "ret"
     ) |>

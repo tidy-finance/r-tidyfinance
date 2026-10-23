@@ -301,3 +301,16 @@ test_that(
     expect_equal(result, NA_real_)
   }
 )
+
+test_that("intercept-only t-statistic is named intercept", {
+  x <- data.frame(y = c(1, 2, 3, 5))
+  expect_named(estimate_model(x, "y ~ 1", output = "tstats"), "intercept")
+})
+
+test_that("estimate_model works with a single-column data frame", {
+  # Row subsetting a one-column data frame previously dropped it to a vector,
+  # so lm() failed; drop = FALSE keeps it a data frame.
+  x <- data.frame(y = c(1, 2, 3, 5))
+  expect_no_error(estimate_model(x, "y ~ 1"))
+  expect_equal(nrow(estimate_model(x, "y ~ 1")), 1L)
+})

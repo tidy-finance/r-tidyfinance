@@ -106,6 +106,15 @@ breakpoint_options <- function(
     max_strict = TRUE
   )
 
+  warn_near_option_names(
+    names(list(...)),
+    c(
+      "n_portfolios", "percentiles", "breakpoints_exchanges",
+      "smooth_bunching", "breakpoints_min_size_threshold"
+    ),
+    "breakpoint_options"
+  )
+
   # Create the list structure with class attribute
   structure(
     list(
@@ -118,4 +127,34 @@ breakpoint_options <- function(
     ),
     class = "tidyfinance_breakpoint_options"
   )
+}
+
+#' Warn about option names that look like typos of known options
+#'
+#' Used by the option constructors ([breakpoint_options()], [filter_options()],
+#' [data_options()]) to flag a name passed via `...` that is within one edit of
+#' a known option, which usually means a typo. The name is still kept, so that
+#' genuine custom options (e.g. for a custom breakpoint function) keep working.
+#'
+#' @param extra_names Character vector of names passed via `...`.
+#' @param known Character vector of known option names.
+#' @param fn A single string naming the calling constructor.
+#'
+#' @returns Called for its side effect; invisibly `NULL`.
+#' @noRd
+warn_near_option_names <- function(extra_names, known, fn) {
+  known <- known[nchar(known) >= 4L]
+  for (nm in extra_names) {
+    if (!nzchar(nm)) {
+      next
+    }
+    near <- known[utils::adist(nm, known)[1, ] <= 1L]
+    if (length(near) > 0L) {
+      cli::cli_warn(c(
+        "!" = "Unknown option {.arg {nm}} passed to {.fn {fn}}.",
+        "i" = "Did you mean {.arg {near}}? {.arg {nm}} is kept as given."
+      ))
+    }
+  }
+  invisible(NULL)
 }

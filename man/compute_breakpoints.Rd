@@ -63,6 +63,14 @@ function also optionally handles cases where the sorting variable clusters
 on the edges, by assigning all extreme values to the edges and attempting
 to compute equally populated breakpoints with the remaining values.
 }
+\details{
+Breakpoints are computed from the cross-section passed in \code{data}; in a sort,
+pass the cross-section available at formation. When the resulting breakpoints
+are passed to \code{\link[=assign_portfolio]{assign_portfolio()}}, a stock whose sorting value equals an
+interior breakpoint joins the portfolio \emph{above} that breakpoint (the
+intervals are left-closed, right-open), and values at or beyond the extreme
+breakpoints fall in the first and last portfolios.
+}
 \note{
 This function will stop and throw an error if both \code{n_portfolios} and
 \code{percentiles} are provided or missing simultaneously.

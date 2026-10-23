@@ -11,9 +11,11 @@ compute_long_short_returns(
 )
 }
 \arguments{
-\item{data}{A data frame containing portfolio returns. The data frame must
-include columns for the portfolio identifier, date, and return
-measurements (as specified in \code{data_options}).}
+\item{data}{A data frame of portfolio returns as returned by
+\code{\link[=compute_portfolio_returns]{compute_portfolio_returns()}}. It must include the portfolio identifier
+and date columns (named via \code{data_options}) and at least one of the
+return columns \code{ret_excess_vw}, \code{ret_excess_ew}, and
+\code{ret_excess_vw_capped}.}
 
 \item{direction}{A character string specifying the direction of the
 long-short return calculation. It can be either \code{"top_minus_bottom"} or
@@ -21,18 +23,16 @@ long-short return calculation. It can be either \code{"top_minus_bottom"} or
 \code{"bottom_minus_top"}, the return will be computed as (bottom - top).}
 
 \item{data_options}{A list of class \code{tidyfinance_data_options} (created via
-\code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{date} element is
-used to specify the date column, the \code{ret_excess} element is used to
-specify the excess return column, and \code{portfolio} is used to specify the
-assigned portfolio. Uses \code{\link[=data_options]{data_options()}} default if \code{NULL}:
-\code{"date" = "date"}, \code{"ret_excess" = "ret_excess"}, and
+\code{\link[=data_options]{data_options()}}) specifying column name mappings. The \code{date} element
+specifies the date column and \code{portfolio} the assigned portfolio. Uses
+\code{\link[=data_options]{data_options()}} default if \code{NULL}: \code{"date" = "date"} and
 \code{"portfolio" = "portfolio"}.}
 }
 \value{
-A data frame with columns for date, return measurement types (from
-the "ret_measure" column), and the computed long-short returns. The data
-frame is arranged by date and pivoted to have return measurement types as
-columns with their corresponding long-short returns.
+A data frame with the date column and one column per portfolio
+return measure present in \code{data} (\code{ret_excess_vw}, \code{ret_excess_ew}, and
+\code{ret_excess_vw_capped}), each holding the long-short return for that
+measure, arranged by date.
 }
 \description{
 Calculates long-short returns based on the returns of portfolios. The

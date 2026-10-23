@@ -473,6 +473,48 @@ $t$-statistic here, but that reflects only the generator's built-in positive ret
 drift, not a real average return. Switching the standard-error
 treatment (`vcov = "iid"`) or adding a regressor is a one-argument change.
 
+## Construction conventions
+
+A few conventions run through the whole pipeline. The defaults follow standard
+practice, but it helps to know them---especially when you bring your own data or
+read the results closely.
+
+- **Dates are the first of the month.** Every monthly panel from
+  `download_data()` is dated the first calendar day of the month, and the month-
+  and year-based lags of `add_lagged_columns()` and `join_lagged_values()` assume
+  this. On a date that falls on another day, a monthly lag can return `NA` or a
+  value from the wrong month; floor such dates with
+  `lubridate::floor_date(date, "month")` first.
+- **Lag the signal before you sort.** A sort pairs a stock's sorting variable
+  with the return in the *same* row, so the signal must already be lagged---as in
+  Steps 2 and 3, where `add_lagged_columns()` and `join_lagged_values()` shift the
+  signal back before it meets the return. Sorting on a contemporaneous signal
+  looks ahead, and nothing downstream re-checks the timing for you.
+- **Breakpoints are formed each period, and ties go up.** `compute_breakpoints()`
+  uses the cross-section available at formation, and a stock whose sorting value
+  sits exactly on a breakpoint joins the portfolio *above* it. Breakpoints are
+  taken over all stocks unless `breakpoints_exchanges` restricts them (the usual
+  choice is `"NYSE"`).
+- **Weighting.** Value weights use the lagged market capitalization
+  (`mktcap_lag`). Capped value weights additionally cap each stock at the
+  `cap_weight` percentile (the 80th by default) of NYSE stocks on each date,
+  following Jensen, Kelly, and Pedersen (2023).
+- **Missing values.** A portfolio's return on a date is `NA` if a constituent's
+  return is missing or if the portfolio holds fewer than `min_portfolio_size`
+  stocks. The sample screens of `filter_options()` drop observations whose screen
+  value is missing. With annual rebalancing they apply in the formation month
+  only (`timing = "formation"`), so a stock that passes at formation keeps its
+  returns for the holding year.
+- **Data conventions worth knowing.** Excess returns subtract a risk-free rate
+  spliced from the three-month Treasury bill (before 2001) and the four-week bill
+  (afterwards), so its level steps at the splice. Book equity follows the
+  standard Fama--French definition and adds back deferred taxes. The CRSP 2.0
+  (CIZ) download is the default and already includes delisting returns. Downloads
+  are not sorted, so sort before any step that depends on row order
+  (`estimate_fama_macbeth()` does this internally). The pseudo data match the
+  real panel's columns, types, and missingness but not its economic relations, so
+  any premium computed on them is noise.
+
 ## Where to go next
 
 You have now run the complete `tidyfinance` workflow: download, construct and lag

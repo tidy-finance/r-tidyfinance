@@ -44,6 +44,14 @@
 #'   specify the market capitalization. Uses [data_options()] default if
 #'   `NULL`: `"exchange" = "exchange"` and `"mktcap_lag" = "mktcap_lag"`.
 #'
+#' @details
+#' Breakpoints are computed from the cross-section passed in `data`; in a sort,
+#' pass the cross-section available at formation. When the resulting breakpoints
+#' are passed to [assign_portfolio()], a stock whose sorting value equals an
+#' interior breakpoint joins the portfolio *above* that breakpoint (the
+#' intervals are left-closed, right-open), and values at or beyond the extreme
+#' breakpoints fall in the first and last portfolios.
+#'
 #' @note This function will stop and throw an error if both `n_portfolios` and
 #'   `percentiles` are provided or missing simultaneously.
 #'
