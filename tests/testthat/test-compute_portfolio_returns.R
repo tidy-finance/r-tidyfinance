@@ -578,3 +578,31 @@ test_that("a missing-return NA names the missing return as a cause", {
     "missing return"
   )
 })
+
+test_that("the complete panel is ordered by portfolio and date", {
+  d <- data.frame(
+    permno = c(1, 2, 2, 1, 2),
+    date = as.Date(
+      c("2020-02-01", "2020-01-01", "2020-02-01", "2020-03-01", "2020-03-01")
+    ),
+    size = c(1, 2, 3, 4, 5),
+    ret_excess = c(0.01, 0.02, 0.03, 0.04, 0.05)
+  )
+  # 2020-01-01 has a single stock, which triggers a one-portfolio warning
+  result <- suppressWarnings(compute_portfolio_returns(
+    d, "size", "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 2),
+    quiet = TRUE
+  ))
+  dates <- as.Date(c("2020-01-01", "2020-02-01", "2020-03-01"))
+  expect_equal(result$portfolio, rep(1:2, each = 3))
+  expect_equal(result$date, rep(dates, 2))
+  expect_equal(result$ret_excess_ew, c(0.02, 0.01, 0.04, NA, 0.03, 0.05))
+
+  shuffled <- suppressWarnings(compute_portfolio_returns(
+    d[c(5, 3, 1, 4, 2), ], "size", "univariate",
+    breakpoint_options_main = breakpoint_options(n_portfolios = 2),
+    quiet = TRUE
+  ))
+  expect_equal(shuffled, result)
+})
