@@ -113,16 +113,16 @@ test_that(
   }
 )
 
-test_that("add_lagged_columns warns when bm_lag already exists in data", {
+test_that("add_lagged_columns errors when bm_lag already exists in data", {
   data_with_lag <- tibble::add_column(panel, bm_lag = NA_real_)
-  expect_warning(
+  expect_error(
     add_lagged_columns(
       data_with_lag,
       cols = "bm",
       lag = months(3),
       by = "permno"
     ),
-    "overwrites"
+    "already exist"
   )
 })
 

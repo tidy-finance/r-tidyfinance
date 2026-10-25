@@ -214,3 +214,35 @@ test_that("error when join key is not unique", {
     "unique"
   )
 })
+
+test_that("error when a lagged column already exists in data", {
+  data <- tibble::tibble(
+    permno = 1L,
+    date = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01")),
+    ret = c(0.01, 0.02, 0.03),
+    ret_lag = 99
+  )
+  expect_error(
+    add_lagged_columns(data, cols = "ret", lag = months(1), by = "permno"),
+    "already exist"
+  )
+  expect_error(
+    add_lagged_columns(
+      data,
+      cols = "ret",
+      lag = months(1),
+      max_lag = months(2),
+      by = "permno"
+    ),
+    "already exist"
+  )
+  expect_error(
+    add_lagged_columns(
+      data,
+      cols = "ret",
+      by = "permno",
+      ff_adjustment = TRUE
+    ),
+    "already exist"
+  )
+})

@@ -21,7 +21,8 @@
 #'
 #' @param data A data frame containing the variables to lag.
 #' @param cols A character vector specifying the names of the columns to be
-#'   lagged. Each column produces a new column suffixed with `_lag`.
+#'   lagged. Each column produces a new column suffixed with `_lag`, which must
+#'   not already exist in `data`.
 #' @param lag An integer or a `lubridate::periods()` object, e.g.,
 #'   `months(1)`, specifying the minimum lag (inclusive) to apply. Required
 #'   unless `ff_adjustment = TRUE`.
@@ -142,6 +143,20 @@ add_lagged_columns <- function(
     }
   }
 
+  lag_col_names <- paste0(cols, "_lag")
+  existing_lag_cols <- intersect(lag_col_names, names(data))
+  if (length(existing_lag_cols) > 0) {
+    cli::cli_abort(
+      c(
+        paste0(
+          "{cli::qty(length(existing_lag_cols))}Lagged column{?s} already ",
+          "exist{?s/} in {.arg data}: {.field {existing_lag_cols}}."
+        ),
+        "i" = "Rename or remove the existing lagged columns first."
+      )
+    )
+  }
+
   join_cols <- c(by, date_col)
 
   if (anyDuplicated(data[join_cols])) {
@@ -170,7 +185,6 @@ add_lagged_columns <- function(
       names(lagged)[names(lagged) == col] <- lag_col_name
 
       data <- data |>
-        check_new_col(lag_col_name) |>
         dplyr::left_join(
           lagged,
           by = dplyr::join_by(
@@ -209,14 +223,12 @@ add_lagged_columns <- function(
       names(lagged)[names(lagged) == col] <- lag_col_name
 
       data <- data |>
-        check_new_col(lag_col_name) |>
         dplyr::left_join(lagged, by = join_cols)
     } else {
       names(lagged)[names(lagged) == date_col] <- ".src_date"
       names(lagged)[names(lagged) == col] <- lag_col_name
 
       data <- data |>
-        check_new_col(lag_col_name) |>
         dplyr::left_join(
           lagged,
           by = dplyr::join_by(!!!rlang::syms(by), closest(.upper >= .src_date))
