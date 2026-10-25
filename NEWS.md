@@ -1,4 +1,4 @@
-# tidyfinance 0.10.0
+# tidyfinance 1.0.0
 
 ## Breaking changes
 
