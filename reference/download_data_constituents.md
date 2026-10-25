@@ -101,7 +101,7 @@ Other download functions:
 #>  7 MUV2.DE MUENCHENER RUECKVERSICHERUNGS-GESE Deutschland Xetra         EUR     
 #>  8 IFX.DE  INFINEON TECHNOLOGIES AG           Deutschland Xetra         EUR     
 #>  9 DB1.DE  DEUTSCHE BOERSE AG                 Deutschland Xetra         EUR     
-#> 10 DBK.DE  DEUTSCHE BANK AG                   Deutschland Xetra         EUR     
+#> 10 DHL.DE  DHL AG                             Deutschland Xetra         EUR     
 #> # ℹ 30 more rows
 # }
 if (FALSE) { # \dontrun{
