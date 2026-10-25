@@ -33,6 +33,10 @@
 
 ## Bug fixes
 
+- `add_lagged_columns()` now aborts when a `<col>_lag` column already exists
+  in `data`. Before, it warned that it overwrites the column but returned
+  `.x`/`.y` columns (exact lag) or failed with a cryptic error (lag window)
+  (#342).
 - `estimate_model(output = "tstats")` now names the t-statistic column
   `intercept` for an intercept-only model, instead of leaving it unnamed, so
   `$intercept` works as it does for models with regressors.
