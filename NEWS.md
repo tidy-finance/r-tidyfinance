@@ -33,6 +33,10 @@
 
 ## Bug fixes
 
+- `compute_portfolio_returns()` and `implement_portfolio_sort()` now return
+  the complete panel ordered by portfolio and date. Before, dates were ordered
+  by their first appearance in `data`, so the row order depended on how the
+  input was sorted (#344).
 - `add_lagged_columns()` now aborts when a `<col>_lag` column already exists
   in `data`. Before, it warned that it overwrites the column but returned
   `.x`/`.y` columns (exact lag) or failed with a cryptic error (lag window)
