@@ -299,8 +299,9 @@ compute_portfolio_returns <- function(
     data[[w_col]] <- 1L
   }
 
-  # Store the dates before filtering out missing values
-  all_dates <- unique(data[[date_col]])
+  # Store the dates before filtering out missing values, sorted so that the
+  # returned panel is ordered by date whatever the order of the input
+  all_dates <- sort(unique(data[[date_col]]))
 
   # With staggered rebalancing, held stocks keep their returns even without
   # sorting variables, so the full panel is kept for the holding periods
@@ -399,7 +400,7 @@ compute_portfolio_returns <- function(
   }
 
   if (staggered) {
-    dates <- sort(all_dates)
+    dates <- all_dates
     portfolio_returns <- compute_staggered_returns(
       formation_data = data,
       holding_data = holding_data,
@@ -634,7 +635,7 @@ compute_portfolio_returns <- function(
   }
 
   # Complete the panel: ensure all portfolio-date combinations are present
-  all_portfolios <- na.omit(unique(portfolio_returns$portfolio))
+  all_portfolios <- sort(unique(portfolio_returns$portfolio))
 
   complete_panel <- tidyr::expand_grid(
     portfolio = all_portfolios,
