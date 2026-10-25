@@ -328,14 +328,10 @@ compute_portfolio_returns <- function(
       quiet
     )
 
-  # Replace NA market caps with 0, as these observations should not contribute
-  # to the value-weighted return
-  missing_mcap_data <- is.na(data[[w_col]])
-  data[[w_col]][missing_mcap_data] <- 0
-  data[[w_capped_col]][missing_mcap_data] <- 0
-
   if (staggered) {
-    # Cap the weights of held stocks with the cap of the formation universe
+    # Cap the weights of held stocks with the cap of the formation universe,
+    # before its NA market caps are replaced, so that they do not enter the
+    # percentile as zeros
     holding_data <- holding_data |>
       cap_market_cap(
         w_col,
@@ -351,6 +347,12 @@ compute_portfolio_returns <- function(
     holding_data[[w_col]][missing_mcap_holding] <- 0
     holding_data[[w_capped_col]][missing_mcap_holding] <- 0
   }
+
+  # Replace NA market caps with 0, as these observations should not contribute
+  # to the value-weighted return
+  missing_mcap_data <- is.na(data[[w_col]])
+  data[[w_col]][missing_mcap_data] <- 0
+  data[[w_capped_col]][missing_mcap_data] <- 0
 
   # Handle edge case where all observations are filtered out
   if (nrow(data) == 0L) {
