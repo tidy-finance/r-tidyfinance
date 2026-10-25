@@ -19,7 +19,8 @@ add_lagged_columns(
 \item{data}{A data frame containing the variables to lag.}
 
 \item{cols}{A character vector specifying the names of the columns to be
-lagged. Each column produces a new column suffixed with \verb{_lag}.}
+lagged. Each column produces a new column suffixed with \verb{_lag}, which must
+not already exist in \code{data}.}
 
 \item{lag}{An integer or a \code{lubridate::periods()} object, e.g.,
 \code{months(1)}, specifying the minimum lag (inclusive) to apply. Required
