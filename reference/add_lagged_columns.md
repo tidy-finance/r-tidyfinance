@@ -27,7 +27,8 @@ add_lagged_columns(
 - cols:
 
   A character vector specifying the names of the columns to be lagged.
-  Each column produces a new column suffixed with `_lag`.
+  Each column produces a new column suffixed with `_lag`, which must not
+  already exist in `data`.
 
 - lag:
 

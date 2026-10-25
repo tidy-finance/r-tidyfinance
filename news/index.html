@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9011</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9012</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,6 +63,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>
+<code><a href="../reference/add_lagged_columns.html">add_lagged_columns()</a></code> now aborts when a <code>&lt;col&gt;_lag</code> column already exists in <code>data</code>. Before, it warned that it overwrites the column but returned <code>.x</code>/<code>.y</code> columns (exact lag) or failed with a cryptic error (lag window) (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/342" class="external-link">#342</a>).</li>
+<li>
 <code>estimate_model(output = "tstats")</code> now names the t-statistic column <code>intercept</code> for an intercept-only model, instead of leaving it unnamed, so <code>$intercept</code> works as it does for models with regressors.</li>
 <li>
 <code><a href="../reference/estimate_model.html">estimate_model()</a></code> no longer fails for a single-column data frame (for example <code>estimate_model(data.frame(y = 1:5), "y ~ 1")</code>); row subsetting previously dropped the one column to a vector before <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>.</li>
