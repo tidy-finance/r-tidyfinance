@@ -13,8 +13,9 @@ list_tidy_finance_chapters()
 ## Value
 
 A character vector where each element is the name of a chapter available
-in the Tidy Finance resource. These names correspond to specific
-chapters in Tidy Finance with R.
+in the Tidy Finance resource, in the order of the website. These names
+correspond to the chapter pages at
+`https://www.tidy-finance.org/chapters/`.
 
 ## See also
 
@@ -40,27 +41,31 @@ Other utility functions:
 ``` r
 list_tidy_finance_chapters()
 #>  [1] "setting-up-your-environment"                
-#>  [2] "introduction-to-tidy-finance"               
-#>  [3] "accessing-and-managing-financial-data"      
-#>  [4] "wrds-crsp-and-compustat"                    
-#>  [5] "trace-and-fisd"                             
-#>  [6] "other-data-providers"                       
-#>  [7] "beta-estimation"                            
-#>  [8] "univariate-portfolio-sorts"                 
-#>  [9] "size-sorts-and-p-hacking"                   
-#> [10] "value-and-bivariate-sorts"                  
-#> [11] "replicating-fama-and-french-factors"        
-#> [12] "fama-macbeth-regressions"                   
-#> [13] "fixed-effects-and-clustered-standard-errors"
-#> [14] "difference-in-differences"                  
-#> [15] "factor-selection-via-machine-learning"      
-#> [16] "option-pricing-via-machine-learning"        
-#> [17] "parametric-portfolio-policies"              
-#> [18] "constrained-optimization-and-backtesting"   
-#> [19] "wrds-dummy-data"                            
-#> [20] "cover-and-logo-design"                      
-#> [21] "clean-enhanced-trace-with-r"                
-#> [22] "proofs"                                     
-#> [23] "hex-sticker"                                
-#> [24] "changelog"                                  
+#>  [2] "the-tidyfinance-package"                    
+#>  [3] "working-with-stock-returns"                 
+#>  [4] "modern-portfolio-theory"                    
+#>  [5] "capital-asset-pricing-model"                
+#>  [6] "financial-statement-analysis"               
+#>  [7] "discounted-cash-flow-analysis"              
+#>  [8] "accessing-and-managing-financial-data"      
+#>  [9] "wrds-crsp-and-compustat"                    
+#> [10] "trace-and-fisd"                             
+#> [11] "other-data-providers"                       
+#> [12] "beta-estimation"                            
+#> [13] "univariate-portfolio-sorts"                 
+#> [14] "size-sorts-and-p-hacking"                   
+#> [15] "value-and-bivariate-sorts"                  
+#> [16] "replicating-fama-and-french-factors"        
+#> [17] "fama-macbeth-regressions"                   
+#> [18] "fixed-effects-and-clustered-standard-errors"
+#> [19] "difference-in-differences"                  
+#> [20] "factor-selection-via-machine-learning"      
+#> [21] "option-pricing-via-machine-learning"        
+#> [22] "parametric-portfolio-policies"              
+#> [23] "constrained-optimization-and-backtesting"   
+#> [24] "wrds-dummy-data"                            
+#> [25] "cover-and-logo-design"                      
+#> [26] "clean-enhanced-trace"                       
+#> [27] "proofs"                                     
+#> [28] "colophon"                                   
 ```

@@ -4,6 +4,24 @@
 
 ### Breaking changes
 
+- [`download_data_fred()`](https://r.tidy-finance.org/reference/download_data_fred.md)
+  and `download_data("FRED", ...)` now return the columns `date`,
+  `series`, `value` (identifiers first), as py-tidyfinance does, instead
+  of `date`, `value`, `series`
+  ([\#346](https://github.com/tidy-finance/r-tidyfinance/issues/346)).
+- [`compute_rolling_value()`](https://r.tidy-finance.org/reference/compute_rolling_value.md)
+  now returns one value per row of `data`, as documented: every row gets
+  the value of its period’s window. Before, it returned one value per
+  period, so it could not be used in
+  [`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html) when a
+  period held more than one row, e.g. with `period = "quarter"` on
+  monthly data
+  ([\#348](https://github.com/tidy-finance/r-tidyfinance/issues/348)).
+- `download_data("Goyal-Welch", ...)` now computes `rp_div` as the
+  future log market return minus the log risk-free rate,
+  `log(1 + Rfree)`, as in the book. Before, it subtracted the simple
+  risk-free rate
+  ([\#350](https://github.com/tidy-finance/r-tidyfinance/issues/350)).
 - The capped value-weighted returns of
   [`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md)
   and
@@ -49,6 +67,19 @@
 
 ### Bug fixes
 
+- `download_data("Fama-French", ...)` now parses all eight breakpoints
+  datasets. Before, all but `ME Breakpoints` returned an empty tibble,
+  and `ME Breakpoints` had the generic column names `v2`-`v22`. The
+  columns are now named `date`, `count` (or `<=0` and `>0`), and the
+  percentile bins `0-5`, …, `95-100`, as in py-tidyfinance. Annual
+  breakpoints are dated at the end of the year
+  ([\#347](https://github.com/tidy-finance/r-tidyfinance/issues/347)).
+- [`list_tidy_finance_chapters()`](https://r.tidy-finance.org/reference/list_tidy_finance_chapters.md)
+  and
+  [`open_tidy_finance_website()`](https://r.tidy-finance.org/reference/open_tidy_finance_website.md)
+  now follow the new website, which serves the chapters at
+  `https://www.tidy-finance.org/chapters/`
+  ([\#349](https://github.com/tidy-finance/r-tidyfinance/issues/349)).
 - [`compute_portfolio_returns()`](https://r.tidy-finance.org/reference/compute_portfolio_returns.md)
   and
   [`implement_portfolio_sort()`](https://r.tidy-finance.org/reference/implement_portfolio_sort.md)

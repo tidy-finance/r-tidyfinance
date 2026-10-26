@@ -35,20 +35,20 @@ A tibble containing the processed data with three columns:
 
   The date corresponding to the data point.
 
-- value:
-
-  The value of the data series at that date.
-
 - series:
 
   The FRED series ID corresponding to the data.
+
+- value:
+
+  The value of the data series at that date.
 
 ## Details
 
 Constructs the URL based on the provided FRED series ID, performs an
 HTTP GET request to download the data in CSV format, and processes it to
-a tidy tibble format. The resulting tibble includes the date, value, and
-the series ID.
+a tidy tibble format. The resulting tibble includes the date, the series
+ID, and the value.
 
 This approach is inspired by `quantmod::getSymbolsFRED()` which uses a
 different wrapper around the same FRED download data site. If you want
@@ -82,38 +82,38 @@ Other download functions:
   download_data_fred("CPIAUCNS")
 #> No `start_date` or `end_date` provided. Returning the full data set.
 #> # A tibble: 1,365 × 3
-#>    date       value series  
-#>    <date>     <dbl> <chr>   
-#>  1 1913-01-01   9.8 CPIAUCNS
-#>  2 1913-02-01   9.8 CPIAUCNS
-#>  3 1913-03-01   9.8 CPIAUCNS
-#>  4 1913-04-01   9.8 CPIAUCNS
-#>  5 1913-05-01   9.7 CPIAUCNS
-#>  6 1913-06-01   9.8 CPIAUCNS
-#>  7 1913-07-01   9.9 CPIAUCNS
-#>  8 1913-08-01   9.9 CPIAUCNS
-#>  9 1913-09-01  10   CPIAUCNS
-#> 10 1913-10-01  10   CPIAUCNS
+#>    date       series   value
+#>    <date>     <chr>    <dbl>
+#>  1 1913-01-01 CPIAUCNS   9.8
+#>  2 1913-02-01 CPIAUCNS   9.8
+#>  3 1913-03-01 CPIAUCNS   9.8
+#>  4 1913-04-01 CPIAUCNS   9.8
+#>  5 1913-05-01 CPIAUCNS   9.7
+#>  6 1913-06-01 CPIAUCNS   9.8
+#>  7 1913-07-01 CPIAUCNS   9.9
+#>  8 1913-08-01 CPIAUCNS   9.9
+#>  9 1913-09-01 CPIAUCNS  10  
+#> 10 1913-10-01 CPIAUCNS  10  
 #> # ℹ 1,355 more rows
   download_data_fred(c("GDP", "CPIAUCNS"), "2010-01-01", "2010-12-31")
 #> # A tibble: 16 × 3
-#>    date        value series  
-#>    <date>      <dbl> <chr>   
-#>  1 2010-01-01 14765. GDP     
-#>  2 2010-04-01 14980. GDP     
-#>  3 2010-07-01 15142. GDP     
-#>  4 2010-10-01 15309. GDP     
-#>  5 2010-01-01   217. CPIAUCNS
-#>  6 2010-02-01   217. CPIAUCNS
-#>  7 2010-03-01   218. CPIAUCNS
-#>  8 2010-04-01   218. CPIAUCNS
-#>  9 2010-05-01   218. CPIAUCNS
-#> 10 2010-06-01   218. CPIAUCNS
-#> 11 2010-07-01   218. CPIAUCNS
-#> 12 2010-08-01   218. CPIAUCNS
-#> 13 2010-09-01   218. CPIAUCNS
-#> 14 2010-10-01   219. CPIAUCNS
-#> 15 2010-11-01   219. CPIAUCNS
-#> 16 2010-12-01   219. CPIAUCNS
+#>    date       series    value
+#>    <date>     <chr>     <dbl>
+#>  1 2010-01-01 GDP      14765.
+#>  2 2010-04-01 GDP      14980.
+#>  3 2010-07-01 GDP      15142.
+#>  4 2010-10-01 GDP      15309.
+#>  5 2010-01-01 CPIAUCNS   217.
+#>  6 2010-02-01 CPIAUCNS   217.
+#>  7 2010-03-01 CPIAUCNS   218.
+#>  8 2010-04-01 CPIAUCNS   218.
+#>  9 2010-05-01 CPIAUCNS   218.
+#> 10 2010-06-01 CPIAUCNS   218.
+#> 11 2010-07-01 CPIAUCNS   218.
+#> 12 2010-08-01 CPIAUCNS   218.
+#> 13 2010-09-01 CPIAUCNS   218.
+#> 14 2010-10-01 CPIAUCNS   219.
+#> 15 2010-11-01 CPIAUCNS   219.
+#> 16 2010-12-01 CPIAUCNS   219.
 # }
 ```

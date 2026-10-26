@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9013</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9014</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,8 +70,9 @@ various topics covered.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A character vector where each element is the name of a chapter
-available in the Tidy Finance resource. These names correspond to specific
-chapters in Tidy Finance with R.</p>
+available in the Tidy Finance resource, in the order of the website. These
+names correspond to the chapter pages at
+<code>https://www.tidy-finance.org/chapters/</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -97,29 +98,33 @@ chapters in Tidy Finance with R.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">list_tidy_finance_chapters</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "setting-up-your-environment"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "introduction-to-tidy-finance"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "accessing-and-managing-financial-data"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "wrds-crsp-and-compustat"                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "trace-and-fisd"                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "other-data-providers"                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "beta-estimation"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "univariate-portfolio-sorts"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "size-sorts-and-p-hacking"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "value-and-bivariate-sorts"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "replicating-fama-and-french-factors"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "fama-macbeth-regressions"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "fixed-effects-and-clustered-standard-errors"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [14] "difference-in-differences"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "factor-selection-via-machine-learning"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "option-pricing-via-machine-learning"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "parametric-portfolio-policies"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [18] "constrained-optimization-and-backtesting"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "wrds-dummy-data"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20] "cover-and-logo-design"                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "clean-enhanced-trace-with-r"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22] "proofs"                                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "hex-sticker"                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [24] "changelog"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "the-tidyfinance-package"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "working-with-stock-returns"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "modern-portfolio-theory"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "capital-asset-pricing-model"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "financial-statement-analysis"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "discounted-cash-flow-analysis"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "accessing-and-managing-financial-data"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "wrds-crsp-and-compustat"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "trace-and-fisd"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "other-data-providers"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "beta-estimation"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "univariate-portfolio-sorts"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14] "size-sorts-and-p-hacking"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "value-and-bivariate-sorts"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "replicating-fama-and-french-factors"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "fama-macbeth-regressions"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18] "fixed-effects-and-clustered-standard-errors"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "difference-in-differences"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20] "factor-selection-via-machine-learning"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "option-pricing-via-machine-learning"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22] "parametric-portfolio-policies"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "constrained-optimization-and-backtesting"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [24] "wrds-dummy-data"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "cover-and-logo-design"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26] "clean-enhanced-trace"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "proofs"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [28] "colophon"                                   </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

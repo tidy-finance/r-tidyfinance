@@ -44,7 +44,10 @@ download_data_factors_ff(
 
 A tibble with processed factor data, including the date, risk-free rate,
 market excess return, and other factors, filtered by the specified date
-range.
+range. Breakpoints datasets instead return `date`, the firm counts
+(`count`, or `<=0` and `>0` for ratios that can be non-positive), and
+the percentile bins `0-5`, `5-10`, ..., `95-100`, unscaled. Annual
+breakpoints are dated at the end of the year.
 
 ## Details
 

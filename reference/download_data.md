@@ -134,7 +134,7 @@ download_data("Goyal-Welch", "monthly", "2000-01-01", "2020-12-31")
 #> # A tibble: 252 × 15
 #>    date        rp_div    dp    dy    ep    de    svar    bm    ntis    tbl
 #>    <date>       <dbl> <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl>   <dbl>  <dbl>
-#>  1 2000-01-01 -0.0244 -4.42 -4.48 -3.35 -1.08 0.00521 0.155 0.0254  0.0532
+#>  1 2000-01-01 -0.0243 -4.42 -4.48 -3.35 -1.08 0.00521 0.155 0.0254  0.0532
 #>  2 2000-02-01  0.0866 -4.40 -4.42 -3.31 -1.09 0.00300 0.167 0.0274  0.0555
 #>  3 2000-03-01 -0.0355 -4.49 -4.40 -3.38 -1.11 0.00668 0.150 0.0183  0.0569
 #>  4 2000-04-01 -0.0269 -4.46 -4.49 -3.34 -1.12 0.00794 0.153 0.0119  0.0566
@@ -164,18 +164,18 @@ download_data("Index Constituents", index = "DAX")
 download_data("FRED", series = c("GDP", "CPIAUCNS"))
 #> No `start_date` or `end_date` provided. Returning the full data set.
 #> # A tibble: 1,683 × 3
-#>    date       value series
-#>    <date>     <dbl> <chr> 
-#>  1 1947-01-01  243. GDP   
-#>  2 1947-04-01  246. GDP   
-#>  3 1947-07-01  250. GDP   
-#>  4 1947-10-01  260. GDP   
-#>  5 1948-01-01  266. GDP   
-#>  6 1948-04-01  273. GDP   
-#>  7 1948-07-01  279. GDP   
-#>  8 1948-10-01  280. GDP   
-#>  9 1949-01-01  275. GDP   
-#> 10 1949-04-01  271. GDP   
+#>    date       series value
+#>    <date>     <chr>  <dbl>
+#>  1 1947-01-01 GDP     243.
+#>  2 1947-04-01 GDP     246.
+#>  3 1947-07-01 GDP     250.
+#>  4 1947-10-01 GDP     260.
+#>  5 1948-01-01 GDP     266.
+#>  6 1948-04-01 GDP     273.
+#>  7 1948-07-01 GDP     279.
+#>  8 1948-10-01 GDP     280.
+#>  9 1949-01-01 GDP     275.
+#> 10 1949-04-01 GDP     271.
 #> # ℹ 1,673 more rows
 download_data("FRED", "FRED-MD")
 #> # A tibble: 801 × 127
@@ -241,22 +241,22 @@ download_data("FRED", "FRED-QD", vintage = "2020-03")
 #> #   IPMAT <dbl>, IPDMAT <dbl>, IPNMAT <dbl>, IPDCONGD <dbl>, IPB51110SQ <dbl>,
 #> #   IPNCONGD <dbl>, IPBUSEQ <dbl>, IPB51220SQ <dbl>, TCU <dbl>, CUMFNS <dbl>, …
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
-#> No `start_date` or `end_date` provided. Using the range 2024-10-25 to
-#> 2025-10-25 to avoid downloading large amounts of data.
-#> # A tibble: 500 × 8
+#> No `start_date` or `end_date` provided. Using the range 2024-10-26 to
+#> 2025-10-26 to avoid downloading large amounts of data.
+#> # A tibble: 498 × 8
 #>    symbol date         volume  open   low  high close adjusted_close
 #>    <chr>  <date>        <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2024-10-25 38802300  230.  230.  233.  231.           229.
-#>  2 AAPL   2024-10-28 36087100  233.  233.  235.  233.           231.
-#>  3 AAPL   2024-10-29 35417200  233.  232.  234.  234.           232.
-#>  4 AAPL   2024-10-30 47070900  233.  230.  233.  230.           228.
-#>  5 AAPL   2024-10-31 64370100  229.  225.  230.  226.           224.
-#>  6 AAPL   2024-11-01 65276700  221.  220.  225.  223.           221.
-#>  7 AAPL   2024-11-04 44944500  221.  220.  223.  222.           220.
-#>  8 AAPL   2024-11-05 28111300  222.  221.  224.  223.           222.
-#>  9 AAPL   2024-11-06 54561100  223.  221.  226.  223.           221.
-#> 10 AAPL   2024-11-07 42137700  225.  225.  228.  227.           226.
-#> # ℹ 490 more rows
+#>  1 AAPL   2024-10-28 36087100  233.  233.  235.  233.           231.
+#>  2 AAPL   2024-10-29 35417200  233.  232.  234.  234.           232.
+#>  3 AAPL   2024-10-30 47070900  233.  230.  233.  230.           228.
+#>  4 AAPL   2024-10-31 64370100  229.  225.  230.  226.           224.
+#>  5 AAPL   2024-11-01 65276700  221.  220.  225.  223.           221.
+#>  6 AAPL   2024-11-04 44944500  221.  220.  223.  222.           220.
+#>  7 AAPL   2024-11-05 28111300  222.  221.  224.  223.           222.
+#>  8 AAPL   2024-11-06 54561100  223.  221.  226.  223.           221.
+#>  9 AAPL   2024-11-07 42137700  225.  225.  228.  227.           226.
+#> 10 AAPL   2024-11-08 38328800  227.  226.  229.  227.           225.
+#> # ℹ 488 more rows
 download_data("Damodaran", "wacc", region = "europe", year = 2020:2024)
 #> # A tibble: 480 × 14
 #>    region  year industry  number_of_firms  beta cost_of_equity equity_to_capital

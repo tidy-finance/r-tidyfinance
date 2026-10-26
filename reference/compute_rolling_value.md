@@ -1,9 +1,11 @@
 # Compute a Rolling Value by Period
 
 Applies an arbitrary summary function over rolling time-period windows.
-Each window spans `periods` units of `period` (e.g., 12 months). Before
-calling `.f`, rows with any missing values are dropped from the window;
-if fewer than `min_obs` rows remain, the result is `NA_real_` instead.
+Each window spans `periods` units of `period` (e.g., 12 months). All
+rows that fall into the same period receive the value of that period's
+window. Before calling `.f`, rows with any missing values are dropped
+from the window; if fewer than `min_obs` rows remain, the result is
+`NA_real_` instead.
 
 ## Usage
 
