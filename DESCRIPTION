@@ -20,7 +20,7 @@ Description: Helper functions for empirical research in financial
     and resources related to the book, visit
     <https://www.tidy-finance.org/index.html>.
 License: MIT + file LICENSE
-URL: https://r.tidy-finance.org/, https://www.tidy-finance.org/r/
+URL: https://r.tidy-finance.org/
 BugReports: https://github.com/tidy-finance/r-tidyfinance/issues
 Depends: 
     R (>= 4.1)
