@@ -1,5 +1,7 @@
 # Changelog
 
+## tidyfinance (development version)
+
 ## tidyfinance 1.0.0
 
 CRAN release: 2026-10-26
