@@ -6,8 +6,8 @@
 #' @details
 #' Constructs the URL based on the provided FRED series ID, performs an HTTP
 #' GET request to download the data in CSV format, and processes it to a tidy
-#' tibble format. The resulting tibble includes the date, value, and the series
-#' ID.
+#' tibble format. The resulting tibble includes the date, the series ID, and
+#' the value.
 #'
 #' This approach is inspired by `quantmod::getSymbolsFRED()` which uses a
 #' different wrapper around the same FRED download data site. If you want to
@@ -26,8 +26,8 @@
 #' @returns A tibble containing the processed data with three columns:
 #' \describe{
 #'   \item{date}{The date corresponding to the data point.}
-#'   \item{value}{The value of the data series at that date.}
 #'   \item{series}{The FRED series ID corresponding to the data.}
+#'   \item{value}{The value of the data series at that date.}
 #' }
 #'
 #' @family download functions
@@ -76,8 +76,8 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
         fred_processed[[j]] <- fred_raw |>
           mutate(
             date = as.Date(.data$observation_date),
-            value = as.numeric(.data[[series[j]]]),
             series = series[j],
+            value = as.numeric(.data[[series[j]]]),
             .keep = "none"
           )
       } else {
@@ -89,15 +89,15 @@ download_data_fred <- function(series, start_date = NULL, end_date = NULL) {
         )
         fred_processed[[j]] <- tibble(
           date = Date(),
-          value = numeric(),
-          series = character()
+          series = character(),
+          value = numeric()
         )
       }
     } else {
       fred_processed[[j]] <- tibble(
         date = Date(),
-        value = numeric(),
-        series = character()
+        series = character(),
+        value = numeric()
       )
     }
 

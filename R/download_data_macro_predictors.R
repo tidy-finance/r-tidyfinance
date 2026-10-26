@@ -147,7 +147,7 @@ download_data_macro_predictors <- function(
       across(where(is.character), ~ as.numeric(gsub("\\,", "", .))),
       IndexDiv = .data$Index + .data$D12,
       logret = log(.data$IndexDiv) - log(lag(.data$IndexDiv)),
-      rp_div = lead(.data$logret - .data$Rfree, 1),
+      rp_div = lead(.data$logret - log(1 + .data$Rfree), 1),
       log_d12 = log(.data$D12),
       log_e12 = log(.data$E12),
       dp = .data$log_d12 - log(.data$Index),

@@ -38,9 +38,11 @@ A numeric vector aligned with the rows of \code{data}.
 }
 \description{
 Applies an arbitrary summary function over rolling time-period windows.
-Each window spans \code{periods} units of \code{period} (e.g., 12 months). Before
-calling \code{.f}, rows with any missing values are dropped from the window;
-if fewer than \code{min_obs} rows remain, the result is \code{NA_real_} instead.
+Each window spans \code{periods} units of \code{period} (e.g., 12 months). All rows
+that fall into the same period receive the value of that period's window.
+Before calling \code{.f}, rows with any missing values are dropped from the
+window; if fewer than \code{min_obs} rows remain, the result is \code{NA_real_}
+instead.
 }
 \examples{
 library(dplyr)

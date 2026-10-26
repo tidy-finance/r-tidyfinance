@@ -2,6 +2,17 @@
 
 ## Breaking changes
 
+- `download_data_fred()` and `download_data("FRED", ...)` now return the
+  columns `date`, `series`, `value` (identifiers first), as py-tidyfinance
+  does, instead of `date`, `value`, `series` (#346).
+- `compute_rolling_value()` now returns one value per row of `data`, as
+  documented: every row gets the value of its period's window. Before, it
+  returned one value per period, so it could not be used in `mutate()` when a
+  period held more than one row, e.g. with `period = "quarter"` on monthly
+  data (#348).
+- `download_data("Goyal-Welch", ...)` now computes `rp_div` as the future log
+  market return minus the log risk-free rate, `log(1 + Rfree)`, as in the book.
+  Before, it subtracted the simple risk-free rate (#350).
 - The capped value-weighted returns of `compute_portfolio_returns()` and
   `implement_portfolio_sort()` (`ret_excess_vw_capped`) now cap market
   capitalization at the `cap_weight` percentile of NYSE stocks on each date,
@@ -33,6 +44,15 @@
 
 ## Bug fixes
 
+- `download_data("Fama-French", ...)` now parses all eight breakpoints
+  datasets. Before, all but `ME Breakpoints` returned an empty tibble, and
+  `ME Breakpoints` had the generic column names `v2`-`v22`. The columns are now
+  named `date`, `count` (or `<=0` and `>0`), and the percentile bins `0-5`,
+  ..., `95-100`, as in py-tidyfinance. Annual breakpoints are dated at the end
+  of the year (#347).
+- `list_tidy_finance_chapters()` and `open_tidy_finance_website()` now follow
+  the new website, which serves the chapters at
+  `https://www.tidy-finance.org/chapters/` (#349).
 - `compute_portfolio_returns()` and `implement_portfolio_sort()` now return
   the complete panel ordered by portfolio and date. Before, dates were ordered
   by their first appearance in `data`, so the row order depended on how the

@@ -47,6 +47,7 @@ test_that("downloads, parses, and filters FRED data", {
   )
 
   expect_s3_class(result, "tbl_df")
+  expect_equal(names(result), c("date", "series", "value"))
   expect_equal(result$date, as.Date("2020-02-01"))
   expect_equal(result$value, 2)
   expect_equal(result$series, "GDP")
@@ -78,7 +79,7 @@ test_that("returns empty data when FRED responds with non-200 status", {
   expect_true(warned)
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
-  expect_equal(names(result), c("date", "value", "series"))
+  expect_equal(names(result), c("date", "series", "value"))
 })
 
 test_that("returns empty data when download handling returns NULL", {
@@ -99,5 +100,5 @@ test_that("returns empty data when download handling returns NULL", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
-  expect_equal(names(result), c("date", "value", "series"))
+  expect_equal(names(result), c("date", "series", "value"))
 })

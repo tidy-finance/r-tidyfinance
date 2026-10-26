@@ -9,7 +9,7 @@ test_that("opens base URL and returns invisible NULL when chapter is NULL", {
   result <- withVisible(open_tidy_finance_website())
   expect_null(result$value)
   expect_false(result$visible)
-  expect_equal(visited, "https://www.tidy-finance.org/r/")
+  expect_equal(visited, "https://www.tidy-finance.org/chapters/")
 })
 
 test_that("opens chapter URL when chapter exists in the chapter list", {
@@ -26,7 +26,7 @@ test_that("opens chapter URL when chapter exists in the chapter list", {
   open_tidy_finance_website("beta-estimation")
   expect_equal(
     visited,
-    "https://www.tidy-finance.org/r/beta-estimation.html"
+    "https://www.tidy-finance.org/chapters/beta-estimation.html"
   )
 })
 
@@ -42,5 +42,5 @@ test_that("falls back to base URL when chapter is not in the chapter list", {
     .package = "utils"
   )
   open_tidy_finance_website("unknown-chapter")
-  expect_equal(visited, "https://www.tidy-finance.org/r/")
+  expect_equal(visited, "https://www.tidy-finance.org/chapters/")
 })

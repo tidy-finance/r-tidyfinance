@@ -23,7 +23,10 @@
 #'
 #' @returns A tibble with processed factor data, including the date, risk-free
 #'   rate, market excess return, and other factors, filtered by the specified
-#'   date range.
+#'   date range. Breakpoints datasets instead return `date`, the firm counts
+#'   (`count`, or `<=0` and `>0` for ratios that can be non-positive), and the
+#'   percentile bins `0-5`, `5-10`, ..., `95-100`, unscaled. Annual breakpoints
+#'   are dated at the end of the year.
 #'
 #' @references
 #'   Fama, E. F., & French, K. R. (1993). Common risk factors in the returns on
@@ -101,9 +104,14 @@ download_data_factors_ff <- function(
   frequency <- determine_frequency_ff(dataset)
 
   if (frequency == "monthly") {
+    # Monthly keys are YYYYMM and map to the first day of the month. Annual
+    # breakpoints files (e.g. BE/ME) use YYYY keys, which map to the year end.
     processed_data <- raw_data |>
       mutate(
-        date = floor_date(ymd(paste0(.data$date, "01")), "month")
+        date = ymd(paste0(
+          .data$date,
+          if_else(nchar(.data$date) == 4, "1231", "01")
+        ))
       )
   } else if (frequency %in% c("daily", "weekly")) {
     processed_data <- raw_data |>
@@ -189,7 +197,42 @@ download_french_data_factors <- function(file_url, max_tries = 5) {
     cli::cli_abort("No CSV file found in the downloaded archive.")
   }
 
-  parse_french_data_factors(csv_files[1])
+  parse_french_data_factors(
+    csv_files[1],
+    col_names = breakpoints_col_names_ff(file_url)
+  )
+}
+
+#' Column Names of a Fama-French Breakpoints File
+#'
+#' Breakpoints files have no usable column-name row: `ME`, `OP`, `INV`, and
+#' `Prior_2-12` are headerless, while `BE-ME`, `E-P`, `CF-P`, and `D-P` have a
+#' header that names only the first three of their columns. The columns are
+#' therefore named positionally: `date`, the firm counts (`Count`, or `<=0` and
+#' `>0` for ratios that can be non-positive), and the 20 percentile bins
+#' `0-5`, `5-10`, ..., `95-100`.
+#'
+#' @param file_url The path of the ZIP archive as stored in the `file_url`
+#'   column of `list_supported_datasets_ff()`.
+#'
+#' @returns A character vector of column names, or `NULL` if `file_url` is not
+#'   a breakpoints file.
+#'
+#' @keywords internal
+#' @noRd
+breakpoints_col_names_ff <- function(file_url) {
+  stem <- sub("_CSV\\.zip$", "", basename(file_url))
+  if (!grepl("_Breakpoints$", stem)) {
+    return(NULL)
+  }
+  ratio_stems <- paste0(c("BE-ME", "E-P", "CF-P", "D-P"), "_Breakpoints")
+  count_cols <- if (stem %in% ratio_stems) {
+    c("<=0", ">0")
+  } else {
+    "Count"
+  }
+  bounds <- seq(0, 100, by = 5)
+  c("date", count_cols, paste0(utils::head(bounds, -1), "-", bounds[-1]))
 }
 
 #' Parse the First Table of a Fama-French CSV File
@@ -205,6 +248,10 @@ download_french_data_factors <- function(file_url, max_tries = 5) {
 #' leading rows whose date-key width matches the first data row.
 #'
 #' @param csv_file Path to the unzipped CSV file.
+#' @param col_names Optional character vector of column names. If supplied,
+#'   any column-name row is ignored and the table is read positionally with
+#'   these names (used for breakpoints files, see
+#'   `breakpoints_col_names_ff()`).
 #'
 #' @returns A tibble with the first column named `date` and the remaining
 #'   columns keeping their original names (or positional `V*` names when the
@@ -212,12 +259,14 @@ download_french_data_factors <- function(file_url, max_tries = 5) {
 #'
 #' @keywords internal
 #' @noRd
-parse_french_data_factors <- function(csv_file) {
+parse_french_data_factors <- function(csv_file, col_names = NULL) {
   lines <- readLines(csv_file, warn = FALSE)
 
-  # Data rows begin with a date key, i.e. an optional run of spaces followed by
-  # a digit. The column-name row sits directly above the first such row.
-  is_data <- grepl("^\\s*[0-9]", lines)
+  # Data rows begin with a date key, i.e. an optional run of spaces, digits,
+  # and a comma. Requiring the comma keeps prose lines that start with a digit
+  # (e.g. "1 month is skipped ...") out of the table. The column-name row sits
+  # directly above the first such row.
+  is_data <- grepl("^\\s*[0-9]+\\s*,", lines)
   if (!any(is_data)) {
     cli::cli_abort("Could not locate a data table in the downloaded file.")
   }
@@ -253,7 +302,22 @@ parse_french_data_factors <- function(csv_file) {
   }
   last_data <- first_data + sum(keep) - 1L
 
-  if (has_header) {
+  if (!is.null(col_names)) {
+    raw_data <- utils::read.csv(
+      text = lines[first_data:last_data],
+      header = FALSE,
+      stringsAsFactors = FALSE
+    )
+    if (ncol(raw_data) != length(col_names)) {
+      cli::cli_abort(
+        paste(
+          "Expected {length(col_names)} columns in the downloaded file,",
+          "found {ncol(raw_data)}."
+        )
+      )
+    }
+    names(raw_data) <- col_names
+  } else if (has_header) {
     block <- lines[c(header_line, first_data:last_data)]
     raw_data <- utils::read.csv(
       text = block,
