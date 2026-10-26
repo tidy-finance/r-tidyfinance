@@ -15,7 +15,7 @@
 #'   pseudo data with the
 #'   same schema as `"WRDS"` for testing or rendering without a WRDS
 #'   subscription. The previous machine-readable names (e.g., `"famafrench"`,
-#'   `"wrds"`, `"pseudo"`, `"tidyfinance"`) are soft-deprecated but still
+#'   `"wrds"`, `"pseudo"`, `"tidyfinance"`) are deprecated but still
 #'   accepted.
 #' @param dataset Optional. The specific dataset to download within the
 #'   domain.
@@ -381,7 +381,7 @@ parse_type_to_domain_dataset <- function(type) {
 #'
 #' Earlier releases used short machine-readable domain names (e.g.,
 #' `"famafrench"`, `"wrds"`, `"pseudo"`, `"tidyfinance"`). These are now
-#' soft-deprecated in favour of the human-readable domain names returned by
+#' deprecated in favour of the human-readable domain names returned by
 #' [list_supported_datasets()]. This helper translates a deprecated alias to
 #' its canonical name, emitting a deprecation warning. Unknown values are
 #' returned unchanged so that `check_supported_domain()` can report them.
