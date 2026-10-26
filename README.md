@@ -467,10 +467,10 @@ download_data(
   end_date = "2020-12-31"
 )
 #> ℹ Connecting to WRDS. Approve the Duo request if prompted.
-#> ✔ Connected to WRDS. [2.7s]
+#> ✔ Connected to WRDS. [4s]
 #> 
 #> ℹ Downloading CRSP monthly data from WRDS. This can take a few minutes.
-#> ✔ Downloaded CRSP monthly data from WRDS. [2.8s]
+#> ✔ Downloaded CRSP monthly data from WRDS. [3.5s]
 #> 
 #> # A tibble: 43,478 × 15
 #>    permno date       calculation_date      ret   shrout    prc primaryexch siccd
@@ -500,10 +500,10 @@ download_data(
   end_date = "2020-12-31"
 )
 #> ℹ Connecting to WRDS. Approve the Duo request if prompted.
-#> ✔ Connected to WRDS. [2.6s]
+#> ✔ Connected to WRDS. [4s]
 #> 
 #> ℹ Downloading Compustat annual data from WRDS. This can take a few minutes.
-#> ✔ Downloaded Compustat annual data from WRDS. [1.2s]
+#> ✔ Downloaded Compustat annual data from WRDS. [1.3s]
 #> 
 #> # A tibble: 11,993 × 25
 #>    gvkey  date       datadate        seq     ceq      at      lt  txditc    txdb
@@ -532,10 +532,10 @@ download_data(
   dataset = "ccm_links"
 )
 #> ℹ Connecting to WRDS. Approve the Duo request if prompted.
-#> ✔ Connected to WRDS. [2.8s]
+#> ✔ Connected to WRDS. [4.1s]
 #> 
 #> ℹ Downloading CRSP-Compustat links from WRDS. This can take a few minutes.
-#> ✔ Downloaded CRSP-Compustat links from WRDS. [716ms]
+#> ✔ Downloaded CRSP-Compustat links from WRDS. [1.1s]
 #> 
 #> # A tibble: 33,324 × 4
 #>    permno gvkey  linkdt     linkenddt 
@@ -544,7 +544,7 @@ download_data(
 #>  2  10015 001001 1983-09-20 1986-07-31
 #>  3  10023 001002 1972-12-14 1973-06-05
 #>  4  10031 001003 1983-12-07 1989-08-16
-#>  5  54594 001004 1972-04-24 2026-10-18
+#>  5  54594 001004 1972-04-24 2026-10-25
 #>  6  61903 001005 1973-01-31 1983-01-31
 #>  7  10058 001007 1973-10-01 1979-01-30
 #>  8  10058 001007 1979-01-31 1984-09-28
@@ -564,10 +564,10 @@ download_data(
   end_date = "2021-12-31"
 )
 #> ℹ Connecting to WRDS. Approve the Duo request if prompted.
-#> ✔ Connected to WRDS. [2.7s]
+#> ✔ Connected to WRDS. [3.6s]
 #> 
 #> ℹ Downloading enhanced TRACE data from WRDS. This can take a few minutes.
-#> ✔ Downloaded enhanced TRACE data from WRDS. [753ms]
+#> ✔ Downloaded enhanced TRACE data from WRDS. [1.2s]
 #> 
 #> # A tibble: 7,694 × 8
 #>    cusip_id  trd_exctn_dt trd_exctn_tm rptd_pr entrd_vol_qt yld_pt rpt_side_cd
@@ -609,9 +609,9 @@ download_data(
 #>  5 2.12e6 1960-06-01  0.00232 assetgrowth                    0.2              NA
 #>  6 2.12e6 1960-07-01  0.0306  assetgrowth                    0.2              NA
 #>  7 2.12e6 1960-08-01 -0.0193  assetgrowth                    0.2              NA
-#>  8 2.12e6 1960-09-01  0.0347  assetgrowth                    0.2              NA
-#>  9 2.12e6 1960-10-01  0.0294  assetgrowth                    0.2              NA
-#> 10 2.12e6 1960-11-01 -0.0370  assetgrowth                    0.2              NA
+#>  8 2.12e6 1960-09-01  0.0360  assetgrowth                    0.2              NA
+#>  9 2.12e6 1960-10-01  0.0302  assetgrowth                    0.2              NA
+#> 10 2.12e6 1960-11-01 -0.0283  assetgrowth                    0.2              NA
 #> # ℹ 769 more rows
 #> # ℹ 13 more variables: min_listing_age <int>, exclude_financials <lgl>,
 #> #   exclude_utilities <lgl>, exclude_negative_book_equity <lgl>,

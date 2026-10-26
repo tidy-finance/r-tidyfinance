@@ -608,11 +608,11 @@ list_supported_datasets <- function(domain = NULL, as_vector = FALSE) {
 
 #' @rdname list_supported_datasets
 #' @description
-#' `list_supported_types()` is a soft-deprecated alias for
+#' `list_supported_types()` is a deprecated alias for
 #' `list_supported_datasets()`.
 #' @export
 list_supported_types <- function(domain = NULL, as_vector = FALSE) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     when = "0.5.1",
     what = "list_supported_types()",
     with = "list_supported_datasets()"

@@ -29,7 +29,7 @@ This repository contains an R package that collects helper functions for develop
 
 ## Installation 
 
-You can install the released version of `tidyfinance` [from CRAN](https://cran.r-project.org/package=tidyfinance) via:
+You can install the released version of `tidyfinance` [from CRAN](https://cran.r-project.org/package=tidyfinance) via: 
 
 ```r
 install.packages("tidyfinance")

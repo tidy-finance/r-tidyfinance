@@ -23,7 +23,7 @@ returned by \code{\link[=list_supported_datasets]{list_supported_datasets()}}: \
 pseudo data with the
 same schema as \code{"WRDS"} for testing or rendering without a WRDS
 subscription. The previous machine-readable names (e.g., \code{"famafrench"},
-\code{"wrds"}, \code{"pseudo"}, \code{"tidyfinance"}) are soft-deprecated but still
+\code{"wrds"}, \code{"pseudo"}, \code{"tidyfinance"}) are deprecated but still
 accepted.}
 
 \item{dataset}{Optional. The specific dataset to download within the

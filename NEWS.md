@@ -1,5 +1,7 @@
 # tidyfinance (development version)
 
+# tidyfinance 1.0.0
+
 ## Breaking changes
 
 - `download_data_fred()` and `download_data("FRED", ...)` now return the
@@ -41,6 +43,11 @@
   default CRSP v2 download does not return, so the `min_stock_price` screen
   failed on downloaded data. `download_data("WRDS", "crsp_monthly")` (v1 and
   v2) and the pseudo CRSP data now return `prc_lag` (#321).
+- `list_supported_types()` is now deprecated instead of soft-deprecated, so it
+  warns on every call, not only when called from the global environment. The
+  documentation of the machine-readable domain names of `download_data()`
+  (e.g. `"famafrench"`, `"wrds"`) now calls them deprecated, as they already
+  warned.
 
 ## Bug fixes
 
