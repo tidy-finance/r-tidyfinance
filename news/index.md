@@ -1,6 +1,8 @@
 # Changelog
 
-## tidyfinance (development version)
+## tidyfinance 1.0.0
+
+CRAN release: 2026-10-26
 
 ### Breaking changes
 
@@ -64,6 +66,13 @@
   `download_data("WRDS", "crsp_monthly")` (v1 and v2) and the pseudo
   CRSP data now return `prc_lag`
   ([\#321](https://github.com/tidy-finance/r-tidyfinance/issues/321)).
+- [`list_supported_types()`](https://r.tidy-finance.org/reference/list_supported_datasets.md)
+  is now deprecated instead of soft-deprecated, so it warns on every
+  call, not only when called from the global environment. The
+  documentation of the machine-readable domain names of
+  [`download_data()`](https://r.tidy-finance.org/reference/download_data.md)
+  (e.g. `"famafrench"`, `"wrds"`) now calls them deprecated, as they
+  already warned.
 
 ### Bug fixes
 

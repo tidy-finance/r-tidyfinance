@@ -84,9 +84,5 @@ Other download functions:
   osap <- download_data_osap(
     start_date = "2020-01-01", end_date = "2020-06-30"
   )
-#> Failed to download or process the resource. The resource may not be available,
-#> or the URL may have changed. Error message: The Google Drive download quota of
-#> the file is exceeded. Try again later, usually within 24 hours.
-#> Returning an empty data set due to download failure.
 # }
 ```

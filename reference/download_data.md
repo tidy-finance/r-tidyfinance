@@ -32,8 +32,8 @@ download_data(
   `"Tidy Finance"`. Use `"Pseudo Data"` to obtain pseudo data with the
   same schema as `"WRDS"` for testing or rendering without a WRDS
   subscription. The previous machine-readable names (e.g.,
-  `"famafrench"`, `"wrds"`, `"pseudo"`, `"tidyfinance"`) are
-  soft-deprecated but still accepted.
+  `"famafrench"`, `"wrds"`, `"pseudo"`, `"tidyfinance"`) are deprecated
+  but still accepted.
 
 - dataset:
 

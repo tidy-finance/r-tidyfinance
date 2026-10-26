@@ -14,8 +14,6 @@ Useful links:
 
 - <https://r.tidy-finance.org/>
 
-- <https://www.tidy-finance.org/r/>
-
 - Report bugs at <https://github.com/tidy-finance/r-tidyfinance/issues>
 
 ## Author

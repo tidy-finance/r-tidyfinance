@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <a class="navbar-brand me-2" href="../index.html">tidyfinance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9014</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,13 +48,13 @@ document.addEventListener('DOMContentLoaded', function () {
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/tidy-finance/r-tidyfinance/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/tidy-finance/r-tidyfinance/blob/v1.0.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="tidyfinance-development-version">tidyfinance (development version)<a class="anchor" aria-label="anchor" href="#tidyfinance-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.0" id="tidyfinance-100">tidyfinance 1.0.0<a class="anchor" aria-label="anchor" href="#tidyfinance-100"></a></h2><p class="text-muted">CRAN release: 2026-10-26</p>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-1-0-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-0-0"></a></h3>
 <ul><li>
 <code><a href="../reference/download_data_fred.html">download_data_fred()</a></code> and <code>download_data("FRED", ...)</code> now return the columns <code>date</code>, <code>series</code>, <code>value</code> (identifiers first), as py-tidyfinance does, instead of <code>date</code>, <code>value</code>, <code>series</code> (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/346" class="external-link">#346</a>).</li>
 <li>
@@ -65,9 +65,11 @@ document.addEventListener('DOMContentLoaded', function () {
 <li>In dependent bivariate sorts, <code>breakpoints_min_size_threshold</code> of the main breakpoints is now applied with one minimum market cap per date, computed from the full cross-section, instead of a separate one within each secondary portfolio. Before, e.g., excluding the smallest 20% of NYSE stocks from the asset-growth breakpoints within size halves excluded the smallest 20% of each half (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/319" class="external-link">#319</a>).</li>
 <li>With annual rebalancing (<code>rebalancing_month</code>), <code><a href="../reference/implement_portfolio_sort.html">implement_portfolio_sort()</a></code> and <code><a href="../reference/filter_sorting_data.html">filter_sorting_data()</a></code> now apply the screens of <code><a href="../reference/filter_options.html">filter_options()</a></code> in the formation month only and keep every stock that passes them for the whole holding period (ex-ante screens). Before, the screens were applied in every month, so a stock that, e.g., fell below the price screen after formation lost its holding-month returns, which can bias factor returns. The previous behaviour is available with <code>filter_options(timing = "every_period")</code> and issues a warning. <code><a href="../reference/filter_sorting_data.html">filter_sorting_data()</a></code> gains a <code>rebalancing_month</code> argument (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/321" class="external-link">#321</a>).</li>
 <li>The default price column of <code><a href="../reference/data_options.html">data_options()</a></code> is now <code>prc_lag</code>, the nominal price at the end of the previous month, instead of <code>prc_adj</code>, which the default CRSP v2 download does not return, so the <code>min_stock_price</code> screen failed on downloaded data. <code>download_data("WRDS", "crsp_monthly")</code> (v1 and v2) and the pseudo CRSP data now return <code>prc_lag</code> (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/321" class="external-link">#321</a>).</li>
+<li>
+<code><a href="../reference/list_supported_datasets.html">list_supported_types()</a></code> is now deprecated instead of soft-deprecated, so it warns on every call, not only when called from the global environment. The documentation of the machine-readable domain names of <code><a href="../reference/download_data.html">download_data()</a></code> (e.g. <code>"famafrench"</code>, <code>"wrds"</code>) now calls them deprecated, as they already warned.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-1-0-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-0-0"></a></h3>
 <ul><li>
 <code>download_data("Fama-French", ...)</code> now parses all eight breakpoints datasets. Before, all but <code>ME Breakpoints</code> returned an empty tibble, and <code>ME Breakpoints</code> had the generic column names <code>v2</code>-<code>v22</code>. The columns are now named <code>date</code>, <code>count</code> (or <code>&lt;=0</code> and <code>&gt;0</code>), and the percentile bins <code>0-5</code>, …, <code>95-100</code>, as in py-tidyfinance. Annual breakpoints are dated at the end of the year (<a href="https://github.com/tidy-finance/r-tidyfinance/issues/347" class="external-link">#347</a>).</li>
 <li>
@@ -105,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <code><a href="../reference/download_data_osap.html">download_data_osap()</a></code> downloads the October 2025 release (v2.0.0) of the long-short returns by default instead of the August 2024 release (v1.4.0).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-1-0-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0"></a></h3>
 <ul><li>
 <code>download_data("Tidy Finance", ...)</code> gains two datasets of the factor library. <code>"factor_library_costs"</code> downloads the turnover, the trading cost, and the microcap share of each portfolio from January 1994, with the same filters and <code>ids</code> as <code>"factor_library"</code> and the grid joined in the same way. <code>"factor_library_persistence"</code> downloads how up to date each sorting variable is under each lag and rebalancing frequency, optionally for some <code>sorting_variable</code>s only.</li>
 <li>The factor library downloads can be pinned to a release. <code>revision</code> selects the commit of the Hugging Face dataset <code>tidy-finance/factor-library</code>, which holds the returns and the costs, and <code>grid_revision</code> the commit of <code>tidy-finance/factor-library-grid</code>, which holds the grid and the persistence. Both default to <code>"main"</code>. <code><a href="../reference/download_factor_library_ids.html">download_factor_library_ids()</a></code> and <code><a href="../reference/download_factor_library_grid.html">download_factor_library_grid()</a></code> gain the same arguments, and the grid is cached once per revision. <code>download_data("Tidy Finance", "factor_library_grid")</code> now also passes <code>refresh</code> on.</li>

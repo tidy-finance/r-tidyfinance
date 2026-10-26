@@ -5,7 +5,7 @@ from different domains. It includes various datasets across different
 frequencies (daily, weekly, monthly, quarterly, annual) and models
 (e.g., q5 factors, Fama-French 3 and 5 factors, macro predictors).
 
-`list_supported_types()` is a soft-deprecated alias for
+`list_supported_types()` is a deprecated alias for
 `list_supported_datasets()`.
 
 ## Usage
