@@ -5,8 +5,9 @@
 #' various topics covered.
 #'
 #' @returns A character vector where each element is the name of a chapter
-#'   available in the Tidy Finance resource. These names correspond to specific
-#'   chapters in Tidy Finance with R.
+#'   available in the Tidy Finance resource, in the order of the website. These
+#'   names correspond to the chapter pages at
+#'   `https://www.tidy-finance.org/chapters/`.
 #'
 #' @family utility functions
 #' @export
@@ -17,7 +18,12 @@
 list_tidy_finance_chapters <- function() {
   c(
     "setting-up-your-environment",
-    "introduction-to-tidy-finance",
+    "the-tidyfinance-package",
+    "working-with-stock-returns",
+    "modern-portfolio-theory",
+    "capital-asset-pricing-model",
+    "financial-statement-analysis",
+    "discounted-cash-flow-analysis",
     "accessing-and-managing-financial-data",
     "wrds-crsp-and-compustat",
     "trace-and-fisd",
@@ -36,9 +42,8 @@ list_tidy_finance_chapters <- function() {
     "constrained-optimization-and-backtesting",
     "wrds-dummy-data",
     "cover-and-logo-design",
-    "clean-enhanced-trace-with-r",
+    "clean-enhanced-trace",
     "proofs",
-    "hex-sticker",
-    "changelog"
+    "colophon"
   )
 }

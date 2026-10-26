@@ -43,6 +43,24 @@ test_that("monthly data is downloaded and processed", {
   expect_equal(out$date, as.Date("2020-02-01"))
 })
 
+test_that("rp_div is the next-period log excess return", {
+  testthat::local_mocked_bindings(
+    read.csv = function(...) {
+      raw <- macro_raw("yyyymm", c("202001", "202002", "202003"))
+      raw$Rfree <- c(0.01, 0.02, 0.03)
+      raw
+    },
+    handle_download_error = function(expr, fallback) expr()
+  )
+
+  out <- download_data_macro_predictors("monthly")
+
+  # The log return from 2020-02 to 2020-03 minus the log risk-free rate of
+  # 2020-03, both assigned to 2020-02.
+  expect_equal(out$date, as.Date("2020-02-01"))
+  expect_equal(out$rp_div, log(122 / 112) - log(1 + 0.03))
+})
+
 test_that("quarterly data is downloaded and filtered", {
   testthat::local_mocked_bindings(
     read.csv = function(...) {

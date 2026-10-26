@@ -690,12 +690,14 @@ test_that("is_breakpoints_ff: detects breakpoints datasets", {
   expect_false(is_breakpoints_ff("Fama/French 3 Factors"))
 })
 
-test_that("download_data_factors_ff: does not rescale breakpoints", {
-  local_mocked_bindings(
+# Mock the download of a breakpoints archive whose CSV holds `lines`.
+local_mock_ff_file <- function(lines, env = parent.frame()) {
+  testthat::local_mocked_bindings(
     is_legacy_type_ff = function(x) FALSE,
-    get_random_user_agent = function() "test-agent"
+    get_random_user_agent = function() "test-agent",
+    .env = env
   )
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     request = function(url) list(url = url),
     req_user_agent = function(req, ...) req,
     req_timeout = function(req, ...) req,
@@ -704,33 +706,106 @@ test_that("download_data_factors_ff: does not rescale breakpoints", {
       if (!is.null(path)) file.create(path)
       invisible(req)
     },
-    .package = "httr2"
+    .package = "httr2",
+    .env = env
   )
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     unzip = function(zipfile, exdir, ...) {
-      writeLines(
-        c(
-          "This file was created using the CRSP database.",
-          "",
-          "202001,   488,   1.40,   1319.00",
-          "202002,   492,   1.38,   1331.71"
-        ),
-        file.path(exdir, "data.csv")
-      )
+      writeLines(lines, file.path(exdir, "data.csv"))
       invisible(NULL)
     },
-    .package = "utils"
+    .package = "utils",
+    .env = env
   )
+}
 
-  result <- suppressMessages(
-    download_data_factors_ff("ME Breakpoints")
+# A breakpoints data row: date key, counts, and 20 percentiles 1, 2, ..., 20.
+breakpoints_row <- function(date, counts) {
+  paste(c(date, counts, sprintf("%.2f", 1:20)), collapse = ",   ")
+}
+
+percentile_bins <- paste0(seq(0, 95, by = 5), "-", seq(5, 100, by = 5))
+
+test_that("breakpoints_col_names_ff: names count and ratio layouts", {
+  expect_null(breakpoints_col_names_ff("ftp/F-F_Research_Data_Factors_CSV.zip"))
+  expect_equal(
+    breakpoints_col_names_ff("ftp/ME_Breakpoints_CSV.zip"),
+    c("date", "Count", percentile_bins)
   )
+  expect_equal(
+    breakpoints_col_names_ff("ftp/Prior_2-12_Breakpoints_CSV.zip"),
+    c("date", "Count", percentile_bins)
+  )
+  expect_equal(
+    breakpoints_col_names_ff("ftp/BE-ME_Breakpoints_CSV.zip"),
+    c("date", "<=0", ">0", percentile_bins)
+  )
+})
 
-  expect_s3_class(result$date, "Date")
+test_that("parse_french_data_factors: aborts on column count mismatch", {
+  csv <- withr::local_tempfile(fileext = ".csv")
+  writeLines(c("202001,1.0,0.1"), csv)
+  expect_error(
+    parse_french_data_factors(csv, col_names = c("date", "a")),
+    "Expected 2 columns"
+  )
+})
+
+test_that("download_data_factors_ff: parses count breakpoints unscaled", {
+  local_mock_ff_file(c(
+    "This file was created using the CRSP database.",
+    "",
+    breakpoints_row("202001", "488"),
+    breakpoints_row("202002", "492")
+  ))
+
+  result <- suppressMessages(download_data_factors_ff("ME Breakpoints"))
+
+  expect_named(result, c("date", "count", percentile_bins))
+  expect_equal(result$date, as.Date(c("2020-01-01", "2020-02-01")))
   # Dollar levels and share counts must be returned unscaled (not divided by
   # 100), unlike percentage-return factor files.
-  expect_equal(result$v2, c(488, 492))
-  expect_equal(result$v4, c(1319.00, 1331.71))
+  expect_equal(result$count, c(488, 492))
+  expect_equal(result[["95-100"]], c(20, 20))
+})
+
+test_that("download_data_factors_ff: parses ratio breakpoints layout", {
+  # The header names only 3 of the 23 columns.
+  local_mock_ff_file(c(
+    "This file was created using the CRSP database.",
+    "",
+    "  ,<= 0,>0",
+    breakpoints_row("2019", c("3", "428")),
+    breakpoints_row("2020", c("1", "464"))
+  ))
+
+  result <- suppressMessages(download_data_factors_ff("BE/ME Breakpoints"))
+
+  expect_named(result, c("date", "<=0", ">0", percentile_bins))
+  expect_equal(result$date, as.Date(c("2019-12-31", "2020-12-31")))
+  expect_equal(result[["<=0"]], c(3, 1))
+  expect_equal(result[[">0"]], c(428, 464))
+  expect_equal(result[["0-5"]], c(1, 1))
+})
+
+test_that("download_data_factors_ff: parses prior return breakpoints", {
+  # The preamble has three lines, one of which starts with a digit.
+  local_mock_ff_file(c(
+    "This file was created using the CRSP database.",
+    " The prior returns are for 12 months. ",
+    "1 month is skipped at the end of the prior period.",
+    "",
+    breakpoints_row("192612", "472"),
+    breakpoints_row("192701", "476")
+  ))
+
+  result <- suppressMessages(
+    download_data_factors_ff("Prior (2-12) Return Breakpoints")
+  )
+
+  expect_named(result, c("date", "count", percentile_bins))
+  expect_equal(result$date, as.Date(c("1926-12-01", "1927-01-01")))
+  expect_equal(result$count, c(472, 476))
 })
 
 test_that("download_french_data_factors: aborts when archive has no CSV", {

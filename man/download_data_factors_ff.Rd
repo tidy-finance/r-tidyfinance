@@ -28,7 +28,10 @@ dataset is returned.}
 \value{
 A tibble with processed factor data, including the date, risk-free
 rate, market excess return, and other factors, filtered by the specified
-date range.
+date range. Breakpoints datasets instead return \code{date}, the firm counts
+(\code{count}, or \verb{<=0} and \verb{>0} for ratios that can be non-positive), and the
+percentile bins \code{0-5}, \code{5-10}, ..., \code{95-100}, unscaled. Annual breakpoints
+are dated at the end of the year.
 }
 \description{
 Downloads and processes Fama-French factor data based on the specified

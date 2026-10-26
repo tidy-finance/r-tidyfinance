@@ -224,7 +224,7 @@ test_that("accepts a regular function for .f", {
 })
 
 test_that("works with period = 'quarter'", {
-  # 8 months → 3 quarters (Q1: Jan-Mar, Q2: Apr-Jun, Q3: Jul-Aug)
+  # 8 months in 3 quarters; every row gets the value of its quarter's window
   df <- tibble::tibble(
     date = seq.Date(as.Date("2020-01-01"), by = "month", length.out = 8),
     value = 1:8
@@ -237,8 +237,7 @@ test_that("works with period = 'quarter'", {
     min_obs = 1
   )
 
-  expect_length(result, 3)
-  expect_type(result, "double")
+  expect_equal(result, c(2, 2, 2, 3.5, 3.5, 3.5, 6, 6))
 })
 
 test_that("works with period = 'year'", {
@@ -253,8 +252,35 @@ test_that("works with period = 'year'", {
     periods = 2,
     min_obs = 1
   )
-  expect_length(result, 4)
+  expect_length(result, nrow(df))
   expect_type(result, "double")
+  # 2018: 1-3, 2019: 1-7, 2020: 4-11, 2021: 8-12
+  expect_equal(result, rep(c(2, 4, 7.5, 10), times = c(3, 4, 4, 1)))
+})
+
+test_that("aligns with rows when a period holds several rows", {
+  df <- tibble::tibble(
+    date = as.Date(c("2020-01-01", "2020-01-15", "2020-02-01", "2020-03-01")),
+    value = c(1, 2, 3, 4)
+  )
+  result <- compute_rolling_value(
+    df,
+    .f = ~ mean(.x$value),
+    periods = 2,
+    min_obs = 1
+  )
+  expect_equal(result, c(1.5, 1.5, 2, 3.5))
+
+  result_mutate <- dplyr::mutate(
+    df,
+    rolling = compute_rolling_value(
+      dplyr::pick(dplyr::everything()),
+      .f = ~ mean(.x$value),
+      periods = 2,
+      min_obs = 1
+    )
+  )
+  expect_equal(result_mutate$rolling, result)
 })
 
 test_that("works with multiple columns (e.g., regression residuals)", {

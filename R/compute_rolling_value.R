@@ -1,9 +1,11 @@
 #' Compute a Rolling Value by Period
 #'
 #' Applies an arbitrary summary function over rolling time-period windows.
-#' Each window spans `periods` units of `period` (e.g., 12 months). Before
-#' calling `.f`, rows with any missing values are dropped from the window;
-#' if fewer than `min_obs` rows remain, the result is `NA_real_` instead.
+#' Each window spans `periods` units of `period` (e.g., 12 months). All rows
+#' that fall into the same period receive the value of that period's window.
+#' Before calling `.f`, rows with any missing values are dropped from the
+#' window; if fewer than `min_obs` rows remain, the result is `NA_real_`
+#' instead.
 #'
 #' @param data A data frame with a date column of class `Date`, named according
 #'   to `data_options$date` (default `"date"`).
@@ -142,7 +144,7 @@ compute_rolling_value <- function(
 
   .f <- rlang::as_function(.f)
 
-  slider::slide_period_vec(
+  values <- slider::slide_period_vec(
     .x = data,
     .i = data[[date_col]],
     .period = period,
@@ -157,4 +159,15 @@ compute_rolling_value <- function(
     .before = periods - 1,
     .complete = FALSE
   )
+
+  # slide_period_vec() returns one value per period. Repeat each value for
+  # every row in its period so that the result is aligned with the rows of
+  # `data` even when a period holds more than one row.
+  rows_per_period <- slider::slide_period_int(
+    .x = data[[date_col]],
+    .i = data[[date_col]],
+    .period = period,
+    .f = length
+  )
+  rep(values, times = rows_per_period)
 }
