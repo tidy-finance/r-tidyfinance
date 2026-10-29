@@ -45,7 +45,13 @@
 #'   see `download_data_huggingface()` for details. If `domain` is
 #'   `"Damodaran"`, arguments such as `region` and `year` are passed to
 #'   `download_data_damodaran()`, which selects years via `year` instead of
-#'   `start_date` and `end_date`. If `domain` is `"WRDS"` or `"Pseudo Data"`,
+#'   `start_date` and `end_date`. If `domain` is
+#'   `"Open Source Asset Pricing"`, `dataset` is one of
+#'   `"long_short_returns"` (the default), `"signal_doc"`, `"predictors"`,
+#'   or `"signed_predictors"`, `release` selects the data release on
+#'   Hugging Face, `signals` selects predictors, and `sheet_id` downloads
+#'   long-short returns from Google Drive instead; see
+#'   `download_data_osap()`. If `domain` is `"WRDS"` or `"Pseudo Data"`,
 #'   `quiet = TRUE` suppresses the messages about the WRDS connection and
 #'   the download progress, or the pseudo-data notice.
 #'
@@ -200,6 +206,7 @@ download_data <- function(
     )
   } else if (domain == "Open Source Asset Pricing") {
     processed_data <- download_data_osap(
+      dataset = if (is.null(dataset)) "long_short_returns" else dataset,
       start_date = start_date,
       end_date = end_date,
       ...
