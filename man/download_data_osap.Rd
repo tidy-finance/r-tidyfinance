@@ -7,54 +7,112 @@
 download_data_osap(
   start_date = NULL,
   end_date = NULL,
-  sheet_id = "10sOryk_ddjkXagaajTKUk1nwJs2ZLRiI"
+  dataset = "long_short_returns",
+  release = "2026.10",
+  sheet_id = NULL,
+  signals = NULL
 )
 }
 \arguments{
 \item{start_date}{Optional. A character string or Date object in
 "YYYY-MM-DD" format specifying the start date for the data. If
-not provided, the full dataset is returned.}
+not provided, the full dataset is returned. Ignored for
+\code{"signal_doc"}.}
 
 \item{end_date}{Optional. A character string or Date object in
 "YYYY-MM-DD" format specifying the end date for the data. If not
-provided, the full dataset is returned.
-Google Drive limits how often a shared file can be downloaded. When the
-limit is reached, Google Drive returns an error page instead of the data
-and the function returns an empty tibble. The limit is usually lifted
-within 24 hours.}
+provided, the full dataset is returned. Ignored for \code{"signal_doc"}.}
 
-\item{sheet_id}{A character string with the Google Drive file ID of the
-wide CSV of monthly long-short returns. The default,
-\code{"10sOryk_ddjkXagaajTKUk1nwJs2ZLRiI"}, is the October 2025 release
-(v2.0.0). Pass the ID of another release to download it instead.}
+\item{dataset}{A character string with the dataset to download:
+\code{"long_short_returns"} (the default), \code{"signal_doc"}, \code{"predictors"},
+or \code{"signed_predictors"}.}
+
+\item{release}{A character string with the OSAP data release to
+download from Hugging Face. The default, \code{"2026.10"}, is the October
+2026 release (v2.1.0). The other supported releases are \code{"2025.10"},
+\code{"2024.10"}, \code{"2024.08"}, \code{"2023.08"}, \code{"2022.04"}, \code{"2022.03"},
+\code{"2021.04"}, and \code{"2021.03"}. The releases of 2020 have no wide file of
+long-short returns or firm-level predictors.}
+
+\item{sheet_id}{Optional. A character string with the Google Drive file
+ID of a wide CSV of monthly long-short returns, e.g.,
+\code{"10sOryk_ddjkXagaajTKUk1nwJs2ZLRiI"} for the October 2025 release
+(v2.0.0). If provided, the data are downloaded from Google Drive
+instead of Hugging Face, and \code{release} must not be set. Only for
+\code{"long_short_returns"}. Google Drive limits how often a shared file can
+be downloaded. When the limit is reached, Google Drive returns an error
+page instead of the data and the function returns an empty tibble. The
+limit is usually lifted within 24 hours.}
+
+\item{signals}{Optional. A character vector of predictors to read for
+\code{"predictors"} and \code{"signed_predictors"}, using the OSAP names in the
+\code{acronym} column of \code{"signal_doc"}, e.g., \code{c("BM", "Mom12m")}. If not
+provided, all predictors are returned.}
 }
 \value{
-A tibble containing the processed data. The column names
-are converted to snake_case, the \code{date} column is aligned to the
-beginning of the month, all predictor columns (long-short returns
-in percent) are divided by 100 to obtain plain numeric (decimal)
-returns, and the data is filtered by the specified date range if
+A tibble containing the processed data. The column names are
+converted to snake_case, the \code{date} column is aligned to the beginning
+of the month, and the data is filtered by the specified date range if
 \code{start_date} and \code{end_date} are provided.
 }
 \description{
-Downloads the data from
+Downloads data from
 \href{https://www.openassetpricing.com/data/}{Open Source Asset Pricing}
-from Google Drive using a specified file ID, processes the data
-by converting column names to snake_case, aligning the date to the
-beginning of the month, scaling the percentage long-short returns to
-numeric values, and optionally filters the data based on a provided
-date range.
+(OSAP): the monthly long-short returns of the predictor portfolios, the
+signal documentation, or the monthly firm-level predictors (signals).
+The column names are converted to snake_case, dates are aligned to the
+beginning of the month, and the data are optionally filtered by a date
+range.
 }
 \details{
-The dataset contains monthly long-short returns of the predictor
-portfolios. Every column other than \code{date} is a return expressed in
-percent, so all of them are divided by 100 to convert them into plain
-numeric (decimal) returns.
+The data come from the \href{https://huggingface.co/datasets/OpenSourceAP/CrossSection}{OSAP dataset on Hugging Face}, which
+keeps every data release on its own branch. \code{release} selects the
+release. Releases up to October 2025 were also distributed on Google
+Drive. Pass the Google Drive file ID of a wide CSV of long-short returns
+to \code{sheet_id} to download it from Google Drive instead.
+
+The datasets are:
+\itemize{
+\item \code{"long_short_returns"}: monthly long-short returns of the predictor
+portfolios, constructed as in the original papers, with one column per
+predictor. The returns are in percent in the source file, so they are
+divided by 100 to obtain plain numeric (decimal) returns.
+\item \code{"signal_doc"}: the documentation of all predictors and placebos, one
+row per signal, e.g., its category, original paper, and sign. The
+\code{acronym} column holds the OSAP names of the signals, which \code{signals}
+takes. Available from release \code{"2022.03"}.
+\item \code{"predictors"}: the monthly firm-level predictors, with columns
+\code{permno}, \code{date}, and one column per predictor. The values are not
+scaled. \code{Price}, \code{Size}, and \code{STreversal} are not included because they
+require a WRDS subscription.
+\item \code{"signed_predictors"}: the same as \code{"predictors"}, but each predictor
+is multiplied by its sign in \code{"signal_doc"} so that a higher value
+implies a higher expected return.
+}
+
+The files of \code{"predictors"} and \code{"signed_predictors"} are about 2 GB.
+The whole file is downloaded in either case, but \code{signals} reads only
+the selected predictors into memory.
 }
 \examples{
 \donttest{
   osap <- download_data_osap(
     start_date = "2020-01-01", end_date = "2020-06-30"
+  )
+
+  # An earlier release
+  osap_2025 <- download_data_osap(release = "2025.10")
+
+  # Signal documentation
+  signal_doc <- download_data_osap(dataset = "signal_doc")
+}
+\dontrun{
+  # Firm-level predictors (downloads about 2 GB)
+  predictors <- download_data_osap(
+    start_date = "2020-01-01",
+    end_date = "2020-12-31",
+    dataset = "signed_predictors",
+    signals = c("BM", "Mom12m")
   )
 }
 }

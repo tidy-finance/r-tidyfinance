@@ -58,7 +58,13 @@ and downloads the specified portfolios directly. \code{revision} and
 see \code{download_data_huggingface()} for details. If \code{domain} is
 \code{"Damodaran"}, arguments such as \code{region} and \code{year} are passed to
 \code{download_data_damodaran()}, which selects years via \code{year} instead of
-\code{start_date} and \code{end_date}. If \code{domain} is \code{"WRDS"} or \code{"Pseudo Data"},
+\code{start_date} and \code{end_date}. If \code{domain} is
+\code{"Open Source Asset Pricing"}, \code{dataset} is one of
+\code{"long_short_returns"} (the default), \code{"signal_doc"}, \code{"predictors"},
+or \code{"signed_predictors"}, \code{release} selects the data release on
+Hugging Face, \code{signals} selects predictors, and \code{sheet_id} downloads
+long-short returns from Google Drive instead; see
+\code{download_data_osap()}. If \code{domain} is \code{"WRDS"} or \code{"Pseudo Data"},
 \code{quiet = TRUE} suppresses the messages about the WRDS connection and
 the download progress, or the pseudo-data notice.}
 }
