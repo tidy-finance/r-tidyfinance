@@ -1,3 +1,17 @@
+# Serves `data` as the parquet file of every download and returns a function
+# with the requested URLs.
+local_osap_file <- function(data, env = parent.frame()) {
+  urls <- character()
+  testthat::local_mocked_bindings(
+    download_parquet_url = function(url, path) {
+      urls <<- c(urls, url)
+      nanoparquet::write_parquet(data, path)
+    },
+    .env = env
+  )
+  function() urls
+}
+
 test_that("downloads and processes a Google Drive file", {
   httr2::local_mocked_responses(function(req) {
     httr2::response(
@@ -31,21 +45,15 @@ test_that("downloads and processes a Google Drive file", {
 })
 
 test_that("downloads the latest release from Hugging Face by default", {
-  captured_url <- NULL
-  local_mocked_bindings(
-    read_parquet_url = function(url, col_select = NULL) {
-      captured_url <<- url
-      data.frame(
-        date = as.Date(c("2020-01-31", "2020-02-29")),
-        LongName = c(1, 2)
-      )
-    }
-  )
+  urls <- local_osap_file(data.frame(
+    date = as.Date(c("2020-01-31", "2020-02-29")),
+    LongName = c(1, 2)
+  ))
 
   result <- download_data_osap()
 
   expect_identical(
-    captured_url,
+    urls(),
     paste0(
       "https://huggingface.co/datasets/OpenSourceAP/CrossSection/resolve/",
       "Data-Release-2026.10/Portfolios/Full%20Sets%20OP/",
@@ -59,19 +67,49 @@ test_that("downloads the latest release from Hugging Face by default", {
 })
 
 test_that("downloads an earlier release from its branch", {
-  captured_url <- NULL
+  urls <- local_osap_file(data.frame(date = as.Date("2020-01-31"), value = 1))
+
+  download_data_osap(release = "2025.10")
+  expect_match(urls(), "/resolve/2025.10/Portfolios/Full%20Sets%20OP/")
+
+  download_data_osap(release = "2021.03")
+  expect_match(urls()[2], "/resolve/2021.03/Portfolios/Full_Sets_Main/")
+})
+
+test_that("finds the latest release on a branch named like the release", {
+  urls <- character()
   local_mocked_bindings(
-    read_parquet_url = function(url, col_select = NULL) {
-      captured_url <<- url
-      data.frame(date = as.Date("2020-01-31"), value = 1)
+    download_parquet_url = function(url, path) {
+      urls <<- c(urls, url)
+      if (grepl("Data-Release", url, fixed = TRUE)) {
+        rlang::abort("Not found", class = "httr2_http_404")
+      }
+      nanoparquet::write_parquet(
+        data.frame(date = as.Date("2020-01-31"), value = 1),
+        path
+      )
     }
   )
 
-  download_data_osap(release = "2025.10")
-  expect_match(captured_url, "/resolve/2025.10/Portfolios/Full%20Sets%20OP/")
+  result <- download_data_osap()
 
-  download_data_osap(release = "2021.03")
-  expect_match(captured_url, "/resolve/2021.03/Portfolios/Full_Sets_Main/")
+  expect_length(urls, 2)
+  expect_match(urls[2], "/resolve/2026.10/")
+  expect_equal(nrow(result), 1)
+})
+
+test_that("reports a missing file of an earlier release", {
+  local_mocked_bindings(
+    download_parquet_url = function(url, path) {
+      rlang::abort("Not found", class = "httr2_http_404")
+    }
+  )
+
+  expect_message(
+    result <- download_data_osap(release = "2025.10"),
+    "Returning an empty data set due to download failure."
+  )
+  expect_equal(nrow(result), 0)
 })
 
 test_that("rejects unsupported releases", {
@@ -88,20 +126,41 @@ test_that("rejects release and sheet_id together", {
     download_data_osap(release = "2025.10", sheet_id = "abc"),
     "either"
   )
+  # A forwarded `NULL` is the same as leaving out the release.
+  local_mocked_bindings(
+    download_osap_google_drive = function(sheet_id) {
+      tibble(date = "2020-01-31", value = 1)
+    }
+  )
+  result <- download_data_osap(sheet_id = "abc", release = NULL)
+  expect_equal(nrow(result), 1)
+})
+
+test_that("keeps sheet_id as the third positional argument", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    download_osap_google_drive = function(sheet_id) {
+      tibble(date = "2020-01-31", id = nchar(sheet_id))
+    }
+  )
+
+  result <- download_data_osap("2020-01-01", "2020-12-31", "abc")
+
+  expect_equal(result$id, 0.03)
 })
 
 test_that("filters rows when both dates are supplied", {
+  local_osap_file(data.frame(
+    date = as.Date(c("2020-01-31", "2020-02-29", "2020-03-31")),
+    value = c(1, 2, 3)
+  ))
   local_mocked_bindings(
     validate_dates = function(start_date, end_date) {
       list(
         start_date = ymd("2020-02-01"),
         end_date = ymd("2020-02-28")
-      )
-    },
-    read_parquet_url = function(url, col_select = NULL) {
-      data.frame(
-        date = as.Date(c("2020-01-31", "2020-02-29", "2020-03-31")),
-        value = c(1, 2, 3)
       )
     }
   )
@@ -185,9 +244,7 @@ test_that("converts names to snake case", {
 
 test_that("returns empty tibble when the Hugging Face download fails", {
   local_mocked_bindings(
-    read_parquet_url = function(url, col_select = NULL) {
-      stop("connection refused")
-    }
+    download_parquet_url = function(url, path) stop("connection refused")
   )
 
   expect_message(
@@ -198,18 +255,12 @@ test_that("returns empty tibble when the Hugging Face download fails", {
 })
 
 test_that("downloads the signal documentation", {
-  captured_url <- NULL
-  local_mocked_bindings(
-    read_parquet_url = function(url) {
-      captured_url <<- url
-      data.frame(
-        Acronym = c("AM", "BM"),
-        `Predictability in OP` = c("1_clear", "1_clear"),
-        `T-Stat` = c(2.1, 3.4),
-        check.names = FALSE
-      )
-    }
-  )
+  urls <- local_osap_file(data.frame(
+    Acronym = c("AM", "BM"),
+    `Predictability in OP` = c("1_clear", "1_clear"),
+    `T-Stat` = c(2.1, 3.4),
+    check.names = FALSE
+  ))
 
   result <- download_data_osap(
     start_date = "2020-01-01",
@@ -217,7 +268,7 @@ test_that("downloads the signal documentation", {
     dataset = "signal_doc"
   )
 
-  expect_match(captured_url, "/resolve/Data-Release-2026.10/SignalDoc.parquet")
+  expect_match(urls(), "/resolve/Data-Release-2026.10/SignalDoc.parquet")
   expect_s3_class(result, "tbl_df")
   expect_equal(names(result), c("acronym", "predictability_in_op", "t_stat"))
   # Acronyms are kept as OSAP names, which `signals` takes.
@@ -233,7 +284,7 @@ test_that("rejects releases without a signal documentation", {
 
 test_that("returns empty tibble when the signal documentation fails", {
   local_mocked_bindings(
-    read_parquet_url = function(url) stop("connection refused")
+    download_parquet_url = function(url, path) stop("connection refused")
   )
 
   expect_message(
@@ -244,18 +295,13 @@ test_that("returns empty tibble when the signal documentation fails", {
 })
 
 test_that("downloads and processes firm-level predictors", {
-  captured <- NULL
-  local_mocked_bindings(
-    read_parquet_url = function(url, col_select = NULL) {
-      captured <<- list(url = url, col_select = col_select)
-      data.frame(
-        permno = c(10000L, 10000L, 10001L),
-        yyyymm = c(201912L, 202001L, 202002L),
-        BM = c(0.5, 0.6, 0.7),
-        Mom12m = c(0.1, 0.2, 0.3)
-      )
-    }
-  )
+  urls <- local_osap_file(data.frame(
+    permno = c(10000L, 10000L, 10001L),
+    yyyymm = c(201912L, 202001L, 202002L),
+    BM = c(0.5, 0.6, 0.7),
+    Mom12m = c(0.1, 0.2, 0.3),
+    Other = c(1, 2, 3)
+  ))
 
   expect_message(
     result <- download_data_osap(
@@ -267,11 +313,7 @@ test_that("downloads and processes firm-level predictors", {
     "about 2 GB"
   )
 
-  expect_match(
-    captured$url,
-    "/Firm%20Level%20Characteristics/Predictors.parquet$"
-  )
-  expect_equal(captured$col_select, c("permno", "yyyymm", "BM", "Mom12m"))
+  expect_match(urls(), "/Firm%20Level%20Characteristics/Predictors.parquet$")
   expect_equal(names(result), c("permno", "date", "bm", "mom12m"))
   expect_equal(result$date, ymd(c("2020-01-01", "2020-02-01")))
   # Signals are not scaled.
@@ -279,14 +321,12 @@ test_that("downloads and processes firm-level predictors", {
 })
 
 test_that("downloads all signed predictors by default", {
-  captured <- NULL
+  urls <- local_osap_file(data.frame(
+    permno = 10000L, yyyymm = 202001L, BM = 0.5, Mom12m = 0.1
+  ))
   local_mocked_bindings(
     validate_dates = function(start_date, end_date) {
       list(start_date = NULL, end_date = NULL)
-    },
-    read_parquet_url = function(url, col_select = NULL) {
-      captured <<- list(url = url, col_select = col_select)
-      data.frame(permno = 10000L, yyyymm = 202001L, BM = 0.5)
     }
   )
 
@@ -294,40 +334,35 @@ test_that("downloads all signed predictors by default", {
     result <- download_data_osap(dataset = "signed_predictors")
   )
 
-  expect_match(captured$url, "signed_predictors_dl_wide.parquet$")
-  expect_null(captured$col_select)
-  expect_equal(nrow(result), 1)
+  expect_match(urls(), "signed_predictors_dl_wide.parquet$")
+  expect_equal(names(result), c("permno", "date", "bm", "mom12m"))
 })
 
-test_that("returns empty tibble when the predictors download fails", {
+test_that("rejects unknown signals instead of reporting a failed download", {
+  local_osap_file(data.frame(
+    permno = 10000L, yyyymm = 202001L, BM = 0.5
+  ))
   local_mocked_bindings(
     validate_dates = function(start_date, end_date) {
       list(start_date = NULL, end_date = NULL)
-    },
-    read_parquet_url = function(url, col_select = NULL) {
-      stop("Column Nope does not exist in Parquet file")
     }
   )
 
-  expect_message(
-    result <- download_data_osap(dataset = "predictors", signals = "Nope"),
-    "Column Nope does not exist"
+  expect_error(
+    suppressMessages(
+      download_data_osap(dataset = "predictors", signals = c("BM", "bm"))
+    ),
+    "unknown names.*bm"
   )
-  expect_equal(nrow(result), 0)
 })
 
 test_that("reads the long-short returns of a single factor", {
-  captured <- NULL
-  local_mocked_bindings(
-    read_parquet_url = function(url, col_select = NULL) {
-      captured <<- col_select
-      data.frame(date = as.Date("2020-01-31"), BM = 1)
-    }
-  )
+  local_osap_file(data.frame(
+    date = as.Date("2020-01-31"), BM = 1, Mom12m = 2
+  ))
 
   result <- download_data_osap(signals = "BM")
 
-  expect_equal(captured, c("date", "BM"))
   expect_equal(names(result), c("date", "bm"))
   expect_equal(result$bm, 0.01)
 })
@@ -342,12 +377,10 @@ test_that("selects signals from a Google Drive file", {
   result <- download_data_osap(sheet_id = "abc", signals = "BM")
   expect_equal(names(result), c("date", "bm"))
 
-  # An unknown signal is reported instead of raising an error.
-  expect_message(
-    result <- download_data_osap(sheet_id = "abc", signals = "Nope"),
-    "Returning an empty data set due to download failure."
+  expect_error(
+    download_data_osap(sheet_id = "abc", signals = "Nope"),
+    "unknown names.*Nope"
   )
-  expect_equal(nrow(result), 0)
 })
 
 test_that("validates dataset, signals, and sheet_id", {

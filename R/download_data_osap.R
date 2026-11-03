@@ -37,6 +37,12 @@
 #' The whole file is downloaded in either case, but `signals` reads only
 #' the selected predictors into memory.
 #'
+#' The dates of the predictors and the long-short returns differ by one month.
+#' A predictor dated the first of a month is observed at the end of that month
+#' and predicts the returns after it, while a long-short return is dated the
+#' first of the month in which it is earned. To relate the two, join the
+#' predictors of month `t` to the returns of month `t + 1`, not on `date`.
+#'
 #' @param start_date Optional. A character string or Date object in
 #'   "YYYY-MM-DD" format specifying the start date for the data. If
 #'   not provided, the full dataset is returned. Ignored for
@@ -44,15 +50,6 @@
 #' @param end_date Optional. A character string or Date object in
 #'   "YYYY-MM-DD" format specifying the end date for the data. If not
 #'   provided, the full dataset is returned. Ignored for `"signal_doc"`.
-#' @param dataset A character string with the dataset to download:
-#'   `"long_short_returns"` (the default), `"signal_doc"`, `"predictors"`,
-#'   or `"signed_predictors"`.
-#' @param release A character string with the OSAP data release to
-#'   download from Hugging Face. The default, `"2026.10"`, is the October
-#'   2026 release (v2.1.0). The other supported releases are `"2025.10"`,
-#'   `"2024.10"`, `"2024.08"`, `"2023.08"`, `"2022.04"`, `"2022.03"`,
-#'   `"2021.04"`, and `"2021.03"`. The releases of 2020 have no wide file of
-#'   long-short returns or firm-level predictors.
 #' @param sheet_id Optional. A character string with the Google Drive file
 #'   ID of a wide CSV of monthly long-short returns, e.g.,
 #'   `"10sOryk_ddjkXagaajTKUk1nwJs2ZLRiI"` for the October 2025 release
@@ -62,6 +59,15 @@
 #'   be downloaded. When the limit is reached, Google Drive returns an error
 #'   page instead of the data and the function returns an empty tibble. The
 #'   limit is usually lifted within 24 hours.
+#' @param dataset A character string with the dataset to download:
+#'   `"long_short_returns"` (the default), `"signal_doc"`, `"predictors"`,
+#'   or `"signed_predictors"`.
+#' @param release A character string with the OSAP data release to
+#'   download from Hugging Face. The default, `NULL`, is the October 2026
+#'   release (`"2026.10"`, v2.1.0). The other supported releases are
+#'   `"2025.10"`, `"2024.10"`, `"2024.08"`, `"2023.08"`, `"2022.04"`,
+#'   `"2022.03"`, `"2021.04"`, and `"2021.03"`. The releases of 2020 have no
+#'   wide file of long-short returns or firm-level predictors.
 #' @param signals Optional. A character vector of predictors to read for
 #'   `"long_short_returns"`, `"predictors"`, and `"signed_predictors"`,
 #'   using the OSAP names in the `acronym` column of `"signal_doc"`, e.g.,
@@ -71,7 +77,8 @@
 #' @returns A tibble containing the processed data. The column names are
 #'   converted to snake_case, the `date` column is aligned to the beginning
 #'   of the month, and the data is filtered by the specified date range if
-#'   `start_date` and `end_date` are provided.
+#'   `start_date` and `end_date` are provided. See Details for how the dates
+#'   of the predictors relate to the dates of the long-short returns.
 #'
 #' @family download functions
 #' @export
@@ -103,9 +110,9 @@
 download_data_osap <- function(
   start_date = NULL,
   end_date = NULL,
-  dataset = "long_short_returns",
-  release = "2026.10",
   sheet_id = NULL,
+  dataset = "long_short_returns",
+  release = NULL,
   signals = NULL
 ) {
   datasets <- c(
@@ -123,6 +130,11 @@ download_data_osap <- function(
       "{.arg sheet_id} is only supported for {.val long_short_returns}."
     )
   }
+  if (!is.null(sheet_id) && !is.null(release)) {
+    cli::cli_abort(
+      "Supply either {.arg release} or {.arg sheet_id}, not both."
+    )
+  }
   if (!is.null(signals) && dataset == "signal_doc") {
     cli::cli_abort("{.arg signals} is not supported for {.val signal_doc}.")
   }
@@ -130,62 +142,56 @@ download_data_osap <- function(
     cli::cli_abort("{.arg signals} must be a non-empty character vector.")
   }
 
-  if (dataset == "signal_doc") {
-    url <- osap_release_url(release, dataset)
-    raw_data <- handle_download_error(
-      function() as_tibble(read_parquet_url(url)),
-      fallback = tibble()
-    )
-    if (nrow(raw_data) == 0) {
-      cli::cli_inform("Returning an empty data set due to download failure.")
-      return(raw_data)
-    }
-    colnames(raw_data) <- to_snake_case(colnames(raw_data))
-    return(raw_data)
-  }
-
-  dates <- validate_dates(start_date, end_date)
-  start_date <- dates$start_date
-  end_date <- dates$end_date
+  id_columns <- switch(
+    dataset,
+    long_short_returns = "date",
+    signal_doc = NULL,
+    c("permno", "yyyymm")
+  )
 
   if (!is.null(sheet_id)) {
-    if (!missing(release)) {
-      cli::cli_abort(
-        "Supply either {.arg release} or {.arg sheet_id}, not both."
-      )
-    }
-    raw_data <- handle_download_error(
-      function() {
-        drive_data <- download_osap_google_drive(sheet_id)
-        if (is.null(signals)) {
-          drive_data
-        } else {
-          select(drive_data, all_of(c("date", signals)))
-        }
-      },
-      fallback = tibble()
-    )
-  } else if (dataset == "long_short_returns") {
-    url <- osap_release_url(release, dataset)
-    col_select <- if (is.null(signals)) NULL else c("date", signals)
-    raw_data <- handle_download_error(
-      function() as_tibble(read_parquet_url(url, col_select = col_select)),
-      fallback = tibble()
-    )
+    download <- function() read_osap_google_drive(sheet_id, signals, id_columns)
   } else {
-    url <- osap_release_url(release, dataset)
-    col_select <- if (is.null(signals)) NULL else c("permno", "yyyymm", signals)
+    urls <- osap_release_urls(release, dataset)
+    download <- function() read_osap_parquet(urls, signals, id_columns)
+  }
+
+  if (dataset != "signal_doc") {
+    dates <- validate_dates(start_date, end_date)
+    start_date <- dates$start_date
+    end_date <- dates$end_date
+  }
+  if (dataset %in% c("predictors", "signed_predictors")) {
     cli::cli_inform(
       "Downloading {.val {dataset}} (about 2 GB). This can take a while."
     )
-    raw_data <- handle_download_error(
-      function() as_tibble(read_parquet_url(url, col_select = col_select)),
-      fallback = tibble()
-    )
   }
+
+  result <- handle_download_error(
+    download,
+    fallback = list(data = tibble(), unknown = character())
+  )
+
+  # Reported here because handle_download_error() would call it a failed
+  # download.
+  if (length(result$unknown) > 0) {
+    cli::cli_abort(c(
+      "{.arg signals} contains unknown names: {.val {result$unknown}}.",
+      "i" = paste(
+        "Use the OSAP names in the {.field acronym} column of",
+        "{.val signal_doc}, e.g., {.val BM} instead of {.val bm}."
+      )
+    ))
+  }
+  raw_data <- result$data
 
   if (nrow(raw_data) == 0) {
     cli::cli_inform("Returning an empty data set due to download failure.")
+    return(raw_data)
+  }
+
+  if (dataset == "signal_doc") {
+    colnames(raw_data) <- to_snake_case(colnames(raw_data))
     return(raw_data)
   }
 
@@ -214,22 +220,29 @@ download_data_osap <- function(
   processed_data
 }
 
-#' Build the Hugging Face URL of an OSAP File
+#' Build the Hugging Face URLs of an OSAP File
 #'
-#' Each OSAP data release is a branch of the Hugging Face dataset. The
-#' latest release is on a branch named `Data-Release-<release>`, the older
-#' ones on a branch named like the release.
+#' Each OSAP data release is a branch of the Hugging Face dataset. The latest
+#' release is on a branch named `Data-Release-<release>`, the older ones on a
+#' branch named like the release. The latest release can therefore move to a
+#' branch named like the release once OSAP publishes the next one, so it also
+#' gets a URL on that branch.
 #'
-#' @param release Character(1). The OSAP data release, e.g., `"2026.10"`.
+#' @param release Character(1) or `NULL` for the latest release. The OSAP data
+#'   release, e.g., `"2026.10"`.
 #' @param dataset Character(1). The dataset, see `download_data_osap()`.
 #'
-#' @returns The URL of the parquet file.
+#' @returns The URLs of the parquet file, in the order to try them.
 #' @keywords internal
 #' @noRd
-osap_release_url <- function(release, dataset = "long_short_returns") {
+osap_release_urls <- function(release, dataset = "long_short_returns") {
+  latest <- "2026.10"
+  if (is.null(release)) {
+    release <- latest
+  }
   releases <- c(
-    "2026.10", "2025.10", "2024.10", "2024.08", "2023.08", "2022.04",
-    "2022.03", "2021.04", "2021.03"
+    latest, "2025.10", "2024.10", "2024.08", "2023.08", "2022.04", "2022.03",
+    "2021.04", "2021.03"
   )
   # The signal documentation is a parquet file from release 2022.03 on.
   if (dataset == "signal_doc") {
@@ -243,7 +256,6 @@ osap_release_url <- function(release, dataset = "long_short_returns") {
     ))
   }
 
-  branch <- if (release == "2026.10") "Data-Release-2026.10" else release
   ls_folder <- if (release == "2021.03") {
     "Full_Sets_Main"
   } else {
@@ -261,10 +273,78 @@ osap_release_url <- function(release, dataset = "long_short_returns") {
     )
   )
 
+  branches <- if (release == latest) {
+    c(paste0("Data-Release-", release), release)
+  } else {
+    release
+  }
+
   paste0(
     "https://huggingface.co/datasets/OpenSourceAP/CrossSection/resolve/",
-    branch, "/", path
+    branches, "/", path
   )
+}
+
+#' Read an OSAP Parquet File from Hugging Face
+#'
+#' @param urls Character vector. The URLs of the file, in the order to try
+#'   them when a URL is not found.
+#' @param signals Character vector or `NULL`. The signals to read.
+#' @param id_columns Character vector or `NULL`. The columns to read besides
+#'   `signals`.
+#'
+#' @returns A list with the tibble `data` and the `unknown` names in `signals`,
+#'   in which case `data` is empty.
+#' @keywords internal
+#' @noRd
+read_osap_parquet <- function(urls, signals, id_columns) {
+  tmp <- tempfile(fileext = ".parquet")
+  on.exit(unlink(tmp), add = TRUE)
+
+  tryCatch(
+    download_parquet_url(urls[1], tmp),
+    httr2_http_404 = function(e) {
+      if (length(urls) == 1) {
+        rlang::cnd_signal(e)
+      }
+      download_parquet_url(urls[2], tmp)
+    }
+  )
+
+  # The first row of the schema is its root, not a column.
+  columns <- nanoparquet::read_parquet_schema(tmp)$name[-1]
+  unknown <- setdiff(signals, columns)
+  if (length(unknown) > 0) {
+    return(list(data = tibble(), unknown = unknown))
+  }
+
+  col_select <- if (is.null(signals)) NULL else c(id_columns, signals)
+  list(
+    data = as_tibble(nanoparquet::read_parquet(tmp, col_select = col_select)),
+    unknown = character()
+  )
+}
+
+#' Read OSAP Long-Short Returns from Google Drive
+#'
+#' @inheritParams read_osap_parquet
+#' @param sheet_id Character(1). The Google Drive file ID of the wide CSV.
+#'
+#' @returns A list with the tibble `data` and the `unknown` names in `signals`,
+#'   in which case `data` is empty.
+#' @keywords internal
+#' @noRd
+read_osap_google_drive <- function(sheet_id, signals, id_columns) {
+  data <- download_osap_google_drive(sheet_id)
+  if (is.null(signals)) {
+    return(list(data = data, unknown = character()))
+  }
+
+  unknown <- setdiff(signals, names(data))
+  if (length(unknown) > 0) {
+    return(list(data = tibble(), unknown = unknown))
+  }
+  list(data = select(data, all_of(c(id_columns, signals))), unknown = unknown)
 }
 
 #' Download OSAP Long-Short Returns from Google Drive

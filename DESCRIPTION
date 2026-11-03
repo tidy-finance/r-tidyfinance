@@ -31,7 +31,7 @@ Imports:
     jsonlite,
     lifecycle,
     lubridate (>= 1.9.3),
-    nanoparquet (>= 0.5.1),
+    nanoparquet (>= 0.5.2),
     purrr (>= 1.0.2),
     rlang (>= 1.1.3),
     slider (>= 0.3.1),

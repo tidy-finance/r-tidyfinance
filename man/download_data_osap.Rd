@@ -7,9 +7,9 @@
 download_data_osap(
   start_date = NULL,
   end_date = NULL,
-  dataset = "long_short_returns",
-  release = "2026.10",
   sheet_id = NULL,
+  dataset = "long_short_returns",
+  release = NULL,
   signals = NULL
 )
 }
@@ -23,17 +23,6 @@ not provided, the full dataset is returned. Ignored for
 "YYYY-MM-DD" format specifying the end date for the data. If not
 provided, the full dataset is returned. Ignored for \code{"signal_doc"}.}
 
-\item{dataset}{A character string with the dataset to download:
-\code{"long_short_returns"} (the default), \code{"signal_doc"}, \code{"predictors"},
-or \code{"signed_predictors"}.}
-
-\item{release}{A character string with the OSAP data release to
-download from Hugging Face. The default, \code{"2026.10"}, is the October
-2026 release (v2.1.0). The other supported releases are \code{"2025.10"},
-\code{"2024.10"}, \code{"2024.08"}, \code{"2023.08"}, \code{"2022.04"}, \code{"2022.03"},
-\code{"2021.04"}, and \code{"2021.03"}. The releases of 2020 have no wide file of
-long-short returns or firm-level predictors.}
-
 \item{sheet_id}{Optional. A character string with the Google Drive file
 ID of a wide CSV of monthly long-short returns, e.g.,
 \code{"10sOryk_ddjkXagaajTKUk1nwJs2ZLRiI"} for the October 2025 release
@@ -43,6 +32,17 @@ instead of Hugging Face, and \code{release} must not be set. Only for
 be downloaded. When the limit is reached, Google Drive returns an error
 page instead of the data and the function returns an empty tibble. The
 limit is usually lifted within 24 hours.}
+
+\item{dataset}{A character string with the dataset to download:
+\code{"long_short_returns"} (the default), \code{"signal_doc"}, \code{"predictors"},
+or \code{"signed_predictors"}.}
+
+\item{release}{A character string with the OSAP data release to
+download from Hugging Face. The default, \code{NULL}, is the October 2026
+release (\code{"2026.10"}, v2.1.0). The other supported releases are
+\code{"2025.10"}, \code{"2024.10"}, \code{"2024.08"}, \code{"2023.08"}, \code{"2022.04"},
+\code{"2022.03"}, \code{"2021.04"}, and \code{"2021.03"}. The releases of 2020 have no
+wide file of long-short returns or firm-level predictors.}
 
 \item{signals}{Optional. A character vector of predictors to read for
 \code{"long_short_returns"}, \code{"predictors"}, and \code{"signed_predictors"},
@@ -54,7 +54,8 @@ If not provided, all predictors are returned.}
 A tibble containing the processed data. The column names are
 converted to snake_case, the \code{date} column is aligned to the beginning
 of the month, and the data is filtered by the specified date range if
-\code{start_date} and \code{end_date} are provided.
+\code{start_date} and \code{end_date} are provided. See Details for how the dates
+of the predictors relate to the dates of the long-short returns.
 }
 \description{
 Downloads data from
@@ -94,6 +95,12 @@ implies a higher expected return.
 The files of \code{"predictors"} and \code{"signed_predictors"} are about 2 GB.
 The whole file is downloaded in either case, but \code{signals} reads only
 the selected predictors into memory.
+
+The dates of the predictors and the long-short returns differ by one month.
+A predictor dated the first of a month is observed at the end of that month
+and predicts the returns after it, while a long-short return is dated the
+first of the month in which it is earned. To relate the two, join the
+predictors of month \code{t} to the returns of month \code{t + 1}, not on \code{date}.
 }
 \examples{
 \donttest{
