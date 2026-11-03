@@ -331,6 +331,159 @@ test_that("returns empty tibble when a factor download fails", {
   expect_equal(nrow(result), 0)
 })
 
+test_that("combines several factors into one table", {
+  urls <- character()
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    fetch_jkp_availability = function(...) test_helper_manifest(),
+    download_jkp_file = function(url, ...) {
+      urls <<- c(urls, url)
+      tibble(
+        name = if (grepl("be_me", url)) "be_me" else "value",
+        date = "2020-01-31",
+        ret = 0.01
+      )
+    }
+  )
+
+  # A repeated factor downloads once.
+  result <- download_data_jkp(factors = c("be_me", "value", "be_me"))
+
+  expect_length(urls, 2)
+  expect_equal(result$name, c("be_me", "value"))
+  expect_equal(result$date, ymd(c("2020-01-01", "2020-01-01")))
+})
+
+test_that("removes rows shared by overlapping selections", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    fetch_jkp_availability = function(...) test_helper_manifest(),
+    download_jkp_file = function(url, ...) {
+      tibble(name = "be_me", date = "2020-01-31", ret = 0.01)
+    }
+  )
+
+  result <- download_data_jkp(factors = c("be_me", "all_factors"))
+
+  expect_equal(nrow(result), 1)
+})
+
+test_that("combines portfolios of several factors", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    fetch_jkp_availability = function(...) test_helper_manifest(),
+    download_jkp_file = function(url, ...) {
+      tibble(
+        name = if (grepl("be_me", url)) "be_me" else "ret_12_1",
+        pf = "1",
+        date = "2020-01-31",
+        ret = 0.01
+      )
+    }
+  )
+
+  result <- download_data_jkp(
+    dataset = "portfolios", factors = c("be_me", "ret_12_1")
+  )
+
+  expect_equal(result$name, c("be_me", "ret_12_1"))
+  expect_type(result$pf, "integer")
+})
+
+test_that("returns empty tibble when one of several downloads fails", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    fetch_jkp_availability = function(...) test_helper_manifest(),
+    download_jkp_file = function(url, ...) {
+      if (grepl("value", url)) stop("connection refused")
+      tibble(name = "be_me", date = "2020-01-31", ret = 0.01)
+    }
+  )
+
+  expect_message(
+    result <- download_data_jkp(factors = c("be_me", "value")),
+    "download or parsing failure"
+  )
+  expect_equal(nrow(result), 0)
+  expect_named(result, "date")
+})
+
+test_that("returns empty tibble when one of several files is empty", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    fetch_jkp_availability = function(...) test_helper_manifest(),
+    download_jkp_file = function(url, ...) {
+      if (grepl("value", url)) {
+        tibble(date = Date())
+      } else {
+        tibble(name = "be_me", date = "2020-01-31", ret = 0.01)
+      }
+    }
+  )
+
+  expect_message(
+    result <- download_data_jkp(factors = c("be_me", "value")),
+    "download or parsing failure"
+  )
+  expect_equal(nrow(result), 0)
+})
+
+test_that("names every unsupported factor", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    fetch_jkp_availability = function(...) test_helper_manifest()
+  )
+
+  expect_error(
+    download_data_jkp(factors = c("be_me", "nope", "nada")),
+    "nope.*nada"
+  )
+})
+
+test_that("names the monthly-only factors of a daily request", {
+  local_mocked_bindings(
+    validate_dates = function(start_date, end_date) {
+      list(start_date = NULL, end_date = NULL)
+    },
+    fetch_jkp_availability = function(...) test_helper_manifest()
+  )
+
+  expect_error(
+    download_data_jkp(
+      region = "frontier", factors = c("mkt", "aliq_mat"), frequency = "daily"
+    ),
+    "aliq_mat.*only available at monthly frequency"
+  )
+})
+
+test_that("validates the factors and classification types", {
+  expect_error(
+    download_data_jkp(factors = character()),
+    "non-empty character vector"
+  )
+  expect_error(
+    download_data_jkp(factors = c("be_me", NA)),
+    "non-empty character vector"
+  )
+  expect_error(download_data_jkp(factors = 1), "non-empty character vector")
+  expect_error(
+    download_data_jkp(dataset = "industry", classification = c("gics", "ff49")),
+    "single character string"
+  )
+})
+
 test_that("returns empty tibble when a reference download fails", {
   local_mocked_bindings(
     validate_dates = function(start_date, end_date) {

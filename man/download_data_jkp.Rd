@@ -30,14 +30,16 @@ Defaults to \code{"usa"}. Ignored for the reference datasets \code{"nyse_cutoffs
 and \code{"return_cutoffs"}. Call \code{list_supported_jkp_factors()} to see the
 available regions.}
 
-\item{factors}{A character string selecting the factor content for the
+\item{factors}{A character vector selecting the factor content for the
 \code{"factors"} and \code{"portfolios"} datasets. For \code{"factors"}: \code{"mkt"} (the
 market factor), \code{"all_factors"} (all 153 factors), \code{"all_themes"} (all 13
-themes), a single theme (e.g., \code{"value"}, \code{"momentum"}), or a single
-factor code (e.g., \code{"be_me"}, \code{"ret_12_1"}). For \code{"portfolios"}: a single
-factor code. Defaults to \code{"all_factors"}. Call
-\code{list_supported_jkp_factors(region, dataset)} to see the values available
-for a region.}
+themes), a theme (e.g., \code{"value"}, \code{"momentum"}), or a factor code (e.g.,
+\code{"be_me"}, \code{"ret_12_1"}). For \code{"portfolios"}: a factor code. Several values
+download one file each and combine them into one table, e.g.,
+\code{c("be_me", "ret_12_1")}. If any of the files fails to download, the
+function returns an empty tibble instead of a partial table. Defaults to
+\code{"all_factors"}. Call \code{list_supported_jkp_factors(region, dataset)} to see
+the values available for a region.}
 
 \item{classification}{The industry classification for the \code{"industry"}
 dataset, either \code{"gics"} (default) or \code{"ff49"} (Fama-French 49
@@ -89,6 +91,10 @@ CC BY-NC 4.0 (non-commercial use).
 \donttest{
   download_data_jkp(
     region = "usa", factors = "mkt",
+    start_date = "2000-01-01", end_date = "2020-12-31"
+  )
+  download_data_jkp(
+    region = "usa", factors = c("be_me", "ret_12_1"),
     start_date = "2000-01-01", end_date = "2020-12-31"
   )
   download_data_jkp(

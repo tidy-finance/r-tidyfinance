@@ -1,5 +1,12 @@
 # tidyfinance (development version)
 
+## New features
+
+- `download_data_jkp()` and `download_data("Global Factor Data", ...)` accept
+  several values in `factors`, e.g., `factors = c("be_me", "ret_12_1")`, for
+  the `"factors"` and `"portfolios"` datasets. They download one file each and
+  combine them into one table. If any file fails, they return an empty tibble.
+
 # tidyfinance 1.0.0
 
 ## Breaking changes
