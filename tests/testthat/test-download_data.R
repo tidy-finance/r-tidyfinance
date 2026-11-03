@@ -257,3 +257,23 @@ test_that("quiet suppresses the pseudo data notice", {
   )
   expect_no_message(download_data("Pseudo Data", "ccm_links", quiet = TRUE))
 })
+
+test_that("download_data forwards arguments to Open Source Asset Pricing", {
+  captured <- NULL
+
+  local_mocked_bindings(
+    check_supported_domain = function(domain) NULL,
+    download_data_osap = function(...) {
+      captured <<- list(...)
+      tibble::tibble(ok = TRUE)
+    }
+  )
+
+  download_data("Open Source Asset Pricing", release = "2025.10")
+  expect_identical(captured$release, "2025.10")
+  # A NULL dataset defaults to "long_short_returns".
+  expect_identical(captured$dataset, "long_short_returns")
+
+  download_data("Open Source Asset Pricing", "signal_doc")
+  expect_identical(captured$dataset, "signal_doc")
+})

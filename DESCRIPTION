@@ -1,7 +1,7 @@
 Type: Package
 Package: tidyfinance
 Title: Tidy Finance Helper Functions
-Version: 1.0.0.9000
+Version: 1.0.0.9001
 Authors@R: c(
     person("Christoph", "Scheuch", , "christoph@tidy-intelligence.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0009-0004-0423-6819")),
@@ -31,7 +31,7 @@ Imports:
     jsonlite,
     lifecycle,
     lubridate (>= 1.9.3),
-    nanoparquet (>= 0.5.1),
+    nanoparquet (>= 0.5.2),
     purrr (>= 1.0.2),
     rlang (>= 1.1.3),
     slider (>= 0.3.1),

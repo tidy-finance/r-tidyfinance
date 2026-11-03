@@ -87,7 +87,7 @@ download_data(
 )
 ```
 
-To download data from [Open Source Asset Pricing](https://www.openassetpricing.com/) (OSAP):
+To download data from [Open Source Asset Pricing](https://www.openassetpricing.com/) (OSAP): 
 
 ```{r}
 download_data(

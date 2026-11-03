@@ -1,5 +1,30 @@
 # tidyfinance (development version)
 
+## Breaking changes
+
+- `download_data_osap()` and `download_data("Open Source Asset Pricing")` now
+  download the long-short returns from the
+  [Open Source Asset Pricing dataset on Hugging Face](https://huggingface.co/datasets/OpenSourceAP/CrossSection)
+  instead of Google Drive, which OSAP no longer updates. The default is the
+  October 2026 release (v2.1.0) instead of the October 2025 release (v2.0.0).
+  It runs through December 2025, uses CRSP v2 (CIZ), and revises 26
+  predictors, so results change slightly (#352).
+- `download_data_osap()` gains `release` to download an earlier release from
+  Hugging Face, e.g., `release = "2025.10"`. `sheet_id` now defaults to
+  `NULL`. Pass a Google Drive file ID to download a release from Google Drive
+  as before (#352).
+
+## New features
+
+- `download_data_osap()` and `download_data("Open Source Asset Pricing", ...)`
+  gain the datasets `"signal_doc"`, the documentation of all predictors and
+  placebos, and `"predictors"` and `"signed_predictors"`, the monthly
+  firm-level predictors with columns `permno`, `date`, and one column per
+  predictor. The predictor files are about 2 GB (#352).
+- `download_data_osap()` gains `signals` to read selected predictors of the
+  long-short returns and the firm-level predictors, e.g., `signals = "BM"` for
+  the time series of a single factor (#352).
+
 # tidyfinance 1.0.0
 
 ## Breaking changes
