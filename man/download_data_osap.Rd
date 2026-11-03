@@ -45,9 +45,10 @@ page instead of the data and the function returns an empty tibble. The
 limit is usually lifted within 24 hours.}
 
 \item{signals}{Optional. A character vector of predictors to read for
-\code{"predictors"} and \code{"signed_predictors"}, using the OSAP names in the
-\code{acronym} column of \code{"signal_doc"}, e.g., \code{c("BM", "Mom12m")}. If not
-provided, all predictors are returned.}
+\code{"long_short_returns"}, \code{"predictors"}, and \code{"signed_predictors"},
+using the OSAP names in the \code{acronym} column of \code{"signal_doc"}, e.g.,
+\code{"BM"} for the time series of a single factor or \code{c("BM", "Mom12m")}.
+If not provided, all predictors are returned.}
 }
 \value{
 A tibble containing the processed data. The column names are
@@ -102,6 +103,9 @@ the selected predictors into memory.
 
   # An earlier release
   osap_2025 <- download_data_osap(release = "2025.10")
+
+  # The time series of a single factor
+  osap_bm <- download_data_osap(signals = "BM")
 
   # Signal documentation
   signal_doc <- download_data_osap(dataset = "signal_doc")

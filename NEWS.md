@@ -20,8 +20,10 @@
   gain the datasets `"signal_doc"`, the documentation of all predictors and
   placebos, and `"predictors"` and `"signed_predictors"`, the monthly
   firm-level predictors with columns `permno`, `date`, and one column per
-  predictor. `signals` selects the predictors to read, e.g.,
-  `signals = c("BM", "Mom12m")`. The predictor files are about 2 GB (#352).
+  predictor. The predictor files are about 2 GB (#352).
+- `download_data_osap()` gains `signals` to read selected predictors of the
+  long-short returns and the firm-level predictors, e.g., `signals = "BM"` for
+  the time series of a single factor (#352).
 
 # tidyfinance 1.0.0
 

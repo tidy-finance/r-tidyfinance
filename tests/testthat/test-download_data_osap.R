@@ -33,7 +33,7 @@ test_that("downloads and processes a Google Drive file", {
 test_that("downloads the latest release from Hugging Face by default", {
   captured_url <- NULL
   local_mocked_bindings(
-    read_parquet_url = function(url) {
+    read_parquet_url = function(url, col_select = NULL) {
       captured_url <<- url
       data.frame(
         date = as.Date(c("2020-01-31", "2020-02-29")),
@@ -61,7 +61,7 @@ test_that("downloads the latest release from Hugging Face by default", {
 test_that("downloads an earlier release from its branch", {
   captured_url <- NULL
   local_mocked_bindings(
-    read_parquet_url = function(url) {
+    read_parquet_url = function(url, col_select = NULL) {
       captured_url <<- url
       data.frame(date = as.Date("2020-01-31"), value = 1)
     }
@@ -98,7 +98,7 @@ test_that("filters rows when both dates are supplied", {
         end_date = ymd("2020-02-28")
       )
     },
-    read_parquet_url = function(url) {
+    read_parquet_url = function(url, col_select = NULL) {
       data.frame(
         date = as.Date(c("2020-01-31", "2020-02-29", "2020-03-31")),
         value = c(1, 2, 3)
@@ -185,7 +185,9 @@ test_that("converts names to snake case", {
 
 test_that("returns empty tibble when the Hugging Face download fails", {
   local_mocked_bindings(
-    read_parquet_url = function(url) stop("connection refused")
+    read_parquet_url = function(url, col_select = NULL) {
+      stop("connection refused")
+    }
   )
 
   expect_message(
@@ -314,6 +316,40 @@ test_that("returns empty tibble when the predictors download fails", {
   expect_equal(nrow(result), 0)
 })
 
+test_that("reads the long-short returns of a single factor", {
+  captured <- NULL
+  local_mocked_bindings(
+    read_parquet_url = function(url, col_select = NULL) {
+      captured <<- col_select
+      data.frame(date = as.Date("2020-01-31"), BM = 1)
+    }
+  )
+
+  result <- download_data_osap(signals = "BM")
+
+  expect_equal(captured, c("date", "BM"))
+  expect_equal(names(result), c("date", "bm"))
+  expect_equal(result$bm, 0.01)
+})
+
+test_that("selects signals from a Google Drive file", {
+  local_mocked_bindings(
+    download_osap_google_drive = function(sheet_id) {
+      tibble(date = "2020-01-31", BM = 1, Mom12m = 2)
+    }
+  )
+
+  result <- download_data_osap(sheet_id = "abc", signals = "BM")
+  expect_equal(names(result), c("date", "bm"))
+
+  # An unknown signal is reported instead of raising an error.
+  expect_message(
+    result <- download_data_osap(sheet_id = "abc", signals = "Nope"),
+    "Returning an empty data set due to download failure."
+  )
+  expect_equal(nrow(result), 0)
+})
+
 test_that("validates dataset, signals, and sheet_id", {
   expect_error(download_data_osap(dataset = "placebos"), "must be one of")
   expect_error(
@@ -321,8 +357,8 @@ test_that("validates dataset, signals, and sheet_id", {
     "only supported for"
   )
   expect_error(
-    download_data_osap(signals = "BM"),
-    "only supported for"
+    download_data_osap(dataset = "signal_doc", signals = "BM"),
+    "not supported for"
   )
   expect_error(
     download_data_osap(dataset = "predictors", signals = character()),

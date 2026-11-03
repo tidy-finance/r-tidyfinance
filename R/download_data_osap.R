@@ -63,9 +63,10 @@
 #'   page instead of the data and the function returns an empty tibble. The
 #'   limit is usually lifted within 24 hours.
 #' @param signals Optional. A character vector of predictors to read for
-#'   `"predictors"` and `"signed_predictors"`, using the OSAP names in the
-#'   `acronym` column of `"signal_doc"`, e.g., `c("BM", "Mom12m")`. If not
-#'   provided, all predictors are returned.
+#'   `"long_short_returns"`, `"predictors"`, and `"signed_predictors"`,
+#'   using the OSAP names in the `acronym` column of `"signal_doc"`, e.g.,
+#'   `"BM"` for the time series of a single factor or `c("BM", "Mom12m")`.
+#'   If not provided, all predictors are returned.
 #'
 #' @returns A tibble containing the processed data. The column names are
 #'   converted to snake_case, the `date` column is aligned to the beginning
@@ -83,6 +84,9 @@
 #'
 #'   # An earlier release
 #'   osap_2025 <- download_data_osap(release = "2025.10")
+#'
+#'   # The time series of a single factor
+#'   osap_bm <- download_data_osap(signals = "BM")
 #'
 #'   # Signal documentation
 #'   signal_doc <- download_data_osap(dataset = "signal_doc")
@@ -119,12 +123,8 @@ download_data_osap <- function(
       "{.arg sheet_id} is only supported for {.val long_short_returns}."
     )
   }
-  if (!is.null(signals) &&
-        !dataset %in% c("predictors", "signed_predictors")) {
-    cli::cli_abort(paste(
-      "{.arg signals} is only supported for {.val predictors} and",
-      "{.val signed_predictors}."
-    ))
+  if (!is.null(signals) && dataset == "signal_doc") {
+    cli::cli_abort("{.arg signals} is not supported for {.val signal_doc}.")
   }
   if (!is.null(signals) && (!is.character(signals) || length(signals) == 0)) {
     cli::cli_abort("{.arg signals} must be a non-empty character vector.")
@@ -155,13 +155,21 @@ download_data_osap <- function(
       )
     }
     raw_data <- handle_download_error(
-      function() download_osap_google_drive(sheet_id),
+      function() {
+        drive_data <- download_osap_google_drive(sheet_id)
+        if (is.null(signals)) {
+          drive_data
+        } else {
+          select(drive_data, all_of(c("date", signals)))
+        }
+      },
       fallback = tibble()
     )
   } else if (dataset == "long_short_returns") {
     url <- osap_release_url(release, dataset)
+    col_select <- if (is.null(signals)) NULL else c("date", signals)
     raw_data <- handle_download_error(
-      function() as_tibble(read_parquet_url(url)),
+      function() as_tibble(read_parquet_url(url, col_select = col_select)),
       fallback = tibble()
     )
   } else {
