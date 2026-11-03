@@ -25,14 +25,16 @@
 #'   Defaults to `"usa"`. Ignored for the reference datasets `"nyse_cutoffs"`
 #'   and `"return_cutoffs"`. Call `list_supported_jkp_factors()` to see the
 #'   available regions.
-#' @param factors A character string selecting the factor content for the
+#' @param factors A character vector selecting the factor content for the
 #'   `"factors"` and `"portfolios"` datasets. For `"factors"`: `"mkt"` (the
 #'   market factor), `"all_factors"` (all 153 factors), `"all_themes"` (all 13
-#'   themes), a single theme (e.g., `"value"`, `"momentum"`), or a single
-#'   factor code (e.g., `"be_me"`, `"ret_12_1"`). For `"portfolios"`: a single
-#'   factor code. Defaults to `"all_factors"`. Call
-#'   `list_supported_jkp_factors(region, dataset)` to see the values available
-#'   for a region.
+#'   themes), a theme (e.g., `"value"`, `"momentum"`), or a factor code (e.g.,
+#'   `"be_me"`, `"ret_12_1"`). For `"portfolios"`: a factor code. Several values
+#'   download one file each and combine them into one table, e.g.,
+#'   `c("be_me", "ret_12_1")`. If any of the files fails to download, the
+#'   function returns an empty tibble instead of a partial table. Defaults to
+#'   `"all_factors"`. Call `list_supported_jkp_factors(region, dataset)` to see
+#'   the values available for a region.
 #' @param classification The industry classification for the `"industry"`
 #'   dataset, either `"gics"` (default) or `"ff49"` (Fama-French 49
 #'   industries).
@@ -71,6 +73,10 @@
 #' \donttest{
 #'   download_data_jkp(
 #'     region = "usa", factors = "mkt",
+#'     start_date = "2000-01-01", end_date = "2020-12-31"
+#'   )
+#'   download_data_jkp(
+#'     region = "usa", factors = c("be_me", "ret_12_1"),
 #'     start_date = "2000-01-01", end_date = "2020-12-31"
 #'   )
 #'   download_data_jkp(
@@ -145,6 +151,15 @@ download_data_jkp <- function(
     ))
   }
 
+  if (dataset == "industry") {
+    if (!is.character(classification) || length(classification) != 1) {
+      cli::cli_abort("{.arg classification} must be a single character string.")
+    }
+  } else if (!is.character(factors) || length(factors) == 0 ||
+               anyNA(factors)) {
+    cli::cli_abort("{.arg factors} must be a non-empty character vector.")
+  }
+
   availability <- handle_download_error(
     fetch_jkp_availability,
     fallback = NULL
@@ -155,22 +170,27 @@ download_data_jkp <- function(
     return(tibble(date = Date()))
   }
 
-  selector <- if (dataset == "industry") classification else factors
+  selector <- if (dataset == "industry") classification else unique(factors)
   validate_jkp_selection(availability, dataset, region, selector, frequency)
 
-  url <- build_jkp_url(dataset, region, selector, frequency, weighting)
+  urls <- build_jkp_url(dataset, region, selector, frequency, weighting)
 
-  raw_data <- handle_download_error(
-    function() download_jkp_file(url),
-    fallback = tibble(date = Date())
+  raw_files <- handle_download_error(
+    function() lapply(urls, download_jkp_file),
+    fallback = list(tibble(date = Date()))
   )
 
-  if (nrow(raw_data) == 0) {
+  # A partial table could pass for the full selection, so any failed file
+  # empties the result.
+  if (any(vapply(raw_files, nrow, integer(1)) == 0)) {
     cli::cli_inform(
       "Returning an empty data set due to a download or parsing failure."
     )
-    return(raw_data)
+    return(tibble(date = Date()))
   }
+
+  # Selections can overlap, e.g., "be_me" and "all_factors".
+  raw_data <- distinct(bind_rows(raw_files))
 
   data_frequency <- if (dataset == "industry") "monthly" else frequency
   processed_data <- process_jkp_data(
@@ -300,11 +320,12 @@ validate_jkp_selection <- function(
   }
 
   available <- availability[[dataset]][[region]]
-  if (!selector %in% available) {
+  unsupported <- setdiff(selector, available)
+  if (length(unsupported) > 0) {
     cli::cli_abort(c(
       paste0(
-        "Unsupported selection {.val {selector}} for region {.val {region}} ",
-        "in dataset {.val {dataset}}."
+        "Unsupported selection {.val {unsupported}} for region ",
+        "{.val {region}} in dataset {.val {dataset}}."
       ),
       "i" = paste0(
         "Use {.code list_supported_jkp_factors(\"", region, "\", \"", dataset,
@@ -314,13 +335,14 @@ validate_jkp_selection <- function(
   }
 
   if (dataset == "factors") {
-    monthly_only <- availability$factors_monthly_only[[region]]
-    is_monthly_only <- !is.null(monthly_only) && selector %in% monthly_only
-    if (frequency == "daily" && is_monthly_only) {
+    monthly_only <- intersect(
+      selector, availability$factors_monthly_only[[region]]
+    )
+    if (frequency == "daily" && length(monthly_only) > 0) {
       cli::cli_abort(c(
         paste0(
-          "{.val {selector}} is only available at monthly frequency for ",
-          "region {.val {region}}."
+          "{.val {monthly_only}} {?is/are} only available at monthly ",
+          "frequency for region {.val {region}}."
         ),
         "i" = "Set {.code frequency = \"monthly\"}."
       ))

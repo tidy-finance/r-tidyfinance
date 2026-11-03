@@ -257,3 +257,18 @@ test_that("quiet suppresses the pseudo data notice", {
   )
   expect_no_message(download_data("Pseudo Data", "ccm_links", quiet = TRUE))
 })
+
+test_that("download_data forwards several factors to Global Factor Data", {
+  captured <- NULL
+
+  local_mocked_bindings(
+    check_supported_domain = function(domain) NULL,
+    download_data_jkp = function(...) {
+      captured <<- list(...)
+      tibble::tibble(ok = TRUE)
+    }
+  )
+
+  download_data("Global Factor Data", factors = c("be_me", "ret_12_1"))
+  expect_identical(captured$factors, c("be_me", "ret_12_1"))
+})
