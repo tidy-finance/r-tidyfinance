@@ -1,9 +1,8 @@
 # tidyfinance (development version)
 
-* Downloads no longer send a random browser user agent, which Kenneth French's
-  server now answers with 404 Not Found (#356). This affects Fama-French,
-  Open Source Asset Pricing, Damodaran, Jensen-Kelly-Pedersen, Hugging Face
-  and index constituent downloads.
+* Downloads no longer send a random browser user agent (#356). This affects 
+  Fama-French, Open Source Asset Pricing, Damodaran, Jensen-Kelly-Pedersen, 
+  Hugging Face and index constituent downloads.
 
 # tidyfinance 1.0.0
 
