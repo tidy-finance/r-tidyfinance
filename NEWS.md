@@ -1,6 +1,7 @@
 # tidyfinance (development version)
 
-* `download_data()` for Fama-French data forces HTTP/1.1, because Kenneth French's server now answers HTTP/2 requests from R with 404 Not Found (#356).
+* `download_data()` for Fama-French data no longer sends a random browser user 
+  agent(#356).
 
 # tidyfinance 1.0.0
 
