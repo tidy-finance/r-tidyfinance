@@ -55,10 +55,15 @@ contains 5-second aggregated orderbook snapshots filtered to the requested
 date range. For \code{"factor_library"}, contains the columns \code{id}, \code{date}, and
 \code{ret} joined with the full grid metadata for the matched portfolio IDs.
 For \code{"factor_library_costs"}, contains the columns \code{id}, \code{date},
-\code{turnover}, \code{cost}, and \code{microcap_share} joined with the grid metadata in
-the same way. The costs start in January 1994; \code{turnover} and \code{cost} are
-\code{0} in months without trades and \code{microcap_share} is \code{NA} in months
-without holdings. For \code{"factor_library_persistence"}, contains the columns
+\code{turnover}, one cost column per spread measure (\code{cost_quoted},
+\code{cost_gibbs}, \code{cost_high_low}, \code{cost_close_high_low}, \code{cost_edge},
+\code{cost_vov}, and \code{cost_composite_spread}, in units of \code{ret}), \code{impact}
+(the price impact per dollar of the size of each leg, so \code{ret - W * impact} is the return of legs worth \code{W} dollars each), and
+\code{microcap_share}, joined with the grid metadata in the same way. The
+costs are \code{0} in months without trades; \code{cost_quoted} and \code{cost_edge} are
+\code{NA} before February 1993 and August 1992. \code{microcap_share} is \code{NA} in
+months without holdings. Releases before November 2026 have a single
+\code{cost} column from January 1994 instead. For \code{"factor_library_persistence"}, contains the columns
 \code{sorting_variable}, \code{sorting_variable_lag}, \code{rebalancing}, \code{date}, and
 \code{persistence}, the Spearman correlation across stocks between the value
 of the sorting variable under the lag and rebalancing and its up-to-date
@@ -91,10 +96,18 @@ values. No default is applied.
 \item \code{min_size_quantile} (defaults to \code{0.2}): Fraction of the smallest
 stocks (by market cap) excluded from the portfolio universe. \code{0.2}
 drops the bottom 20\%.
+\item \code{min_stock_price} (defaults to \code{NA}): Minimum stock price in the
+month before, \code{NA} (none) or \code{5}.
+\item \code{min_listing_age} (defaults to \code{NULL}, unrestricted): Minimum
+listing age in months, \code{NA} (none) in the current release and \code{24} in
+the October 2026 release.
 \item \code{exclude_financials} (defaults to \code{FALSE}): Whether to drop
 financial-sector stocks (SIC 6000-6799) from the universe.
 \item \code{exclude_utilities} (default: \code{FALSE}): Whether to drop
 utility-sector stocks (SIC 4900-4999) from the universe.
+\item \code{exclude_negative_book_equity} (defaults to \code{NULL},
+unrestricted): Whether to drop firms with negative book equity,
+always \code{FALSE} so far.
 \item \code{exclude_negative_earnings} (defaults to \code{FALSE}): Whether to
 drop firms with negative earnings before sorting.
 \item \code{sorting_variable_lag} (defaults to \code{"6m"}): Lag applied to the
@@ -121,7 +134,15 @@ size quantile of the stocks that set the main breakpoints (e.g.,
 \item \code{weighting_scheme} (defaults to \code{"VW"}): Return weighting within
 portfolios: \code{"VW"} for value-weighted, \code{"EW"} for equal-weighted, or
 \code{"capped VW"} for value-weighted with capped weights.
+\item \code{is_osap_path}, \code{is_jkp_path}, \code{is_hxz_path} (no default): Flags
+for the specification closest to the original study, as Open Source
+Asset Pricing document it, and the specifications of Jensen, Kelly,
+and Pedersen (2023) and of Hou, Xue, and Zhang (2020). These
+specifications differ from the defaults above, so combine the flags
+with \code{fill_all = TRUE}, e.g., \verb{is_jkp_path = TRUE, fill_all = TRUE}.
 }
+
+Defaults on columns that the grid of an earlier release lacks are skipped.
 }
 \section{Revisions}{
 

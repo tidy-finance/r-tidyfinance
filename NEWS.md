@@ -1,5 +1,19 @@
 # tidyfinance (development version)
 
+## Bug fixes
+
+- `download_data("Tidy Finance", "factor_library", ...)` and
+  `"factor_library_costs"` filter on the grid columns of the November 2026
+  release: `min_stock_price`, which defaults to `NA` (no price filter),
+  `min_listing_age` and `exclude_negative_book_equity`, which are constant
+  within a release and unrestricted by default, and the flags `is_osap_path`, `is_jkp_path`, and `is_hxz_path`, which take
+  no default. Before, every specification came twice, with and without the
+  $5 price filter. Defaults on columns that the grid of an earlier
+  `grid_revision` lacks are skipped.
+- The documentation of `"factor_library_costs"` describes the cost columns of
+  the November 2026 release, one per spread measure plus `impact`, which
+  replace the single `cost` column of earlier releases.
+
 # tidyfinance 1.0.0
 
 ## Breaking changes
