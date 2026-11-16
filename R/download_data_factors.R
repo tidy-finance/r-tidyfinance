@@ -175,8 +175,11 @@ download_french_data_factors <- function(file_url, max_tries = 5) {
   tmp_zip <- tempfile(fileext = ".zip")
   on.exit(unlink(tmp_zip), add = TRUE)
 
+  # Kenneth French's server answers HTTP/2 requests from libcurl with 404
+  # (since November 2026); HTTP/1.1 works.
   httr2::request(url) |>
     httr2::req_user_agent(get_random_user_agent()) |>
+    httr2::req_options(http_version = 2) |>
     httr2::req_timeout(seconds = 60) |>
     httr2::req_retry(max_tries = max_tries) |>
     httr2::req_perform(path = tmp_zip)
