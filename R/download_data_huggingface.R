@@ -36,7 +36,6 @@ get_available_huggingface_files <- function(organization, dataset) {
 
   repeat {
     resp <- httr2::request(next_url) |>
-      httr2::req_user_agent("httr2") |>
       httr2::req_perform()
 
     body <- resp |>
@@ -63,7 +62,11 @@ get_available_huggingface_files <- function(organization, dataset) {
     dplyr::mutate(
       url = paste0(
         "https://huggingface.co/datasets/",
-        organization, "/", dataset, "/resolve/main/", .data$path
+        organization,
+        "/",
+        dataset,
+        "/resolve/main/",
+        .data$path
       )
     )
 }
@@ -271,7 +274,8 @@ download_data_huggingface <- function(
   # Both are in tidy-finance/factor-library-grid, so `revision`, which pins
   # tidy-finance/factor-library, would pin nothing
   if (
-    dataset %in% c("factor_library_grid", "factor_library_persistence") &&
+    dataset %in%
+      c("factor_library_grid", "factor_library_persistence") &&
       "revision" %in% ...names()
   ) {
     cli::cli_abort(c(
@@ -678,7 +682,10 @@ download_factor_library_table <- function(ids, table, revision, grid_revision) {
     )
     if (length(no_data) > 5) {
       shown <- paste0(
-        shown, ", ... (", format(length(no_data), big.mark = ","), " IDs)"
+        shown,
+        ", ... (",
+        format(length(no_data), big.mark = ","),
+        " IDs)"
       )
     }
     cli::cli_warn(paste(
@@ -975,7 +982,6 @@ read_factor_library_files <- function(dataset, revision, paths) {
 perform_factor_library_requests <- function(urls) {
   requests <- lapply(urls, \(url) {
     httr2::request(url) |>
-      httr2::req_user_agent(get_random_user_agent()) |>
       httr2::req_throttle(
         capacity = 16,
         fill_time_s = 2,

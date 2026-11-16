@@ -176,7 +176,6 @@ download_french_data_factors <- function(file_url, max_tries = 5) {
   on.exit(unlink(tmp_zip), add = TRUE)
 
   httr2::request(url) |>
-    httr2::req_user_agent(get_random_user_agent()) |>
     httr2::req_timeout(seconds = 60) |>
     httr2::req_retry(max_tries = max_tries) |>
     httr2::req_perform(path = tmp_zip)
@@ -444,9 +443,14 @@ download_data_factors_q <- function(
 
   if (frequency == "monthly") {
     processed_data <- raw_data |>
-      mutate(date = ymd(paste(
-        .data$year, .data$month, "01", sep = "-"
-      ))) |>
+      mutate(
+        date = ymd(paste(
+          .data$year,
+          .data$month,
+          "01",
+          sep = "-"
+        ))
+      ) |>
       select(-c("year", "month"))
   } else if (frequency == "daily") {
     processed_data <- raw_data |>
@@ -456,9 +460,14 @@ download_data_factors_q <- function(
       mutate(date = .data$year)
   } else if (frequency %in% c("weekly", "quarterly")) {
     processed_data <- raw_data |>
-      mutate(date = ymd(paste(
-        .data$year, .data$month, .data$day, sep = "-"
-      ))) |>
+      mutate(
+        date = ymd(paste(
+          .data$year,
+          .data$month,
+          .data$day,
+          sep = "-"
+        ))
+      ) |>
       select(-c("year", "month", "day"))
   }
 
@@ -467,7 +476,10 @@ download_data_factors_q <- function(
     rename_with(tolower) |>
     mutate(across(-"date", ~ . / 100)) |>
     select(
-      "date", risk_free = "f", mkt_excess = "mkt", everything()
+      "date",
+      risk_free = "f",
+      mkt_excess = "mkt",
+      everything()
     )
 
   if (!is.null(start_date) && !is.null(end_date)) {

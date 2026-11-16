@@ -16,7 +16,6 @@ test_that("download errors can return NULL", {
     list_supported_indexes = function() {
       tibble::tibble(index = "DAX", url = "url", skip = 0)
     },
-    get_random_user_agent = function() "ua",
     handle_download_error = function(expr, fallback) fallback
   )
 
@@ -28,7 +27,6 @@ test_that("non-200 responses fail", {
     list_supported_indexes = function() {
       tibble::tibble(index = "DAX", url = "url", skip = 0)
     },
-    get_random_user_agent = function() "ua",
     handle_download_error = function(expr, fallback) {
       list(status_code = 500)
     }
@@ -55,7 +53,6 @@ test_that("German CSV layout is parsed and cleaned", {
     list_supported_indexes = function() {
       tibble::tibble(index = "DAX", url = "url", skip = 0)
     },
-    get_random_user_agent = function() "ua",
     handle_download_error = function(expr, fallback) {
       list(status_code = 200, body = csv)
     }
@@ -132,7 +129,6 @@ test_that("Asset Class layout covers exchanges and symbol rules", {
     list_supported_indexes = function() {
       tibble::tibble(index = "MSCI World", url = "url", skip = 0)
     },
-    get_random_user_agent = function() "ua",
     handle_download_error = function(expr, fallback) {
       list(status_code = 200, body = csv)
     }
@@ -206,7 +202,6 @@ test_that("download request pipeline is executed", {
     list_supported_indexes = function() {
       tibble::tibble(index = "S&P 500", url = "mock-url", skip = 0)
     },
-    get_random_user_agent = function() "test-agent",
     handle_download_error = function(expr, fallback) expr()
   )
 
@@ -221,14 +216,8 @@ test_that("download request pipeline is executed", {
       req$error_checked <- TRUE
       req
     },
-    req_user_agent = function(req, user_agent) {
-      expect_equal(user_agent, "test-agent")
-      req$user_agent <- user_agent
-      req
-    },
     req_perform = function(req) {
       expect_true(req$error_checked)
-      expect_equal(req$user_agent, "test-agent")
       list(status_code = 200, body = csv)
     },
     resp_body_string = function(resp) resp$body
@@ -253,7 +242,6 @@ test_that("header row is detected after a preamble", {
     list_supported_indexes = function() {
       tibble::tibble(index = "DAX", url = "url", skip = 0)
     },
-    get_random_user_agent = function() "ua",
     handle_download_error = function(expr, fallback) {
       list(status_code = 200, body = csv)
     }
@@ -366,7 +354,6 @@ test_that("failed downloads name the index and point to path", {
     list_supported_indexes = function() {
       tibble::tibble(index = "DAX", url = "https://example.com", skip = 0)
     },
-    get_random_user_agent = function() "ua",
     handle_download_error = function(expr, fallback) {
       list(status_code = 404)
     }

@@ -383,10 +383,8 @@ test_that("list_supported_jkp_factors returns empty tibble on failure", {
 })
 
 test_that("fetch_jkp_availability parses the JSON manifest", {
-  local_mocked_bindings(get_random_user_agent = function() "test-agent")
   local_mocked_bindings(
     request = function(url) list(url = url),
-    req_user_agent = function(req, ...) req,
     req_timeout = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_perform = function(req, path = NULL) invisible(req),
@@ -402,10 +400,8 @@ test_that("fetch_jkp_availability parses the JSON manifest", {
 })
 
 test_that("download_jkp_file unzips and reads the first CSV", {
-  local_mocked_bindings(get_random_user_agent = function() "test-agent")
   local_mocked_bindings(
     request = function(url) list(url = url),
-    req_user_agent = function(req, ...) req,
     req_timeout = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_perform = function(req, path = NULL) {
@@ -432,10 +428,8 @@ test_that("download_jkp_file unzips and reads the first CSV", {
 })
 
 test_that("download_jkp_file aborts when the archive has no CSV", {
-  local_mocked_bindings(get_random_user_agent = function() "test-agent")
   local_mocked_bindings(
     request = function(url) list(url = url),
-    req_user_agent = function(req, ...) req,
     req_timeout = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_perform = function(req, path = NULL) {
@@ -456,10 +450,8 @@ test_that("download_jkp_file aborts when the archive has no CSV", {
 })
 
 test_that("download_jkp_csv reads a plain CSV file", {
-  local_mocked_bindings(get_random_user_agent = function() "test-agent")
   local_mocked_bindings(
     request = function(url) list(url = url),
-    req_user_agent = function(req, ...) req,
     req_timeout = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_perform = function(req, path = NULL) {

@@ -616,11 +616,7 @@ test_that("parse_french_data_factors: drops merged annual rows", {
 
 test_that("download_french_data_factors: parses first table", {
   local_mocked_bindings(
-    get_random_user_agent = function() "test-agent"
-  )
-  local_mocked_bindings(
     request = function(url) list(url = url),
-    req_user_agent = function(req, ...) req,
     req_timeout = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_perform = function(req, path = NULL) {
@@ -649,12 +645,10 @@ test_that("download_french_data_factors: parses first table", {
 test_that("download_data_factors_ff: full path converts integer dates", {
   local_mocked_bindings(
     is_legacy_type_ff = function(x) FALSE,
-    determine_frequency_ff = function(x) "monthly",
-    get_random_user_agent = function() "test-agent"
+    determine_frequency_ff = function(x) "monthly"
   )
   local_mocked_bindings(
     request = function(url) list(url = url),
-    req_user_agent = function(req, ...) req,
     req_timeout = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_perform = function(req, path = NULL) {
@@ -694,12 +688,10 @@ test_that("is_breakpoints_ff: detects breakpoints datasets", {
 local_mock_ff_file <- function(lines, env = parent.frame()) {
   testthat::local_mocked_bindings(
     is_legacy_type_ff = function(x) FALSE,
-    get_random_user_agent = function() "test-agent",
     .env = env
   )
   testthat::local_mocked_bindings(
     request = function(url) list(url = url),
-    req_user_agent = function(req, ...) req,
     req_timeout = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_perform = function(req, path = NULL) {
@@ -810,11 +802,7 @@ test_that("download_data_factors_ff: parses prior return breakpoints", {
 
 test_that("download_french_data_factors: aborts when archive has no CSV", {
   local_mocked_bindings(
-    get_random_user_agent = function() "test-agent"
-  )
-  local_mocked_bindings(
     request = function(url) list(url = url),
-    req_user_agent = function(req, ...) req,
     req_timeout = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_perform = function(req, path = NULL) {

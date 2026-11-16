@@ -83,13 +83,10 @@ download_data_constituents <- function(index = NULL, path = NULL) {
 
     url <- supported_indexes$url[supported_indexes$index == index]
 
-    user_agent <- get_random_user_agent()
-
     response <- handle_download_error(
       function() {
         httr2::request(url) |>
           httr2::req_error(is_error = \(resp) FALSE) |>
-          httr2::req_user_agent(user_agent) |>
           httr2::req_perform()
       },
       fallback = NULL
