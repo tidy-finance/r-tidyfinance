@@ -7,14 +7,20 @@ make_grid <- function(id = 1L) {
     sorting_method = "univariate",
     n_portfolios_main = 10L,
     min_size_quantile = 0.2,
+    min_stock_price = NA_real_,
+    min_listing_age = NA_integer_,
     exclude_financials = FALSE,
     exclude_utilities = FALSE,
+    exclude_negative_book_equity = FALSE,
     exclude_negative_earnings = FALSE,
     rebalancing = "monthly",
     n_portfolios_secondary = NA_real_,
     breakpoints_exchanges = "NYSE",
     breakpoints_min_size_threshold = NA_real_,
-    weighting_scheme = "VW"
+    weighting_scheme = "VW",
+    is_osap_path = FALSE,
+    is_jkp_path = FALSE,
+    is_hxz_path = FALSE
   )
 }
 
@@ -29,10 +35,23 @@ make_costs <- function(id, cost = 0.001) {
     id = id,
     date = as.Date("2020-01-01"),
     turnover = 0.1,
-    cost = cost,
+    cost_quoted = cost,
+    cost_gibbs = cost,
+    cost_high_low = cost,
+    cost_close_high_low = cost,
+    cost_edge = cost,
+    cost_vov = cost,
+    cost_composite_spread = cost,
+    impact = 1e-12,
     microcap_share = 0.2
   )
 }
+
+cost_columns <- c(
+  "id", "date", "turnover", "cost_quoted", "cost_gibbs", "cost_high_low",
+  "cost_close_high_low", "cost_edge", "cost_vov", "cost_composite_spread",
+  "impact", "microcap_share"
+)
 
 # Persistence file with the columns of the file on the Hub.
 make_persistence <- function() {
@@ -460,6 +479,63 @@ test_that("fill_all = TRUE: only explicit filters applied", {
   expect_equal(ids, 1L)
 })
 
+test_that("defaults to no price filter and filters on min_stock_price", {
+  grid <- dplyr::bind_rows(make_grid(1L), make_grid(2L)) |>
+    dplyr::mutate(min_stock_price = c(NA, 5))
+  testthat::local_mocked_bindings(
+    download_factor_library_grid = function(...) grid
+  )
+
+  expect_equal(filter_factor_library_grid(sorting_variable = "me"), 1L)
+  expect_equal(
+    filter_factor_library_grid(sorting_variable = "me", min_stock_price = 5),
+    2L
+  )
+  expect_equal(
+    filter_factor_library_grid(sorting_variable = "me", min_stock_price = NULL),
+    c(1L, 2L)
+  )
+})
+
+test_that("filters on the path flags without defaults", {
+  grid <- dplyr::bind_rows(make_grid(1L), make_grid(2L)) |>
+    dplyr::mutate(is_jkp_path = c(FALSE, TRUE), weighting_scheme = "capped VW")
+  testthat::local_mocked_bindings(
+    download_factor_library_grid = function(...) grid
+  )
+
+  expect_equal(
+    filter_factor_library_grid(is_jkp_path = TRUE, fill_all = TRUE),
+    2L
+  )
+})
+
+test_that("leaves min_listing_age unrestricted by default", {
+  grid <- make_grid(1L) |>
+    dplyr::mutate(min_listing_age = 24L)
+  testthat::local_mocked_bindings(
+    download_factor_library_grid = function(...) grid
+  )
+
+  expect_equal(filter_factor_library_grid(sorting_variable = "me"), 1L)
+})
+
+test_that("skips defaults on columns that an earlier grid lacks", {
+  grid <- make_grid(1L) |>
+    dplyr::select(
+      -"min_stock_price", -"min_listing_age", -"exclude_negative_book_equity"
+    )
+  testthat::local_mocked_bindings(
+    download_factor_library_grid = function(...) grid
+  )
+
+  expect_equal(filter_factor_library_grid(sorting_variable = "me"), 1L)
+  expect_error(
+    filter_factor_library_grid(sorting_variable = "me", min_stock_price = 5),
+    "has no column"
+  )
+})
+
 test_that("explicit n_portfolios_secondary = NULL returns all values", {
   # Row 1 is a univariate sort (NA secondary); row 2 is a bivariate sort
   # with a non-NA secondary. Passing NULL should remove the filter and
@@ -825,13 +901,10 @@ test_that("costs: reads the files of the same names in costs/", {
   )
   expect_named(
     result,
-    c(
-      "id", "date", "turnover", "cost", "microcap_share",
-      names(make_grid())[-1]
-    )
+    c(cost_columns, names(make_grid())[-1])
   )
   expect_equal(result$id, c(1L, 1001L))
-  expect_equal(result$cost, c(0.01, 0.03))
+  expect_equal(result$cost_composite_spread, c(0.01, 0.03))
 })
 
 test_that("costs: warns about ids without costs", {
@@ -862,10 +935,7 @@ test_that("costs: returns no rows but all columns when no id has costs", {
   expect_equal(nrow(result), 0L)
   expect_named(
     result,
-    c(
-      "id", "date", "turnover", "cost", "microcap_share",
-      names(make_grid())[-1]
-    )
+    c(cost_columns, names(make_grid())[-1])
   )
   expect_type(result$id, "integer")
   expect_s3_class(result$date, "Date")
@@ -1237,6 +1307,34 @@ test_that("requests do not retry inside httr2", {
   resps <- perform_factor_library_requests("https://huggingface.co/a.parquet")
 
   expect_s3_class(resps[[1]], "httr2_http_429")
+})
+
+# ── Release of 13 November 2026 ──────────────────────
+
+test_that("reads the cost measures of the November release", {
+  skip_on_cran()
+  skip_if_offline("huggingface.co")
+
+  costs <- read_factor_library_files(
+    "factor-library",
+    "f0a3962725e4638c454fce649ffe1eb8d031039c",
+    "costs/id_0000001-0001000.parquet"
+  )[[1]]
+
+  expect_named(costs, cost_columns)
+})
+
+test_that("the November grid has the columns the filters use", {
+  skip_on_cran()
+  skip_if_offline("huggingface.co")
+
+  slice <- read_factor_library_files(
+    "factor-library-grid",
+    "4cf4ee3b51481ed36118c640fc62bcb9ed222a2c",
+    "portfolio_sort_grid/assetgrowth.parquet"
+  )[[1]]
+
+  expect_named(slice, names(make_grid()), ignore.order = TRUE)
 })
 
 # ── Release of 20 October 2026 ───────────────────────

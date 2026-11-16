@@ -151,10 +151,18 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'     \item `min_size_quantile` (defaults to `0.2`): Fraction of the smallest
 #'       stocks (by market cap) excluded from the portfolio universe. `0.2`
 #'       drops the bottom 20%.
+#'     \item `min_stock_price` (defaults to `NA`): Minimum stock price in the
+#'       month before, `NA` (none) or `5`.
+#'     \item `min_listing_age` (defaults to `NULL`, unrestricted): Minimum
+#'       listing age in months, `NA` (none) in the current release and `24` in
+#'       the October 2026 release.
 #'     \item `exclude_financials` (defaults to `FALSE`): Whether to drop
 #'       financial-sector stocks (SIC 6000-6799) from the universe.
 #'     \item `exclude_utilities` (default: `FALSE`): Whether to drop
 #'       utility-sector stocks (SIC 4900-4999) from the universe.
+#'     \item `exclude_negative_book_equity` (defaults to `NULL`,
+#'       unrestricted): Whether to drop firms with negative book equity,
+#'       always `FALSE` so far.
 #'     \item `exclude_negative_earnings` (defaults to `FALSE`): Whether to
 #'       drop firms with negative earnings before sorting.
 #'     \item `sorting_variable_lag` (defaults to `"6m"`): Lag applied to the
@@ -181,17 +189,31 @@ get_available_huggingface_files <- function(organization, dataset) {
 #'     \item `weighting_scheme` (defaults to `"VW"`): Return weighting within
 #'       portfolios: `"VW"` for value-weighted, `"EW"` for equal-weighted, or
 #'       `"capped VW"` for value-weighted with capped weights.
+#'     \item `is_osap_path`, `is_jkp_path`, `is_hxz_path` (no default): Flags
+#'       for the specification closest to the original study, as Open Source
+#'       Asset Pricing document it, and the specifications of Jensen, Kelly,
+#'       and Pedersen (2023) and of Hou, Xue, and Zhang (2020). These
+#'       specifications differ from the defaults above, so combine the flags
+#'       with `fill_all = TRUE`, e.g., `is_jkp_path = TRUE, fill_all = TRUE`.
 #'   }
+#'
+#' Defaults on columns that the grid of an earlier release lacks are skipped.
 #'
 #' @returns A tibble with the downloaded data. For `"high_frequency_sp500"`,
 #'   contains 5-second aggregated orderbook snapshots filtered to the requested
 #'   date range. For `"factor_library"`, contains the columns `id`, `date`, and
 #'   `ret` joined with the full grid metadata for the matched portfolio IDs.
 #'   For `"factor_library_costs"`, contains the columns `id`, `date`,
-#'   `turnover`, `cost`, and `microcap_share` joined with the grid metadata in
-#'   the same way. The costs start in January 1994; `turnover` and `cost` are
-#'   `0` in months without trades and `microcap_share` is `NA` in months
-#'   without holdings. For `"factor_library_persistence"`, contains the columns
+#'   `turnover`, one cost column per spread measure (`cost_quoted`,
+#'   `cost_gibbs`, `cost_high_low`, `cost_close_high_low`, `cost_edge`,
+#'   `cost_vov`, and `cost_composite_spread`, in units of `ret`), `impact`
+#'   (the price impact per dollar of the size of each leg, so `ret - W *
+#'   impact` is the return of legs worth `W` dollars each), and
+#'   `microcap_share`, joined with the grid metadata in the same way. The
+#'   costs are `0` in months without trades; `cost_quoted` and `cost_edge` are
+#'   `NA` before February 1993 and August 1992. `microcap_share` is `NA` in
+#'   months without holdings. Releases before November 2026 have a single
+#'   `cost` column from January 1994 instead. For `"factor_library_persistence"`, contains the columns
 #'   `sorting_variable`, `sorting_variable_lag`, `rebalancing`, `date`, and
 #'   `persistence`, the Spearman correlation across stocks between the value
 #'   of the sorting variable under the lag and rebalancing and its up-to-date
@@ -386,8 +408,11 @@ check_supported_dataset_huggingface <- function(dataset) {
 #'   \describe{
 #'     \item{`sorting_variable`}{No default.}
 #'     \item{`min_size_quantile`}{`0.2`}
+#'     \item{`min_stock_price`}{`NA`}
+#'     \item{`min_listing_age`}{`NULL`}
 #'     \item{`exclude_financials`}{`FALSE`}
 #'     \item{`exclude_utilities`}{`FALSE`}
+#'     \item{`exclude_negative_book_equity`}{`NULL`}
 #'     \item{`exclude_negative_earnings`}{`FALSE`}
 #'     \item{`sorting_variable_lag`}{`"6m"`}
 #'     \item{`rebalancing`}{`"monthly"`}
@@ -398,8 +423,10 @@ check_supported_dataset_huggingface <- function(dataset) {
 #'     \item{`breakpoints_exchanges`}{`"NYSE"`}
 #'     \item{`breakpoints_min_size_threshold`}{`NULL`}
 #'     \item{`weighting_scheme`}{`"VW"`}
+#'     \item{`is_osap_path`, `is_jkp_path`, `is_hxz_path`}{No default.}
 #'   }
-#'   Each value can be a vector to match multiple levels.
+#'   Each value can be a vector to match multiple levels. Defaults on columns
+#'   that the grid of `grid_revision` lacks are skipped.
 #' @param fill_all Logical(1). If `FALSE` (default), columns not present in
 #'   `...` are filled with their defaults before filtering. If `TRUE`, only the
 #'   explicitly provided filters are applied and all other columns are left
@@ -419,8 +446,12 @@ filter_factor_library_grid <- function(
 
   defaults <- list(
     min_size_quantile = 0.2,
+    min_stock_price = NA_real_,
+    # Each release has one value of these two, so they are not restricted
+    min_listing_age = NULL,
     exclude_financials = FALSE,
     exclude_utilities = FALSE,
+    exclude_negative_book_equity = NULL,
     exclude_negative_earnings = FALSE,
     sorting_variable_lag = "6m",
     rebalancing = "monthly",
@@ -431,8 +462,10 @@ filter_factor_library_grid <- function(
     breakpoints_min_size_threshold = NA_real_,
     weighting_scheme = "VW"
   )
+  # The flags mark single specifications, so they take no default
+  path_flags <- c("is_osap_path", "is_jkp_path", "is_hxz_path")
 
-  supported_names <- c("sorting_variable", names(defaults))
+  supported_names <- c("sorting_variable", names(defaults), path_flags)
   unsupported <- setdiff(names(filters), supported_names)
   if (length(unsupported) > 0) {
     cli::cli_abort(c(
@@ -480,6 +513,22 @@ filter_factor_library_grid <- function(
   result <- download_factor_library_grid(grid_revision = grid_revision)
 
   filters <- purrr::compact(filters)
+
+  # Grids of earlier releases lack some columns. A default on such a column
+  # selects what the release has anyway, so it is dropped; a filter that the
+  # user asked for cannot be applied.
+  missing_columns <- setdiff(names(filters), names(result))
+  requested_missing <- intersect(missing_columns, user_supplied)
+  if (length(requested_missing) > 0) {
+    cli::cli_abort(c(
+      paste(
+        "The grid of revision {.val {grid_revision}} has no column",
+        "{.val {requested_missing}}."
+      ),
+      "i" = "Drop the filter or choose a later {.arg grid_revision}."
+    ))
+  }
+  filters <- filters[setdiff(names(filters), missing_columns)]
 
   for (col in names(filters)) {
     result <- dplyr::filter(result, .data[[col]] %in% filters[[col]])
@@ -664,7 +713,14 @@ download_factor_library_table <- function(ids, table, revision, grid_revision) {
         id = integer(),
         date = as.Date(character()),
         turnover = double(),
-        cost = double(),
+        cost_quoted = double(),
+        cost_gibbs = double(),
+        cost_high_low = double(),
+        cost_close_high_low = double(),
+        cost_edge = double(),
+        cost_vov = double(),
+        cost_composite_spread = double(),
+        impact = double(),
         microcap_share = double()
       )
     }
