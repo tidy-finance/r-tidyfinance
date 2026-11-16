@@ -621,6 +621,7 @@ test_that("download_french_data_factors: parses first table", {
   local_mocked_bindings(
     request = function(url) list(url = url),
     req_user_agent = function(req, ...) req,
+    req_options = function(req, ...) req,
     req_timeout = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_perform = function(req, path = NULL) {
@@ -655,6 +656,7 @@ test_that("download_data_factors_ff: full path converts integer dates", {
   local_mocked_bindings(
     request = function(url) list(url = url),
     req_user_agent = function(req, ...) req,
+    req_options = function(req, ...) req,
     req_timeout = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_perform = function(req, path = NULL) {
@@ -700,6 +702,7 @@ local_mock_ff_file <- function(lines, env = parent.frame()) {
   testthat::local_mocked_bindings(
     request = function(url) list(url = url),
     req_user_agent = function(req, ...) req,
+    req_options = function(req, ...) req,
     req_timeout = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_perform = function(req, path = NULL) {
@@ -815,6 +818,7 @@ test_that("download_french_data_factors: aborts when archive has no CSV", {
   local_mocked_bindings(
     request = function(url) list(url = url),
     req_user_agent = function(req, ...) req,
+    req_options = function(req, ...) req,
     req_timeout = function(req, ...) req,
     req_retry = function(req, ...) req,
     req_perform = function(req, path = NULL) {
