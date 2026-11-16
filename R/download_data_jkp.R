@@ -267,7 +267,6 @@ fetch_jkp_availability <- function(max_tries = 3) {
   )
 
   resp <- httr2::request(url) |>
-    httr2::req_user_agent(get_random_user_agent()) |>
     httr2::req_timeout(seconds = 60) |>
     httr2::req_retry(max_tries = max_tries) |>
     httr2::req_perform()
@@ -411,7 +410,6 @@ download_jkp_file <- function(url, max_tries = 5) {
   on.exit(unlink(tmp_zip), add = TRUE)
 
   httr2::request(url) |>
-    httr2::req_user_agent(get_random_user_agent()) |>
     httr2::req_timeout(seconds = 180) |>
     httr2::req_retry(max_tries = max_tries) |>
     httr2::req_perform(path = tmp_zip)
@@ -444,7 +442,6 @@ download_jkp_csv <- function(url, max_tries = 5) {
   on.exit(unlink(tmp_csv), add = TRUE)
 
   httr2::request(url) |>
-    httr2::req_user_agent(get_random_user_agent()) |>
     httr2::req_timeout(seconds = 180) |>
     httr2::req_retry(max_tries = max_tries) |>
     httr2::req_perform(path = tmp_csv)

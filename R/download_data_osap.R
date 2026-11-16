@@ -59,7 +59,6 @@ download_data_osap <- function(
   raw_data <- handle_download_error(
     function() {
       response <- httr2::request(url) |>
-        httr2::req_user_agent(get_random_user_agent()) |>
         httr2::req_timeout(seconds = 120) |>
         httr2::req_perform()
       body <- httr2::resp_body_string(response)

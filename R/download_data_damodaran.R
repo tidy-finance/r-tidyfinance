@@ -184,7 +184,6 @@ download_damodaran_file <- function(file_path) {
   status <- handle_download_error(
     function() {
       response <- httr2::request(url) |>
-        httr2::req_user_agent(get_random_user_agent()) |>
         httr2::req_timeout(seconds = 60) |>
         httr2::req_retry(max_tries = 3) |>
         httr2::req_error(is_error = function(resp) FALSE) |>

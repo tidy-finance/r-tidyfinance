@@ -13,7 +13,6 @@ read_parquet_url <- function(url) {
   tmp <- tempfile(fileext = ".parquet")
   on.exit(unlink(tmp), add = TRUE)
   httr2::request(url) |>
-    httr2::req_user_agent(get_random_user_agent()) |>
     httr2::req_perform(path = tmp)
   nanoparquet::read_parquet(tmp)
 }

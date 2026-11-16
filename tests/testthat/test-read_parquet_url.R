@@ -9,7 +9,6 @@ test_that("read_parquet_url downloads via httr2 and reads with nanoparquet", {
 
   testthat::local_mocked_bindings(
     request = function(url) list(url = url),
-    req_user_agent = function(req, ...) req,
     req_perform = function(req, ..., path) {
       file.copy(fixture_path, path, overwrite = TRUE)
       invisible(NULL)
@@ -28,7 +27,6 @@ test_that("read_parquet_url downloads via httr2 and reads with nanoparquet", {
 test_that("read_parquet_url propagates httr2 errors", {
   testthat::local_mocked_bindings(
     request = function(url) list(url = url),
-    req_user_agent = function(req, ...) req,
     req_perform = function(req, ...) stop("HTTP 404 Not Found"),
     .package = "httr2"
   )
@@ -42,7 +40,6 @@ test_that("read_parquet_url propagates httr2 errors", {
 test_that("read_parquet_url propagates nanoparquet read errors", {
   testthat::local_mocked_bindings(
     request = function(url) list(url = url),
-    req_user_agent = function(req, ...) req,
     req_perform = function(req, ..., path) {
       writeLines("not a parquet file", path)
       invisible(NULL)
