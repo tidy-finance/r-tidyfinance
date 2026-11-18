@@ -19,12 +19,11 @@ returned by \code{\link[=list_supported_datasets]{list_supported_datasets()}}: \
 \code{"Goyal-Welch"}, \code{"WRDS"}, \code{"Pseudo Data"}, \code{"Index Constituents"},
 \code{"FRED"}, \code{"Stock Prices"}, \code{"Open Source Asset Pricing"},
 \code{"Global Factor Data"}, \code{"Pastor-Stambaugh"}, \code{"Stambaugh-Yuan"},
-\code{"Damodaran"}, or \code{"Tidy Finance"}. Use \code{"Pseudo Data"} to obtain
-pseudo data with the
-same schema as \code{"WRDS"} for testing or rendering without a WRDS
-subscription. The previous machine-readable names (e.g., \code{"famafrench"},
-\code{"wrds"}, \code{"pseudo"}, \code{"tidyfinance"}) are deprecated but still
-accepted.}
+\code{"Baker-Wurgler"}, \code{"Damodaran"}, or \code{"Tidy Finance"}. Use
+\code{"Pseudo Data"} to obtain pseudo data with the same schema as \code{"WRDS"}
+for testing or rendering without a WRDS subscription. The previous
+machine-readable names (e.g., \code{"famafrench"}, \code{"wrds"}, \code{"pseudo"},
+\code{"tidyfinance"}) are deprecated but still accepted.}
 
 \item{dataset}{Optional. The specific dataset to download within the
 domain.}
@@ -88,6 +87,12 @@ download_data("FRED", "FRED-MD")
 download_data("FRED", "FRED-MD", transform = TRUE)
 download_data("FRED", "FRED-QD", vintage = "2020-03")
 download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
+download_data(
+  "Baker-Wurgler",
+  "sentiment_monthly",
+  "2020-01-01",
+  "2020-12-31"
+)
 download_data("Damodaran", "wacc", region = "europe", year = 2020:2024)
 download_data(
   "Tidy Finance",
@@ -123,6 +128,7 @@ download_data(
 }
 \seealso{
 Other download functions:
+\code{\link[=download_data_baker_wurgler]{download_data_baker_wurgler()}},
 \code{\link[=download_data_constituents]{download_data_constituents()}},
 \code{\link[=download_data_damodaran]{download_data_damodaran()}},
 \code{\link[=download_data_factors_ff]{download_data_factors_ff()}},
