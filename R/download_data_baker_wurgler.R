@@ -91,8 +91,21 @@ download_data_baker_wurgler <- function(
   # differs (e.g., "SENT" and "pdnd").
   names(raw_data) <- tolower(names(raw_data))
   columns <- c(
-    "yearmo", "sent", "sent_orth", "pdnd", "ripo", "nipo", "cefd", "s",
-    "indpro", "consdur", "consnon", "consserv", "recess", "employ", "cpi"
+    "yearmo",
+    "sent",
+    "sent_orth",
+    "pdnd",
+    "ripo",
+    "nipo",
+    "cefd",
+    "s",
+    "indpro",
+    "consdur",
+    "consnon",
+    "consserv",
+    "recess",
+    "employ",
+    "cpi"
   )
   missing_columns <- setdiff(columns, names(raw_data))
   if (length(missing_columns) > 0) {
@@ -127,8 +140,11 @@ download_data_baker_wurgler <- function(
           "Baker-Wurgler data."
         ),
         "i" = paste0(
-          "Available data range: ", available_range[1], " to ",
-          available_range[2], "."
+          "Available data range: ",
+          available_range[1],
+          " to ",
+          available_range[2],
+          "."
         )
       ))
     }

@@ -35,8 +35,20 @@ test_that("downloads and processes the monthly sentiment index", {
   expect_equal(
     names(result),
     c(
-      "date", "sentiment", "sentiment_orth", "pdnd", "ripo", "nipo", "cefd",
-      "s", "indpro", "consdur", "consnon", "consserv", "recess", "employ",
+      "date",
+      "sentiment",
+      "sentiment_orth",
+      "pdnd",
+      "ripo",
+      "nipo",
+      "cefd",
+      "s",
+      "indpro",
+      "consdur",
+      "consnon",
+      "consserv",
+      "recess",
+      "employ",
       "cpi"
     )
   )
