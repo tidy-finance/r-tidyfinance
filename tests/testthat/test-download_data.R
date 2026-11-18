@@ -100,6 +100,10 @@ test_that("download_data forwards the dataset to Baker-Wurgler", {
   # A NULL dataset defaults to "sentiment_monthly".
   download_data("Baker-Wurgler")
   expect_identical(captured, "sentiment_monthly")
+
+  # An explicit dataset is forwarded unchanged.
+  download_data("Baker-Wurgler", "sentiment_other")
+  expect_identical(captured, "sentiment_other")
 })
 
 test_that("download_data handles argument errors and legacy inputs", {
