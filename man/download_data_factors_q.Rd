@@ -59,6 +59,7 @@ Hou, K., Mo, H., Xue, C., & Zhang, L. (2019). Which factors?
 \seealso{
 Other download functions:
 \code{\link[=download_data]{download_data()}},
+\code{\link[=download_data_baker_wurgler]{download_data_baker_wurgler()}},
 \code{\link[=download_data_constituents]{download_data_constituents()}},
 \code{\link[=download_data_damodaran]{download_data_damodaran()}},
 \code{\link[=download_data_factors_ff]{download_data_factors_ff()}},

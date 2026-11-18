@@ -123,7 +123,7 @@ download_data(
 #> # A tibble: 252 × 15
 #>    date        rp_div    dp    dy    ep    de    svar    bm    ntis    tbl
 #>    <date>       <dbl> <dbl> <dbl> <dbl> <dbl>   <dbl> <dbl>   <dbl>  <dbl>
-#>  1 2000-01-01 -0.0244 -4.42 -4.48 -3.35 -1.08 0.00521 0.155 0.0254  0.0532
+#>  1 2000-01-01 -0.0243 -4.42 -4.48 -3.35 -1.08 0.00521 0.155 0.0254  0.0532
 #>  2 2000-02-01  0.0866 -4.40 -4.42 -3.31 -1.09 0.00300 0.167 0.0274  0.0555
 #>  3 2000-03-01 -0.0355 -4.49 -4.40 -3.38 -1.11 0.00668 0.150 0.0183  0.0569
 #>  4 2000-04-01 -0.0269 -4.46 -4.49 -3.34 -1.12 0.00794 0.153 0.0119  0.0566
@@ -149,18 +149,18 @@ download_data(
 #> # A tibble: 12 × 213
 #>    date            am       aop abnormal_accruals accruals accruals_bm activism1
 #>    <date>       <dbl>     <dbl>             <dbl>    <dbl>       <dbl>     <dbl>
-#>  1 2020-01-01 -0.0790 -0.0255             0.0156  -1.40e-2      0.0567        NA
-#>  2 2020-02-01 -0.0444 -0.0145            -0.0139  -1.11e-2     -0.0323        NA
-#>  3 2020-03-01 -0.136   0.00547           -0.0361   1.74e-2     -0.0118        NA
-#>  4 2020-04-01 -0.0333 -0.0113             0.0778   4.53e-2     -0.0238        NA
-#>  5 2020-05-01 -0.117   0.0185             0.0207  -3.61e-3     -0.0268        NA
-#>  6 2020-06-01  0.0165 -0.00604            0.0330   8.51e-5      0.0400        NA
-#>  7 2020-07-01 -0.0366 -0.0913            -0.0209   3.00e-2     -0.0533        NA
-#>  8 2020-08-01  0.0265  0.0191            -0.0249   9.04e-4      0.0223        NA
-#>  9 2020-09-01 -0.0366 -0.0189            -0.0235  -1.53e-2     -0.0460        NA
-#> 10 2020-10-01  0.0711  0.0304            -0.00682 -4.40e-3      0.0332        NA
-#> 11 2020-11-01  0.0739  0.0202             0.0261   2.42e-2      0.193         NA
-#> 12 2020-12-01  0.0148  0.000180          -0.00594  2.04e-2     -0.0292        NA
+#>  1 2020-01-01 -0.0789 -0.0268             0.0254  -1.50e-2      0.0566        NA
+#>  2 2020-02-01 -0.0442 -0.0137            -0.0122  -1.30e-2     -0.0301        NA
+#>  3 2020-03-01 -0.136   0.00266           -0.0329   1.70e-2     -0.0115        NA
+#>  4 2020-04-01 -0.0325 -0.0102             0.0769   4.57e-2     -0.0221        NA
+#>  5 2020-05-01 -0.116   0.0139             0.00665 -5.42e-3     -0.0250        NA
+#>  6 2020-06-01  0.0166 -0.00187            0.0543   1.22e-3      0.0424        NA
+#>  7 2020-07-01 -0.0360 -0.0947            -0.00892  3.18e-2     -0.0544        NA
+#>  8 2020-08-01  0.0260  0.0191            -0.0151   1.77e-4      0.0298        NA
+#>  9 2020-09-01 -0.0362 -0.0192            -0.0237  -1.46e-2     -0.0437        NA
+#> 10 2020-10-01  0.0710  0.0322            -0.00700 -5.00e-6      0.0353        NA
+#> 11 2020-11-01  0.0758  0.0279             0.0404   2.23e-2      0.193         NA
+#> 12 2020-12-01  0.0149  0.000385          -0.0263   1.87e-2     -0.0328        NA
 #> # ℹ 206 more variables: activism2 <dbl>, ad_exp <dbl>, age_ipo <dbl>,
 #> #   analyst_revision <dbl>, analyst_value <dbl>, announcement_return <dbl>,
 #> #   asset_growth <dbl>, bm <dbl>, bmdec <dbl>, bpebm <dbl>, beta <dbl>,
@@ -291,6 +291,37 @@ download_data(
 #> # ℹ 14 more rows
 ```
 
+To download the monthly investor sentiment index of Baker and Wurgler
+(2006, 2007) from [Jeffrey Wurgler’s
+website](https://pages.stern.nyu.edu/~jwurgler/). Reading the Excel file
+requires the `readxl` package:
+
+``` r
+download_data(
+  domain = "Baker-Wurgler",
+  dataset = "sentiment_monthly",
+  start_date = "2020-01-01",
+  end_date = "2020-12-31"
+)
+#> # A tibble: 12 × 15
+#>    date       sentiment sentiment_orth   pdnd  ripo  nipo  cefd      s indpro
+#>    <date>         <dbl>          <dbl>  <dbl> <dbl> <dbl> <dbl>  <dbl>  <dbl>
+#>  1 2020-01-01   0.149           0.299  -14.1   45      13  7.17 0.102   101. 
+#>  2 2020-02-01   0.0275          0.196  -16.8   24.9    20  9.52 0.107   101. 
+#>  3 2020-03-01  -0.0673          0.709  -16.3   -8.9     5 11.5  0.0960   97.4
+#>  4 2020-04-01  -0.0806          0.978   -8.15  38.5     9 11.3  0.0875   84.6
+#>  5 2020-05-01  -0.0781          0.341  -12.3   35.4    17 11.4  0.0877   86.0
+#>  6 2020-06-01   0.00818         0.206  -13.9   36.7    36 10.5  0.0987   91.6
+#>  7 2020-07-01   0.0384          0.0360 -16.9   44.5    46 10.7  0.102    95.0
+#>  8 2020-08-01   0.0785          0.0518 -19.2   61.9    46 10.4  0.107    96.0
+#>  9 2020-09-01   0.0717         -0.0560 -18.4   33.4    65 10.3  0.111    96.0
+#> 10 2020-10-01   0.203           0.0600 -21.0   18.2    92  9.91 0.118    96.7
+#> 11 2020-11-01   0.294           0.176  -24.2   38.5    42  9.22 0.120    97.1
+#> 12 2020-12-01   0.452           0.261  -26.5   84.7    73  8.73 0.128    98.4
+#> # ℹ 6 more variables: consdur <dbl>, consnon <dbl>, consserv <dbl>,
+#> #   recess <dbl>, employ <dbl>, cpi <dbl>
+```
+
 To download the cost of capital (WACC) by industry from [Aswath
 Damodaran’s data
 library](https://pages.stern.nyu.edu/~adamodar/New_Home_Page/data.html),
@@ -335,24 +366,24 @@ download_data(
   end_date = "2020-12-31"
 )
 #> # A tibble: 16 × 3
-#>    date        value series  
-#>    <date>      <dbl> <chr>   
-#>  1 2020-01-01 21751. GDP     
-#>  2 2020-04-01 19958. GDP     
-#>  3 2020-07-01 21704. GDP     
-#>  4 2020-10-01 22087. GDP     
-#>  5 2020-01-01   258. CPIAUCNS
-#>  6 2020-02-01   259. CPIAUCNS
-#>  7 2020-03-01   258. CPIAUCNS
-#>  8 2020-04-01   256. CPIAUCNS
-#>  9 2020-05-01   256. CPIAUCNS
-#> 10 2020-06-01   258. CPIAUCNS
-#> 11 2020-07-01   259. CPIAUCNS
-#> 12 2020-08-01   260. CPIAUCNS
-#> 13 2020-09-01   260. CPIAUCNS
-#> 14 2020-10-01   260. CPIAUCNS
-#> 15 2020-11-01   260. CPIAUCNS
-#> 16 2020-12-01   260. CPIAUCNS
+#>    date       series    value
+#>    <date>     <chr>     <dbl>
+#>  1 2020-01-01 GDP      21751.
+#>  2 2020-04-01 GDP      19958.
+#>  3 2020-07-01 GDP      21704.
+#>  4 2020-10-01 GDP      22087.
+#>  5 2020-01-01 CPIAUCNS   258.
+#>  6 2020-02-01 CPIAUCNS   259.
+#>  7 2020-03-01 CPIAUCNS   258.
+#>  8 2020-04-01 CPIAUCNS   256.
+#>  9 2020-05-01 CPIAUCNS   256.
+#> 10 2020-06-01 CPIAUCNS   258.
+#> 11 2020-07-01 CPIAUCNS   259.
+#> 12 2020-08-01 CPIAUCNS   260.
+#> 13 2020-09-01 CPIAUCNS   260.
+#> 14 2020-10-01 CPIAUCNS   260.
+#> 15 2020-11-01 CPIAUCNS   260.
+#> 16 2020-12-01 CPIAUCNS   260.
 ```
 
 To download the FRED-MD / FRED-QD (McCracken-Ng) macroeconomic
@@ -401,14 +432,14 @@ download_data(
 #> # A tibble: 506 × 8
 #>    symbol date          volume  open   low  high close adjusted_close
 #>    <chr>  <date>         <dbl> <dbl> <dbl> <dbl> <dbl>          <dbl>
-#>  1 AAPL   2020-01-02 135480400  74.1  73.8  75.2  75.1           72.3
-#>  2 AAPL   2020-01-03 146322800  74.3  74.1  75.1  74.4           71.6
+#>  1 AAPL   2020-01-02 135480400  74.1  73.8  75.2  75.1           72.2
+#>  2 AAPL   2020-01-03 146322800  74.3  74.1  75.1  74.4           71.5
 #>  3 AAPL   2020-01-06 118387200  73.4  73.2  75.0  74.9           72.1
-#>  4 AAPL   2020-01-07 108872000  75.0  74.4  75.2  74.6           71.8
-#>  5 AAPL   2020-01-08 132079200  74.3  74.3  76.1  75.8           73.0
-#>  6 AAPL   2020-01-09 170108400  76.8  76.6  77.6  77.4           74.5
-#>  7 AAPL   2020-01-10 140644800  77.7  77.1  78.2  77.6           74.7
-#>  8 AAPL   2020-01-13 121532000  77.9  77.8  79.3  79.2           76.3
+#>  4 AAPL   2020-01-07 108872000  75.0  74.4  75.2  74.6           71.7
+#>  5 AAPL   2020-01-08 132079200  74.3  74.3  76.1  75.8           72.9
+#>  6 AAPL   2020-01-09 170108400  76.8  76.6  77.6  77.4           74.4
+#>  7 AAPL   2020-01-10 140644800  77.7  77.1  78.2  77.6           74.6
+#>  8 AAPL   2020-01-13 121532000  77.9  77.8  79.3  79.2           76.2
 #>  9 AAPL   2020-01-14 161954400  79.2  78.0  79.4  78.2           75.2
 #> 10 AAPL   2020-01-15 121923600  78.0  77.4  78.9  77.8           74.9
 #> # ℹ 496 more rows
@@ -467,24 +498,24 @@ download_data(
   end_date = "2020-12-31"
 )
 #> ℹ Connecting to WRDS. Approve the Duo request if prompted.
-#> ✔ Connected to WRDS. [4s]
+#> ✔ Connected to WRDS. [3.2s]
 #> 
 #> ℹ Downloading CRSP monthly data from WRDS. This can take a few minutes.
-#> ✔ Downloaded CRSP monthly data from WRDS. [3.5s]
+#> ✔ Downloaded CRSP monthly data from WRDS. [2.7s]
 #> 
 #> # A tibble: 43,478 × 15
 #>    permno date       calculation_date      ret   shrout    prc primaryexch siccd
 #>     <int> <date>     <date>              <dbl>    <dbl>  <dbl> <chr>       <int>
-#>  1  14313 2020-01-01 2020-01-31        0.00609   2.10e6   2.31 Q            3629
-#>  2  14316 2020-01-01 2020-01-31       -0.158     6.54e7  16.2  Q            2834
-#>  3  14317 2020-01-01 2020-01-31        0.129     2.54e7  79.7  Q            1542
-#>  4  14318 2020-01-01 2020-01-31       -0.0380    6.84e7  31.9  Q            6351
-#>  5  14325 2020-01-01 2020-01-31        0.276     5.94e7  76.0  Q            3841
-#>  6  14328 2020-01-01 2020-01-31       -0.0994    5.21e7   6.52 N            7832
-#>  7  14329 2020-01-01 2020-01-31        0.0171    2.49e8  44.1  N            5812
-#>  8  14338 2020-01-01 2020-01-31       -0.0280    2.82e8 108.   N            7011
-#>  9  14339 2020-01-01 2020-01-31        0.111     2.05e7   6.5  Q            6799
-#> 10  14352 2020-01-01 2020-01-31        0.0295    3.92e7   8.73 Q            2834
+#>  1  10026 2020-01-01 2020-01-31       -0.100     1.89e7 166.   Q            2052
+#>  2  10028 2020-01-01 2020-01-31        0.607     2.69e7   2.17 A            5094
+#>  3  10032 2020-01-01 2020-01-31       -0.0756    2.92e7  71.1  Q            3672
+#>  4  10044 2020-01-01 2020-01-31       -0.0986    6   e6   8.32 Q            2060
+#>  5  10051 2020-01-01 2020-01-31       -0.115     3.73e7  24.4  N            8093
+#>  6  10104 2020-01-01 2020-01-31       -0.00561   3.21e9  52.4  N            7372
+#>  7  10107 2020-01-01 2020-01-31        0.0795    7.61e9 170.   Q            7370
+#>  8  10138 2020-01-01 2020-01-31        0.0959    2.35e8 134.   Q            6211
+#>  9  10145 2020-01-01 2020-01-31       -0.0214    7.15e8 173.   N            5099
+#> 10  10158 2020-01-01 2020-01-31        0.0966    2.90e7  19.2  N            8711
 #> # ℹ 43,468 more rows
 #> # ℹ 7 more variables: listing_age <int>, mktcap <dbl>, mktcap_lag <dbl>,
 #> #   prc_lag <dbl>, exchange <chr>, industry <chr>, ret_excess <dbl>
@@ -500,10 +531,10 @@ download_data(
   end_date = "2020-12-31"
 )
 #> ℹ Connecting to WRDS. Approve the Duo request if prompted.
-#> ✔ Connected to WRDS. [4s]
+#> ✔ Connected to WRDS. [3s]
 #> 
 #> ℹ Downloading Compustat annual data from WRDS. This can take a few minutes.
-#> ✔ Downloaded Compustat annual data from WRDS. [1.3s]
+#> ✔ Downloaded Compustat annual data from WRDS. [1.2s]
 #> 
 #> # A tibble: 11,993 × 25
 #>    gvkey  date       datadate        seq     ceq      at      lt  txditc    txdb
@@ -532,10 +563,10 @@ download_data(
   dataset = "ccm_links"
 )
 #> ℹ Connecting to WRDS. Approve the Duo request if prompted.
-#> ✔ Connected to WRDS. [4.1s]
+#> ✔ Connected to WRDS. [3.7s]
 #> 
 #> ℹ Downloading CRSP-Compustat links from WRDS. This can take a few minutes.
-#> ✔ Downloaded CRSP-Compustat links from WRDS. [1.1s]
+#> ✔ Downloaded CRSP-Compustat links from WRDS. [988ms]
 #> 
 #> # A tibble: 33,324 × 4
 #>    permno gvkey  linkdt     linkenddt 
@@ -544,7 +575,7 @@ download_data(
 #>  2  10015 001001 1983-09-20 1986-07-31
 #>  3  10023 001002 1972-12-14 1973-06-05
 #>  4  10031 001003 1983-12-07 1989-08-16
-#>  5  54594 001004 1972-04-24 2026-10-25
+#>  5  54594 001004 1972-04-24 2026-11-18
 #>  6  61903 001005 1973-01-31 1983-01-31
 #>  7  10058 001007 1973-10-01 1979-01-30
 #>  8  10058 001007 1979-01-31 1984-09-28
@@ -564,10 +595,10 @@ download_data(
   end_date = "2021-12-31"
 )
 #> ℹ Connecting to WRDS. Approve the Duo request if prompted.
-#> ✔ Connected to WRDS. [3.6s]
+#> ✔ Connected to WRDS. [3.2s]
 #> 
 #> ℹ Downloading enhanced TRACE data from WRDS. This can take a few minutes.
-#> ✔ Downloaded enhanced TRACE data from WRDS. [1.2s]
+#> ✔ Downloaded enhanced TRACE data from WRDS. [1.1s]
 #> 
 #> # A tibble: 7,694 × 8
 #>    cusip_id  trd_exctn_dt trd_exctn_tm rptd_pr entrd_vol_qt yld_pt rpt_side_cd

@@ -1,5 +1,11 @@
 # tidyfinance (development version)
 
+* New `download_data_baker_wurgler()` and `download_data("Baker-Wurgler",
+  "sentiment_monthly")` download the monthly investor sentiment index of
+  Baker and Wurgler (2006, 2007), together with its sentiment proxies and
+  macroeconomic indicators, from Jeffrey Wurgler's website. Reading the Excel
+  file requires the `readxl` package.
+
 # tidyfinance 1.0.0
 
 ## Breaking changes

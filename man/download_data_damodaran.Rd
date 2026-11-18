@@ -54,6 +54,7 @@ the archive of the data library. The archive starts in 1998 for the US, in
 \seealso{
 Other download functions:
 \code{\link[=download_data]{download_data()}},
+\code{\link[=download_data_baker_wurgler]{download_data_baker_wurgler()}},
 \code{\link[=download_data_constituents]{download_data_constituents()}},
 \code{\link[=download_data_factors_ff]{download_data_factors_ff()}},
 \code{\link[=download_data_factors_q]{download_data_factors_q()}},

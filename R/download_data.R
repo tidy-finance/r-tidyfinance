@@ -11,12 +11,11 @@
 #'   `"Goyal-Welch"`, `"WRDS"`, `"Pseudo Data"`, `"Index Constituents"`,
 #'   `"FRED"`, `"Stock Prices"`, `"Open Source Asset Pricing"`,
 #'   `"Global Factor Data"`, `"Pastor-Stambaugh"`, `"Stambaugh-Yuan"`,
-#'   `"Damodaran"`, or `"Tidy Finance"`. Use `"Pseudo Data"` to obtain
-#'   pseudo data with the
-#'   same schema as `"WRDS"` for testing or rendering without a WRDS
-#'   subscription. The previous machine-readable names (e.g., `"famafrench"`,
-#'   `"wrds"`, `"pseudo"`, `"tidyfinance"`) are deprecated but still
-#'   accepted.
+#'   `"Baker-Wurgler"`, `"Damodaran"`, or `"Tidy Finance"`. Use
+#'   `"Pseudo Data"` to obtain pseudo data with the same schema as `"WRDS"`
+#'   for testing or rendering without a WRDS subscription. The previous
+#'   machine-readable names (e.g., `"famafrench"`, `"wrds"`, `"pseudo"`,
+#'   `"tidyfinance"`) are deprecated but still accepted.
 #' @param dataset Optional. The specific dataset to download within the
 #'   domain.
 #' @param start_date Optional. A character string or Date object in
@@ -70,6 +69,12 @@
 #' download_data("FRED", "FRED-MD", transform = TRUE)
 #' download_data("FRED", "FRED-QD", vintage = "2020-03")
 #' download_data("Stock Prices", symbols = c("AAPL", "MSFT"))
+#' download_data(
+#'   "Baker-Wurgler",
+#'   "sentiment_monthly",
+#'   "2020-01-01",
+#'   "2020-12-31"
+#' )
 #' download_data("Damodaran", "wacc", region = "europe", year = 2020:2024)
 #' download_data(
 #'   "Tidy Finance",
@@ -220,6 +225,13 @@ download_data <- function(
   } else if (domain == "Stambaugh-Yuan") {
     processed_data <- download_data_stambaugh_yuan(
       dataset = if (is.null(dataset)) "monthly" else dataset,
+      start_date = start_date,
+      end_date = end_date,
+      ...
+    )
+  } else if (domain == "Baker-Wurgler") {
+    processed_data <- download_data_baker_wurgler(
+      dataset = if (is.null(dataset)) "sentiment_monthly" else dataset,
       start_date = start_date,
       end_date = end_date,
       ...
@@ -432,6 +444,7 @@ check_supported_domain <- function(domain) {
     "Global Factor Data",
     "Pastor-Stambaugh",
     "Stambaugh-Yuan",
+    "Baker-Wurgler",
     "Damodaran",
     "Tidy Finance"
   )

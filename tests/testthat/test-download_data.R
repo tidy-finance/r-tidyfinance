@@ -14,6 +14,7 @@ test_that("download_data dispatches supported domains", {
     download_data_jkp = function(...) out,
     download_data_pastor_stambaugh = function(...) out,
     download_data_stambaugh_yuan = function(...) out,
+    download_data_baker_wurgler = function(...) out,
     download_data_damodaran = function(...) out,
     download_data_risk_free = function(...) out,
     download_data_huggingface = function(...) out
@@ -31,6 +32,7 @@ test_that("download_data dispatches supported domains", {
     list("Global Factor Data", NULL),
     list("Pastor-Stambaugh", NULL),
     list("Stambaugh-Yuan", NULL),
+    list("Baker-Wurgler", NULL),
     list("Damodaran", NULL),
     list("Tidy Finance", "risk_free"),
     list("Tidy Finance", "factor_library")
@@ -82,6 +84,22 @@ test_that("download_data forwards the dataset to Stambaugh-Yuan", {
   # An explicit dataset is forwarded unchanged.
   download_data("Stambaugh-Yuan", "daily")
   expect_identical(captured, "daily")
+})
+
+test_that("download_data forwards the dataset to Baker-Wurgler", {
+  captured <- NULL
+
+  local_mocked_bindings(
+    check_supported_domain = function(domain) NULL,
+    download_data_baker_wurgler = function(dataset, ...) {
+      captured <<- dataset
+      tibble::tibble(ok = TRUE)
+    }
+  )
+
+  # A NULL dataset defaults to "sentiment_monthly".
+  download_data("Baker-Wurgler")
+  expect_identical(captured, "sentiment_monthly")
 })
 
 test_that("download_data handles argument errors and legacy inputs", {
